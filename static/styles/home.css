@@ -1,0 +1,26 @@
+html, body {
+  height: 100%; }
+
+#wrapper {
+  height: 100%; }
+  #wrapper #navHeadTop {
+    height: 60px; }
+    #wrapper #navHeadTop > div {
+      display: inline-block;
+      height: 100%; }
+    #wrapper #navHeadTop .logo {
+      width: 180px;
+      background-color: #FF8A41; }
+      #wrapper #navHeadTop .logo img {
+        width: 100%;
+        height: 100%;
+        vertical-align: baseline; }
+  #wrapper #navContent {
+    padding-left: 0;
+    padding-top: 0;
+    height: calc(100% - 60px); }
+    #wrapper #navContent .content-item {
+      height: 100%;
+      background-color: #E9EAEC; }
+
+/*# sourceMappingURL=home.css.map */

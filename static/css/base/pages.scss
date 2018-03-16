@@ -1,0 +1,203 @@
+@charset "UTF-8";
+.i-page-line, .i-page-fill{
+  font-size: 12px !important;
+  @include clearfix();
+}
+
+.i-page-line{
+
+  div, ul, li, input{
+    float: left;
+    height: $height-sm;
+  }
+
+  div, li, input{
+    padding: $padding-ver-sm $padding-hor-sm;
+    border: 1px solid $border-col;
+    border-radius: $border-radius-base;
+    margin-right: 5px;
+  }
+
+  li.i-line-omit{
+    border: none;
+    font-weight: 600;
+  }
+
+
+  div, li:not(.i-line-omit), input{
+    cursor: pointer;
+    border: 1px solid $border-col;
+    border-radius: $border-radius-base;
+    @include transition();
+    &:hover{
+      border-color: $theme-normal;
+      color: $theme-normal;
+    }
+  }
+
+  li{
+    min-width: $height-sm;
+  }
+
+
+
+
+  .i-line-input{
+    width: 35px;
+    cursor: auto;
+    color: $text-col !important;
+    &:focus{
+      border-color: $theme-hover;
+    }
+  }
+
+  .i-line-goto{
+    margin-right: 0;
+  }
+
+  .i-line-current{
+    color: $white;
+    border-color: $theme-normal !important;
+    background-color: $theme-normal;
+    &:hover{
+      color: $white !important;
+      border-color: $theme-normal !important;
+      background-color: $theme-normal;
+
+    }
+  }
+
+  .i-line-disabled{
+    color: $six9 !important;
+    border-color: $border-col !important;
+    background-color: $hover-bg !important;
+    cursor: no-drop;
+  }
+
+  .i-line-first{
+
+  }
+
+  .i-line-last{
+
+  }
+
+}// i-page-line
+
+
+.i-page-fill{
+  div, ul, li{
+    float: left;
+  }
+
+  div, li{
+    background-color: $theme-normal;
+    height: $height-sm;
+    line-height: $height-sm;
+    padding: 0 $padding-hor-sm;
+    min-width: 30px;
+    color: #ffffff;
+    cursor: pointer;
+  }
+
+  li:not(:last-child){
+    border-right: 1px solid $theme-click;
+  }
+
+  .i-fill-first{
+    margin-right: 3px;
+    @include border-left-radius(4px);
+  }
+
+  .i-fill-last{
+    margin-left: 3px;
+    @include border-right-radius(4px);
+  }
+
+  .i-fill-current{
+    background-color: $theme-click !important;
+  }
+}// .i-page-fill
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.page_div {
+  font-size: 15px;
+  font-family: "microsoft yahei";
+  color: #666666;
+  box-sizing: border-box;
+}
+/*
+ * 页数按钮样式
+ */
+
+.page_div a {
+  min-width: 30px;
+  height: 28px;
+  border: 1px solid #dce0e0!important;
+  text-align: center;
+  margin: 0 4px;
+  cursor: pointer;
+  line-height: 28px;
+  color: #666666;
+  font-size: 13px;
+  display: inline-block;
+}
+
+#firstPage,
+#lastPage {
+  width: 50px;
+  color: #0073A9;
+  border: 1px solid #0073A9!important;
+}
+
+#prePage,
+#nextPage {
+  width: 70px;
+  color: #0073A9;
+  border: 1px solid #0073A9!important;
+}
+
+.page_div .current {
+  background-color: #0073A9;
+  border-color: #0073A9;
+  color: #FFFFFF;
+}
+
+.totalPages {
+  margin: 0 10px;
+}
+
+.totalPages span,
+.totalSize span {
+  color: #0073A9;
+  margin: 0 5px;
+}
+
+

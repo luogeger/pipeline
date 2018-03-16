@@ -1,0 +1,58 @@
+@charset "UTF-8";
+
+.i-checkbox-group{
+  display: inline-block;
+
+
+  .i-checkbox-item{
+    margin-right: 10px;
+    cursor: pointer;
+    display: inline-block;
+
+
+    .i-checkbox-wrap{
+      display: inline-block;
+      vertical-align: text-bottom;
+      width: 16px;
+      height: 16px;
+      position: relative;
+
+      .i-checkbox-inner,
+      .i-checkbox-check{
+        transition: .2s;
+        font-size: 16px;
+        position: absolute;
+        left: 0;
+      }
+
+      .i-checkbox-inner{
+      }
+
+      .i-checkbox-check{
+        transform-origin: 50% 50%;
+        transform: scale(0);
+      }
+    }//
+
+    .i-checkbox-label{
+
+    }//
+
+    &:hover{
+      .i-checkbox-inner{
+        color: $theme-click !important;
+      }
+    }
+  }// .i-checkbox-item
+
+  .i-checkbox-checked{
+    .i-checkbox-wrap{
+      .i-checkbox-check{
+        color: $theme-click !important;
+        transform: scale(1);
+      }
+    }
+
+  }// item被选中
+
+}// .i-checkbox-group

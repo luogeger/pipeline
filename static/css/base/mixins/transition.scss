@@ -1,0 +1,7 @@
+@mixin transition( $duration: .2s, $property: all,$timing: ease-in-out){
+  transition: $duration $property $timing;
+}
+//  $timing: linear
+//  $timing: ease-in-out
+
+
