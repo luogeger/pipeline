@@ -20,21 +20,35 @@
             opt.forEach(function (item, index) {
                 if (index == 0) {
                     html += '<div class="panel i-border-col">';
-                    html += '<div class="panel-title i-text-col">';
+                    if (!Boolean(item.children)) {// 没有子菜单可以点击
+                        html += '<div class="panel-title i-text-col" onclick="loadMainPage(".content-item"," '+ item.data.dataUrl +' ")">';
+                    } else{
+                        html += '<div class="panel-title i-text-col">';
+                    }
                 }else {
                     html += '<div class="panel">';
-                    html += '<div class="panel-title">';
+                    if (!Boolean(item.children)) {// 没有子菜单可以点击
+                        html += '<div class="panel-title" onclick="loadMainPage(".content-item"," '+ item.data.dataUrl +' ")">';
+                    } else {
+                        html += '<div class="panel-title">';
+                    }
+
                 }
                 html += '<i class=" '+item.data.menuClass+' "></i>';
                 html += '<span>'+ item.text +'</span>';
-                if (item.children.length !== 0) {
+                if (Boolean(item.children)) {
                     html += '<i class="fa fa-angle-down"></i>';
                     html += '</div>';
                     html += '<ul>';
-                    item.children.forEach(function (item, index) {
-                        if (item.children.length !== 0) {
+                    item.children.forEach(function (item) {
+                        if (Boolean(item.children)) {
                             var child = item.children;
-                            html += '<li data-flag="true"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
+
+                            if (!Boolean(item.children)) {// 没有子菜单可以点击
+                                html += '<li data-flag="true" onclick="loadMainPage(".content-item"," '+ item.data.dataUrl +' ")"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
+                            } else {
+                                html += '<li data-flag="true"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
+                            }
                             child.forEach(function (val) {
                                 html += '<li><div><span>'+ val.text +'</span></div></li>';
                             })
