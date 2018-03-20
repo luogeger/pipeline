@@ -422,7 +422,6 @@ input.disabled {
     border-color: #DDDEE1 !important;
     box-shadow: none !important; }
 
-.input-group,
 .input-group-label {
   display: inline-block;
   vertical-align: middle; }
@@ -2274,17 +2273,24 @@ html #layuicss-laydate {
     .nav-top-panels .panel .panel-title:hover {
       color: #FF8A41; }
     .nav-top-panels .panel .panel-title i {
-      margin-right: 5px; }
+      margin-right: 10px; }
+    .nav-top-panels .panel .panel-title span + i {
+      margin-right: 0;
+      margin-left: 10px; }
   .nav-top-panels .panel > ul {
     top: 60px;
     left: 0; }
     .nav-top-panels .panel > ul li {
-      padding: 5px 0;
       cursor: pointer; }
       .nav-top-panels .panel > ul li div {
-        padding: 0 10px; }
+        padding: 4px 10px 4px 15px;
+        min-width: 150px; }
         .nav-top-panels .panel > ul li div span {
+          line-height: 20px;
           white-space: nowrap; }
+        .nav-top-panels .panel > ul li div span + i {
+          float: right;
+          margin-top: 5px; }
   .nav-top-panels .panel ul {
     position: absolute;
     background-color: #fff;

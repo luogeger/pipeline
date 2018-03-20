@@ -27,13 +27,14 @@
                 }
                 html += '<i class=" '+item.data.menuClass+' "></i>';
                 html += '<span>'+ item.text +'</span>';
-                html += '</div>';
                 if (item.children.length !== 0) {
+                    html += '<i class="fa fa-angle-down"></i>';
+                    html += '</div>';
                     html += '<ul>';
                     item.children.forEach(function (item, index) {
                         if (item.children.length !== 0) {
                             var child = item.children;
-                            html += '<li><div><span>'+ item.text +'</span></div><ul>';
+                            html += '<li data-flag="true"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
                             child.forEach(function (val) {
                                 html += '<li><div><span>'+ val.text +'</span></div></li>';
                             })
@@ -46,6 +47,8 @@
 
                     })
                     html += '</ul>';
+                } else{
+                    html += '</div>';
                 }
                 html += '</div>';
 
@@ -62,7 +65,7 @@
             this.$ul         = _this.find('ul');
             this.$li         = _this.find('li');
 
-        },// elements
+        },// elementsb
 
         bind: function () {
             var self = this;
@@ -95,7 +98,11 @@
                 })// leave
 
                 _item.click(function () {
-
+                    if (_item.attr('data-flag') === 'true') {return};
+                    $(this).parents('.panel').siblings('.panel').each(function (inx, itm) {
+                        $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col')
+                    })
+                    $(this).parents('.panel').addClass('i-border-col').children('.panel-title').addClass('i-text-col')
                 })
             });// $li
 
@@ -111,8 +118,8 @@
             })
         },// bind
 
-        event: function (arg) {
-            console.log(arg)
+        event: function () {
+
         },// event
 
     };// prototype

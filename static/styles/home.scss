@@ -10,6 +10,7 @@ html, body{
 
     >div{
       display: inline-block;
+      vertical-align: middle;
       height: 100%;
     }// >div
 
@@ -26,10 +27,23 @@ html, body{
 
 
     .search{
-
+      float: right;
+      line-height: 60px;
+      padding-right: 20px;
     }// search
 
     .user{
+      float: right;
+      padding-right: 20px;
+      .user-box{
+        line-height: 60px;
+        img{
+          width: 30px;
+          height: 30px;
+          border-radius: 20px;
+          margin-right: 5px;
+        }
+      }
     }// user
   }// navHeadTop
 
