@@ -1,13 +1,9 @@
-html, body {
-  height: 100%; }
-
 #wrapper {
   height: 100%; }
   #wrapper #navHeadTop {
     height: 60px; }
     #wrapper #navHeadTop > div {
       display: inline-block;
-      vertical-align: middle;
       height: 100%; }
     #wrapper #navHeadTop .logo {
       width: 180px;
@@ -16,20 +12,6 @@ html, body {
         width: 100%;
         height: 100%;
         vertical-align: baseline; }
-    #wrapper #navHeadTop .search {
-      float: right;
-      line-height: 60px;
-      padding-right: 20px; }
-    #wrapper #navHeadTop .user {
-      float: right;
-      padding-right: 20px; }
-      #wrapper #navHeadTop .user .user-box {
-        line-height: 60px; }
-        #wrapper #navHeadTop .user .user-box img {
-          width: 30px;
-          height: 30px;
-          border-radius: 20px;
-          margin-right: 5px; }
   #wrapper #navContent {
     padding-left: 0;
     padding-top: 0;

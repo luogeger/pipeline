@@ -1,0 +1,158 @@
+.breadcrumb {
+  color: #939393;
+  padding: 0 20px;
+  margin-bottom: 10px; }
+  .breadcrumb a:hover, .breadcrumb a:active {
+    color: #333; }
+  .breadcrumb .line {
+    margin: 0 6px; }
+
+.search-wrapper,
+.main-wrapper {
+  background-color: #fff;
+  border-radius: 2px; }
+
+.search-wrapper {
+  padding: 15px 20px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  position: relative; }
+  .search-wrapper .dropdown-wrap,
+  .search-wrapper .input-group {
+    margin-bottom: 15px; }
+
+.main-wrapper {
+  padding: 15px;
+  position: relative; }
+  .main-wrapper .data {
+    width: calc(100% - 250px); }
+    .main-wrapper .data .table-wrapper {
+      margin-top: 15px;
+      position: relative;
+      background: url("../../images/watermark.png") repeat left top; }
+      .main-wrapper .data .table-wrapper th,
+      .main-wrapper .data .table-wrapper td {
+        padding-top: 12px;
+        padding-bottom: 12px; }
+      .main-wrapper .data .table-wrapper tbody tr:hover {
+        background-color: #fdf0e5 !important; }
+      .main-wrapper .data .table-wrapper tbody tr:active, .main-wrapper .data .table-wrapper tbody tr.active {
+        background-color: #fad3b2 !important; }
+      .main-wrapper .data .table-wrapper .fa {
+        color: #ed6d00; }
+  .main-wrapper .updateCase {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    bottom: 15px;
+    background-color: #fff;
+    border: 1px solid #c9c9c9;
+    width: 240px;
+    margin-left: 10px; }
+    .main-wrapper .updateCase .title {
+      border-bottom: 1px solid #c9c9c9;
+      line-height: 45px;
+      color: #696969;
+      margin: 0 5px; }
+      .main-wrapper .updateCase .title .close {
+        padding: 0 5px; }
+        .main-wrapper .updateCase .title .close i {
+          color: #c9c9c9; }
+    .main-wrapper .updateCase .content {
+      height: calc(100% - 45px);
+      overflow-y: auto; }
+      .main-wrapper .updateCase .content .block {
+        padding: 15px 5px; }
+        .main-wrapper .updateCase .content .block h4 {
+          font-size: 14px;
+          margin-bottom: 10px; }
+        .main-wrapper .updateCase .content .block p {
+          color: #a0a0a0; }
+
+.data-wrapper {
+  width: 1010px; }
+  .data-wrapper .wrapper {
+    position: relative; }
+    .data-wrapper .wrapper .main {
+      width: calc(100% - 260px); }
+      .data-wrapper .wrapper .main .dropdown-wrap,
+      .data-wrapper .wrapper .main .input-group {
+        width: 50%;
+        float: left;
+        margin-bottom: 15px; }
+      .data-wrapper .wrapper .main .input-group {
+        line-height: 30px; }
+        .data-wrapper .wrapper .main .input-group .input-group-label {
+          min-width: 120px; }
+        .data-wrapper .wrapper .main .input-group .item-list {
+          display: inline-block;
+          vertical-align: middle; }
+          .data-wrapper .wrapper .main .input-group .item-list li {
+            padding: 0 15px;
+            float: left;
+            color: #242424;
+            cursor: pointer; }
+          .data-wrapper .wrapper .main .input-group .item-list .active {
+            background-color: #fad3b2; }
+      .data-wrapper .wrapper .main .col-1 {
+        width: 100%; }
+      .data-wrapper .wrapper .main textarea {
+        width: 100%;
+        min-height: 80px; }
+    .data-wrapper .wrapper .explain {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: #fff;
+      border: 1px solid #c9c9c9;
+      width: 240px;
+      margin-left: 10px; }
+      .data-wrapper .wrapper .explain .title {
+        border-bottom: 1px solid #c9c9c9;
+        line-height: 45px;
+        color: #696969;
+        margin: 0 5px; }
+      .data-wrapper .wrapper .explain .content {
+        padding: 15px 5px;
+        color: #1e1e1e; }
+        .data-wrapper .wrapper .explain .content .tips {
+          color: #f7a259;
+          margin-top: 20px; }
+  .data-wrapper .historyLog {
+    padding-top: 15px; }
+    .data-wrapper .historyLog :checked ~ .head .fa {
+      transform: rotate(180deg); }
+    .data-wrapper .historyLog :checked ~ .content {
+      max-height: 500px; }
+    .data-wrapper .historyLog .head {
+      display: block;
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #d9d9d9;
+      color: #8c8c8c;
+      cursor: pointer; }
+      .data-wrapper .historyLog .head .fa {
+        color: #8c8c8c;
+        margin-left: 10px;
+        transition: all .25s; }
+    .data-wrapper .historyLog .content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s; }
+      .data-wrapper .historyLog .content .i-table {
+        margin-top: 15px; }
+        .data-wrapper .historyLog .content .i-table thead {
+          background-color: #fad3b2;
+          color: #242424; }
+        .data-wrapper .historyLog .content .i-table td {
+          color: #8c8c8c; }
+        .data-wrapper .historyLog .content .i-table .dark {
+          color: #242424; }
+
+.star {
+  color: #ff0000;
+  position: absolute;
+  margin-top: 6px; }
+
+/*# sourceMappingURL=manage.css.map */

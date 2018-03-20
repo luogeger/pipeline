@@ -1,4 +1,55 @@
 @charset "UTF-8";
 
+.theme-color {
+  color: #ed6d00;
+}
+.wrong-border {
+  border: 1px solid #ff0000;
+  box-shadow: 0 0 5px rgba(255, 0, 0, .5);
+}
+
+//Button
+.btn-theme {
+  background-color: #ed6d00;
+  border-color: #ed6d00;
+  &:hover,
+  &:focus {
+    background-color: #ff8319;
+    border-color: #ff8319;
+  }
+}
+.btn-border {
+  color: #ed6d00;
+  border-color: #ed6d00;
+  &:hover,
+  &:focus {
+    color: #ff8319;
+    border-color: #ff8319;
+  }
+}
+
+// Table
+.i-table {
+  text-align: center;
+  thead {
+    background-color: #ed6d00;
+    border-bottom: 0;
+    color: #fff;
+    font-weight: 500;
+  }
+  tbody {
+    font-size: 14px;
+  }
+}
+
+//Modal
+#modalWrap .modal-title {
+  background-color: #f1f1f1;
+  border-radius: 4px 4px 0 0;
+}
+#modalWrap .modal-foot {
+  display: none;
+}
+
 
 

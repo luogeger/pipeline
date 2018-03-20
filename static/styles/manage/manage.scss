@@ -1,0 +1,234 @@
+.breadcrumb {
+  color: #939393;
+  padding: 0 20px;
+  margin-bottom: 10px;
+  a {
+    &:hover,
+    &:active {
+      color: #333;
+    }
+  }
+  .line {
+    margin: 0 6px;
+  }
+}
+
+.search-wrapper,
+.main-wrapper {
+  background-color: #fff;
+  border-radius: 2px;
+}
+
+.search-wrapper {
+  padding: 15px 20px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  position: relative;
+
+  .more {
+
+  }
+  .dropdown-wrap,
+  .input-group {
+    margin-bottom: 15px;
+  }
+}
+
+.main-wrapper {
+  padding: 15px;
+  position: relative;
+
+  .data {
+    width: calc(100% - 250px);
+
+    .table-wrapper {
+      margin-top: 15px;
+      position: relative;
+      background: url("../../images/watermark.png") repeat left top;
+
+      th,
+      td {
+        padding-top: 12px;
+        padding-bottom: 12px;
+      }
+      tbody {
+        tr {
+          &:hover {
+            background-color: #fdf0e5 !important;
+          }
+          &:active,
+          &.active {
+            background-color: #fad3b2 !important;
+          }
+        }
+      }
+      .fa {
+        color: #ed6d00;
+      }
+    }
+  }
+  .updateCase {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    bottom: 15px;
+    background-color: #fff;
+    border: 1px solid #c9c9c9;
+    width: 240px;
+    margin-left: 10px;
+
+    .title {
+      border-bottom: 1px solid #c9c9c9;
+      line-height: 45px;
+      color: #696969;
+      margin: 0 5px;
+
+      .close {
+        padding: 0 5px;
+        i {
+          color: #c9c9c9;
+        }
+      }
+    }
+
+    .content {
+      height: calc(100% - 45px);
+      overflow-y: auto;
+      .block {
+        padding: 15px 5px;
+        h4 {
+          font-size: 14px;
+          margin-bottom: 10px;
+        }
+        p {
+          color: #a0a0a0;
+        }
+      }
+    }
+  }
+}
+
+.data-wrapper {
+  width: 1010px;
+
+  .wrapper {
+    position: relative;
+
+    .main {
+      width: calc(100% - 260px);
+
+      .dropdown-wrap,
+      .input-group {
+        width: 50%;
+        float: left;
+        margin-bottom: 15px;
+      }
+      .input-group {
+        line-height: 30px;
+        .input-group-label {
+          min-width: 120px;
+        }
+
+        .item-list {
+          display: inline-block;
+          vertical-align: middle;
+          li {
+            padding: 0 15px;
+            float: left;
+            color: #242424;
+            cursor: pointer;
+          }
+          .active {
+            background-color: #fad3b2;
+          }
+        }
+      }
+      .col-1 {
+        width: 100%;
+      }
+      textarea {
+        width: 100%;
+        min-height: 80px;
+      }
+    }
+
+    .explain {
+      position: absolute;
+      right: 0;
+      top: 0;
+      background-color: #fff;
+      border: 1px solid #c9c9c9;
+      width: 240px;
+      margin-left: 10px;
+
+      .title {
+        border-bottom: 1px solid #c9c9c9;
+        line-height: 45px;
+        color: #696969;
+        margin: 0 5px;
+      }
+      .content {
+        padding: 15px 5px;
+        color: #1e1e1e;
+        .tips {
+          color: #f7a259;
+          margin-top: 20px;
+        }
+      }
+    }
+  }
+  .historyLog {
+    padding-top: 15px;
+
+    :checked ~.head {
+      .fa {
+        transform: rotate(180deg);
+      }
+    }
+    :checked ~ .content {
+      max-height: 500px;
+    }
+
+    .head {
+      display: block;
+      text-align: center;
+      margin-bottom: 30px;
+      padding-bottom: 15px;
+      border-bottom: 1px dashed #d9d9d9;
+      color: #8c8c8c;
+      cursor: pointer;
+      .fa {
+        color: #8c8c8c;
+        margin-left: 10px;
+        transition: all .25s;
+      }
+    }
+    .content {
+      max-height: 0;
+      overflow: hidden;
+      transition: max-height .4s;
+
+      .i-table {
+        margin-top: 15px;
+        thead {
+          background-color: #fad3b2;
+          color: #242424;
+        }
+        td {
+          color: #8c8c8c;
+        }
+        .dark {
+          color: #242424;
+        }
+      }
+    }
+  }
+}
+
+.star {
+  color: #ff0000;
+  position: absolute;
+  margin-top: 6px;
+}
+
+
