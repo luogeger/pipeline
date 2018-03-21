@@ -52,4 +52,19 @@
 }
 
 
+.breadcrumb {
+  color: #939393;
+  padding: 0 20px;
+  margin-bottom: 10px;
+  a {
+    &:hover,
+    &:active {
+      color: #333;
+    }
+  }
+  .line {
+    margin: 0 6px;
+  }
+}
+
 

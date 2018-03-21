@@ -1,12 +1,3 @@
-.breadcrumb {
-  color: #939393;
-  padding: 0 20px;
-  margin-bottom: 10px; }
-  .breadcrumb a:hover, .breadcrumb a:active {
-    color: #333; }
-  .breadcrumb .line {
-    margin: 0 6px; }
-
 .search-wrapper,
 .main-wrapper {
   background-color: #fff;

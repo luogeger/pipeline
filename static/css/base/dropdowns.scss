@@ -62,8 +62,10 @@ $max-width: 200px;
     }
 
     >ul{
+      padding: 5px 0;
       display: none;
-      min-width: $min-width;
+      //min-width: $min-width;
+      min-width: 162px;
       max-width: $max-width;
       position: absolute;
       top: $height-sm + 2;

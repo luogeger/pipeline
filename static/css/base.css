@@ -181,6 +181,10 @@ samp {
   transition: 0.2s all ease-in-out;
   color: #FF8A41 !important; }
 
+.i-active {
+  background: #FF8A41 !important;
+  color: #FFFFFF !important; }
+
 .ver-mid {
   display: inline-block;
   vertical-align: middle; }
@@ -499,8 +503,9 @@ input.disabled {
       padding: 0px 10px;
       transition: all 0.2s ease-in-out; }
     .dropdown-wrap .dropdown > ul {
+      padding: 5px 0;
       display: none;
-      min-width: 122px;
+      min-width: 162px;
       max-width: 200px;
       position: absolute;
       top: 32px;
@@ -2763,5 +2768,14 @@ button.toast-close-button {
 
 #modalWrap .modal-foot {
   display: none; }
+
+.breadcrumb {
+  color: #939393;
+  padding: 0 20px;
+  margin-bottom: 10px; }
+  .breadcrumb a:hover, .breadcrumb a:active {
+    color: #333; }
+  .breadcrumb .line {
+    margin: 0 6px; }
 
 /*# sourceMappingURL=base.css.map */

@@ -109,8 +109,11 @@
                     if (_item.attr('data-flag') === 'true') {return};// 如果有三级菜单，
                     $(this).parents('.panel').siblings('.panel').each(function (inx, itm) {
                         $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col')
-                    })
-                    $(this).parents('.panel').addClass('i-border-col').children('.panel-title').addClass('i-text-col')
+                    });// 一级菜单选中状态 排他
+                    $(this).parents('.panel').addClass('i-border-col').children('.panel-title').addClass('i-text-col');// 一级菜单选中
+
+                    self.$li.each(function (index, item) { $(item).removeClass('i-active') });// 排他
+                    _item.addClass('i-active');
                 })
             });// $li
 
