@@ -16,19 +16,20 @@
         },// init
 
         render: function (opt) {
+            var click = 'onclick=\"loadPage(\'.content-item\', \'url\')\"';
             var html = '';
-            opt.forEach(function (item, index) {
-                if (index == 0) {
+            opt.forEach(function (item, index) {// 遍历一级菜单
+                if (index === 0) {
                     html += '<div class="panel i-border-col">';
                     if (!Boolean(item.children)) {// 没有子菜单可以点击
-                        html += '<div class="panel-title i-text-col" onclick="loadMainPage(".content-item"," '+ item.data.dataUrl +' ")">';
+                        html += '<div class="panel-title i-text-col" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
                     } else{
                         html += '<div class="panel-title i-text-col">';
                     }
                 }else {
                     html += '<div class="panel">';
                     if (!Boolean(item.children)) {// 没有子菜单可以点击
-                        html += '<div class="panel-title" onclick="loadMainPage(".content-item"," '+ item.data.dataUrl +' ")">';
+                        html += '<div class="panel-title" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
                     } else {
                         html += '<div class="panel-title">';
                     }
@@ -40,23 +41,16 @@
                     html += '<i class="fa fa-angle-down"></i>';
                     html += '</div>';
                     html += '<ul>';
-                    item.children.forEach(function (item) {
-                        if (Boolean(item.children)) {
-                            var child = item.children;
-
-                            if (!Boolean(item.children)) {// 没有子菜单可以点击
-                                html += '<li data-flag="true" onclick="loadMainPage(".content-item"," '+ item.data.dataUrl +' ")"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
-                            } else {
-                                html += '<li data-flag="true"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
-                            }
-                            child.forEach(function (val) {
-                                html += '<li><div><span>'+ val.text +'</span></div></li>';
+                    item.children.forEach(function (item) {// 遍历二级菜单
+                        if (Boolean(item.children)) {// 如果二级菜单有子菜单
+                            html += '<li data-flag="true"><div><span>'+ item.text +'</span><i class="fa fa-angle-right"></i></div><ul>';
+                            item.children.forEach(function (item) {// 遍历三级菜单
+                                html += '<li onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\"><div><span>'+ item.text +'</span></div></li>';
                             })
                             html += '</ul></li>';
-
                         }
                         else{
-                            html += '<li><div><span>'+ item.text +'</span></div></li>';
+                            html += '<li onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\"><div><span>'+ item.text +"</span></div></li>";
                         }
 
                     })
@@ -112,7 +106,7 @@
                 })// leave
 
                 _item.click(function () {
-                    if (_item.attr('data-flag') === 'true') {return};
+                    if (_item.attr('data-flag') === 'true') {return};// 如果有三级菜单，
                     $(this).parents('.panel').siblings('.panel').each(function (inx, itm) {
                         $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col')
                     })

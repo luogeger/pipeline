@@ -24,7 +24,7 @@ var data = {
                     "children": null,
                     "data": {
                         "createTime": "2017-3-14",
-                        "dataUrl": "/expectSignSumReport",
+                        "dataUrl": "analyze/one.html",
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
@@ -41,7 +41,7 @@ var data = {
                     "children": null,
                     "data": {
                         "createTime": "2017-3-14",
-                        "dataUrl": "/expectSignSumReport",
+                        "dataUrl": "analyze/two.html",
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
@@ -58,7 +58,7 @@ var data = {
                     "children": null,
                     "data": {
                         "createTime": "2017-3-14",
-                        "dataUrl": "/expectSignSumReport",
+                        "dataUrl": "analyze/three.html",
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
@@ -75,7 +75,7 @@ var data = {
                     "children": null,
                     "data": {
                         "createTime": "2017-3-14",
-                        "dataUrl": "/expectSignSumReport",
+                        "dataUrl": "analyze/four.html",
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
@@ -162,7 +162,7 @@ var data = {
                     "children": null,
                     "data": {
                         "createTime": "2017-3-14",
-                        "dataUrl": "/halfAnalysis",
+                        "dataUrl": "analyze/four.html",
                         "id": 3,
                         "menuClass": "none",
                         "menuCode": "halfAnalysis",
@@ -181,192 +181,52 @@ var data = {
                             "children": null,
                             "data": {
                                 "createTime": "2017-3-14",
-                                "dataUrl": "/regionAnalysis",
+                                "dataUrl": "analyze/one.html",
                                 "id": 4,
                                 "menuClass": "none",
                                 "menuCode": "regionAnalysis",
-                                "menuName": "签约三级菜单。。。",
+                                "menuName": "签约三级菜单 -1",
                                 "menuType": "1",
                                 "parentMenuCode": "halfAnalysis"
                             },
                             "id": "regionAnalysis",
                             "leaf": true,
                             "parentId": "halfAnalysis",
-                            "text": "签约三级菜单。。。"
+                            "text": "签约三级菜单 -1"
                         },
                         {
-                            "children": [
-                                {
-                                    "children": [
-                                        {
-                                            "children": null,
-                                            "data": {
-                                                "createTime": "2017-3-14",
-                                                "dataUrl": "/regionAnalysis",
-                                                "id": 4,
-                                                "menuClass": "none",
-                                                "menuCode": "regionAnalysis",
-                                                "menuName": "区域分析",
-                                                "menuType": "1",
-                                                "parentMenuCode": "halfAnalysis"
-                                            },
-                                            "id": "regionAnalysis",
-                                            "leaf": true,
-                                            "parentId": "halfAnalysis",
-                                            "text": "区域分析"
-                                        },
-                                        {
-                                            "children": null,
-                                            "data": {
-                                                "createTime": "2017-3-14",
-                                                "dataUrl": "/soSolutionAnalysis",
-                                                "id": 5,
-                                                "menuClass": "none",
-                                                "menuCode": "soSolutionAnalysis",
-                                                "menuName": "解决方案签约分析",
-                                                "menuType": "1",
-                                                "parentMenuCode": "halfAnalysis"
-                                            },
-                                            "id": "soSolutionAnalysis",
-                                            "leaf": true,
-                                            "parentId": "halfAnalysis",
-                                            "text": "解决方案签约分析"
-                                        }
-                                    ],
-                                    "data": {
-                                        "createTime": "2017-3-14",
-                                        "dataUrl": "/halfAnalysis",
-                                        "id": 3,
-                                        "menuClass": "none",
-                                        "menuCode": "halfAnalysis",
-                                        "menuName": "年中(终)分析",
-                                        "menuType": "1",
-                                        "parentMenuCode": "pipelineAnalysis"
-                                    },
-                                    "id": "halfAnalysis",
-                                    "leaf": false,
-                                    "parentId": "pipelineAnalysis",
-                                    "text": "年中(终)分析"
-                                },
-                                {
-                                    "children": null,
-                                    "data": {
-                                        "createTime": "2017-3-14",
-                                        "dataUrl": "/expectSignSumReport",
-                                        "id": 6,
-                                        "menuClass": "none",
-                                        "menuCode": "expectSignSumReport",
-                                        "menuName": "签约额统计汇总",
-                                        "menuType": "1",
-                                        "parentMenuCode": "pipelineAnalysis"
-                                    },
-                                    "id": "expectSignSumReport",
-                                    "leaf": true,
-                                    "parentId": "pipelineAnalysis",
-                                    "text": "签约额统计汇总"
-                                }
-                            ],
+                            "children": null,
                             "data": {
                                 "createTime": "2017-3-14",
-                                "dataUrl": "/soSolutionAnalysis",
+                                "dataUrl": "analyze/two.html",
                                 "id": 5,
                                 "menuClass": "none",
                                 "menuCode": "soSolutionAnalysis",
-                                "menuName": "签约三级菜单。。。",
+                                "menuName": "签约三级菜单 -2",
                                 "menuType": "1",
                                 "parentMenuCode": "halfAnalysis"
                             },
                             "id": "soSolutionAnalysis",
                             "leaf": true,
                             "parentId": "halfAnalysis",
-                            "text": "签约三级菜单。。。"
+                            "text": "签约三级菜单 -2"
                         },
                         {
-                            "children": [
-                                {
-                                    "children": [
-                                        {
-                                            "children": null,
-                                            "data": {
-                                                "createTime": "2017-3-14",
-                                                "dataUrl": "/regionAnalysis",
-                                                "id": 4,
-                                                "menuClass": "none",
-                                                "menuCode": "regionAnalysis",
-                                                "menuName": "区域分析",
-                                                "menuType": "1",
-                                                "parentMenuCode": "halfAnalysis"
-                                            },
-                                            "id": "regionAnalysis",
-                                            "leaf": true,
-                                            "parentId": "halfAnalysis",
-                                            "text": "区域分析"
-                                        },
-                                        {
-                                            "children": null,
-                                            "data": {
-                                                "createTime": "2017-3-14",
-                                                "dataUrl": "/soSolutionAnalysis",
-                                                "id": 5,
-                                                "menuClass": "none",
-                                                "menuCode": "soSolutionAnalysis",
-                                                "menuName": "解决方案签约分析",
-                                                "menuType": "1",
-                                                "parentMenuCode": "halfAnalysis"
-                                            },
-                                            "id": "soSolutionAnalysis",
-                                            "leaf": true,
-                                            "parentId": "halfAnalysis",
-                                            "text": "解决方案签约分析"
-                                        }
-                                    ],
-                                    "data": {
-                                        "createTime": "2017-3-14",
-                                        "dataUrl": "/halfAnalysis",
-                                        "id": 3,
-                                        "menuClass": "none",
-                                        "menuCode": "halfAnalysis",
-                                        "menuName": "年中(终)分析",
-                                        "menuType": "1",
-                                        "parentMenuCode": "pipelineAnalysis"
-                                    },
-                                    "id": "halfAnalysis",
-                                    "leaf": false,
-                                    "parentId": "pipelineAnalysis",
-                                    "text": "年中(终)分析"
-                                },
-                                {
-                                    "children": null,
-                                    "data": {
-                                        "createTime": "2017-3-14",
-                                        "dataUrl": "/expectSignSumReport",
-                                        "id": 6,
-                                        "menuClass": "none",
-                                        "menuCode": "expectSignSumReport",
-                                        "menuName": "签约额统计汇总",
-                                        "menuType": "1",
-                                        "parentMenuCode": "pipelineAnalysis"
-                                    },
-                                    "id": "expectSignSumReport",
-                                    "leaf": true,
-                                    "parentId": "pipelineAnalysis",
-                                    "text": "签约额统计汇总"
-                                }
-                            ],
+                            "children": null,
                             "data": {
                                 "createTime": "2017-3-14",
-                                "dataUrl": "/soSolutionAnalysis",
+                                "dataUrl": "analyze/three.html",
                                 "id": 5,
                                 "menuClass": "none",
                                 "menuCode": "soSolutionAnalysis",
-                                "menuName": "签约三级菜单。。。",
+                                "menuName": "签约三级菜单 -3",
                                 "menuType": "1",
                                 "parentMenuCode": "halfAnalysis"
                             },
                             "id": "soSolutionAnalysis",
                             "leaf": true,
                             "parentId": "halfAnalysis",
-                            "text": "签约三级菜单。。。"
+                            "text": "签约三级菜单 -3"
                         }
                     ],
                     "data": {
@@ -387,7 +247,7 @@ var data = {
             ],
             "data": {
                 "createTime": "2017-3-14",
-                "dataUrl": "/pipelineMng",
+                "dataUrl": "/test-test",
                 "id": 1,
                 "menuClass": "fa fa-user-circle-o",
                 "menuCode": "pipelineMng",
