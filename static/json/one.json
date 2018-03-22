@@ -1,0 +1,148 @@
+{
+    "code": 200,
+    "msg": {
+        "h1": {
+            "half": [
+                {
+                    "complete": 19325,
+                    "difference": 2500,
+                    "saleGroup": "金融客户事业部",
+                    "scale": "29",
+                    "target": 18203
+                },
+                {
+                    "complete": 23438,
+                    "difference": 2500,
+                    "saleGroup": "通用客户事业部",
+                    "scale": "29",
+                    "target": 23489
+                },
+                {
+                    "complete": 31000,
+                    "difference": 2500,
+                    "saleGroup": "行业客户事业部",
+                    "scale": "29",
+                    "target": 29034
+                },
+                {
+                    "complete": 121594,
+                    "difference": 2500,
+                    "saleGroup": "港台客户事业部",
+                    "scale": "29",
+                    "target": 104970
+                },
+                {
+                    "complete": 134141,
+                    "difference": 2500,
+                    "saleGroup": "公共客户事业部",
+                    "scale": "29",
+                    "target": 131744
+                }
+            ],
+            "quarter": {
+                "q1": [
+                    {
+                        "complete": 200,
+                        "difference": 100,
+                        "m1Complete": 20,
+                        "m1Target": 100,
+                        "m2Complete": 20,
+                        "m2Target": 100,
+                        "m3Complete": 30,
+                        "m3Target": 100,
+                        "saleGroup": "金融客户事业部",
+                        "scale": 10,
+                        "target": 800
+                    }
+                ],
+                "q2": [
+                    {
+                        "complete": 200,
+                        "difference": 100,
+                        "m4Complete": 20,
+                        "m4Target": 100,
+                        "m5Complete": 20,
+                        "m5Target": 100,
+                        "m6Complete": 30,
+                        "m6Target": 100,
+                        "saleGroup": "金融客户事业部",
+                        "scale": 10,
+                        "target": 800
+                    }
+                ]
+            }
+        },
+        "h2": {
+            "half": [
+                {
+                    "complete": 1000,
+                    "difference": 2500,
+                    "saleGroup": "金融客户事业部",
+                    "scale": "29",
+                    "target": 3500
+                },
+                {
+                    "complete": 1000,
+                    "difference": 2500,
+                    "saleGroup": "通用客户事业部",
+                    "scale": "29",
+                    "target": 3500
+                },
+                {
+                    "complete": 1000,
+                    "difference": 2500,
+                    "saleGroup": "行业客户事业部",
+                    "scale": "29",
+                    "target": 3500
+                },
+                {
+                    "complete": 1000,
+                    "difference": 2500,
+                    "saleGroup": "港台客户事业部",
+                    "scale": "29",
+                    "target": 3500
+                },
+                {
+                    "complete": 1000,
+                    "difference": 2500,
+                    "saleGroup": "公共客户事业部",
+                    "scale": "29",
+                    "target": 3500
+                }
+            ],
+            "quarter": {
+                "q3": [
+                    {
+                        "complete": 200,
+                        "difference": 100,
+                        "m7Complete": 20,
+                        "m7Target": 100,
+                        "m8Complete": 20,
+                        "m8Target": 100,
+                        "m9Complete": 30,
+                        "m9Target": 100,
+                        "saleGroup": "金融客户事业部",
+                        "scale": 10,
+                        "target": 800
+                    }
+                ],
+                "q4": [
+                    {
+                        "complete": 200,
+                        "difference": 100,
+                        "m10Complete": 20,
+                        "m10Target": 100,
+                        "m11Complete": 20,
+                        "m11Target": 100,
+                        "m12Complete": 30,
+                        "m12Target": 100,
+                        "saleGroup": "金融客户事业部",
+                        "scale": 10,
+                        "target": 800
+                    }
+                ]
+            }
+        }
+    },
+    "success": true
+}
