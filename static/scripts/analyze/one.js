@@ -6,25 +6,25 @@ var data = {
     yAxis: [],
     sTarget: [],
     sComplete: [],
+    yearTbale: '',
 };
-
-
 $.getJSON('../static/json/one.json', function (results) {
     data.results = results.msg;
 });
 
 
-
+//  =========================================================
 objFn = {
     settleData: function (results) {
-        data.yAxis.splice(0, data.yAxis.length);
-        data.sTarget.splice(0, data.sTarget.length);
-        data.sComplete.splice(0, data.sComplete.length);
+        data.yAxis.splice(0, data.yAxis.length);// 清空之前数组
+        data.sTarget.splice(0, data.sTarget.length);// 清空之前数组
+        data.sComplete.splice(0, data.sComplete.length);// 清空之前数组
         results.half.forEach(function (p1) {
             data.yAxis.push(p1.saleGroup)
             data.sTarget.push(p1.target)
             data.sComplete.push(p1.complete)
         });
+        data.yearTbale = results.half;
     },
 
     half: function (datas) {
@@ -92,9 +92,17 @@ objFn = {
     }
 };// objFn
 
+
+//  =========================================================
 // == init
 objFn.settleData(data.results.h1);
 objFn.half(data);
+var yearTable = new Vue({
+    el: '#yearTable',
+    data: {
+        list: data.yearTbale,
+    }
+});
 
 // == 上半年
 $('#yearHalfFirst').click(function () {
@@ -102,7 +110,8 @@ $('#yearHalfFirst').click(function () {
     objFn.half(data);
     $('#yearHalfLast').removeClass('year-half-active');
     $(this).addClass('year-half-active');
-})
+    yearTable.list = data.yearTbale;
+});
 
 
 // == 下半年
@@ -111,4 +120,8 @@ $('#yearHalfLast').click(function () {
     objFn.half(data);
     $('#yearHalfFirst').removeClass('year-half-active');
     $(this).addClass('year-half-active');
-})
+    yearTable.list = data.yearTbale;
+});
+
+
+

@@ -7,35 +7,35 @@
                     "complete": 19325,
                     "difference": 2500,
                     "saleGroup": "金融客户事业部",
-                    "scale": "29",
+                    "scale": "19",
                     "target": 18203
                 },
                 {
                     "complete": 23438,
                     "difference": 2500,
                     "saleGroup": "通用客户事业部",
-                    "scale": "29",
+                    "scale": "19",
                     "target": 23489
                 },
                 {
                     "complete": 31000,
                     "difference": 2500,
                     "saleGroup": "行业客户事业部",
-                    "scale": "29",
+                    "scale": "19",
                     "target": 29034
                 },
                 {
                     "complete": 121594,
                     "difference": 2500,
                     "saleGroup": "港台客户事业部",
-                    "scale": "29",
+                    "scale": "19",
                     "target": 104970
                 },
                 {
                     "complete": 134141,
                     "difference": 2500,
                     "saleGroup": "公共客户事业部",
-                    "scale": "29",
+                    "scale": "19",
                     "target": 131744
                 }
             ],
@@ -99,13 +99,6 @@
                     "complete": 1000,
                     "difference": 2500,
                     "saleGroup": "港台客户事业部",
-                    "scale": "29",
-                    "target": 3500
-                },
-                {
-                    "complete": 1000,
-                    "difference": 2500,
-                    "saleGroup": "公共客户事业部",
                     "scale": "29",
                     "target": 3500
                 }
