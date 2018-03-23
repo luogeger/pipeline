@@ -53,6 +53,19 @@
                         "saleGroup": "金融客户事业部",
                         "scale": 10,
                         "target": 800
+                    },
+                    {
+                        "complete": 200,
+                        "difference": 100,
+                        "m1Complete": 20,
+                        "m1Target": 100,
+                        "m2Complete": 20,
+                        "m2Target": 100,
+                        "m3Complete": 30,
+                        "m3Target": 100,
+                        "saleGroup": "行业客户事业部",
+                        "scale": 10,
+                        "target": 800
                     }
                 ],
                 "q2": [
@@ -66,6 +79,19 @@
                         "m6Complete": 30,
                         "m6Target": 100,
                         "saleGroup": "金融客户事业部",
+                        "scale": 10,
+                        "target": 800
+                    },
+                    {
+                        "complete": 200,
+                        "difference": 100,
+                        "m1Complete": 20,
+                        "m1Target": 100,
+                        "m2Complete": 20,
+                        "m2Target": 100,
+                        "m3Complete": 30,
+                        "m3Target": 100,
+                        "saleGroup": "港台客户事业部",
                         "scale": 10,
                         "target": 800
                     }
@@ -116,22 +142,8 @@
                         "m9Target": 100,
                         "saleGroup": "金融客户事业部",
                         "scale": 10,
-                        "target": 800
-                    }
-                ],
-                "q4": [
-                    {
-                        "complete": 200,
-                        "difference": 100,
-                        "m10Complete": 20,
-                        "m10Target": 100,
-                        "m11Complete": 20,
-                        "m11Target": 100,
-                        "m12Complete": 30,
-                        "m12Target": 100,
-                        "saleGroup": "金融客户事业部",
-                        "scale": 10,
-                        "target": 800
+                        "target": 800,
+                        "current": 1
                     }
                 ]
             }

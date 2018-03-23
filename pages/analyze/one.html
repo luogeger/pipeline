@@ -36,18 +36,18 @@
             </div>
         </div><!-- /.year-opera -->
         <div class="year-chart">
-            <div id="halfYearChart" style="width: 100%; height: 400px;"></div>
+            <div id="halfYearChart" style="width: 99%; height: 400px;"></div>
         </div><!-- /.year-chart -->
         <div class="year-table" id="yearTable">
-            <h5 style="margin: 5px;">(单位：万元)</h5>
+            <h5 style="padding: 5px;">(单位：万元)</h5>
             <table class="i-table i-table-border">
                 <thead>
                     <tr>
-                        <th>事业部</th>
-                        <th>H1合同目标</th>
-                        <th>H1合同完成额</th>
-                        <th>H1目标差距</th>
-                        <th>完成占比(%)</th>
+                        <th>{{title.saleGroup}}</th>
+                        <th>{{title.target}}</th>
+                        <th>{{title.complete}}</th>
+                        <th>{{title.difference}}</th>
+                        <th>{{title.scale}}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -58,12 +58,59 @@
                         <td>{{item.difference}}</td>
                         <td>{{item.scale}}</td>
                     </tr>
+                    <tr>
+                        <td>合计</td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                    </tr>
                 </tbody>
             </table>
         </div><!-- /.year-table -->
     </div><!-- /.year -->
 
-    <div class="quarter" id="app">
+    <div class="quarter" id="quarterTable">
+        <h5 style="padding: 10px 0;">(单位：万元)</h5>
+        <!--<p v-for="(val, key, index) in obj">{{key}}&#45;&#45;{{val}}&#45;&#45;{{index}}</p>-->
+        <div class="quarter-list clearfix">
+            <div v-for="(val, key, index) in obj"
+                 :class="{active: key == isActive}"
+                 @click="Qevent(index)"
+                 class="quarter-item">{{key}}</div>
+        </div>
+        <table class="i-table i-table-border">
+            <thead>
+                <tr>
+                    <th>事业部</th>
+                    <th>Q1合同额目标</th>
+                    <th>Q1合同额完成</th>
+                    <th>Q1目标差距</th>
+                    <th>完成占比(%)</th>
+                    <th>1月目标额</th>
+                    <th>1月完成合同额</th>
+                    <th>2月目标额</th>
+                    <th>2月完成合同额</th>
+                    <th>3月目标额</th>
+                    <th>3月完成合同额</th>
+                </tr>
+            </thead>
+            <tobdy>
+                <tr v-for="item in list">
+                    <td>{{item.saleGroup}}</td>
+                    <td>{{item.target}}</td>
+                    <td>{{item.complete}}</td>
+                    <td>{{item.difference}}</td>
+                    <td>{{item.scale}}</td>
+                    <td>{{item.m1Target}}</td>
+                    <td>{{item.m1Complete}}</td>
+                    <td>{{item.m2Target}}</td>
+                    <td>{{item.m2Complete}}</td>
+                    <td>{{item.m3Target}}</td>
+                    <td>{{item.m3Complete}}</td>
+                </tr>
+            </tobdy>
+        </table>
     </div><!-- /.quarter -->
 </div><!-- /.main -->
 

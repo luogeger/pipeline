@@ -31,6 +31,54 @@
   }// year
 
   .quarter{
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #fff;
 
+    .quarter-list{
+      position: relative;
+      top: 1px;
+      left: 1px;
+
+      .quarter-item{
+        float: left;
+        line-height: 20px;
+        padding: 5px 20px;
+        border: 1px solid #E6E7E9;
+        border-bottom: none;
+        border-radius: 4px 4px 0 0;
+        transition: .2s;
+        cursor: pointer;
+        &:hover{
+          color: #ED6D00;
+        }
+      }
+
+      .quarter-item:not(:first-child){
+        margin-left: -1px;
+      }
+      .active{
+        border-color: #ED6D00;
+        background-color: #ED6D00;
+        color: #FFFFFF !important;
+        position: relative;
+        z-index: 1;
+      }
+
+
+    }
+
+    >table{
+      border: none;
+      tr{
+        border: 1px solid #DDDEE1;
+        border-top: none;
+      }
+      th{
+        tr{
+          border: none;
+        }
+      }
+    }
   }// quarter
 }// main
