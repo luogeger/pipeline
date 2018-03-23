@@ -35,11 +35,13 @@
                 </div>
             </div>
         </div><!-- /.year-opera -->
+
         <div class="year-chart">
             <div id="halfYearChart" style="width: 99%; height: 400px;"></div>
         </div><!-- /.year-chart -->
+
         <div class="year-table" id="yearTable">
-            <h5 style="padding: 5px;">(单位：万元)</h5>
+            <h5 style="padding: 10px 0;">(单位：万元)</h5>
             <table class="i-table i-table-border">
                 <thead>
                     <tr>
@@ -74,7 +76,7 @@
         <h5 style="padding: 10px 0;">(单位：万元)</h5>
         <!--<p v-for="(val, key, index) in obj">{{key}}&#45;&#45;{{val}}&#45;&#45;{{index}}</p>-->
         <div class="quarter-list clearfix">
-            <div v-for="(val, key, index) in obj"
+            <div v-for="(val, key, index) in Q"
                  :class="{active: key == isActive}"
                  @click="Qevent(index)"
                  class="quarter-item">{{key}}</div>
@@ -82,17 +84,17 @@
         <table class="i-table i-table-border">
             <thead>
                 <tr>
-                    <th>事业部</th>
-                    <th>Q1合同额目标</th>
-                    <th>Q1合同额完成</th>
-                    <th>Q1目标差距</th>
-                    <th>完成占比(%)</th>
-                    <th>1月目标额</th>
-                    <th>1月完成合同额</th>
-                    <th>2月目标额</th>
-                    <th>2月完成合同额</th>
-                    <th>3月目标额</th>
-                    <th>3月完成合同额</th>
+                    <th>{{head.saleGroup}}</th>
+                    <th>{{head.target}}</th>
+                    <th>{{head.complete}}</th>
+                    <th>{{head.difference}}</th>
+                    <th>{{head.scale}}</th>
+                    <th>{{head.m1Target}}</th>
+                    <th>{{head.m2Complete}}</th>
+                    <th>{{head.m2Target}}</th>
+                    <th>{{head.m2Complete}}</th>
+                    <th>{{head.m3Target}}</th>
+                    <th>{{head.m3Complete}}</th>
                 </tr>
             </thead>
             <tobdy>
@@ -108,6 +110,19 @@
                     <td>{{item.m2Complete}}</td>
                     <td>{{item.m3Target}}</td>
                     <td>{{item.m3Complete}}</td>
+                </tr>
+                <tr>
+                    <td>{{foot.saleGroup}}</td>
+                    <td>{{foot.target}}</td>
+                    <td>{{foot.complete}}</td>
+                    <td>{{foot.difference}}</td>
+                    <td>{{foot.scale}}</td>
+                    <td>{{foot.m1}}</td>
+                    <td>{{foot.c1}}</td>
+                    <td>{{foot.m2}}</td>
+                    <td>{{foot.c2}}</td>
+                    <td>{{foot.m3}}</td>
+                    <td>{{foot.c3}}</td>
                 </tr>
             </tobdy>
         </table>

@@ -45,14 +45,13 @@ var data = {
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
-                        "menuName": "加权平均额 周期对比",
                         "menuType": "1",
                         "parentMenuCode": "pipelineAnalysis"
                     },
                     "id": "expectSignSumReport",
                     "leaf": true,
                     "parentId": "pipelineAnalysis",
-                    "text": "加权平均额 周期对比"
+                    "text": "加权平均额  周期对比"
                 },
                 {
                     "children": null,
@@ -62,14 +61,13 @@ var data = {
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
-                        "menuName": "解决方案 加权平均额情况",
                         "menuType": "1",
                         "parentMenuCode": "pipelineAnalysis"
                     },
                     "id": "expectSignSumReport",
                     "leaf": true,
                     "parentId": "pipelineAnalysis",
-                    "text": "解决方案 加权平均额情况"
+                    "text": "加权平均额    解决方案"
                 },
                 {
                     "children": null,
@@ -131,7 +129,6 @@ var data = {
                         "id": 3,
                         "menuClass": "none",
                         "menuCode": "halfAnalysis",
-                        "menuName": "年中(终)分析",
                         "menuType": "1",
                         "parentMenuCode": "pipelineAnalysis"
                     },

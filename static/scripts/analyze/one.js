@@ -20,14 +20,20 @@ var data = {
             foot: {}
         }
     },
-    yearTitle: {},
-    yearTable: {},
-    yearTotal: {},
-    quarterTable: {
-        Q1: [],
-        Q2: [],
-        Q3: [],
-        Q4: [],
+    quarter: {
+        Q1: {
+
+        },
+        Q2: {
+
+        },
+        Q3: {
+
+        },
+        Q4: {
+
+        },
+
     },
 };
 
@@ -44,10 +50,6 @@ objFn = {
         try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
         m=Math.pow(10,Math.max(r1,r2))
         return (arg1*m+arg2*m)/m
-
-    },
-
-    stringCalc: function () {
 
     },
 
@@ -89,8 +91,6 @@ objFn = {
                 //s += arr[i];
                 if (typeof arr[i] == 'string') {
                     arr[i] = arr[i].substring(0, arr[i].length -1);
-                    //arr[i] = Number(arr[i]);
-                    console.log(arr[i])
                     s = objFn.floatCalc(s, arr[i]);
                 } else{
                     s = objFn.floatCalc(s, arr[i]);
@@ -103,7 +103,7 @@ objFn = {
             return s;
         };
 
-        var yearTableTotal = {
+        data.year[H].foot = {
             saleGroup: '合计',
             target: sum(target),
             complete: sum(complete),
@@ -111,32 +111,65 @@ objFn = {
             scale: sum(scale),
         };
 
-        data.year[H].foot = yearTableTotal;
+
 
 
 
 
 
         //  ==  季度数据
-        // if (data.results.h1.quarter.q1)
-        //     data.results.h1.quarter.q1.forEach(function (p1, p2, p3) {
-        //     data.quarterTable.Q1.push(p1)
-        // });
-        // if (data.results.h1.quarter.q2)
-        //     data.results.h1.quarter.q2.forEach(function (p1, p2, p3) {
-        //     data.quarterTable.Q2.push(p1)
-        // });
-        // if (data.results.h2.quarter.q3)
-        //     data.results.h2.quarter.q3.forEach(function (p1, p2, p3) {
-        //     data.quarterTable.Q3.push(p1)
-        // });
-        //
-        // if (data.results.h2.quarter.q4)
-        //     data.results.h2.quarter.q4.forEach(function (p1, p2, p3) {
-        //     data.quarterTable.Q4.push(p1)
-        // });
+        function Qsum (arr) {
+            var target = [], complete = [], difference = [], scale = [],
+                m1 = [], m2 =[], m3 =[], c1 =[], c2 =[], c3 = [];
+            arr.body.forEach(function (p1) {
+                target.push(p1.target);
+                complete.push(p1.complete);
+                difference.push(p1.difference);
+                scale.push(p1.scale);
+                m1.push(p1.m1Target);
+                m2.push(p1.m2Target);
+                m3.push(p1.m3Target);
+                c1.push(p1.m1Complete);
+                c2.push(p1.m2Complete);
+                c3.push(p1.m3Complete);
+            });
+            arr.foot = {
+                saleGroup: '合计',
+                target: sum(target),
+                complete: sum(complete),
+                difference: sum(difference),
+                scale: sum(scale),
+                m1: sum(m1),
+                m2: sum(m2),
+                m3: sum(m3),
+                c1: sum(c1),
+                c2: sum(c2),
+                c3: sum(c3),
+            }
 
 
+        };// Qsum
+        if (data.results.h1.quarter.q1) {
+            data.quarter.Q1.head = data.results.h1.quarter.q1Title;
+            data.quarter.Q1.body = data.results.h1.quarter.q1;
+            Qsum (data.quarter.Q1);
+        }
+        if (data.results.h1.quarter.q2) {
+            data.quarter.Q2.head = data.results.h1.quarter.q2Title;
+            data.quarter.Q2.body = data.results.h1.quarter.q2;
+            Qsum (data.quarter.Q2);
+        }
+        if (data.results.h2.quarter.q3) {
+            data.quarter.Q3.head = data.results.h2.quarter.q3Title;
+            data.quarter.Q3.body = data.results.h2.quarter.q3;
+            Qsum (data.quarter.Q3);
+        }
+        if (data.results.h2.quarter.q4) {
+            data.quarter.Q4.head = data.results.h2.quarter.q4Title;
+            data.quarter.Q4.body = data.results.h2.quarter.q4;
+            Qsum (data.quarter.Q4);
+        }
+        console.log(data.quarter)
         // var keyQ;
         // for(key in data.quarterTable){
         //     if (data.quarterTable[key].length === 0) {
@@ -227,21 +260,27 @@ var yearTable = new Vue({
 });
 
 // == 季度表格
-// var quarterTable = new Vue({
-//     el: '#quarterTable',
-//     data: {
-//         list: data.quarterTable.Q1,
-//         isActive: 'Q2',
-//         obj: data.quarterTable,
-//     },
-//     methods: {
-//         Qevent: function (index) {
-//             var _key = 'Q' + (index + 1);
-//             this.isActive = _key;
-//             this.list = data.quarterTable[_key];
-//         }
-//     }
-// });
+var quarterTable = new Vue({
+    el: '#quarterTable',
+    data: {
+        Q: data.quarter,
+        head: data.quarter.Q1.head,
+        list: data.quarter.Q1.body,
+        foot: data.quarter.Q1.foot,
+        isActive: 'Q1',
+
+    },
+    methods: {
+        Qevent: function (index) {
+            var _key = 'Q' + (index + 1);
+            this.isActive = _key;
+
+            this.head = data.quarter[_key].head;
+            this.list = data.quarter[_key].body;
+            this.foot = data.quarter[_key].foot;
+        }
+    }
+});
 
 // == 上半年
 $('#yearHalfFirst').click(function () {
