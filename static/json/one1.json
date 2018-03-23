@@ -2,33 +2,26 @@
     "code": 200,
     "msg": {
         "h1": {
-            "title": {
-                "complete": "H1合同额完成",
-                "difference": "H1目标差距",
-                "saleGroup": "事业部",
-                "scale": "完成占比(%s)",
-                "target": "H1合同额目标"
-            },
             "half": [
                 {
                     "complete": 0.0,
                     "difference": -21000.0,
                     "saleGroup": "公共客户事业部",
-                    "scale": "0",
+                    "scale": "0%",
                     "target": 21000.0
                 },
                 {
                     "complete": 33620.42,
                     "difference": 12620.419999999998,
                     "saleGroup": "港台海外事业部",
-                    "scale": "160",
+                    "scale": "160%",
                     "target": 21000.0
                 },
                 {
                     "complete": 168102.09999999998,
                     "difference": 147102.09999999998,
                     "saleGroup": "金融客户事业部",
-                    "scale": "800",
+                    "scale": "800%",
                     "target": 21000.0
                 }
             ],
@@ -143,15 +136,14 @@
                 }
             }
         },
-
+        "h1Title": {
+            "complete": "H1合同额完成",
+            "difference": "H1目标差距",
+            "saleGroup": "事业部",
+            "scale": "完成占比(%s)",
+            "target": "H1合同额目标"
+        },
         "h2": {
-            "title": {
-                "complete": "H2合同额完成",
-                "difference": "H2目标差距",
-                "saleGroup": "事业部",
-                "scale": "完成占比(%s)",
-                "target": "H2合同额目标"
-            },
             "half": [
                 {
                     "complete": 0.0,
@@ -285,6 +277,13 @@
                     "target": "Q4合同额目标"
                 }
             }
+        },
+        "h2Title": {
+            "complete": "H2合同额完成",
+            "difference": "H2目标差距",
+            "saleGroup": "事业部",
+            "scale": "完成占比(%)",
+            "target": "H2合同额目标"
         }
     },
     "success": true
