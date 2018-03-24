@@ -19,6 +19,22 @@ var data = {
             "text": "Pipeline管理"
         },
         {
+            "children": null,
+            "data": {
+                "createTime": "2017-3-14",
+                "dataUrl": "client/client.html",
+                "id": 1,
+                "menuClass": "fa fa-user-circle-o",
+                "menuCode": "pipelineMng",
+                "menuType": "1",
+                "parentMenuCode": "0"
+            },
+            "id": "pipelineMng",
+            "leaf": true,
+            "parentId": "0",
+            "text": "客户管理",
+        },
+        {
             "children": [
                 {
                     "children": null,
@@ -77,7 +93,6 @@ var data = {
                         "id": 6,
                         "menuClass": "none",
                         "menuCode": "expectSignSumReport",
-                        "menuName": "销售合同额完成情况",
                         "menuType": "1",
                         "parentMenuCode": "pipelineAnalysis"
                     },
@@ -96,7 +111,6 @@ var data = {
                                 "id": 4,
                                 "menuClass": "none",
                                 "menuCode": "regionAnalysis",
-                                "menuName": "签约额统计汇总",
                                 "menuType": "1",
                                 "parentMenuCode": "halfAnalysis"
                             },
@@ -113,7 +127,6 @@ var data = {
                                 "id": 5,
                                 "menuClass": "none",
                                 "menuCode": "soSolutionAnalysis",
-                                "menuName": "解决方案签约分析",
                                 "menuType": "1",
                                 "parentMenuCode": "halfAnalysis"
                             },
@@ -135,7 +148,7 @@ var data = {
                     "id": "halfAnalysis",
                     "leaf": false,
                     "parentId": "pipelineAnalysis",
-                    "text": "测试菜单二级导航"
+                    "text": "测试----------"
                 },
             ],
             "data": {
@@ -153,114 +166,11 @@ var data = {
             "parentId": "0",
             "text": "Pipeline分析"
         },
-        {
-            "children": [
-                {
-                    "children": null,
-                    "data": {
-                        "createTime": "2017-3-14",
-                        "dataUrl": "analyze/four.html",
-                        "id": 3,
-                        "menuClass": "none",
-                        "menuCode": "halfAnalysis",
-                        "menuName": "分析测试项目...",
-                        "menuType": "1",
-                        "parentMenuCode": "pipelineAnalysis"
-                    },
-                    "id": "halfAnalysis",
-                    "leaf": false,
-                    "parentId": "pipelineAnalysis",
-                    "text": "分析测试项目..."
-                },
-                {
-                    "children": [
-                        {
-                            "children": null,
-                            "data": {
-                                "createTime": "2017-3-14",
-                                "dataUrl": "analyze/one.html",
-                                "id": 4,
-                                "menuClass": "none",
-                                "menuCode": "regionAnalysis",
-                                "menuName": "签约三级菜单 -1",
-                                "menuType": "1",
-                                "parentMenuCode": "halfAnalysis"
-                            },
-                            "id": "regionAnalysis",
-                            "leaf": true,
-                            "parentId": "halfAnalysis",
-                            "text": "签约三级菜单 -1"
-                        },
-                        {
-                            "children": null,
-                            "data": {
-                                "createTime": "2017-3-14",
-                                "dataUrl": "analyze/two.html",
-                                "id": 5,
-                                "menuClass": "none",
-                                "menuCode": "soSolutionAnalysis",
-                                "menuName": "签约三级菜单 -2",
-                                "menuType": "1",
-                                "parentMenuCode": "halfAnalysis"
-                            },
-                            "id": "soSolutionAnalysis",
-                            "leaf": true,
-                            "parentId": "halfAnalysis",
-                            "text": "签约三级菜单 -2"
-                        },
-                        {
-                            "children": null,
-                            "data": {
-                                "createTime": "2017-3-14",
-                                "dataUrl": "analyze/three.html",
-                                "id": 5,
-                                "menuClass": "none",
-                                "menuCode": "soSolutionAnalysis",
-                                "menuName": "签约三级菜单 -3",
-                                "menuType": "1",
-                                "parentMenuCode": "halfAnalysis"
-                            },
-                            "id": "soSolutionAnalysis",
-                            "leaf": true,
-                            "parentId": "halfAnalysis",
-                            "text": "签约三级菜单 -3"
-                        }
-                    ],
-                    "data": {
-                        "createTime": "2017-3-14",
-                        "dataUrl": "/expectSignSumReport",
-                        "id": 6,
-                        "menuClass": "none",
-                        "menuCode": "expectSignSumReport",
-                        "menuName": "签约测试项目...",
-                        "menuType": "1",
-                        "parentMenuCode": "pipelineAnalysis"
-                    },
-                    "id": "expectSignSumReport",
-                    "leaf": true,
-                    "parentId": "pipelineAnalysis",
-                    "text": "签约测试项目..."
-                }
-            ],
-            "data": {
-                "createTime": "2017-3-14",
-                "dataUrl": "/test-test",
-                "id": 1,
-                "menuClass": "fa fa-user-circle-o",
-                "menuCode": "pipelineMng",
-                "menuName": "测试菜单导航",
-                "menuType": "1",
-                "parentMenuCode": "0"
-            },
-            "id": "pipelineMng",
-            "leaf": true,
-            "parentId": "0",
-            "text": "测试菜单导航",
-        },
     ],
     "success": true
 };
 
 $('.nav-top-panels').iTopNav(data.msg);
 
-loadMainPage('.content-item', 'analyze/one.html');
+// loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'client/client.html');

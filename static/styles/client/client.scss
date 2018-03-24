@@ -1,0 +1,38 @@
+.main{
+  .opera,
+  .client,
+  .client-msg{
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #fff;
+  }
+
+
+  .opera{
+    height: 30px;
+
+    .industry{
+
+    }// industry
+
+    .client-num{
+
+    }// client-num
+
+    .client-name{
+
+    }// client-name
+
+    .query-reset{
+
+    }// query-rest
+  }// opera
+
+  .client{
+    height: 400px;
+  }// client
+
+  .client-msg{
+    height: 400px;
+  }// client-msg
+}// main
