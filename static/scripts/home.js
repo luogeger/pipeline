@@ -1,3 +1,5 @@
+var time = '2018';
+var url = '';
 var data = {
     "code": 200,
     "msg": [

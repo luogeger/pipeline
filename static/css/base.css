@@ -547,7 +547,7 @@ input.disabled {
     font-size: 12px;
     line-height: 1.4; }
     .i-table tbody tr {
-      border-bottom: 1px solid #DDDEE1; }
+      border: 1px solid #DDDEE1; }
       .i-table tbody tr td {
         padding: 5px; }
       .i-table tbody tr:hover {
@@ -555,8 +555,6 @@ input.disabled {
 
 .i-table-border {
   border: 1px solid #DDDEE1; }
-  .i-table-border tbody tr:last-child {
-    border: none; }
 
 .i-table-striped tbody tr:nth-child(odd) {
   background-color: #f9f9f9; }
@@ -2777,5 +2775,31 @@ button.toast-close-button {
     color: #333; }
   .breadcrumb .line {
     margin: 0 6px; }
+
+.page-css div, .page-css span {
+  display: inline-block;
+  vertical-align: middle; }
+.page-css div, .page-css input {
+  width: 30px;
+  height: 30px; }
+.page-css div {
+  border: 1px solid #DDDEE1;
+  border-radius: 4px;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
+  transition: 0.2s all ease-in-out; }
+  .page-css div:hover {
+    border-color: #FF8A41; }
+    .page-css div:hover i {
+      color: #FF8A41; }
+  .page-css div i {
+    transition: 0.2s all ease-in-out;
+    font-size: 20px;
+    color: #595959; }
+.page-css input {
+  font-size: 14px;
+  text-align: center;
+  padding: 0; }
 
 /*# sourceMappingURL=base.css.map */

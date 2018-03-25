@@ -7,27 +7,152 @@
         <span>客户管理</span>
     </div><!-- /.breadcrumb-->
 
-    <div class="opera">
+    <div class="opera clearfix">
         <div class="industry">
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">行业:</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">请选择--</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li v-for="item in industry">{{item.text}}</li>
 
+                    </ul>
+                </div>
+            </div>
         </div>
+
         <div class="client-num">
-
+            <div class="input-group">
+                <span class="input-group-label">客户编号:</span>
+                <input type="text" class="input-group-form">
+            </div>
         </div>
+
         <div class="client-name">
-
+            <div class="input-group">
+                <span class="input-group-label">客户名称:</span>
+                <input type="text" class="input-group-form">
+            </div>
         </div>
-        <div class="query-reset">
 
+        <div class="query-reset pull-right">
+            <div class="btn btn-theme" style="margin-right: 20px;">查询</div>
+            <div class="btn btn-border pull-right">重置</div>
         </div>
     </div><!-- /.opera -->
 
     <div class="client">
-
+        <div class="table-opera clearfix">
+            <div class="pull-left">
+                <div class="btn btn-theme">
+                    <i class="fa fa-plus"></i>
+                    <span>添加客户</span>
+                </div>
+            </div>
+            <div class="pull-right">
+                <div class="client-page page-css">
+                    <div @click="calcPage('client' , 'first')"
+                         class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+                    <div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
+                            class="fa fa-angle-left"></i></div>
+                    <span>第</span><input type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
+                    <span>共 {{clientPageTotal}} 页，</span>
+                    <div @click="calcPage('client' , 1)"
+                         class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                    <div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                            class="fa fa-angle-double-right"></i></div>
+                    <span>显示</span>
+                    <span style="margin-left: 5px;">{{clientPageStart}}</span>
+                    <span>-</span>
+                    <span style="margin-right: 5px;">{{clientPageEnd}}</span>
+                    <span>条，</span>
+                    <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
+                </div>
+            </div>
+        </div>
+        <table class="i-table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>报备名称</th>
+                    <th>所属事业部</th>
+                    <th>客户所在省份</th>
+                    <th>客户编号</th>
+                    <th>客户名称</th>
+                    <th>行业线</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item ,index) in client.root">
+                    <td>{{index +1}}</td>
+                    <td>{{item.reportDate}}</td>
+                    <td>{{item.salesGroup}}</td>
+                    <td>{{item.province}}</td>
+                    <td>{{item.customerCode}}</td>
+                    <td>{{item.customerName}}</td>
+                    <td>{{item.industryLine}}</td>
+                    <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                </tr>
+            </tbody>
+        </table>
     </div><!-- /.client -->
 
     <div class="client-msg">
+        <div class="table-opera clearfix">
+            <div class="pull-left">
+                <div class="btn btn-theme">
+                    <i class="fa fa-plus"></i>
+                    <span>添加客户机要信息</span>
+                </div>
+            </div>
+            <div class="pull-right">
+                <div class="client-page page-css">
+                    <div class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+                    <div class="page-css-prev" style="margin-right: 10px;"><i class="fa fa-angle-left"></i></div>
+                    <span>第</span><input type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
+                    <span>共 {{clientPageTotal}} 页，</span>
+                    <div class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                    <div class="page-css-last" style="margin-right: 10px;"><i class="fa fa-angle-double-right"></i></div>
+                    <span>显示</span>
+                    <span style="margin-left: 5px;">{{clientPageStart}}</span>
+                    <span>-</span>
+                    <span style="margin-right: 5px;">{{clientPageEnd}}</span>
+                    <span>条，</span>
+                    <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
+                </div>
+            </div>
+        </div>
 
+        <table class="i-table">
+            <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>负责销售</th>
+                    <th>姓名</th>
+                    <th>所在部门</th>
+                    <th>头衔</th>
+                    <th>联系电话</th>
+                    <th>邮件</th>
+                    <th>地址 </th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in clientMsg.root">
+                    <td>{{index +1}}</td>
+                    <td>{{item.salesStaffName}}</td>
+                    <td>{{item.contactName}}</td>
+                    <td>{{item.departmentName}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.telphone}}</td>
+                    <td>{{item.email}}</td>
+                    <td>{{item.address}}</td>
+                    <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                </tr>
+            </tbody>
+        </table>
     </div><!-- /.client-mag -->
 
 </div><!-- /.main -->

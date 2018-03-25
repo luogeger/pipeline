@@ -67,4 +67,39 @@
   }
 }
 
+.page-css{
+  div,span{
+    display: inline-block;
+    vertical-align: middle;
+  }
+  div,input{
+    width: 30px;
+    height: 30px;
+  }
+  div{
+    border: 1px solid $border-col;
+    border-radius: 4px;
+    line-height: 30px;
+    text-align: center;
+    cursor: pointer;
+    @include transition();
+    &:hover{
+      border-color: $theme-normal;
+      i{
+        color: $theme-normal;
+      }
+    }
+    i{
+      @include transition();
+      font-size: 20px;
+      color: $text-col;
+    }
+  }
+  input{
+    font-size: 14px;
+    text-align: center;
+    padding: 0;
+  }
+}// page-css
+
 

@@ -9,30 +9,40 @@
 
 
   .opera{
-    height: 30px;
-
+    >div{
+      float: left;
+    }
     .industry{
-
+      
     }// industry
 
     .client-num{
-
+      margin-left: 50px;
+      .input-group-form{
+        width: 300px;
+      }
     }// client-num
 
     .client-name{
-
+      margin-left: 50px;
+      .input-group-form{
+        width: 300px;
+      }
     }// client-name
 
     .query-reset{
-
     }// query-rest
   }// opera
 
   .client{
-    height: 400px;
+
   }// client
 
   .client-msg{
-    height: 400px;
+
   }// client-msg
+
+  .table-opera{
+    padding-bottom: 10px;
+  }
 }// main

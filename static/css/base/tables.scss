@@ -13,7 +13,8 @@
       font-size: $font-size-small;
       line-height: $line-height-small;
       tr{
-        border-bottom: 1px solid $border-col;
+        //border-bottom: 1px solid $border-col;
+        border: 1px solid $border-col;
         td{
           padding: 5px;
         }
@@ -38,7 +39,7 @@
   border: 1px solid $border-col;
   tbody{
     tr:last-child{
-      border: none;
+      //border: none;
     }
   }
 }
