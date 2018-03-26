@@ -53,6 +53,7 @@
 
 
 .breadcrumb {
+
   color: #939393;
   padding: 0 20px;
   margin-bottom: 10px;
@@ -67,6 +68,8 @@
   }
 }
 
+
+// 分页
 .page-css{
   div,span{
     display: inline-block;
@@ -101,5 +104,101 @@
     padding: 0;
   }
 }// page-css
+
+// 弹框
+.drop-enter-active {
+  transition: all .5s ease;
+}
+.drop-leave-active {
+  transition: all .5s ease;
+}
+.drop-enter {
+  transform: translateY(-500px);
+}
+.drop-leave-active {
+  transform: translateY(-500px);
+}
+
+.dialog-wrap {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 6;
+  .dialog-cover {
+    background: #000;
+    opacity: .3;
+    position: fixed;
+    z-index: 7;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }// cover
+  .dialog-content {
+    width: 50%;
+    position: fixed;
+    //max-height: 80%;
+    overflow: auto;
+    background: #fff;
+    top: 10%;
+    left: 50%;
+    margin-left: -25%;
+    z-index: 10;
+    border-radius: 4px;
+    box-shadow: 0 0 5px 0 #464068;
+    line-height: 1.6;
+
+
+    .title{
+      padding: 10px;
+      background-color: #F1F1F1;
+      .dialog-close {
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        cursor: pointer;
+        color: $theme-normal;
+        &:hover {
+          color: $theme-hover;
+        }
+      }// close
+    }
+
+    .main{
+      width: 100%;
+      padding: 30px;
+      background-color: #fff;
+
+      .msg-item{
+        margin-bottom: 20px;
+        .msg-item-left{
+          display: inline-block;
+          width: 120px;
+
+        }
+        .msg-item-right{
+          display: inline-block;
+          width: 80%;
+          .area{
+            li{
+              display: inline-block;
+              border-radius: 3px;
+              padding: 3px 7px;
+              color: #838383;
+              cursor: pointer;
+            }
+            .area-active{
+              background-color: #FAD3B2;
+              color: #222;
+            }
+          }
+        }
+      }
+    }
+
+  }// content
+
+
+}// wrap
 
 

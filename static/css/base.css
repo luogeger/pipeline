@@ -156,6 +156,12 @@ samp {
 .show {
   display: block !important; }
 
+.x-hide {
+  overflow-x: hidden !important; }
+
+.y-hide {
+  overflow-y: hidden !important; }
+
 .text-left {
   text-align: left; }
 
@@ -503,6 +509,8 @@ input.disabled {
       padding: 0px 10px;
       transition: all 0.2s ease-in-out; }
     .dropdown-wrap .dropdown > ul {
+      overflow: auto;
+      max-height: 300px;
       padding: 5px 0;
       display: none;
       min-width: 162px;
@@ -2801,5 +2809,76 @@ button.toast-close-button {
   font-size: 14px;
   text-align: center;
   padding: 0; }
+
+.drop-enter-active {
+  transition: all .5s ease; }
+
+.drop-leave-active {
+  transition: all .5s ease; }
+
+.drop-enter {
+  transform: translateY(-500px); }
+
+.drop-leave-active {
+  transform: translateY(-500px); }
+
+.dialog-wrap {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 6; }
+  .dialog-wrap .dialog-cover {
+    background: #000;
+    opacity: .3;
+    position: fixed;
+    z-index: 7;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%; }
+  .dialog-wrap .dialog-content {
+    width: 50%;
+    position: fixed;
+    overflow: auto;
+    background: #fff;
+    top: 10%;
+    left: 50%;
+    margin-left: -25%;
+    z-index: 10;
+    border-radius: 4px;
+    box-shadow: 0 0 5px 0 #464068;
+    line-height: 1.6; }
+    .dialog-wrap .dialog-content .title {
+      padding: 10px;
+      background-color: #F1F1F1; }
+      .dialog-wrap .dialog-content .title .dialog-close {
+        width: 20px;
+        height: 20px;
+        text-align: center;
+        cursor: pointer;
+        color: #FF8A41; }
+        .dialog-wrap .dialog-content .title .dialog-close:hover {
+          color: #ED6C1C; }
+    .dialog-wrap .dialog-content .main {
+      width: 100%;
+      padding: 30px;
+      background-color: #fff; }
+      .dialog-wrap .dialog-content .main .msg-item {
+        margin-bottom: 20px; }
+        .dialog-wrap .dialog-content .main .msg-item .msg-item-left {
+          display: inline-block;
+          width: 120px; }
+        .dialog-wrap .dialog-content .main .msg-item .msg-item-right {
+          display: inline-block;
+          width: 80%; }
+          .dialog-wrap .dialog-content .main .msg-item .msg-item-right .area li {
+            display: inline-block;
+            border-radius: 3px;
+            padding: 3px 7px;
+            color: #838383;
+            cursor: pointer; }
+          .dialog-wrap .dialog-content .main .msg-item .msg-item-right .area .area-active {
+            background-color: #FAD3B2;
+            color: #222; }
 
 /*# sourceMappingURL=base.css.map */

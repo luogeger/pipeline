@@ -15,8 +15,7 @@
                     <span class="dropdown-default">请选择--</span>
                     <i class="fa fa-angle-down"></i>
                     <ul>
-                        <li v-for="item in industry">{{item.text}}</li>
-
+                        <li v-for="item in industry" v-text="item.text"></li>
                     </ul>
                 </div>
             </div>
@@ -45,7 +44,7 @@
     <div class="client">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div class="btn btn-theme">
+                <div @click="addClient" class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户</span>
                 </div>
@@ -56,8 +55,8 @@
                          class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
                     <div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
                             class="fa fa-angle-left"></i></div>
-                    <span>第</span><input type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
-                    <span>共 {{clientPageTotal}} 页，</span>
+                    <span>第</span><input @keyup.enter="clientEnter" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
+                    <span>共 {{clientPageSum}} 页，</span>
                     <div @click="calcPage('client' , 1)"
                          class="page-css-next"><i class="fa fa-angle-right  "></i></div>
                     <div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
@@ -85,14 +84,15 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="(item ,index) in client.root">
-                    <td>{{index +1}}</td>
-                    <td>{{item.reportDate}}</td>
-                    <td>{{item.salesGroup}}</td>
-                    <td>{{item.province}}</td>
-                    <td>{{item.customerCode}}</td>
-                    <td>{{item.customerName}}</td>
-                    <td>{{item.industryLine}}</td>
+                <tr v-for="(item ,index) in client.root"
+                    @click="queryClientMsg(item.id)">
+                    <td v-text="index +1"></td>
+                    <td v-text="item.reportDate"></td>
+                    <td v-text="item.salesGroup"></td>
+                    <td v-text="item.province"></td>
+                    <td v-text="item.customerCode"></td>
+                    <td v-text="item.customerName"></td>
+                    <td v-text="item.industryLine"></td>
                     <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                 </tr>
             </tbody>
@@ -102,7 +102,7 @@
     <div class="client-msg">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div class="btn btn-theme">
+                <div @click="addMsg" class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户机要信息</span>
                 </div>
@@ -155,6 +155,187 @@
         </table>
     </div><!-- /.client-mag -->
 
+
+    <div class="dialog-wrap"
+         :class="{'hide': dialogShow}">
+        <div @click="allHide" class="dialog-cover"></div>
+        <!-- 添加客户 -->
+        <div :class="{'hide': addClientShow}" class="dialog-content">
+             <div class="title clearfix">
+                 <p class="pull-left">添加客户信息</p>
+                 <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+             </div>
+            <div class="main">
+                <div class="msg-item">
+                    <div class="msg-item-left">报备日期：</div>
+                    <div class="msg-item-right">2018-03-25</div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">所属事业部：</div>
+                    <div class="msg-item-right">
+                        <div class="dropdown-wrap">
+                            <div class="dropdown">
+                                <span class="dropdown-default">请选择--</span>
+                                <i class="fa fa-angle-down"></i>
+                                <ul>
+                                    <li>金融客户事业部</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">区域：</div>
+                    <div class="msg-item-right">
+                        <ul class="area">
+                            <li class="area-active">华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                            <li>华东区</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">客户所在省份：</div>
+                    <div class="msg-item-right">
+                        <ul class="area">
+                            <li class="area-active">上海</li>
+                            <li>上海</li>
+                            <li>上海</li>
+                            <li>上海</li>
+                            <li>上海</li>
+                            <li>上海</li>
+                            <li>上海</li>
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">客户编号：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">客户名称：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">行业线：</div>
+                    <div class="msg-item-right">
+                        <div class="dropdown-wrap">
+                            <div class="dropdown">
+                                <span class="dropdown-default">请选择--</span>
+                                <i class="fa fa-angle-down"></i>
+                                <ul>
+                                    <li>金融客户事业部</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">备注：</div>
+                    <div class="msg-item-right">
+                        <textarea cols="100" rows="3" style="width: 100%;"></textarea>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left"></div>
+                    <div class="msg-item-right">
+                        <div class="btn btn-theme">提交</div>
+                    </div>
+                </div>
+
+            </div><!-- /.main -->
+        </div>
+
+        <!-- 添加客户机要信息 -->
+        <div :class="{'hide': addMsgShow}" class="dialog-content" >
+            <div class="title clearfix">
+                <p class="pull-left">添加客户机要信息</p>
+                <p @click="allHide" class="dialog-close pull-right"><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+
+                <div class="msg-item">
+                    <div class="msg-item-left">销售：</div>
+                    <div class="msg-item-right"></div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">客户姓名：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">所在部门：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">头衔：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">联系电话：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">邮件：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">地址：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">备注：</div>
+                    <div class="msg-item-right">
+                        <textarea cols="200" rows="3" style="width: 100%;"></textarea>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left"></div>
+                    <div class="msg-item-right">
+                        <div class="btn btn-theme">提交</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div><!-- /.main -->
 
 <script src="../static/scripts/client/client.js"></script>

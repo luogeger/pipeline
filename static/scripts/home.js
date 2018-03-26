@@ -1,5 +1,5 @@
 var time = '2018';
-var url = '';
+var url = 'http://172.16.8.34:8089/iboss-prism';
 var data = {
     "code": 200,
     "msg": [
