@@ -2778,4 +2778,8 @@ button.toast-close-button {
   .breadcrumb .line {
     margin: 0 6px; }
 
+.i-table thead {
+  background-color: #FAD3B2;
+  color: #433C38; }
+
 /*# sourceMappingURL=base.css.map */

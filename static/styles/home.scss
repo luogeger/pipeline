@@ -9,17 +9,16 @@ html, body{
     height: 60px;
 
     >div{
-      display: inline-block;
+      float: left;
       height: 100%;
     }// >div
 
     .logo{
       width: 180px;
-      background-color: #FF8A41;
+      padding: 10px;
       img{
         width: 100%;
         height: 100%;
-        vertical-align: baseline;
       }
     }// logo
 
