@@ -3,9 +3,9 @@
   "root": [
     {
       "customerName": "客户名称",
-      "id": "11",
+      "id": "12",
       "industryLine": "保险",
-      "customerCode": "XXX004",
+      "customerCode": "2",
       "province": "上海",
       "reportDate": "2018-03-23",
       "salesGroup": "金融客户事业部"
@@ -87,96 +87,6 @@
       "id": "8",
       "industryLine": "保险",
       "customerCode": "XXX002",
-      "province": "上海",
-      "reportDate": "2018-03-23",
-      "salesGroup": "金融客户事业部"
-    },
-    {
-      "customerName": "XX客户",
-      "id": "1",
-      "industryLine": "互联网金融",
-      "customerCode": "CSKH00001",
-      "province": "江苏",
-      "reportDate": "2018-03-23",
-      "salesGroup": "公共客户事业部"
-    },
-    {
-      "customerName": "XX客户2",
-      "id": "2",
-      "industryLine": "互联网金融",
-      "customerCode": "CSKH00002",
-      "province": "江苏",
-      "reportDate": "2018-03-23",
-      "salesGroup": "公共客户事业部"
-    },
-    {
-      "customerName": "客户名称",
-      "id": "11",
-      "industryLine": "保险",
-      "customerCode": "XXX004",
-      "province": "上海",
-      "reportDate": "2018-03-23",
-      "salesGroup": "金融客户事业部"
-    },
-    {
-      "customerName": "客户名称2",
-      "id": "10",
-      "industryLine": "保险",
-      "customerCode": "XXX003",
-      "province": "上海",
-      "reportDate": "2018-03-23",
-      "salesGroup": "金融客户事业部"
-    },
-    {
-      "customerName": "客户名称2",
-      "id": "9",
-      "industryLine": "保险",
-      "customerCode": "XXX001",
-      "province": "上海",
-      "reportDate": "2018-03-23",
-      "salesGroup": "金融客户事业部"
-    },
-    {
-      "customerName": "客户名称",
-      "id": "8",
-      "industryLine": "保险",
-      "customerCode": "XXX002",
-      "province": "上海",
-      "reportDate": "2018-03-23",
-      "salesGroup": "金融客户事业部"
-    },
-    {
-      "customerName": "XX客户",
-      "id": "1",
-      "industryLine": "互联网金融",
-      "customerCode": "CSKH00001",
-      "province": "江苏",
-      "reportDate": "2018-03-23",
-      "salesGroup": "公共客户事业部"
-    },
-    {
-      "customerName": "XX客户2",
-      "id": "2",
-      "industryLine": "互联网金融",
-      "customerCode": "CSKH00002",
-      "province": "江苏",
-      "reportDate": "2018-03-23",
-      "salesGroup": "公共客户事业部"
-    },
-    {
-      "customerName": "客户名称",
-      "id": "11",
-      "industryLine": "保险",
-      "customerCode": "XXX004",
-      "province": "上海",
-      "reportDate": "2018-03-23",
-      "salesGroup": "金融客户事业部"
-    },
-    {
-      "customerName": "客户名称2",
-      "id": "10",
-      "industryLine": "保险",
-      "customerCode": "XXX003",
       "province": "上海",
       "reportDate": "2018-03-23",
       "salesGroup": "金融客户事业部"

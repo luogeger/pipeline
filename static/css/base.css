@@ -2810,18 +2810,6 @@ button.toast-close-button {
   text-align: center;
   padding: 0; }
 
-.drop-enter-active {
-  transition: all .5s ease; }
-
-.drop-leave-active {
-  transition: all .5s ease; }
-
-.drop-enter {
-  transform: translateY(-500px); }
-
-.drop-leave-active {
-  transform: translateY(-500px); }
-
 .dialog-wrap {
   position: fixed;
   width: 100%;
@@ -2839,11 +2827,13 @@ button.toast-close-button {
   .dialog-wrap .dialog-content {
     width: 50%;
     position: fixed;
+    min-width: 900px;
     overflow: auto;
     background: #fff;
     top: 10%;
+    bottom: 10%;
     left: 50%;
-    margin-left: -25%;
+    transform: translate(-50%);
     z-index: 10;
     border-radius: 4px;
     box-shadow: 0 0 5px 0 #464068;

@@ -12,19 +12,20 @@
     >div{
       float: left;
     }
+    >div:not(:last-child){
+      margin-right: 50px;
+    }
     .industry{
       
     }// industry
 
     .client-num{
-      margin-left: 50px;
       .input-group-form{
         width: 300px;
       }
     }// client-num
 
     .client-name{
-      margin-left: 50px;
       .input-group-form{
         width: 300px;
       }

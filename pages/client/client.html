@@ -168,69 +168,70 @@
             <div class="main">
                 <div class="msg-item">
                     <div class="msg-item-left">报备日期：</div>
-                    <div class="msg-item-right">2018-03-25</div>
+                    <div class="msg-item-right" v-text="cReportDate"></div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">所属事业部：</div>
                     <div class="msg-item-right">
                         <div class="dropdown-wrap">
                             <div class="dropdown">
-                                <span class="dropdown-default">请选择--</span>
+                                <span v-model="cSalesGroupCode" class="dropdown-default"></span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
-                                    <li>金融客户事业部</li>
+                                    <li v-for="item in cSalesGroupList"
+                                        v-text="item.text"
+                                        @click="selectGroup(item.code)"></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">区域：</div>
                     <div class="msg-item-right">
                         <ul class="area">
-                            <li class="area-active">华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
-                            <li>华东区</li>
+                            <li v-for="(item, index) in regionList"
+                                v-text="item.text"
+                                @click="selectRegion(item.code, index)"
+                                :class="{'area-active': index == regionIndex}"
+                            ></li>
                         </ul>
                     </div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">客户所在省份：</div>
                     <div class="msg-item-right">
                         <ul class="area">
-                            <li class="area-active">上海</li>
-                            <li>上海</li>
-                            <li>上海</li>
-                            <li>上海</li>
-                            <li>上海</li>
-                            <li>上海</li>
-                            <li>上海</li>
-
+                            <li v-for="(item, index) in provinceList"
+                                v-text="item.text"
+                                @click="selectProvince(item.code, index)"
+                                :class="{'area-active': index == provinceIndex}"
+                            ></li>
                         </ul>
                     </div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">客户编号：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="cCustomerCode" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">客户名称：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="cCustomerName" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">行业线：</div>
                     <div class="msg-item-right">
@@ -239,25 +240,29 @@
                                 <span class="dropdown-default">请选择--</span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
-                                    <li>金融客户事业部</li>
+                                    <li v-for="item in industry"
+                                        v-text="item.text"
+                                        @click="selectIndustry(item.code)"
+                                    ></li>
                                 </ul>
                             </div>
                         </div>
                     </div>
                 </div>
+
                 <div class="msg-item">
                     <div class="msg-item-left">备注：</div>
                     <div class="msg-item-right">
-                        <textarea cols="100" rows="3" style="width: 100%;"></textarea>
-                    </div>
-                </div>
-                <div class="msg-item">
-                    <div class="msg-item-left"></div>
-                    <div class="msg-item-right">
-                        <div class="btn btn-theme">提交</div>
+                        <textarea v-model="cRemark" cols="100" rows="3" style="width: 100%;"></textarea>
                     </div>
                 </div>
 
+                <div class="msg-item">
+                    <div class="msg-item-left"></div>
+                    <div class="msg-item-right">
+                        <div @click="addClientConfirm" class="btn btn-theme">提交</div>
+                    </div>
+                </div>
             </div><!-- /.main -->
         </div>
 
