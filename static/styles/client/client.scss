@@ -1,0 +1,51 @@
+.main{
+  .opera,
+  .client,
+  .client-msg{
+    padding: 10px;
+    margin-top: 10px;
+    background-color: #fff;
+  }
+
+
+  .opera{
+    >div{
+      float: left;
+    }
+    >div:not(:last-child){
+      margin-right: 50px;
+    }
+    .industry{
+      
+    }// industry
+
+    .client-num{
+      .input-group-form{
+        width: 300px;
+      }
+    }// client-num
+
+    .client-name{
+      .input-group-form{
+        width: 300px;
+      }
+    }// client-name
+
+    .query-reset{
+    }// query-rest
+  }// opera
+
+  .client{
+
+  }// client
+
+  .client-msg{
+
+  }// client-msg
+
+  .table-opera{
+    padding-bottom: 10px;
+  }
+
+  
+}// main

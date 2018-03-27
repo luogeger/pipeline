@@ -1,0 +1,20 @@
+{
+  "code": 200,
+  "msg": {
+    "industryLine": [
+      {
+        "code": "bx",
+        "description": null,
+        "text": "保险",
+        "seq": null
+      },
+      {
+        "code": "hlwjr",
+        "description": null,
+        "text": "互联网金融",
+        "seq": null
+      }
+    ]
+  },
+  "success": true
+}

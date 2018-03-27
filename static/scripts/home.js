@@ -1,3 +1,5 @@
+var timeYear = '2018-01-02';
+var PATH = 'http://172.16.8.34:8089/iboss-prism';
 var data = {
     "code": 200,
     "msg": [
@@ -172,4 +174,5 @@ var data = {
 
 $('.nav-top-panels').iTopNav(data.msg);
 
-loadMainPage('.content-item', 'analyze/one.html');
+// loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'client/client.html');
