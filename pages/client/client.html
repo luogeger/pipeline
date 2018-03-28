@@ -12,10 +12,12 @@
             <div class="dropdown-wrap">
                 <span class="dropdown-label">行业:</span>
                 <div class="dropdown">
-                    <span class="dropdown-default">请选择--</span>
+                    <span v-text="hDropText" class="dropdown-default"></span>
                     <i class="fa fa-angle-down"></i>
                     <ul>
-                        <li v-for="item in industry" v-text="item.text"></li>
+                        <li @click="hDrop(item.text)"
+                            v-for="item in industry"
+                            v-text="item.text"></li>
                     </ul>
                 </div>
             </div>
@@ -85,7 +87,8 @@
             </thead>
             <tbody>
                 <tr v-for="(item ,index) in client.root"
-                    @click="queryClientMsg(item.id)">
+                    :class="{'tr-active': index == cCheckIndex}"
+                    @click="queryClientMsg(item.customerCode, index)">
                     <td v-text="index +1"></td>
                     <td v-text="item.reportDate"></td>
                     <td v-text="item.salesGroup"></td>
@@ -93,7 +96,8 @@
                     <td v-text="item.customerCode"></td>
                     <td v-text="item.customerName"></td>
                     <td v-text="item.industryLine"></td>
-                    <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                    <td @click="editClient(index, item.id)"
+                    ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                 </tr>
             </tbody>
         </table>
@@ -158,12 +162,12 @@
 
     <div class="dialog-wrap"
          :class="{'hide': dialogShow}">
-        <div @click="allHide" class="dialog-cover"></div>
+        <div @click="hidePop" class="dialog-cover"></div>
         <!-- 添加客户 -->
         <div :class="{'hide': addClientShow}" class="dialog-content">
              <div class="title clearfix">
                  <p class="pull-left">添加客户信息</p>
-                 <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+                 <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
              </div>
             <div class="main">
                 <div class="msg-item">
@@ -176,13 +180,13 @@
                     <div class="msg-item-right">
                         <div class="dropdown-wrap">
                             <div class="dropdown">
-                                <span v-model="cIndustryLineText"
+                                <span v-text="cGroupText"
                                       class="dropdown-default"></span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
                                     <li v-for="item in cSalesGroupList"
                                         v-text="item.text"
-                                        @click="selectGroup(item.code)"></li>
+                                        @click="selectGroup(item.code, item.text)"></li>
                                 </ul>
                             </div>
                         </div><!-- drop -->
@@ -239,7 +243,8 @@
                     <div class="msg-item-right">
                         <div class="dropdown-wrap">
                             <div class="dropdown">
-                                <span class="dropdown-default" v-model="cIndustryLineText"></span>
+                                <span class="dropdown-default"
+                                      v-text="cIndustryLineText"></span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
                                     <li v-for="item in industry"
@@ -272,7 +277,7 @@
         <div :class="{'hide': addMsgShow}" class="dialog-content" >
             <div class="title clearfix">
                 <p class="pull-left">添加客户机要信息</p>
-                <p @click="allHide" class="dialog-close pull-right"><i class="fa fa-close"></i></p>
+                <p @click="hidePop" class="dialog-close pull-right"><i class="fa fa-close"></i></p>
             </div>
             <div class="main">
 

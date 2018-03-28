@@ -1,0 +1,18 @@
+.main .opera,
+.main .client,
+.main .client-msg {
+  padding: 10px;
+  margin-top: 10px;
+  background-color: #fff; }
+.main .opera > div {
+  float: left; }
+.main .opera > div:not(:last-child) {
+  margin-right: 50px; }
+.main .opera .client-num .input-group-form {
+  width: 300px; }
+.main .opera .client-name .input-group-form {
+  width: 300px; }
+.main .table-opera {
+  padding-bottom: 10px; }
+
+/*# sourceMappingURL=client.css.map */

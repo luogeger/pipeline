@@ -39,6 +39,10 @@
   }
   tbody {
     font-size: 14px;
+
+    .tr-active{
+      background-color: #FBE5D0 !important;
+    }
   }
 }
 
