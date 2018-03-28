@@ -32,10 +32,10 @@
 .i-table {
   text-align: center;
   thead {
-    background-color: #ed6d00;
     border-bottom: 0;
-    color: #fff;
     font-weight: 500;
+    background-color: #FAD3B2;
+    color: #433C38;
   }
   tbody {
     font-size: 14px;
@@ -52,6 +52,7 @@
 }
 
 
+// 面包屑导航
 .breadcrumb {
   color: #939393;
   padding: 0 20px;
@@ -67,11 +68,6 @@
   }
 }
 
-
-.i-table thead {
-  background-color: #FAD3B2;
-  color: #433C38;
-}
 
 // 分页
 .page-css{
@@ -194,5 +190,68 @@
 
 
 }// wrap
+
+
+// 下拉框
+.selection-component{
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+
+  .selection-show{
+    height: $height-sm;
+    min-width: 162px;
+    color: $text-col;
+    padding-left: 10px;
+    border: 1px solid $border-col;
+    border-radius: $border-radius-base;
+    cursor: pointer;
+    i{
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+    @include transition();
+    &:hover{
+      border-color: $theme-hover;
+      i{
+        color: $theme-hover;
+      }
+    }
+  }
+  .selection-list{
+    position: absolute;
+    top: $height-sm +3;
+    ul{
+      overflow: auto;
+      max-height: 300px;
+      padding: 5px 0;
+      min-width: 162px;
+      max-width: $max-width;
+      border-radius: $border-radius-base;
+      background-color: $white;
+      z-index: 1;
+      cursor: pointer;
+      @include ul-shadow();
+      li{
+        padding: 0 10px;
+        line-height: $height-sm;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;/* 文字超出用...*/
+        white-space: nowrap;/* 文字不换行*/
+        @include transition(all, .1s);
+        &:hover{
+          background-color: $hover-bg;
+        }
+      }
+      .li-checkbox{
+        color: $white !important;
+        background-color: $theme-normal !important;
+      }
+    }
+  }
+}// selection
+
 
 

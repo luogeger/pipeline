@@ -2761,10 +2761,10 @@ button.toast-close-button {
 .i-table {
   text-align: center; }
   .i-table thead {
-    background-color: #ed6d00;
     border-bottom: 0;
-    color: #fff;
-    font-weight: 500; }
+    font-weight: 500;
+    background-color: #FAD3B2;
+    color: #433C38; }
   .i-table tbody {
     font-size: 14px; }
 
@@ -2783,10 +2783,6 @@ button.toast-close-button {
     color: #333; }
   .breadcrumb .line {
     margin: 0 6px; }
-
-.i-table thead {
-  background-color: #FAD3B2;
-  color: #433C38; }
 
 .page-css div, .page-css span {
   display: inline-block;
@@ -2874,5 +2870,56 @@ button.toast-close-button {
           .dialog-wrap .dialog-content .main .msg-item .msg-item-right .area .area-active {
             background-color: #FAD3B2;
             color: #222; }
+
+.selection-component {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle; }
+  .selection-component .selection-show {
+    height: 30px;
+    min-width: 162px;
+    color: #595959;
+    padding-left: 10px;
+    border: 1px solid #DDDEE1;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: 0.2s all ease-in-out; }
+    .selection-component .selection-show i {
+      position: absolute;
+      top: 10px;
+      right: 10px; }
+    .selection-component .selection-show:hover {
+      border-color: #ED6C1C; }
+      .selection-component .selection-show:hover i {
+        color: #ED6C1C; }
+  .selection-component .selection-list {
+    position: absolute;
+    top: 33px; }
+    .selection-component .selection-list ul {
+      overflow: auto;
+      max-height: 300px;
+      padding: 5px 0;
+      min-width: 162px;
+      max-width: 200px;
+      border-radius: 4px;
+      background-color: #ffffff;
+      z-index: 1;
+      cursor: pointer;
+      box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
+      .selection-component .selection-list ul li {
+        padding: 0 10px;
+        line-height: 30px;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        /* 文字超出用...*/
+        white-space: nowrap;
+        /* 文字不换行*/
+        transition: all 0.1s ease-in-out; }
+        .selection-component .selection-list ul li:hover {
+          background-color: #f3f3f3; }
+      .selection-component .selection-list ul .li-checkbox {
+        color: #ffffff !important;
+        background-color: #FF8A41 !important; }
 
 /*# sourceMappingURL=base.css.map */

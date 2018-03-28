@@ -176,7 +176,8 @@
                     <div class="msg-item-right">
                         <div class="dropdown-wrap">
                             <div class="dropdown">
-                                <span v-model="cSalesGroupCode" class="dropdown-default"></span>
+                                <span v-model="cIndustryLineText"
+                                      class="dropdown-default"></span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
                                     <li v-for="item in cSalesGroupList"
@@ -184,9 +185,10 @@
                                         @click="selectGroup(item.code)"></li>
                                 </ul>
                             </div>
-                        </div>
+                        </div><!-- drop -->
                     </div>
-                </div>
+
+                </div><!-- item -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">区域：</div>
@@ -237,12 +239,12 @@
                     <div class="msg-item-right">
                         <div class="dropdown-wrap">
                             <div class="dropdown">
-                                <span class="dropdown-default">请选择--</span>
+                                <span class="dropdown-default" v-model="cIndustryLineText"></span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
                                     <li v-for="item in industry"
                                         v-text="item.text"
-                                        @click="selectIndustry(item.code)"
+                                        @click="selectIndustry(item.code, item.text)"
                                     ></li>
                                 </ul>
                             </div>
