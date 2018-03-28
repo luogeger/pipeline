@@ -18,6 +18,10 @@
   .input-group {
     margin-bottom: 15px;
   }
+
+  .i-date-picker-container .date-input-box > input{
+    width: 100px;
+  }
 }
 
 .main-wrapper {
@@ -34,6 +38,7 @@
 
       th,
       td {
+        
         padding-top: 12px;
         padding-bottom: 12px;
       }
@@ -81,14 +86,17 @@
       height: calc(100% - 45px);
       overflow-y: auto;
       .block {
-        padding: 15px 5px;
-        h4 {
-          font-size: 14px;
-          margin-bottom: 10px;
+        li {
+          padding: 15px 5px;
+          h4 {
+            font-size: 14px;
+            margin-bottom: 10px;
+          }
+          p {
+            color: #a0a0a0;
+          }
         }
-        p {
-          color: #a0a0a0;
-        }
+
       }
     }
   }
@@ -103,26 +111,40 @@
     .main {
       width: calc(100% - 260px);
 
-      .dropdown-wrap,
-      .input-group {
+      .block-wrapper {
         width: 50%;
         float: left;
         margin-bottom: 15px;
       }
+      .dropdown-wrap,
       .input-group {
-        line-height: 30px;
-        .input-group-label {
-          min-width: 120px;
-        }
+        display: table;
+      }
+      .input-group-label,
+      .dropdown-label {
+        width: 120px;
+      }
+      .input-group-label,
+      .dropdown-label,
+      .dropdown,
+      .input-group-form,
+      .item-list {
+        display: table-cell;
+        vertical-align: top;
+      }
+      //.dropdown-wrap .dropdown .dropdown-default, .dropdown-wrap .dropdown-zTree .dropdown-default {
+      //  width: 180px;
+      //}
+      .input-group {
+        //line-height: 30px;
 
         .item-list {
-          display: inline-block;
-          vertical-align: middle;
           li {
-            padding: 0 15px;
+            padding: 4px 15px;
             float: left;
             color: #242424;
             cursor: pointer;
+            margin-bottom: 5px;
           }
           .active {
             background-color: #fad3b2;
@@ -217,4 +239,38 @@
   margin-top: 6px;
 }
 
+.autoComplete-wrapper {
+  display: inline-block;
+  vertical-align: middle;
+}
 
+.dropdown-wrap .dropdown-zTree {
+  >ul{
+    display: none;
+    position: absolute;
+    //top: $height-sm + 2;
+    left: 0px;
+    //border-radius: $border-radius-base;
+    //background-color: $white;
+    z-index: 1;
+    cursor: pointer;
+
+    li{
+      padding: 0 10px;
+      //line-height: $height-sm;
+      text-align: left;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      //@include transition(all, .1s);
+      &:hover{
+        background-color: transparent;
+      }
+    }
+    .li-checkbox{
+      display: none;
+      //color: $white !important;
+      //background-color: $theme-normal !important;
+    }
+  }
+}
