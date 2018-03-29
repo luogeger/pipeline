@@ -1,9 +1,13 @@
 $.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.34:8089/iboss-prism';
-var userInfo, timeYear ;
+var timeYear,
+    userName,
+    userCode;
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
-    timeYear = (datas.msg.currentDate).substring(0, 10);
-
+    var msg = datas.msg;
+    timeYear = (msg.currentDate).substring(0, 10);
+    userName = msg.userName;
+    userCode = msg.userCode;
 });
 
 var data = {

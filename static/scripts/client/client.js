@@ -17,6 +17,8 @@ var vm = new Vue({
 
         // nowIndex
         industryNowIndex: 0,// 事业部
+        regionIndex: 0, // 区域
+        provinceIndex: -1, // 省份
 
 
         // 客户
@@ -29,6 +31,7 @@ var vm = new Vue({
         cGroupText: '',// 所属于事业部
         cIndustryLineText : '',// 行业线
 
+        // 添加的客户信息
         cSalesGroupList: [],
         cReportDate: timeYear,// 报备时间
         cSalesGroupCode: '',// 所属于事业部
@@ -40,28 +43,37 @@ var vm = new Vue({
         cAddress: '',
         cRemark: '',// 备注
 
+
         // 机要信息
         clientMsg: [],
+        currentCustomerCode: 0,
+        provinceList: [],// 省份
+        regionList: [],// 区域
 
-        // addClientMsg
+        // 添加机要信息 => 13个字段
+        mID: '',
+        mSalesStaffCode:    userCode,
+        mCustomerCode:      '',
+        mSalesStaffName:    userName,
+        mContactName:       '',
+        mRegionCode:        '',
+        mProvinceCode:      '',
+        mDepartmentName:    '',
+        mTitle:             '',
+        mTelPhone:          '',
+        mEmail:             '',
+        mAddress:           '',
+        mRemark:            '',
 
 
 
-        // add
+        // 弹窗
         dialogShow: true,
         addClientShow: true,
         addMsgShow: true,
 
 
-
-        // edit
-
-        // delete
-
-        regionList: [],// 区域
-        regionIndex: 0, // 区域
-        provinceIndex: -1, // 省份
-        provinceList: [],// 省份
+        // delete 要删除的变量
 
     },// data
 
@@ -145,6 +157,7 @@ var vm = new Vue({
 
         // 客户分页
         clientPage: function (type, num) {
+            vm.cCheckIndex = 0;
             switch(num)
             {
                 case 'first':
@@ -175,8 +188,9 @@ var vm = new Vue({
             console.log(type, num, 'msg')
         },
 
-        // 查询机要信息
+        // 查询机要信息 绑定在tr上
         queryClientMsg: function (code, index) {
+            vm.firstClientCode = code;
             vm.getClientMsg(code)
             vm.cCheckIndex = index;
         },
@@ -187,8 +201,6 @@ var vm = new Vue({
         // 添加客户 按钮事件
         addClient: function () {
             this.getGroup();
-            this.getRegion();
-            this.getProvince();
             this.showPop();// 显示弹框
             this.clearClient();// 清空弹窗信息
         },
@@ -218,7 +230,7 @@ var vm = new Vue({
             vm.cAddress = '';
         },
 
-        // 确认添加
+        // 确认客户添加
         addClientConfirm: function () {
             var addObj = {
                 salesGroupCode:     vm.cSalesGroupCode,
@@ -247,16 +259,42 @@ var vm = new Vue({
         },
 
 
-        // 添加客户机要信息
+        // 添加 机要信息 按钮事件
         addMsg: function () {
             vm.dialogShow = false;
             vm.addMsgShow = false;
+            this.getRegion();// 获取区域信息
+            this.getProvince();// 获取省份信息
+
+        },
+
+        // 机要信息添加 收集字段  vm.firstClientCode
+        // ====================================
+        addMsgConfirm: function () {
+            var addMsgObj = {
+                salesStaffCode:    vm.mSalesStaffCode,
+                customerCode:      vm.mCustomerCode,
+                salesStaffName:    vm.mSalesStaffName,
+                contactName:       vm.mContactName,
+                regionCode:        vm.mRegionCode,
+                provinceCode:      vm.mProvinceCode,
+                departmentName:    vm.mDepartmentName,
+                title:             vm.mTitle,
+                telPhone:          vm.mTelPhone,
+                email:             vm.mEmail,
+                address:           vm.mAddress,
+                remark:            vm.mRemark,
+                //TODO region, contactName， contactCode
+            };
+            console.log(addMsgObj)
+            //this.hidePop();
         },
 
 
 
 
         // 添加客户 收集信息
+        // ====================================
         selectGroup: function (code, text) {
             vm.cSalesGroupCode = code;
             vm.cGroupText = text;
@@ -312,8 +350,8 @@ var vm = new Vue({
                     return;
                 }
 
-                this.hidePop();
                 this.getClient();
+                this.hidePop();
                 toastr.success('修改客户成功 ！')
             });
         },
@@ -333,12 +371,10 @@ var vm = new Vue({
             vm.cProvinceCode = code;
         },
 
+        // 行业里的点击事件
         hDrop: function (text) {
-            console.log(text, 'homeI')
             vm.hDropText = text;
         },
-
-
     },// methods
 
 });// app

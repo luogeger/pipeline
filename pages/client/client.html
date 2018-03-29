@@ -111,22 +111,22 @@
                     <span>添加客户机要信息</span>
                 </div>
             </div>
-            <div class="pull-right">
-                <div class="client-page page-css">
-                    <div class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
-                    <div class="page-css-prev" style="margin-right: 10px;"><i class="fa fa-angle-left"></i></div>
-                    <span>第</span><input type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
-                    <span>共 {{clientPageTotal}} 页，</span>
-                    <div class="page-css-next"><i class="fa fa-angle-right  "></i></div>
-                    <div class="page-css-last" style="margin-right: 10px;"><i class="fa fa-angle-double-right"></i></div>
-                    <span>显示</span>
-                    <span style="margin-left: 5px;">{{clientPageStart}}</span>
-                    <span>-</span>
-                    <span style="margin-right: 5px;">{{clientPageEnd}}</span>
-                    <span>条，</span>
-                    <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
-                </div>
-            </div>
+            <!--<div class="pull-right">-->
+                <!--<div class="client-page page-css">-->
+                    <!--<div class="page-css-first"><i class="fa fa-angle-double-left"></i></div>-->
+                    <!--<div class="page-css-prev" style="margin-right: 10px;"><i class="fa fa-angle-left"></i></div>-->
+                    <!--<span>第</span><input type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>-->
+                    <!--<span>共 {{clientPageTotal}} 页，</span>-->
+                    <!--<div class="page-css-next"><i class="fa fa-angle-right  "></i></div>-->
+                    <!--<div class="page-css-last" style="margin-right: 10px;"><i class="fa fa-angle-double-right"></i></div>-->
+                    <!--<span>显示</span>-->
+                    <!--<span style="margin-left: 5px;">{{clientPageStart}}</span>-->
+                    <!--<span>-</span>-->
+                    <!--<span style="margin-right: 5px;">{{clientPageEnd}}</span>-->
+                    <!--<span>条，</span>-->
+                    <!--<span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>-->
+                <!--</div>-->
+            <!--</div>-->
         </div>
 
         <table class="i-table">
@@ -268,21 +268,46 @@
 
                 <div class="msg-item">
                     <div class="msg-item-left">销售：</div>
-                    <div class="msg-item-right"></div>
+                    <div v-text="mSalesStaffName" class="msg-item-right"></div>
                 </div>
                 <div class="msg-item">
                     <div class="msg-item-left">客户姓名：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="mContactName" type="text" class="input-group-form">
                         </div>
+                    </div>
+                </div>
+                <div class="msg-item">
+                    <div class="msg-item-left">区域：</div>
+                    <div class="msg-item-right">
+                        <ul class="area">
+                            <li v-for="(item, index) in regionList"
+                                v-text="item.text"
+                                @click="selectRegion(item.code, index)"
+                                :class="{'area-active': index == regionIndex}"
+                            ></li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="msg-item">
+                    <div class="msg-item-left">客户所在省份：</div>
+                    <div class="msg-item-right">
+                        <ul class="area">
+                            <li v-for="(item, index) in provinceList"
+                                v-text="item.text"
+                                @click="selectProvince(item.code, index)"
+                                :class="{'area-active': index == provinceIndex}"
+                            ></li>
+                        </ul>
                     </div>
                 </div>
                 <div class="msg-item">
                     <div class="msg-item-left">所在部门：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="mDepartmentName" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
@@ -290,7 +315,7 @@
                     <div class="msg-item-left">头衔：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="mTitle" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
@@ -298,7 +323,7 @@
                     <div class="msg-item-left">联系电话：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="mTelPhone" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
@@ -306,7 +331,7 @@
                     <div class="msg-item-left">邮件：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="mEmail" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
@@ -314,21 +339,20 @@
                     <div class="msg-item-left">地址：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input type="text" class="input-group-form">
+                            <input v-model="mAddress" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
                 <div class="msg-item">
                     <div class="msg-item-left">备注：</div>
                     <div class="msg-item-right">
-                        <textarea cols="200" rows="3" style="width: 100%;"></textarea>
+                        <textarea v-model="mRemark" cols="200" rows="3" style="width: 100%;"></textarea>
                     </div>
                 </div>
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div @click="editClientConfirm"
-                             class="btn btn-theme">提交</div>
+                        <div @click="addMsgConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div>
