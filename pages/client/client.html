@@ -194,40 +194,14 @@
 
                 </div><!-- item -->
 
-                <div class="msg-item">
-                    <div class="msg-item-left">区域：</div>
-                    <div class="msg-item-right">
-                        <ul class="area">
-                            <li v-for="(item, index) in regionList"
-                                v-text="item.text"
-                                @click="selectRegion(item.code, index)"
-                                :class="{'area-active': index == regionIndex}"
-                            ></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="msg-item">
-                    <div class="msg-item-left">客户所在省份：</div>
-                    <div class="msg-item-right">
-                        <ul class="area">
-                            <li v-for="(item, index) in provinceList"
-                                v-text="item.text"
-                                @click="selectProvince(item.code, index)"
-                                :class="{'area-active': index == provinceIndex}"
-                            ></li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="msg-item">
-                    <div class="msg-item-left">客户编号：</div>
-                    <div class="msg-item-right">
-                        <div class="input-group">
-                            <input v-model="cCustomerCode" type="text" class="input-group-form">
-                        </div>
-                    </div>
-                </div>
+                <!--<div class="msg-item">-->
+                    <!--<div class="msg-item-left">客户编号：</div>-->
+                    <!--<div class="msg-item-right">-->
+                        <!--<div class="input-group">-->
+                            <!--<input v-model="cCustomerCode" type="text" class="input-group-form">-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
 
                 <div class="msg-item">
                     <div class="msg-item-left">客户名称：</div>
@@ -249,10 +223,20 @@
                                 <ul>
                                     <li v-for="item in industry"
                                         v-text="item.text"
+                                        :class="{'li-checkbox': item.code == cAddIndustryCode}"
                                         @click="selectIndustry(item.code, item.text)"
                                     ></li>
                                 </ul>
                             </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="msg-item">
+                    <div class="msg-item-left">公司地址：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="cAddress" type="text" class="input-group-form">
                         </div>
                     </div>
                 </div>
@@ -267,7 +251,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div @click="addClientConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div><!-- /.main -->
@@ -342,7 +327,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div class="btn btn-theme">提交</div>
+                        <div @click="editClientConfirm"
+                             class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div>

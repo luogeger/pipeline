@@ -4,6 +4,7 @@ var vm = new Vue({
     data: {
         industry: [],// 行业线
         hDropText: '',// 行业下拉框文字
+        clientSubmit: false,
 
         // 分页
         clientPageTotal: 0,// 全部数据
@@ -16,17 +17,15 @@ var vm = new Vue({
 
         // nowIndex
         industryNowIndex: 0,// 事业部
-        regionIndex: 0, // 区域
-        provinceIndex: -1, // 省份
 
 
         // 客户
+        clientID: '',
         client: [],
-        regionList: [],// 区域
-        provinceList: [],// 省份
         cCheckIndex: 0,
 
         // 添加客户
+        cAddIndustryCode: '',// 编辑客户，行业线，选项默认选中
         cGroupText: '',// 所属于事业部
         cIndustryLineText : '',// 行业线
 
@@ -38,6 +37,7 @@ var vm = new Vue({
         cCustomerCode: '',// 客户编号
         cCustomerName: '',// 客户名称
         cIndustryLineCode: '',// 行业线
+        cAddress: '',
         cRemark: '',// 备注
 
         // 机要信息
@@ -55,6 +55,13 @@ var vm = new Vue({
 
 
         // edit
+
+        // delete
+
+        regionList: [],// 区域
+        regionIndex: 0, // 区域
+        provinceIndex: -1, // 省份
+        provinceList: [],// 省份
 
     },// data
 
@@ -208,19 +215,18 @@ var vm = new Vue({
             vm.cRemark = '';// 备注
             vm.cGroupText = '';
             vm.cIndustryLineText = '';
+            vm.cAddress = '';
         },
 
         // 确认添加
         addClientConfirm: function () {
             var addObj = {
-                reportDate:         vm.cReportDate,
                 salesGroupCode:     vm.cSalesGroupCode,
-                regionCode:         vm.cRegionCode,
-                provinceCode:       vm.cProvinceCode,
                 customerCode:       vm.cCustomerCode,
                 customerName:       vm.cCustomerName,
                 industryLineCode:   vm.cIndustryLineCode,
-                remark:             vm.cRemark,
+                address:            vm.cAddress,
+                remark:             vm.cRemark
             };
             console.log(addObj)
 
@@ -256,6 +262,65 @@ var vm = new Vue({
             vm.cGroupText = text;
         },
 
+        selectIndustry: function (code, text) {
+            vm.cIndustryLineCode = code;
+            vm.cIndustryLineText = text;
+        },
+
+        // 编辑客户
+        editClient: function (index, id) {
+            vm.clientSubmit = true;
+            vm.dialogShow = false;
+            vm.addClientShow = false;
+            this.clearClient();
+            this.$http.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
+                msg =  datas.body.msg;
+
+                vm.cGroupText           = '金融客户事业部';
+                vm.cSalesGroupCode      = msg.salesGroupCode;
+                vm.cCustomerCode        = msg.customerCode;
+                vm.cCustomerName        = msg.customerName;
+                vm.cAddress             = msg.address;
+                vm.cRemark              = msg.remark;
+                vm.clientID             = msg.id;
+
+                for (key in vm.industry){
+                    if (vm.industry[key].code === msg.industryLineCode) {
+                        vm.cIndustryLineText = vm.industry[key].text;
+                        vm.cAddIndustryCode = vm.cIndustryLineCode = msg.industryLineCode;
+                    }
+                }
+            });
+        },
+
+        editClientConfirm: function () {
+            var editObj = {
+                id:  vm.clientID,
+                salesGroupCode:     vm.cSalesGroupCode,
+                //customerCode:       vm.cCustomerCode,
+                customerName:       vm.cCustomerName,
+                industryLineCode:   vm.cIndustryLineCode,
+                address:            vm.cAddress,
+                remark:             vm.cRemark
+
+            };
+
+            this.$http.get(PATH +'/crm/addOrUpdateCustomer', {params: editObj}).then(function (datas){
+                console.log(datas)
+                if (datas.body.code == 201) {
+                    toastr.error(datas.body.msg)
+                    return;
+                }
+
+                this.hidePop();
+                this.getClient();
+                toastr.success('修改客户成功 ！')
+            });
+        },
+
+
+
+
         selectRegion: function (code, index) {
             vm.regionIndex = index;
             vm.cRegionCode = code;
@@ -268,36 +333,6 @@ var vm = new Vue({
             vm.cProvinceCode = code;
         },
 
-        selectIndustry: function (code, text) {
-            vm.cIndustryLineCode = code;
-            vm.cIndustryLineText = text;
-        },
-
-        // 编辑客户
-        editClient: function (index, id) {
-            vm.dialogShow = false;
-            vm.addClientShow = false;
-            this.clearClient();
-            console.log(vm.client.root[index]);
-            this.$http.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
-                msg =  datas.body.msg;
-                console.log(msg)
-            });
-
-            // vm.cSalesGroupCod       = '';
-            // vm.cRegionCod           = '';
-            // vm.cProvinceCode        = '';
-            // vm.cCustomerCode        = '';
-            // vm.cCustomerName        = '';
-            // vm.cIndustryLineCode    = '';
-            // vm.cRemar               = '';
-
-        },
-
-
-
-
-
         hDrop: function (text) {
             console.log(text, 'homeI')
             vm.hDropText = text;
@@ -308,3 +343,4 @@ var vm = new Vue({
 
 });// app
 
+// li-checkbox
