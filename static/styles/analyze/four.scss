@@ -1,0 +1,45 @@
+
+.top, .bottom{
+  background-color: #fff;
+  margin-top: 10px;
+}
+.top{
+  .top-opera{
+    padding: 10px;
+    border-bottom: 1px solid #E9EAEC;
+  }
+
+  .top-table{
+    padding: 10px;
+    p{
+      padding-bottom: 10px;
+    }
+  }
+}// .top
+
+.bottom{
+  .year-half{
+    padding: 10px 0 0 10px;
+    border-bottom: 1px solid #E9EAEC;
+    span{
+      display: inline-block;
+      padding: 0 10px;
+      border-bottom: 2px solid transparent;
+      line-height: 30px;
+      cursor: pointer;
+    }
+
+    .year-half-active{
+      border-color: #FF8A41;
+    }
+  }
+
+  .table-content{
+    padding: 10px;
+    p{
+      padding-bottom: 10px;
+    }
+
+  }
+
+}// .bottom
