@@ -78,10 +78,10 @@
                     <th>序号</th>
                     <th>报备名称</th>
                     <th>所属事业部</th>
-                    <th>客户所在省份</th>
                     <th>客户编号</th>
                     <th>客户名称</th>
                     <th>行业线</th>
+                    <th>地址</th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -92,10 +92,10 @@
                     <td v-text="index +1"></td>
                     <td v-text="item.reportDate"></td>
                     <td v-text="item.salesGroup"></td>
-                    <td v-text="item.province"></td>
                     <td v-text="item.customerCode"></td>
                     <td v-text="item.customerName"></td>
                     <td v-text="item.industryLine"></td>
+                    <td v-text="item.address"></td>
                     <td @click="editClient(index, item.id)"
                     ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                 </tr>
@@ -134,12 +134,12 @@
                 <tr>
                     <th>序号</th>
                     <th>负责销售</th>
+                    <th>客户所在省份</th>
                     <th>姓名</th>
                     <th>所在部门</th>
                     <th>头衔</th>
                     <th>联系电话</th>
                     <th>邮件</th>
-                    <th>地址 </th>
                     <th>操作</th>
                 </tr>
             </thead>
@@ -147,12 +147,12 @@
                 <tr v-for="(item, index) in clientMsg.root">
                     <td>{{index +1}}</td>
                     <td>{{item.salesStaffName}}</td>
+                    <td>{{item.province}}</td>
                     <td>{{item.contactName}}</td>
                     <td>{{item.departmentName}}</td>
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td>{{item.address}}</td>
                     <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                 </tr>
             </tbody>
