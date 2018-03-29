@@ -279,8 +279,9 @@ var vm = new Vue({
             vm.addClientShow = false;
             this.clearClient();
             console.log(vm.client.root[index]);
-            this.$http.get(PATH +' /crm/queryCustomerOne?id=' +id).then(function (datas){
+            this.$http.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
                 msg =  datas.body.msg;
+                console.log(msg)
             });
 
             // vm.cSalesGroupCod       = '';
