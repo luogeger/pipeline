@@ -503,6 +503,7 @@
 <!--<script src="../static/js/laydate/laydate.js"></script>-->
 <script src="../static/scripts/manage/manage.js"></script>
 <script>
+    $.ajaxSettings.async = true;
     $(document).ready(function() {
         // 时间
         laydate.render({
@@ -738,8 +739,9 @@
                          categoryCodes: 'customerAttr'
                     },
                     success: function(result){
-                        vm.customerAttr = result.msg.customerAttr;
-                        // console.log(vm.customerAttr)
+                        // console.log(result.msg.customerAttr)
+                        this.customerAttr = result.msg.customerAttr;
+
                     },
                     error: function(result) {
                         console.log(' 请求失败');
@@ -782,6 +784,33 @@
                     }
                 })
             },
+            // 单人查看变动历史
+            showOneChange: function(item,index) {
+                // 点击tr的时候，给它添加'active'
+                $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
+
+                this.isClicked = 1; // 显示右侧项目更新情况
+                vm.changeOneLists = []
+                // console.log(item.soCoreCode)
+                $.ajax({
+                    url: 'http://172.16.8.34:8089/iboss-prism/so/queryPipelineChangeHis',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        'opDataKey': item.soCoreCode
+                    },
+                    success: function(result){
+                        // console.log(result);
+                        for(var i = 0;i < result.root.length;i++){
+                            var root = result.root[i];
+                            vm.changeOneLists.push(root);
+                        }
+                    },
+                    error: function(){
+                        console.log('查看单人变动历史 请求失败');
+                    }
+                })
+            },
             // 表格查询
             showData: function(){
                 this.tableList.page = parseInt(this.clientPageNum);
@@ -795,7 +824,7 @@
                     dataType: 'json',
                     data: this.tableList,
                     success: function(result){
-                        console.log(result);
+                        // console.log(result);
                         vm.weightedSumTotal = result.oth.weightedSumTotal;
 
                         // 点击tr，
@@ -838,8 +867,8 @@
                         vm.clientPageNum = vm.clientPageSum;
                         vm.clientPageEnd = vm.clientPageTotal;
                         vm.showData();
-                        console.log(vm.clientPageTotal)
-                        console.log(vm.clientPageEnd)
+                        // console.log(vm.clientPageTotal)
+                        // console.log(vm.clientPageEnd)
                         break;
                     case 1:
                         if(vm.clientPageNum >= vm.clientPageSum)  return;
@@ -853,34 +882,6 @@
                         break;
 
                 }
-            },
-
-            // 单人查看变动历史
-            showOneChange: function(item,index) {
-                // 点击tr的时候，给它添加'active'
-                $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
-
-                this.isClicked = 1; // 显示右侧项目更新情况
-                vm.changeOneLists = []
-                // console.log(item.soCoreCode)
-                $.ajax({
-                    url: 'http://172.16.8.34:8089/iboss-prism/so/queryPipelineChangeHis',
-                    type: 'get',
-                    dataType: 'json',
-                    data: {
-                        'opDataKey': item.soCoreCode
-                    },
-                    success: function(result){
-                        // console.log(result);
-                        for(var i = 0;i < result.root.length;i++){
-                            var root = result.root[i];
-                            vm.changeOneLists.push(root);
-                        }
-                    },
-                    error: function(){
-                        console.log('查看单人变动历史 请求失败');
-                    }
-                })
             },
             // 搜索框赋值
             searchData: function(){
