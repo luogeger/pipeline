@@ -1,5 +1,11 @@
-var timeYear = '2018-01-02';
+$.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.34:8089/iboss-prism';
+var userInfo, timeYear ;
+$.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
+    timeYear = (datas.msg.currentDate).substring(0, 10);
+
+});
+
 var data = {
     "code": 200,
     "msg": [
