@@ -36,7 +36,16 @@
   }// opera
 
   .client{
-
+    .i-table{
+      tbody{
+        tr{
+          td:nth-child(5),
+          td:nth-child(7){
+            text-align: left;
+          }
+        }
+      }
+    }
   }// client
 
   .client-msg{
