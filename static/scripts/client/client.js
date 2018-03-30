@@ -204,7 +204,7 @@ var vm = new Vue({
         addClient: function () {
             this.getGroup();
             this.showPop();// 显示弹框
-            this.clearClient();// 清空弹窗信息
+            this.clearClient('c');// 清空弹窗信息
         },
 
         // 显示弹框
@@ -220,16 +220,27 @@ var vm = new Vue({
         },
 
         // 点击添加客户，清空弹窗信息
-        clearClient: function () {
-            vm.cSalesGroupCode = '';// 事业部
-            vm.cCustomerName = '';// 客户名称
-            vm.cCustomerCode = '';// 客户编号
-            vm.provinceIndex = -1;// 省份
-            vm.regionIndex = 0;// 区域
-            vm.cRemark = '';// 备注
-            vm.cGroupText = '';
-            vm.cIndustryLineText = '';
-            vm.cAddress = '';
+        clearClient: function (flag) {
+            if (flag ===  'c') {
+                vm.cSalesGroupCode = '';// 事业部
+                vm.cCustomerName = '';// 客户名称
+                vm.cCustomerCode = '';// 客户编号
+                vm.cRemark = '';// 备注
+                vm.cGroupText = '';
+                vm.cIndustryLineText = '';
+                vm.cAddress = '';
+            } else{
+                vm.provinceIndex = -1;// 省份
+                vm.regionIndex = 0;// 区域
+                vm.mContactName = '';
+                vm.mDepartmentName = '';
+                vm.mTitle   = '';
+                vm.mTelPhone    = '';
+                vm.mEmail   = '';
+                vm.mAddress = '';
+                vm.mRemark  = '';
+            }
+
         },
 
         // 确认客户添加
@@ -267,7 +278,7 @@ var vm = new Vue({
             vm.addMsgShow = false;
             this.getRegion();// 获取区域信息
             this.getProvince();// 获取省份信息
-
+            this.clearClient('m');// 清空弹窗信息
         },
 
         // 机要信息添加 收集字段  vm.firstClientCode
