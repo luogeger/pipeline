@@ -3,6 +3,7 @@ $.ajaxSettings.async = false;// 同步请求
 var objFn;
 var data = {
     results: '',
+    aYear: 2018,
     chart: {
         yAxis: [],
         sTarget: [],
@@ -37,8 +38,9 @@ var data = {
     },
 };
 
-$.getJSON('../static/json/one1.json', function (results) {
-    data.results = results.msg;
+$.getJSON(PATH +'/a/contractVolume?aYear='+ data.aYear, function (datas) {
+    console.log(datas)
+    data.results = datas.msg;
 });
 
 //  处理数据
