@@ -5,6 +5,7 @@ var vm = new Vue({
         industry: [],// 行业线
         hDropText: '',// 行业下拉框文字
         clientSubmit: false,
+        msgSubmit: false,
 
         // 分页
         clientPageTotal: 0,// 全部数据
@@ -204,7 +205,7 @@ var vm = new Vue({
         addClient: function () {
             this.getGroup();
             this.showPop();// 显示弹框
-            this.clearClient();// 清空弹窗信息
+            this.clearClient('c');// 清空弹窗信息
         },
 
         // 显示弹框
@@ -220,16 +221,28 @@ var vm = new Vue({
         },
 
         // 点击添加客户，清空弹窗信息
-        clearClient: function () {
-            vm.cSalesGroupCode = '';// 事业部
-            vm.cCustomerName = '';// 客户名称
-            vm.cCustomerCode = '';// 客户编号
-            vm.provinceIndex = -1;// 省份
-            vm.regionIndex = 0;// 区域
-            vm.cRemark = '';// 备注
-            vm.cGroupText = '';
-            vm.cIndustryLineText = '';
-            vm.cAddress = '';
+        clearClient: function (flag) {
+            if (flag ===  'c') {
+                vm.cSalesGroupCode = '';// 事业部
+                vm.cCustomerName = '';// 客户名称
+                vm.cCustomerCode = '';// 客户编号
+                vm.cRemark = '';// 备注
+                vm.cGroupText = '';
+                vm.cIndustryLineText = '';
+                vm.cAddress = '';
+            } else{
+                vm.provinceIndex = -1;// 省份
+                vm.regionIndex = 0;// 区域
+                vm.mProvinceCode = '';
+                vm.mContactName = '';
+                vm.mDepartmentName = '';
+                vm.mTitle   = '';
+                vm.mTelPhone    = '';
+                vm.mEmail   = '';
+                vm.mAddress = '';
+                vm.mRemark  = '';
+            }
+
         },
 
         // 确认客户添加
@@ -262,16 +275,16 @@ var vm = new Vue({
 
 
         // 添加 机要信息 按钮事件
+        // ====================================
         addMsg: function () {
+            vm.msgSubmit = false;
             vm.dialogShow = false;
             vm.addMsgShow = false;
             this.getRegion();// 获取区域信息
             this.getProvince();// 获取省份信息
-
+            this.clearClient('m');// 清空弹窗信息
         },
-
         // 机要信息添加 收集字段  vm.firstClientCode
-        // ====================================
         addMsgConfirm: function () {
             var addMsgObj = {
                 customerCode:      vm.firstClientCode,//
@@ -300,6 +313,19 @@ var vm = new Vue({
             //this.hidePop();
         },
 
+
+
+        // 编辑 机要信息 按钮事件
+        // ====================================
+        editMsg: function () {
+            vm.msgSubmit = true;
+            vm.dialogShow = false;
+            vm.addMsgShow = false;
+        },
+
+        editMsgConfirm: function () {
+            this.hidePop();
+        },
 
         selectRegion: function (code) {
             vm.mRegionCode = code;
@@ -366,8 +392,7 @@ var vm = new Vue({
             };
 
             this.$http.get(PATH +'/crm/addOrUpdateCustomer', {params: editObj}).then(function (datas){
-                console.log(datas)
-                if (datas.body.code == 201) {
+                if (datas.body.code === 201) {
                     toastr.error(datas.body.msg)
                     return;
                 }

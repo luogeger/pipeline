@@ -50,6 +50,11 @@
                     <i class="fa fa-plus"></i>
                     <span>添加客户</span>
                 </div>
+
+                <div class="btn btn-theme">
+                    <i class="fa fa-mail-reply-all"></i>
+                    <span>导入</span>
+                </div>
             </div>
             <div class="pull-right">
                 <div class="client-page page-css">
@@ -153,7 +158,8 @@
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                    <td @click="editMsg"
+                    ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                 </tr>
             </tbody>
         </table>
@@ -352,7 +358,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div @click="addMsgConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="!msgSubmit" @click="addMsgConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div>
