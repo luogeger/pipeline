@@ -18,7 +18,8 @@ $max-width: 200px;
   vertical-align: middle;
   line-height: $height-sm - 2;
 
-  .dropdown-label, .dropdown{
+  .dropdown-label, .dropdown,
+  .dropdown-zTree {
     display: inline-block;
   }
 
@@ -28,7 +29,8 @@ $max-width: 200px;
     line-height: $height-sm;
   }
 
-  .dropdown{
+  .dropdown,
+  .dropdown-zTree {
     position: relative;
     height: $height-sm;
     color: $text-col;

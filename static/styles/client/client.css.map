@@ -1,0 +1,7 @@
+{
+"version": 3,
+"mappings": "AACE;;iBAEW;EACT,OAAO,EAAE,IAAI;EACb,UAAU,EAAE,IAAI;EAChB,gBAAgB,EAAE,IAAI;AAKtB,kBAAI;EACF,KAAK,EAAE,IAAI;AAEb,mCAAqB;EACnB,YAAY,EAAE,IAAI;AAOlB,0CAAiB;EACf,KAAK,EAAE,KAAK;AAKd,2CAAiB;EACf,KAAK,EAAE,KAAK;AAgBlB,kBAAY;EACV,cAAc,EAAE,IAAI",
+"sources": ["client.scss"],
+"names": [],
+"file": "client.css"
+}
