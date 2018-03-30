@@ -1,9 +1,109 @@
 @charset "utf-8";
 
+html,
+body {
+  height: 100%;
+}
+
+// 登录
+.description {
+  max-width: 1400px;
+  margin: 2% auto;
+  margin-top: 13%;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0, 0, 0, .6);
+  h1 {
+    font-size: 60px;
+    color: #fff;
+    margin-bottom: 20px;
+  }
+  p {
+    font-size: 24px;
+  }
+}
 .login-wrapper {
-  width: 500px;
   background-color: rgba(0, 0, 0, .48);
+  font-size: 14px;
+  color: #fff;
+  width: 500px;
   position: absolute;
+  top: 60px;
   right: 0;
   bottom: 0;
+  padding-top: 10%;
+
+  .login-title{
+    color: #fff;
+    font-size: 26px;
+    padding: 0 30px;
+    margin-bottom: 30px;
+  }
+  .login-con {
+    padding: 0 30px;
+
+    .block-wrapper {
+      margin-bottom: 20px;
+      .input-group {
+        width: 100%;
+        .fa {
+          position: absolute;
+          margin-left: 15px;
+          margin-top: 17px;
+          font-size: 24px;
+          color: #6e6e6e;
+        }
+
+        .input-group-form {
+          padding-left: 50px;
+          height: 58px;
+          width: 100%;
+          font-size: 16px;
+          border-radius: 4px;
+        }
+      }
+    }
+
+    a {
+      color: #fff;
+      &:hover,
+      &:active {
+        color: #eee;
+      }
+    }
+
+    .error {
+      margin: 15px 0;
+      color: red;
+    }
+    .btn-lg {
+      width: 100%;
+      padding: 16px;
+    }
+  }
+}
+
+// 修改密码
+.edit-wrapper {
+  width: 40%;
+  margin: 10% auto;
+
+  .block-wrapper {
+    margin-top: 15px;
+    .star {
+      color: red;
+      position: absolute;
+      margin-left: -10px;
+    }
+    .input-group-label {
+      width: 150px;
+      text-align: right;
+    }
+    .input-group-form {
+      width: 250px;
+      height: 40px;
+    }
+  }
+  .error {
+    color: red;
+  }
 }

@@ -1,3 +1,80 @@
+html,
+body {
+  height: 100%; }
 
+.description {
+  max-width: 1400px;
+  margin: 2% auto;
+  margin-top: 13%;
+  color: #fff;
+  text-shadow: 0 0 5px rgba(0, 0, 0, 0.6); }
+  .description h1 {
+    font-size: 60px;
+    color: #fff;
+    margin-bottom: 20px; }
+  .description p {
+    font-size: 24px; }
+
+.login-wrapper {
+  background-color: rgba(0, 0, 0, 0.48);
+  font-size: 14px;
+  color: #fff;
+  width: 500px;
+  position: absolute;
+  top: 60px;
+  right: 0;
+  bottom: 0;
+  padding-top: 10%; }
+  .login-wrapper .login-title {
+    color: #fff;
+    font-size: 26px;
+    padding: 0 30px;
+    margin-bottom: 30px; }
+  .login-wrapper .login-con {
+    padding: 0 30px; }
+    .login-wrapper .login-con .block-wrapper {
+      margin-bottom: 20px; }
+      .login-wrapper .login-con .block-wrapper .input-group {
+        width: 100%; }
+        .login-wrapper .login-con .block-wrapper .input-group .fa {
+          position: absolute;
+          margin-left: 15px;
+          margin-top: 17px;
+          font-size: 24px;
+          color: #6e6e6e; }
+        .login-wrapper .login-con .block-wrapper .input-group .input-group-form {
+          padding-left: 50px;
+          height: 58px;
+          width: 100%;
+          font-size: 16px;
+          border-radius: 4px; }
+    .login-wrapper .login-con a {
+      color: #fff; }
+      .login-wrapper .login-con a:hover, .login-wrapper .login-con a:active {
+        color: #eee; }
+    .login-wrapper .login-con .error {
+      margin: 15px 0;
+      color: red; }
+    .login-wrapper .login-con .btn-lg {
+      width: 100%;
+      padding: 16px; }
+
+.edit-wrapper {
+  width: 40%;
+  margin: 10% auto; }
+  .edit-wrapper .block-wrapper {
+    margin-top: 15px; }
+    .edit-wrapper .block-wrapper .star {
+      color: red;
+      position: absolute;
+      margin-left: -10px; }
+    .edit-wrapper .block-wrapper .input-group-label {
+      width: 150px;
+      text-align: right; }
+    .edit-wrapper .block-wrapper .input-group-form {
+      width: 250px;
+      height: 40px; }
+  .edit-wrapper .error {
+    color: red; }
 
 /*# sourceMappingURL=login.css.map */
