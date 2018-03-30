@@ -285,7 +285,7 @@
                             <li v-for="(item, index) in regionList"
                                 v-text="item.text"
                                 @click="selectRegion(item.code, index)"
-                                :class="{'area-active': index == regionIndex}"
+                                :class="{'area-active': item.code == mRegionCode}"
                             ></li>
                         </ul>
                     </div>

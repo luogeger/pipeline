@@ -103,7 +103,8 @@ var vm = new Vue({
             region = region || 'region';
             this.$http.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
                 vm.regionList = datas.body.msg.region;
-                vm.cRegionCode = datas.body.msg.region[0].code;// 默认区域选中第一个
+                vm.mRegionCode = datas.body.msg.region[0].code;// 默认区域选中第一个
+
             });
         },// 区域
 
@@ -112,7 +113,8 @@ var vm = new Vue({
             province = province || 'regionHd';
             this.$http.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
                 vm.provinceList = datas.body.msg[province];
-                vm.cProvinceCode = datas.body.msg[province][0].code;
+                //vm.cProvinceCode = datas.body.msg[province][0].code;
+
             });
         },// 省份
 
@@ -272,22 +274,42 @@ var vm = new Vue({
         // ====================================
         addMsgConfirm: function () {
             var addMsgObj = {
+                customerCode:      vm.firstClientCode,//
                 salesStaffCode:    vm.mSalesStaffCode,
-                customerCode:      vm.mCustomerCode,
                 salesStaffName:    vm.mSalesStaffName,
                 contactName:       vm.mContactName,
-                regionCode:        vm.mRegionCode,
-                provinceCode:      vm.mProvinceCode,
+                regionCode:        vm.mRegionCode,// 区域
+                provinceCode:      vm.mProvinceCode,// 省份
                 departmentName:    vm.mDepartmentName,
                 title:             vm.mTitle,
-                telPhone:          vm.mTelPhone,
+                telphone:          vm.mTelPhone,
                 email:             vm.mEmail,
                 address:           vm.mAddress,
                 remark:            vm.mRemark,
-                //TODO region, contactName， contactCode
             };
             console.log(addMsgObj)
+            this.$http.get(PATH +'/crm/addOrUpdateCustomerContact', {params: addMsgObj}).then(function (datas){
+                if (datas.body.code === 201) {
+                    toastr.error(datas.body.msg)
+                    return;
+                }
+                this.hidePop();
+                this.getClient();
+                toastr.success('添加客户机要信息成功');
+            });
             //this.hidePop();
+        },
+
+
+        selectRegion: function (code) {
+            vm.mRegionCode = code;
+            vm.provinceIndex = -1;
+            vm.getProvince(code)
+        },
+
+        selectProvince: function (code, index) {
+            vm.provinceIndex = index;
+            vm.mProvinceCode = code;
         },
 
 
@@ -359,17 +381,6 @@ var vm = new Vue({
 
 
 
-        selectRegion: function (code, index) {
-            vm.regionIndex = index;
-            vm.cRegionCode = code;
-            vm.provinceIndex = -1;
-            vm.getProvince(code)
-        },
-
-        selectProvince: function (code, index) {
-            vm.provinceIndex = index;
-            vm.cProvinceCode = code;
-        },
 
         // 行业里的点击事件
         hDrop: function (text) {
