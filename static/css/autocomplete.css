@@ -1,0 +1,59 @@
+@CHARSET "UTF-8";
+
+/********************************
+A jQuery plugin for search hints
+
+Author: Lorenzo Cioni 
+https://github.com/lorecioni
+********************************/
+
+.autocomplete-container {
+	position: relative;
+}
+
+.autocomplete-button {
+	font-family: inherit;
+	border: none;
+	background-color: #ed6d00;
+	color: white;
+	padding: 8px;
+	float: left;
+	cursor: pointer;
+	border-radius: 0px 3px 3px 0px;
+	transition: all 0.2s ease-out 0s;
+	margin: 0.5px 0px 0px -1px;
+}
+
+.autocomplete-button:hover {
+	background-color: #ff8319;
+}
+
+.proposal-box {
+	position: absolute;
+	z-index: 1;
+	height: auto;
+	border-radius: 4px;
+	border-left: 1px solid rgba(0, 0, 0, 0.11);
+	border-right: 1px solid rgba(0, 0, 0, 0.11);
+}
+
+.proposal-list {
+	list-style: none;
+	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.44);
+}
+
+.proposal-list li {
+	text-align: left;
+	padding: 0 5px;
+	font-family: inherit;
+	border-bottom: 1px solid #DDDEE1;
+	height: 30px;
+	line-height: 30px;
+	background-color: #fff;
+	cursor: pointer;
+}
+
+li.proposal.selected {
+	background-color: #f7a259;
+	color: white;
+}

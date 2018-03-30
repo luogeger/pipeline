@@ -39,7 +39,7 @@
             //载入CSS配件
             link: function (href, fn, cssname) {
                 //未设置路径，则不主动加载css
-                if (!laydate.path) return;
+                // if (!laydate.path) return;
 
                 var head = document.getElementsByTagName("head")[0], link = document.createElement('link');
                 if (typeof fn === 'string') cssname = fn;

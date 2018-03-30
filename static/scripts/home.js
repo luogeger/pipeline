@@ -174,5 +174,5 @@ var data = {
 
 $('.nav-top-panels').iTopNav(data.msg);
 
-// loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'manage/manage.html');
 loadMainPage('.content-item', 'client/client.html');

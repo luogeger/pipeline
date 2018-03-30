@@ -38,7 +38,7 @@
 
       th,
       td {
-        
+        min-width: 45px ;
         padding-top: 12px;
         padding-bottom: 12px;
       }
@@ -50,6 +50,11 @@
           &:active,
           &.active {
             background-color: #fad3b2 !important;
+          }
+
+          td {
+            max-width: 250px;
+            word-break: break-all;
           }
         }
       }
@@ -144,7 +149,6 @@
             float: left;
             color: #242424;
             cursor: pointer;
-            margin-bottom: 5px;
           }
           .active {
             background-color: #fad3b2;
@@ -173,7 +177,7 @@
         border-bottom: 1px solid #c9c9c9;
         line-height: 45px;
         color: #696969;
-        margin: 0 5px;
+        //margin: 0 5px;
       }
       .content {
         padding: 15px 5px;
@@ -239,6 +243,10 @@
   margin-top: 6px;
 }
 
+.i-table thead {
+  background-color: #ed6d00;
+  color: #fff;
+}
 .autoComplete-wrapper {
   display: inline-block;
   vertical-align: middle;

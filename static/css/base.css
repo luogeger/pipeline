@@ -474,13 +474,15 @@ input.disabled {
   display: inline-block;
   vertical-align: middle;
   line-height: 28px; }
-  .dropdown-wrap .dropdown-label, .dropdown-wrap .dropdown {
+  .dropdown-wrap .dropdown-label, .dropdown-wrap .dropdown,
+  .dropdown-wrap .dropdown-zTree {
     display: inline-block; }
   .dropdown-wrap .dropdown-label {
     padding: 0 10px;
     vertical-align: bottom;
     line-height: 30px; }
-  .dropdown-wrap .dropdown {
+  .dropdown-wrap .dropdown,
+  .dropdown-wrap .dropdown-zTree {
     position: relative;
     height: 30px;
     color: #595959;
@@ -490,11 +492,14 @@ input.disabled {
     cursor: pointer;
     text-align: right;
     transition: 0.2s all ease-in-out; }
-    .dropdown-wrap .dropdown:hover {
+    .dropdown-wrap .dropdown:hover,
+    .dropdown-wrap .dropdown-zTree:hover {
       border-color: #ED6C1C; }
-      .dropdown-wrap .dropdown:hover i {
+      .dropdown-wrap .dropdown:hover i,
+      .dropdown-wrap .dropdown-zTree:hover i {
         color: #ED6C1C; }
-    .dropdown-wrap .dropdown .dropdown-default {
+    .dropdown-wrap .dropdown .dropdown-default,
+    .dropdown-wrap .dropdown-zTree .dropdown-default {
       min-width: 122px;
       max-width: 200px;
       display: inline-block;
@@ -505,10 +510,12 @@ input.disabled {
       /* 文字超出用...*/
       white-space: nowrap;
       /* 文字不换行*/ }
-    .dropdown-wrap .dropdown i {
+    .dropdown-wrap .dropdown i,
+    .dropdown-wrap .dropdown-zTree i {
       padding: 0px 10px;
       transition: all 0.2s ease-in-out; }
-    .dropdown-wrap .dropdown > ul {
+    .dropdown-wrap .dropdown > ul,
+    .dropdown-wrap .dropdown-zTree > ul {
       overflow: auto;
       max-height: 300px;
       padding: 5px 0;
@@ -523,7 +530,8 @@ input.disabled {
       z-index: 1;
       cursor: pointer;
       box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
-      .dropdown-wrap .dropdown > ul li {
+      .dropdown-wrap .dropdown > ul li,
+      .dropdown-wrap .dropdown-zTree > ul li {
         padding: 0 10px;
         line-height: 30px;
         text-align: left;
@@ -533,9 +541,11 @@ input.disabled {
         white-space: nowrap;
         /* 文字不换行*/
         transition: all 0.1s ease-in-out; }
-        .dropdown-wrap .dropdown > ul li:hover {
+        .dropdown-wrap .dropdown > ul li:hover,
+        .dropdown-wrap .dropdown-zTree > ul li:hover {
           background-color: #f3f3f3; }
-      .dropdown-wrap .dropdown > ul .li-checkbox {
+      .dropdown-wrap .dropdown > ul .li-checkbox,
+      .dropdown-wrap .dropdown-zTree > ul .li-checkbox {
         color: #ffffff !important;
         background-color: #FF8A41 !important; }
   .dropdown-wrap .dropdown-shadow {
