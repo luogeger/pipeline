@@ -12,6 +12,9 @@
   width: 300px; }
 .main .opera .client-name .input-group-form {
   width: 300px; }
+.main .client .i-table tbody tr td:nth-child(5),
+.main .client .i-table tbody tr td:nth-child(7) {
+  text-align: left; }
 .main .table-opera {
   padding-bottom: 10px; }
 

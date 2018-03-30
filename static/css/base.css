@@ -450,7 +450,7 @@ input.disabled {
   line-height: 30px; }
 .input-group .input-group-form {
   height: 30px;
-  width: 152px;
+  width: 162px;
   font-size: 14px;
   border-radius: 4px; }
 .input-group .input-group-btn {
@@ -503,6 +503,7 @@ input.disabled {
       min-width: 122px;
       max-width: 200px;
       display: inline-block;
+      height: 28px;
       float: left;
       text-align: left;
       overflow: hidden;
