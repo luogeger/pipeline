@@ -77,6 +77,7 @@ var vm = new Vue({
 
         // upload
         uploadFileName: '',
+        clearShow: true,
 
     },// data
 
@@ -128,22 +129,33 @@ var vm = new Vue({
             vm.uploadShow = false;
         },
 
+
         // 确认导入
         uploadConfirm: function () {
             var file = importFile.files[0];
-            //vm.uploadFileName = importFile.files[0].name;
+            vm.uploadFileName = importFile.files[0].name;
             if(importFile.files[0] == undefined) {
                 toastr.warning('请选择上传的文件 ！');
                 return
             };
             var fd = new FormData();
             fd.append('crmFile', file);
+            var obj = {
+                crmFile: fd,
+            };
+
             console.log(vm.uploadFileName);
             console.log(fd);
-            axios.post(PATH +'/crm/importCrm', {crmFile: fd}).then(function (datas){
+            console.log(obj)
+            axios.post('/iboss-prism/crm/importCrm', {params: obj}).then(function (datas){
                 console.log(datas);
-                toastr.success('文件上传成功 ！');
-                this.hidePop();
+                if (datas.data.code === 201) {
+                    toastr.error(datas.data.msg)
+                } else{
+                    toastr.success('文件上传成功 ！');
+                    vm.hidePop();
+                }
+
             });
         },
 
