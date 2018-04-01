@@ -106,7 +106,9 @@ input[type="radio"] {
   box-sizing: border-box; // 1
   padding: 0; // 2
 }
-
+input[type="file"]{
+  border: none !important;
+}
 button {
   overflow: visible;
 }

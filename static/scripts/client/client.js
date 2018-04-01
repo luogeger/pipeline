@@ -72,9 +72,11 @@ var vm = new Vue({
         dialogShow: true,
         addClientShow: true,
         addMsgShow: true,
+        uploadShow: true,
 
 
-        // delete 要删除的变量
+        // upload
+        uploadFileName: '',
 
     },// data
 
@@ -87,24 +89,24 @@ var vm = new Vue({
 
         // 行业
         getIndustry: function (){
-            this.$http.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=industryLine').then(function (datas){
-                vm.industry = datas.body.msg.industryLine;
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=industryLine').then(function (datas){
+                vm.industry = datas.data.msg.industryLine;
             });
         },// 行业
 
         // 所属事业部
         getGroup: function () {
-            this.$http.get(PATH +'/oauth/queryUserInfo').then(function (datas){
-                vm.cSalesGroupList = datas.body.msg.mngSalesGroups;
+            axios.get(PATH +'/oauth/queryUserInfo').then(function (datas){
+                vm.cSalesGroupList = datas.data.msg.mngSalesGroups;
             });
         },
 
         // 区域
         getRegion: function (region) {
             region = region || 'region';
-            this.$http.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
-                vm.regionList = datas.body.msg.region;
-                vm.mRegionCode = datas.body.msg.region[0].code;// 默认区域选中第一个
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
+                vm.regionList = datas.data.msg.region;
+                vm.mRegionCode = datas.data.msg.region[0].code;// 默认区域选中第一个
 
             });
         },// 区域
@@ -112,12 +114,38 @@ var vm = new Vue({
         // 省份
         getProvince: function (province) {
             province = province || 'regionHd';
-            this.$http.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
-                vm.provinceList = datas.body.msg[province];
-                //vm.cProvinceCode = datas.body.msg[province][0].code;
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
+                vm.provinceList = datas.data.msg[province];
+                //vm.cProvinceCode = datas.data.msg[province][0].code;
 
             });
         },// 省份
+
+
+        // 导入
+        upload: function () {
+            vm.dialogShow = false;
+            vm.uploadShow = false;
+        },
+
+        // 确认导入
+        uploadConfirm: function () {
+            var file = importFile.files[0];
+            //vm.uploadFileName = importFile.files[0].name;
+            if(importFile.files[0] == undefined) {
+                toastr.warning('请选择上传的文件 ！');
+                return
+            };
+            var fd = new FormData();
+            fd.append('crmFile', file);
+            console.log(vm.uploadFileName);
+            console.log(fd);
+            axios.post(PATH +'/crm/importCrm', {crmFile: fd}).then(function (datas){
+                console.log(datas);
+                toastr.success('文件上传成功 ！');
+                this.hidePop();
+            });
+        },
 
         // 获取客户信息
         getClient: function (page, limit) {
@@ -125,13 +153,13 @@ var vm = new Vue({
                 page: page || 1,
                 limit: limit || this.clientPageMost,
             };
-            this.$http.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
-                vm.client = datas.body;
-                vm.clientPageTotal = datas.body.totalProperty;
-                vm.firstClientCode = datas.body.root[0].customerCode;
+            axios.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
+                vm.client = datas.data;
+                vm.clientPageTotal = datas.data.totalProperty;
+                vm.firstClientCode = datas.data.root[0].customerCode;
                 vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost)
                 vm.clientPageStart = (vm.clientPageNum *10 -9);
-                this.getClientMsg();
+                vm.getClientMsg();
                 if (vm.clientPageNum === vm.clientPageSum) {
                     vm.clientPageEnd = vm.clientPageTotal;
                     return;
@@ -143,8 +171,8 @@ var vm = new Vue({
         // 获取机要信息
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
-            this.$http.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
-                vm.clientMsg = datas.body;
+            axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
+                vm.clientMsg = datas.data;
             });
         },
 
@@ -218,6 +246,7 @@ var vm = new Vue({
             vm.dialogShow =     true;
             vm.addClientShow =  true;
             vm.addMsgShow =     true;
+            vm.uploadShow =     true;
         },
 
         // 点击添加客户，清空弹窗信息
@@ -262,9 +291,9 @@ var vm = new Vue({
 
         // 提交请求
         addClientURL: function (obj) {
-            this.$http.get(PATH +'/crm/addOrUpdateCustomer', {params: obj}).then(function (datas){
-                if (datas.body.code === 201) {
-                    toastr.error(datas.body.msg)
+            axios.get(PATH +'/crm/addOrUpdateCustomer', {params: obj}).then(function (datas){
+                if (datas.data.code === 201) {
+                    toastr.error(datas.data.msg)
                     return;
                 }
                 this.hidePop();
@@ -301,9 +330,9 @@ var vm = new Vue({
                 remark:            vm.mRemark,
             };
             console.log(addMsgObj)
-            this.$http.get(PATH +'/crm/addOrUpdateCustomerContact', {params: addMsgObj}).then(function (datas){
-                if (datas.body.code === 201) {
-                    toastr.error(datas.body.msg)
+            axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: addMsgObj}).then(function (datas){
+                if (datas.data.code === 201) {
+                    toastr.error(datas.data.msg)
                     return;
                 }
                 this.hidePop();
@@ -359,8 +388,8 @@ var vm = new Vue({
             vm.dialogShow = false;
             vm.addClientShow = false;
             this.clearClient();
-            this.$http.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
-                msg =  datas.body.msg;
+            axios.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
+                msg =  datas.data.msg;
 
                 vm.cGroupText           = '金融客户事业部';
                 vm.cSalesGroupCode      = msg.salesGroupCode;
@@ -391,9 +420,9 @@ var vm = new Vue({
 
             };
 
-            this.$http.get(PATH +'/crm/addOrUpdateCustomer', {params: editObj}).then(function (datas){
-                if (datas.body.code === 201) {
-                    toastr.error(datas.body.msg)
+            axios.get(PATH +'/crm/addOrUpdateCustomer', {params: editObj}).then(function (datas){
+                if (datas.data.code === 201) {
+                    toastr.error(datas.data.msg)
                     return;
                 }
 

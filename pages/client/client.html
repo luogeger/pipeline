@@ -51,8 +51,8 @@
                     <span>添加客户</span>
                 </div>
 
-                <div class="btn btn-theme">
-                    <i class="fa fa-mail-reply-all"></i>
+                <div @click="upload" class="btn btn-theme">
+                    <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
             </div>
@@ -361,6 +361,24 @@
                         <div v-if="!msgSubmit" @click="addMsgConfirm" class="btn btn-theme">提交</div>
                         <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">提交</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入 -->
+        <div :class="{'hide': uploadShow}" class="dialog-content upload-pop">
+            <div class="title clearfix">
+                <p class="pull-left">导入文件</p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+                <div class="select-file">
+                    <label for="importFile">选择文件</label>
+                    <input id="importFile" class="" type="file">
+                </div>
+                <div class="btn-group">
+                    <div @click="uploadConfirm" class="btn btn-theme">确认</div>
+                    <div @click="hidePop" class="btn btn-border">取消</div>
                 </div>
             </div>
         </div>

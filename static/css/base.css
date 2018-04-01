@@ -93,6 +93,9 @@ input[type="radio"] {
   box-sizing: border-box;
   padding: 0; }
 
+input[type="file"] {
+  border: none !important; }
+
 button {
   overflow: visible; }
 
@@ -418,6 +421,7 @@ textarea:hover {
   border-color: #ED6C1C; }
 
 input:not(.i-date-picker):focus,
+input:not(input[type="file"]):focus,
 textarea:focus {
   outline: 0;
   border-color: #ED6C1C;
