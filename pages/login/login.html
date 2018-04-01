@@ -1,7 +1,84 @@
 <link rel="stylesheet" href="../static/styles/login/login.css">
-
+<style>
+    #navContent {
+        background: #1d242c url("../../static/images/bg.png") no-repeat;
+        background-size: cover;
+        background-position: top center;
+    }
+    #wrapper #navContent .content-item {
+        background: transparent;
+    }
+</style>
 <div class="main" id="app">
+    <div class="description">
+        <h1>Pipeline管理平台</h1>
+        <p>统计报表、项目管理系统</p>
+    </div>
     <div class="login-wrapper">
-
+        <div class="login-title">登录平台账号</div>
+        <div class="login-con">
+            <div class="block-wrapper">
+                <div class="input-group">
+                    <i class="fa fa-user-o"></i>
+                    <input onkeydown="vm.keybordEnter()" v-model="loginList.loginAccount" type="text" class="input-group-form" placeholder="请输入登录账号">
+                </div>
+            </div>
+            <div class="block-wrapper">
+                <div class="input-group">
+                    <i class="fa fa-key"></i>
+                    <input onkeydown="vm.keybordEnter()" v-model="loginList.loginPass" type="password" class="input-group-form" placeholder="输入您的密码">
+                </div>
+            </div>
+            <div style="display: none">
+                <input id="zidong" type="checkbox"> <label @click="remeberMe" for="zidong">下次自动登录</label>
+            </div>
+            <div style="text-align: right">
+                <a href="">忘记密码</a>
+            </div>
+            <p class="error">{{ msg }}</p>
+            <button @click="submitHandle" class="btn btn-lg btn-theme" type="button">登录</button>
+        </div>
     </div>
 </div>
+<script>
+    var vm = new Vue({
+        el: '#app',
+        data: function(){
+            return {
+                loginList: {},
+                msg: ''
+            }
+        },
+        methods: {
+            // 登陆
+            submitHandle: function() {
+                $.ajax({
+                    url: 'http://172.16.8.34:8089/iboss-prism/oauth/login',
+                    type: 'get',
+                    data: this.loginList,
+                    dataType: 'json',
+                    success: function(result){
+                        console.log(result)
+                        if (result.code === 201) {
+                            vm.msg = result.msg
+                            return;
+                        }
+                        // window.location.href = ''
+                    },
+                    error: function(result){
+                        console.log('登陆 请求失败')
+                    }
+                })
+            },
+            // 键盘回车登录
+            keybordEnter: function() {
+                var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+                if (ikeyCode == 13){
+                    this.submitHandle()
+                }
+            },
+            // 记住我
+            remeberMe: function() {}
+        }
+    })
+</script>

@@ -96,16 +96,11 @@
             </ul>
         </div>
     </div>
-    <!--<div class="input-group pull-right">-->
-        <!--<button class="btn btn-sm btn-theme" style="margin-right: 10px">查询</button>-->
-        <!--<button class="btn btn-sm btn-border">重置</button>-->
-    <!--</div>-->
 </div>
 
 <div class="main-wrapper">
-    <div class="data">
+    <div :class="{maxWidth: ismaxWidth}" class="data">
         <div class="subInformation">
-            <!-- -->
             <button @click="addData" data-toggle="modal" data-target=".myModal" class="btn btn-sm btn-theme modelDomBtn" style="margin-right: 10px">新增 Pipeline</button>
             加权金额总计：<span class="theme-color">{{  weightedSumTotal }}</span>
             <div class="pull-right">
@@ -129,7 +124,7 @@
                 </div>
             </div>
         </div>
-        <div class="table-wrapper" style="height:500px;overflow: auto">
+        <div class="table-wrapper" style="overflow: auto">
             <div style="width: 3500px">
                 <table class="i-table i-table-border">
                         <thead>
@@ -211,10 +206,10 @@
             </div>
         </div>
     </div>
-    <div class="updateCase">
+    <div class="updateCase" :class="{'hide': updateCaseShow}">
         <div class="title clearfix">
             <span>项目更新情况</span>
-            <a class="close pull-right" href=""><i class="fa fa-close"></i></a>
+            <a @click="closeUpdateCase" class="close pull-right" href="javascript:;"><i class="fa fa-close"></i></a>
         </div>
         <div class="content">
             <ul class="block">
@@ -252,8 +247,7 @@
                                 <div class="dropdown-wrap">
                                     <i class="star">*</i>
                                     <span class="dropdown-label">事业部：</span>
-                                    <!--<input type="hidden" id="salesGroupCodee" v-model="handleTemplate.salesGroupCode">-->
-                                    <div class="dropdown" :class="{'wrong-border': isnoNull === 1 }" >
+                                    <div class="dropdown">
                                         <span id="salesGroupCode" ref="salesGroupCode" class="selected dropdown-default">请选择</span>
                                         <i class="fa fa-angle-down"></i>
                                         <ul>
@@ -266,15 +260,13 @@
                                 <div class="input-group">
                                     <i class="star">*</i>
                                     <span class="input-group-label">负责销售:</span>
-                                    <!-- v-on:input ="inputFunc"-->
-                                    <input v-model="handleTemplate.salesStaffCode" value="" :class="{ 'wrong-border': isnoNull === 2 }" class="input-group-form" type="text">
+                                    <input v-model="handleTemplate.salesStaffCode" value="" class="input-group-form" type="text">
                                 </div>
                             </div>
                             <div class="block-wrapper">
                                 <!--TODO  如何获取对象下的数组-->
                                 <div class="input-group">
                                     <span class="input-group-label">负责售前:</span>
-                                    <!-- ref="preSaleStaffCode" -->
                                     <input v-model="preSaleStaffs.userCode" class="input-group-form" type="text">
                                 </div>
                             </div>
@@ -309,7 +301,7 @@
                                 <div class="input-group">
                                     <i class="star">*</i>
                                     <span class="input-group-label">客户名称:</span>
-                                    <input v-model="handleTemplate.customerName" :class="{ 'wrong-border': isnoNull === 3 }" class="input-group-form noNull" type="text">
+                                    <input v-model="handleTemplate.customerName" class="input-group-form noNull" type="text">
                                 </div>
                             </div>
                             <div class="block-wrapper col-1">
@@ -326,7 +318,7 @@
                                 <div class="dropdown-wrap">
                                     <i class="star">*</i>
                                     <span class="dropdown-label">行业线：</span>
-                                    <div class="dropdown noNull" :class="{ 'wrong-border': isnoNull === 5 }">
+                                    <div class="dropdown noNull">
                                         <span id="industryLineCode" ref="industryLineCode" class="selected dropdown-default">请选择</span>
                                         <i class="fa fa-angle-down"></i>
                                         <ul>
@@ -355,7 +347,7 @@
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label" style="width: auto">预计签约金额（万元）:</span>
-                                        <input v-model="solutionSub.expectSignSum" :class="{ 'wrong-border': isnoNull === 6 }" class="input-group-form noNull" type="text" style="text-align: right">
+                                        <input v-model="solutionSub.expectSignSum" class="input-group-form noNull" type="text" style="text-align: right">
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -373,7 +365,7 @@
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
                                         <span class="dropdown-label">成功率：</span>
-                                        <div class="dropdown noNull" :class="{ 'wrong-border': isnoNull === 7 }">
+                                        <div class="dropdown noNull">
                                             <span id="successRateCode" ref="successRateCode" class="selected dropdown-default">请选择</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
@@ -386,7 +378,7 @@
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
                                         <span class="dropdown-label">项目阶段：</span>
-                                        <div class="dropdown noNull" :class="{ 'wrong-border': isnoNull === 8 }">
+                                        <div class="dropdown noNull">
                                             <span id="progressCode" ref="progressCode" class="selected dropdown-default">请选择</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
@@ -500,7 +492,6 @@
     </div>
 </div>
 </div>
-<!--<script src="../static/js/laydate/laydate.js"></script>-->
 <script src="../static/scripts/manage/manage.js"></script>
 <script>
     $.ajaxSettings.async = true;
@@ -518,7 +509,7 @@
         // 预计签约时间
         laydate.render({
             elem: '#signDate' //指定元素
-
+            ,type: 'month'
         });
 
     })
@@ -575,6 +566,10 @@
         el: '#app',
         data: function(){
             return {
+                // 关闭表格右侧项目更新情况
+                updateCaseShow: false,
+                ismaxWidth: false,
+
                 customerAttr: [],  // 客户属性
                 customerLists: [],     // 客户信息
                 provinceLists: [], // 客户所在省份
@@ -641,6 +636,11 @@
             this.showChange();
         },
         methods: {
+            // 关闭表格右侧内容
+            closeUpdateCase: function() {
+                this.updateCaseShow = true
+                this.ismaxWidth = true
+            },
             // 加权金额相加
             addSum: function(sumList){
                 var sum = 0;
@@ -718,17 +718,14 @@
                 vm.addMsgShow = false;
             },
             allHide: function () {
-                vm.dialogShow =     true;
-                vm.addMsgShow =     true;
+                vm.dialogShow = true;
+                vm.addMsgShow = true;
             },
             activeProvince: function(code,index){
                 this.isActiveProvince = index;
 
                 this.handleTemplate.provinceCode = code;
             },
-            // focusNone: function() {
-            //     this.isnoNull = 0
-            // },
             // 获取客户属性
             customerData: function(){
                 $.ajax({
@@ -740,7 +737,7 @@
                     },
                     success: function(result){
                         // console.log(result.msg.customerAttr)
-                        this.customerAttr = result.msg.customerAttr;
+                        vm.customerAttr = result.msg.customerAttr;
 
                     },
                     error: function(result) {
@@ -752,7 +749,6 @@
             searchCustomer: function(){
                 $.ajax({
                     url: 'http://172.16.8.34:8089/iboss-prism/crm/queryCustomerList',
-                    // url: 'http://rapapi.org/mockjsdata/32344/crm/queryCustomer',
                     //  url: 'manage/queryCustomer.json',
                     type: 'get',
                     dataType: 'json',
@@ -788,6 +784,8 @@
             showOneChange: function(item,index) {
                 // 点击tr的时候，给它添加'active'
                 $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
+                this.updateCaseShow = false
+                this.ismaxWidth = false
 
                 this.isClicked = 1; // 显示右侧项目更新情况
                 vm.changeOneLists = []
@@ -856,6 +854,10 @@
             calcPage: function (type, num) {
                 type === 'client' ? vm.clientPage(type, num) : vm.msgPage(type, num);
             },// calcPage
+            // 分页输入回车事件
+            clientEnter: function () {
+                vm.getClient();
+            },
             clientPage: function (type, num) {
                 switch(num)
                 {
@@ -908,13 +910,13 @@
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
                                 var pObj = {
-                                    id: treeList[i].id, pId: treeList[i].parentId, name: treeList[i].text,open:true, click:false
+                                    id: treeList[i].id, pId: treeList[i].parentId, name: treeList[i].text, t: treeList[i].text, open:true, click:false
                                 }
                                 zNodes.push(pObj);
                                 if(treeList[i].children != null) {
                                     for(var j = 0;j < treeList[i].children.length;j++) {
                                         var cObj = {
-                                            id:treeList[i].children[j].id, pId: treeList[i].children[j].parentId, name: treeList[i].children[j].text
+                                            id:treeList[i].children[j].id, pId: treeList[i].children[j].parentId, name: treeList[i].children[j].text,t: treeList[i].children[j].text,
                                         };
                                         zNodes.push(cObj);
                                     }
@@ -956,7 +958,6 @@
                                 console.log("获取客户所在省份请求失败")
                             }
                         })
-                        // vm.customerProvinceData();
                     },
                     error: function(result) {
                         console.log('搜索请求失败');
@@ -1063,11 +1064,9 @@
                                 }
                             }
                         }
-
-
-                        vm.handleTemplate = {}
-                        vm.preSaleStaffs = []
-                        vm.solutionSub = []
+                        // vm.handleTemplate = {}
+                        // vm.preSaleStaffs = []
+                        // vm.solutionSub = []
                     },
                     error: function(){
                         console.log('修改信息 请求失败');
@@ -1114,12 +1113,9 @@
 
                 vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
                 vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
-
-                // vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList)
-                // vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList)
-                console.log(vm.handleTemplate)
+                // console.log(vm.handleTemplate)
                 var paramm = $.param(vm.handleTemplate)
-                console.log(paramm)
+                // console.log(paramm)
 
                 $.ajax({
                     url: 'http://172.16.8.34:8089/iboss-prism/so/addOrUpdatePipeline',
@@ -1128,13 +1124,17 @@
                     data: paramm,
                     dataType: 'json',
                     success: function(result){
+                        if (result.code === 201) {
+                            toastr.error(result.msg)
+                            return;
+                        }
+
                         if(result.success){
                             vm.dialogShow = true;
                             vm.handleTemplate = {};  // 还原模板
                             vm.showData() // 再调用表格查询
-                        }else {
-                            alert(result.msg);
                         }
+                        toastr.success('添加客户成功');
                     },
                     error: function(){
                         console.log('提交 请求失败');
