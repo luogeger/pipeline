@@ -208,11 +208,16 @@ $(document).click(function () {
     $('.user-info').children('ul').addClass('hide');
 });
 
-
-
+// 退出登录
+$('.sign-out').click(function () {
+    $.getJSON(PATH +'/oauth/logout', function (datas) {
+        console.log(datas);
+        window.location.href = 'login/login.html';
+    })
+})
 
 
 // loadMainPage('.content-item', 'login/login.html');
 // loadMainPage('.content-item', 'login/password.html');
-// loadMainPage('.content-item', 'manage/manage.html');
-loadMainPage('.content-item', 'client/client.html');
+loadMainPage('.content-item', 'manage/manage.html');
+// loadMainPage('.content-item', 'client/client.html');

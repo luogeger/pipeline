@@ -244,6 +244,75 @@
   }
 }
 
+.opera{
+  >div{
+    float: left;
+  }
+  >div:not(:last-child){
+    margin-right: 10px;
+  }
+  .industry{
+
+  }// industry
+
+  .query-reset{
+  }// query-rest
+}// opera
+
+.client{
+  margin-top: 15px;
+  .table-opera {
+    margin-bottom: 15px;
+  }
+  .i-table{
+    margin-bottom: 20px;
+    tbody{
+      tr{
+        td:nth-child(5),
+        td:nth-child(7){
+          text-align: left;
+        }
+      }
+    }
+  }
+}// client
+
+// 导入
+.upload-pop{
+  min-width: 400px;
+  width: 400px;
+  height: 210px;
+  .main{
+    padding: 20px 40px;
+    .select-file{
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #DDDEE1;
+      border-radius: 4px;
+      label{
+        position: absolute;
+        background-color: #fff;
+        display: inline-block;
+        padding: 3px 10px;
+        cursor: pointer;
+        border-right: 1px solid #DDDEE1;
+        transition: .2s;
+        &:hover{
+          color: #ED6D00;
+        }
+      }
+      input{
+        margin-bottom: 1px;
+        font-size: 14px;
+      }
+    }
+    .btn-group{
+      margin-top: 60px;
+      text-align: right;
+    }
+  }
+}
+
 .star {
   color: #ff0000;
   position: absolute;
@@ -263,29 +332,22 @@
   >ul{
     display: none;
     position: absolute;
-    //top: $height-sm + 2;
     left: 0px;
-    //border-radius: $border-radius-base;
-    //background-color: $white;
     z-index: 1;
     cursor: pointer;
 
     li{
       padding: 0 10px;
-      //line-height: $height-sm;
       text-align: left;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      //@include transition(all, .1s);
       &:hover{
         background-color: transparent;
       }
     }
     .li-checkbox{
       display: none;
-      //color: $white !important;
-      //background-color: $theme-normal !important;
     }
   }
 }
