@@ -33,6 +33,7 @@ var vm = new Vue({
         cIndustryLineText : '',// 行业线
 
         // 添加的客户信息
+        clientMsgID: '',
         cSalesGroupList: [],
         cReportDate: timeYear,// 报备时间
         cSalesGroupCode: '',// 所属于事业部
@@ -376,7 +377,8 @@ var vm = new Vue({
         // 编辑 机要信息 按钮事件
         // ====================================
         editMsg: function (id) {
-            this.clearClientMsg();
+            vm.clientMsgID = id;
+            vm.clearClientMsg();
             vm.getRegion();
             axios.get(PATH +'/crm/queryCustomerContactOne?id=' +id)
                 .then(function (datas){
@@ -420,8 +422,37 @@ var vm = new Vue({
                 });
         },
 
-        editMsgConfirm: function () {
-            this.hidePop();
+        editMsgConfirm: function (id) {
+            var editMsgObj = {
+                id: vm.clientMsgID,
+                customerCode:      vm.firstClientCode,//
+                salesStaffCode:    vm.mSalesStaffCode,
+                salesStaffName:    vm.mSalesStaffName,
+                contactName:       vm.mContactName,
+                regionCode:        vm.mRegionCode,// 区域
+                provinceCode:      vm.mProvinceCode,// 省份
+                departmentName:    vm.mDepartmentName,
+                title:             vm.mTitle,
+                telphone:          vm.mTelPhone,
+                email:             vm.mEmail,
+                address:           vm.mAddress,
+                remark:            vm.mRemark,
+            };
+
+            axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: editMsgObj} ).then(function (datas) {
+               var msg = datas.data.msg;
+               var code = datas.data.code;
+               console.log(datas.data);
+               if (code === 201) {
+                   toastr.error(msg)
+                   return;
+               } else{
+                   vm.getClientMsg(vm.firstClientCode);
+                   toastr.success('编辑机要信息成功 ！');
+                   vm.hidePop();
+               }
+
+            });
         },
 
         selectRegion: function (code) {
@@ -494,8 +525,9 @@ var vm = new Vue({
                     return;
                 }
 
-                this.getClient();
-                this.hidePop();
+                vm.cCheckIndex = 0;
+                vm.getClient();
+                vm.hidePop();
                 toastr.success('修改客户成功 ！')
             });
         },
