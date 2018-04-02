@@ -141,14 +141,10 @@ var vm = new Vue({
             };
             var fd = new FormData();
             fd.append('crmFile', file);
-            var obj = {
-                crmFile: fd,
-            };
 
             console.log(vm.uploadFileName);
             console.log(fd);
-            console.log(obj)
-            axios.post('/iboss-prism/crm/importCrm', {params: obj}).then(function (datas){
+            axios.post('/iboss-prism/crm/importCrm', fd).then(function (datas){
                 console.log(datas);
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)

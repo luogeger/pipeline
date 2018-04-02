@@ -2774,7 +2774,8 @@ button.toast-close-button {
     border-color: #ff8319; }
 
 .i-table {
-  text-align: center; }
+  text-align: center;
+  background: url("../images/watermark.png") repeat left top; }
   .i-table thead {
     border-bottom: 0;
     font-weight: 500;
