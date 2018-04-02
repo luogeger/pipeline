@@ -17,5 +17,32 @@
   text-align: left; }
 .main .table-opera {
   padding-bottom: 10px; }
+.main .upload-pop {
+  min-width: 400px;
+  width: 400px;
+  height: 210px; }
+  .main .upload-pop .main {
+    padding: 20px 40px; }
+    .main .upload-pop .main .select-file {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid #DDDEE1;
+      border-radius: 4px; }
+      .main .upload-pop .main .select-file label {
+        position: absolute;
+        background-color: #fff;
+        display: inline-block;
+        padding: 3px 10px;
+        cursor: pointer;
+        border-right: 1px solid #DDDEE1;
+        transition: .2s; }
+        .main .upload-pop .main .select-file label:hover {
+          color: #ED6D00; }
+      .main .upload-pop .main .select-file input {
+        margin-bottom: 1px;
+        font-size: 14px; }
+    .main .upload-pop .main .btn-group {
+      margin-top: 60px;
+      text-align: right; }
 
 /*# sourceMappingURL=client.css.map */

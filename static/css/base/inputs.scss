@@ -8,6 +8,7 @@ textarea:hover{
 }
 
 input:not(.i-date-picker),
+input:not(input[type="file"]),
 textarea{
   &:focus{
     outline: 0;

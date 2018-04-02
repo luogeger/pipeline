@@ -1,13 +1,17 @@
 $.ajaxSettings.async = false;// 同步请求
-var PATH = 'http://172.16.8.34:8089/iboss-prism';
+var PATH = 'http://172.16.8.130:8080/iboss-prism';
 var timeYear,
     userName,
-    userCode;
+    userCode,
+    userAvatar;
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg = datas.msg;
     timeYear = (msg.currentDate).substring(0, 10);
     userName = msg.userName;
     userCode = msg.userCode;
+    userAvatar = msg.avatar;
+    $('.user>img').attr('src', userAvatar)
+    $('.user .user-name').text(userName)
 });
 
 var data = {
@@ -184,7 +188,31 @@ var data = {
 
 $('.nav-top-panels').iTopNav(data.msg);
 
-loadMainPage('.content-item', 'login/password.html');
-loadMainPage('.content-item', 'manage/manage.html');
-// loadMainPage('.content-item', 'client/client.html');
+
+
+// user
+$('.user-info').click(function (e) {
+    e.stopPropagation();
+    $(this).children('ul').removeClass('hide');
+});
+
+$('.user-info li').each(function (index, item) {
+    $(item).click(function (e) {
+        e.stopPropagation();
+        console.log(23432)
+        $('.user-info').children('ul').addClass('hide');
+    })
+});
+
+$(document).click(function () {
+    $('.user-info').children('ul').addClass('hide');
+});
+
+
+
+
+
 // loadMainPage('.content-item', 'login/login.html');
+// loadMainPage('.content-item', 'login/password.html');
+// loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'client/client.html');

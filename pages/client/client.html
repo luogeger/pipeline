@@ -51,8 +51,8 @@
                     <span>添加客户</span>
                 </div>
 
-                <div class="btn btn-theme">
-                    <i class="fa fa-mail-reply-all"></i>
+                <div @click="upload" class="btn btn-theme">
+                    <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
             </div>
@@ -158,7 +158,7 @@
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td @click="editMsg"
+                    <td @click="editMsg(item.id)"
                     ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                 </tr>
             </tbody>
@@ -172,7 +172,8 @@
         <!-- 添加客户 -->
         <div :class="{'hide': addClientShow}" class="dialog-content">
              <div class="title clearfix">
-                 <p class="pull-left">添加客户信息</p>
+                 <p v-if="!clientSubmit" class="pull-left">添加客户信息</p>
+                 <p v-if="clientSubmit"  class="pull-left">编辑客户信息</p>
                  <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
              </div>
             <div class="main">
@@ -267,7 +268,8 @@
         <!-- 添加客户机要信息 -->
         <div :class="{'hide': addMsgShow}" class="dialog-content" >
             <div class="title clearfix">
-                <p class="pull-left">添加客户机要信息</p>
+                <p v-if="!msgSubmit" class="pull-left">添加客户机要信息</p>
+                <p v-if="msgSubmit"  class="pull-left">编辑客户机要信息</p>
                 <p @click="hidePop" class="dialog-close pull-right"><i class="fa fa-close"></i></p>
             </div>
             <div class="main">
@@ -303,8 +305,8 @@
                         <ul class="area">
                             <li v-for="(item, index) in provinceList"
                                 v-text="item.text"
-                                @click="selectProvince(item.code, index)"
-                                :class="{'area-active': index == provinceIndex}"
+                                @click="selectProvince(item.code, item)"
+                                :class="{'area-active': item.code == mProvinceCode}"
                             ></li>
                         </ul>
                     </div>
@@ -359,8 +361,26 @@
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
                         <div v-if="!msgSubmit" @click="addMsgConfirm" class="btn btn-theme">提交</div>
-                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">e提交</div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 导入 -->
+        <div :class="{'hide': uploadShow}" class="dialog-content upload-pop">
+            <div class="title clearfix">
+                <p class="pull-left">导入文件</p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+                <div class="select-file">
+                    <label for="importFile">选择文件</label>
+                    <input id="importFile" type="file">
+                </div>
+                <div class="btn-group">
+                    <div @click="uploadConfirm" class="btn btn-theme">确认</div>
+                    <div @click="hidePop" class="btn btn-border">取消</div>
                 </div>
             </div>
         </div>
