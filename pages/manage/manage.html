@@ -5,7 +5,7 @@
 <div class="breadcrumb">
     <a href="">首页</a>
     <span class="line">/</span>
-    <span>管理页</span>
+    <span>pipeline管理</span>
 </div>
 
 <div class="search-wrapper clearfix">
@@ -96,13 +96,17 @@
             </ul>
         </div>
     </div>
+    <div class="input-group pull-right">
+        <span class="input-group-label"></span>
+        <button @click="resettingHandle" class="btn btn-sm btn-theme" type="button">重置</button>
+    </div>
 </div>
 
 <div class="main-wrapper">
     <div :class="{maxWidth: ismaxWidth}" class="data">
         <div class="subInformation">
             <button @click="addData" data-toggle="modal" data-target=".myModal" class="btn btn-sm btn-theme modelDomBtn" style="margin-right: 10px">新增 Pipeline</button>
-            加权金额总计：<span class="theme-color">{{  weightedSumTotal }}</span>
+            加权金额总计（万元）：<span class="theme-color">{{  weightedSumTotal }}</span>
             <div class="pull-right">
                 <div class="client-page page-css">
                     <div @click="calcPage('client' , 'first')"
@@ -157,7 +161,7 @@
                             <th>金融银行分类</th>
                         </tr>
                         </thead>
-                        <!--<tbody v-model="empty">-->
+                        <!--<tbody :class="{'hide': noData}">-->
                         <!--<tr>-->
                             <!--<td colspan="25" style="height: 48px;">{{ emptyMsg }}</td>-->
                         <!--</tr>-->
@@ -183,12 +187,7 @@
                                 <td>{{ item.industryLine }}</td>
                                 <td>{{ item.projectNature }}</td>
                                 <td>{{ item.cooperativePartner }}</td>
-                                <td>
-                                    <!--<div v-for="solutionSub in item.solutionSub">-->
-                                    {{ addSum(item.solutionSub) }}
-                                    <!--{{ solutionSub.expectSignSum }}-->
-                                <!--</div>-->
-                                </td>
+                                <td>{{ addSum(item.solutionSub) }}</td>
                                 <td>{{ item.expectSignDate }}</td>
                                 <td>{{ item.progress }}</td>
                                 <td>{{ item.successRate }}</td>
@@ -199,14 +198,13 @@
                                 <td>{{ item.customerSource }}</td>
                                 <td>{{ item.projectDescription }}</td>
                                 <td>{{ item.classificationOfFinancialIndustry }}</td>
-
                             </tr>
                         </tbody>
                     </table>
             </div>
         </div>
     </div>
-    <div class="updateCase" :class="{'hide': updateCaseShow}">
+        <div class="updateCase" :class="{'hide': updateCaseShow}">
         <div class="title clearfix">
             <span>项目更新情况</span>
             <a @click="closeUpdateCase" class="close pull-right" href="javascript:;"><i class="fa fa-close"></i></a>
@@ -240,7 +238,7 @@
                             <div class="block-wrapper">
                                 <div class="input-group">
                                     <span class="input-group-label">报备日期:</span>
-                                    <span v-text="cReportDate" style="line-height: 30px;"></span>
+                                    <span style="line-height: 30px;">{{ cReportDate }}</span>
                                 </div>
                             </div>
                             <div class="block-wrapper">
@@ -440,6 +438,7 @@
                                         <span class="input-group-label"></span>
                                         <button @click="submitHandle" class="btn btn-sm btn-theme" type="button">提交</button>
                                     </div>
+                                </div>
                         </form>
                     </div>
                     <div class="explain">
@@ -570,29 +569,31 @@
                 updateCaseShow: false,
                 ismaxWidth: false,
 
-                customerAttr: [],  // 客户属性
-                customerLists: [],     // 客户信息
-                provinceLists: [], // 客户所在省份
-                searchLists: [{   // 初始值基本信息
-                    latelyChanges: '',  // 近期变更过
-                    industryLines: ''   // 行业线
+                customerAttr: [],          // 客户属性
+                customerLists: [],         // 客户信息
+                regions: '',               // 区域code
+                isHide: false,            // 若区域下无省份，则隐藏省份块
+                provinceLists: [],         // 客户所在省份
+                searchLists: [{            // 初始值基本信息
+                    latelyChanges: '',     // 近期变更过
+                    industryLines: ''      // 行业线
                 }],
-                oauthLists: [], // 初始值权限信息
+                oauthLists: [],            // 初始值权限信息
                 mngSalesGroups: [],
-                weightedSumTotal: '',  // 加权金额
-                items: [],   // 表格数据
-                empty: false, // 搜索不到数据
+                weightedSumTotal: '',      // 加权金额
+                items: [],                 // 表格数据
+                noData: false,            // 搜索不到数据
                 emptyMsg: '',
                 // 分页
                 client: [],
-                clientPageTotal: 0,// 全部数据
-                clientPageNum: 1,// 当前页
-                clientPageSum: 1,// 共多少页
-                clientPageMost: 10,// 页容量
+                clientPageTotal: 0,        // 全部数据
+                clientPageNum: 1,          // 当前页
+                clientPageSum: 1,          // 共多少页
+                clientPageMost: 10,        // 页容量
                 clientPageStart: 0,
                 clientPageEnd: 0,
 
-                opDataKey: '',  //	查询Pipeline变动历史  操作DATA主键
+                opDataKey: '',            // 查询Pipeline变动历史  操作DATA主键
                 changeOneLists: [], //
                 tableList: {},  //存放搜索值
                 // 添加模板
@@ -833,6 +834,12 @@
                             }
                             vm.items.push(root);
                         }
+                        // 如果表格无数据，那么关闭右侧项目更新情况
+                        if(!result.root.length) {
+                            // this.noData = true;
+                            // this.emptyMsg = '没有数据';
+                            vm.closeUpdateCase();
+                        }
 
                         vm.client = result;
                         vm.clientPageTotal = result.totalProperty;
@@ -927,9 +934,9 @@
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
 
                         // 获取客户所在省份
-                        var regions = '';
+                        // var regions = '';
                         for(var i = 0;i < basic.regions.length;i++) {
-                            regions += basic.regions[i].code + ',';
+                            vm.regions += basic.regions[i].code + ',';
                             // console.log(basic.regions[i])
                         }
                         // console.log(regions)  // 取得所有区域code
@@ -938,10 +945,9 @@
                             type: 'get',
                             dataType: 'json',
                             data: {
-                                'categoryCodes': regions
+                                'categoryCodes': vm.regions
                             },
                             success: function(result){
-                                // console.log(result.msg)
                                 vm.provinceLists = eval('result.msg.' + $('#tierFirst li').eq(0).attr('value'))
 
                                 $('#tierFirst li').click(function(){
@@ -963,6 +969,10 @@
                         console.log('搜索请求失败');
                     }
                 })
+            },
+            // 重置搜索框
+            resettingHandle: function() {
+
             },
             // 新增
             addData: function() {
