@@ -19,7 +19,7 @@ var vm = new Vue({
         // nowIndex
         industryNowIndex: 0,// 事业部
         regionIndex: 0, // 区域
-        provinceIndex: -1, // 省份
+        provinceCode: -1, // 省份
 
 
         // 客户
@@ -272,7 +272,7 @@ var vm = new Vue({
                 vm.cIndustryLineText = '';
                 vm.cAddress = '';
             } else{
-                vm.provinceIndex = -1;// 省份
+                vm.provinceCode = -1;// 省份
                 vm.regionIndex = 0;// 区域
                 vm.mProvinceCode = '';
                 vm.mContactName = '';
@@ -318,13 +318,30 @@ var vm = new Vue({
         // 添加 机要信息 按钮事件
         // ====================================
         addMsg: function () {
+            this.clearClientMsg();
             vm.msgSubmit = false;
             vm.dialogShow = false;
             vm.addMsgShow = false;
             this.getRegion();// 获取区域信息
             this.getProvince();// 获取省份信息
-            this.clearClient('m');// 清空弹窗信息
+
         },
+
+
+        // 清空机要信息输入框内容
+        clearClientMsg: function () {
+            vm.mContactName =        '';
+            vm.mRegionCode =         '';
+            vm.mProvinceCode =       '';
+            vm.mDepartmentName =     '';
+            vm.mTitle =              '';
+            vm.mTelPhone =           '';
+            vm.mEmail =              '';
+            vm.mAddress =            '';
+            vm.mRemark =             '';
+        },
+
+
         // 机要信息添加 收集字段  vm.firstClientCode
         addMsgConfirm: function () {
             var addMsgObj = {
@@ -341,14 +358,14 @@ var vm = new Vue({
                 address:           vm.mAddress,
                 remark:            vm.mRemark,
             };
-            console.log(addMsgObj)
+
             axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: addMsgObj}).then(function (datas){
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
                     return;
                 }
-                this.hidePop();
-                this.getClient();
+                vm.hidePop();
+                vm.getClientMsg(vm.firstClientCode);
                 toastr.success('添加客户机要信息成功');
             });
             //this.hidePop();
@@ -358,10 +375,49 @@ var vm = new Vue({
 
         // 编辑 机要信息 按钮事件
         // ====================================
-        editMsg: function () {
-            vm.msgSubmit = true;
-            vm.dialogShow = false;
-            vm.addMsgShow = false;
+        editMsg: function (id) {
+            this.clearClientMsg();
+            vm.getRegion();
+            axios.get(PATH +'/crm/queryCustomerContactOne?id=' +id)
+                .then(function (datas){
+                    var msg = datas.data.msg;
+                    var code = datas.data.code;
+                    if (code === 201) {
+                        toastr.error(msg);
+                        return;
+                    }
+
+                    if (code === 200) {
+                        new Promise((resolve,reject) =>{
+                            vm.getProvince(msg.regionCode);
+
+                            //先执行这里的代码，只有这里代码执行完，才会执行下面的代码
+                            resolve(msg);
+                        }).then(msg =>{
+                            // 处理成功resolve的数据
+
+                            vm.mRegionCode =         msg.regionCode;
+                            vm.mProvinceCode =       msg.provinceCode;
+                            vm.mContactName =        msg.contactName;
+                            vm.mDepartmentName =     msg.departmentName;
+                            vm.mTitle =              msg.title;
+                            vm.mTelPhone =           msg.telphone;
+                            vm.mEmail =              msg.email;
+                            vm.mAddress =            msg.address;
+                            vm.mRemark =             msg.remark;
+
+
+                            vm.msgSubmit = true;
+                            vm.dialogShow = false;
+                            vm.addMsgShow = false;
+                            console.log(vm.mRegionCode)
+
+                        }).catch(err => {
+                            // 处理reject失败的数据
+                            console.log(err);
+                        })
+                    }
+                });
         },
 
         editMsgConfirm: function () {
@@ -370,12 +426,12 @@ var vm = new Vue({
 
         selectRegion: function (code) {
             vm.mRegionCode = code;
-            vm.provinceIndex = -1;
+            vm.provinceCode = -1;
             vm.getProvince(code)
         },
 
-        selectProvince: function (code, index) {
-            vm.provinceIndex = index;
+        selectProvince: function (code, item) {
+            vm.provinceCode = code;
             vm.mProvinceCode = code;
         },
 
