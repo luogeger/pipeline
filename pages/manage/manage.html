@@ -1,11 +1,11 @@
-<link rel="stylesheet" href="../static/styles/manage/manage.css">
+  <link rel="stylesheet" href="../static/styles/manage/manage.css">
 <link rel="stylesheet" href="../static/css/base/laydate.css">
 
 <div class="main" id="app">
 <div class="breadcrumb">
     <a href="">首页</a>
     <span class="line">/</span>
-    <span>管理页</span>
+    <span>pipeline管理</span>
 </div>
 
 <div class="search-wrapper clearfix">
@@ -16,10 +16,11 @@
     <div class="dropdown-wrap">
         <span class="dropdown-label">行业线：</span>
         <div class="dropdown">
-            <span class="dropdown-default">请选择</span>
+            <span class="dropdown-default">{{ cIndustryLineText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul>
-                <li @click="searchIndustryLineCode(searchList.code)" v-for="searchList in searchLists.industryLines">{{ searchList.text }}</li>
+                <li @click="searchIndustryLineCode(searchList.code, searchList.text)"
+                    v-for="searchList in searchLists.industryLines">{{ searchList.text }}</li>
             </ul>
         </div>
     </div>
@@ -40,48 +41,56 @@
     <div class="dropdown-wrap">
         <span class="dropdown-label">成功率：</span>
         <div class="dropdown">
-            <span class="dropdown-default">请选择</span>
+            <span class="dropdown-default">{{ cProjectSuccessRateText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul>
-                <li @click="searchSuccessRateCode(searchList.code)" v-for="searchList in searchLists.projectSuccessRates" :value="searchList.code">{{ searchList.text }}</li>
+                <li @click="searchSuccessRateCode(searchList.code, searchList.text)"
+                    v-for="searchList in searchLists.projectSuccessRates"
+                    :value="searchList.code">{{ searchList.text }}</li>
             </ul>
         </div>
     </div>
     <div class="dropdown-wrap">
         <span class="dropdown-label">事业部：</span>
         <div class="dropdown">
-            <span class="dropdown-default">请选择</span>
+            <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul>
                 <!--TODO 如果当前人是领导的话，就用userInfo.mngSalesGroups下面的code和text；否则就用userInfo.departmentCode和userInfo.departmentName-->
-                <li @click="searchSalesGroupCode(oauthList.code)" v-for="oauthList in mngSalesGroups" :value="oauthList.code">{{ oauthList.text }}</li>
+                <li @click="searchSalesGroupCode(oauthList.code, oauthList.text)"
+                    v-for="oauthList in mngSalesGroups"
+                    :value="oauthList.code">{{ oauthList.text }}</li>
             </ul>
         </div>
     </div>
     <div class="dropdown-wrap">
         <span class="dropdown-label">区域：</span>
         <div class="dropdown">
-            <span class="dropdown-default">请选择</span>
+            <span class="dropdown-default">{{ cRegionText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul>
-                <li @click="searchRegionCode(searchList.code)" v-for="searchList in searchLists.regions" :value="searchList.code">{{ searchList.text }}</li>
+                <li @click="searchRegionCode(searchList.code, searchList.text)"
+                    v-for="searchList in searchLists.regions"
+                    :value="searchList.code">{{ searchList.text }}</li>
             </ul>
         </div>
     </div>
     <div class="dropdown-wrap">
         <span class="dropdown-label">客户来源：</span>
         <div class="dropdown">
-            <span class="dropdown-default">请选择</span>
+            <span class="dropdown-default">{{ cCustomerSourText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul>
-                <li @click="searchCustomerSourceCode(searchList.code)" v-for="searchList in searchLists.customerSours" :value="searchList.code">{{ searchList.text }}</li>
+                <li @click="searchCustomerSourceCode(searchList.code, searchList.text)"
+                    v-for="searchList in searchLists.customerSours"
+                    :value="searchList.code">{{ searchList.text }}</li>
             </ul>
         </div>
     </div>
     <div class="dropdown-wrap">
         <span class="dropdown-label">解决方案：</span>
         <div class="dropdown-zTree">
-            <span class="treeName dropdown-default">请选择</span>
+            <span class="treeName dropdown-default">{{ cSoSolutionText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul class="selectTree ztree soSolutionTree" style="max-height: 200px;overflow-y: auto;"></ul>
         </div>
@@ -89,20 +98,31 @@
     <div class="dropdown-wrap">
         <span class="dropdown-label">近期变更过：</span>
         <div class="dropdown">
-            <span class="dropdown-default">请选择</span>
+            <span class="dropdown-default">{{ cLatelyChangeText }}</span>
             <i class="fa fa-angle-down"></i>
             <ul>
-                <li @click="searchLatelyChangeCode(searchList.code)" v-for="searchList in searchLists.latelyChanges">{{ searchList.text }}</li>
+                <li @click="searchLatelyChangeCode(searchList.code, searchList.text)"
+                    v-for="searchList in searchLists.latelyChanges">{{ searchList.text }}</li>
             </ul>
         </div>
+    </div>
+    <div class="input-group pull-right" style="display: none">
+        <span class="input-group-label"></span>
+        <button @click="resettingHandle" class="btn btn-sm btn-theme" type="button">重置</button>
     </div>
 </div>
 
 <div class="main-wrapper">
     <div :class="{maxWidth: ismaxWidth}" class="data">
         <div class="subInformation">
-            <button @click="addData" data-toggle="modal" data-target=".myModal" class="btn btn-sm btn-theme modelDomBtn" style="margin-right: 10px">新增 Pipeline</button>
-            加权金额总计：<span class="theme-color">{{  weightedSumTotal }}</span>
+            <button @click="addData"
+                    class="btn btn-sm btn-theme modelDomBtn"
+                    style="margin-right: 10px">新增 Pipeline</button>
+            <div @click="upload" class="btn btn-theme" style="margin-right: 15px">
+                <i class="fa fa-cloud-upload"></i>
+                <span>导入</span>
+            </div>
+            加权金额总计（万元）：<span class="theme-color">{{  weightedSumTotal }}</span>
             <div class="pull-right">
                 <div class="client-page page-css">
                     <div @click="calcPage('client' , 'first')"
@@ -157,7 +177,7 @@
                             <th>金融银行分类</th>
                         </tr>
                         </thead>
-                        <!--<tbody v-model="empty">-->
+                        <!--<tbody :class="{'hide': noData}">-->
                         <!--<tr>-->
                             <!--<td colspan="25" style="height: 48px;">{{ emptyMsg }}</td>-->
                         <!--</tr>-->
@@ -183,12 +203,7 @@
                                 <td>{{ item.industryLine }}</td>
                                 <td>{{ item.projectNature }}</td>
                                 <td>{{ item.cooperativePartner }}</td>
-                                <td>
-                                    <!--<div v-for="solutionSub in item.solutionSub">-->
-                                    {{ addSum(item.solutionSub) }}
-                                    <!--{{ solutionSub.expectSignSum }}-->
-                                <!--</div>-->
-                                </td>
+                                <td>{{ addSum(item.solutionSub) }}</td>
                                 <td>{{ item.expectSignDate }}</td>
                                 <td>{{ item.progress }}</td>
                                 <td>{{ item.successRate }}</td>
@@ -199,14 +214,13 @@
                                 <td>{{ item.customerSource }}</td>
                                 <td>{{ item.projectDescription }}</td>
                                 <td>{{ item.classificationOfFinancialIndustry }}</td>
-
                             </tr>
                         </tbody>
                     </table>
             </div>
         </div>
     </div>
-    <div class="updateCase" :class="{'hide': updateCaseShow}">
+        <div class="updateCase" :class="{'hide': updateCaseShow}">
         <div class="title clearfix">
             <span>项目更新情况</span>
             <a @click="closeUpdateCase" class="close pull-right" href="javascript:;"><i class="fa fa-close"></i></a>
@@ -221,7 +235,7 @@
         </div>
     </div>
 </div>
-
+<!-- 新增修改pipeline弹窗 -->
 <div class="dialog-wrap"
      :class="{'hide': dialogShow}">
     <div @click="allHide" class="dialog-cover"></div>
@@ -240,7 +254,7 @@
                             <div class="block-wrapper">
                                 <div class="input-group">
                                     <span class="input-group-label">报备日期:</span>
-                                    <span v-text="cReportDate" style="line-height: 30px;"></span>
+                                    <span style="line-height: 30px;">{{ cReportDate }}</span>
                                 </div>
                             </div>
                             <div class="block-wrapper">
@@ -251,7 +265,9 @@
                                         <span id="salesGroupCode" ref="salesGroupCode" class="selected dropdown-default">请选择</span>
                                         <i class="fa fa-angle-down"></i>
                                         <ul>
-                                            <li @click="selectSalesGroupCode(oauthList.code)" v-for="oauthList in mngSalesGroups" :value="oauthList.code">{{ oauthList.text }}</li>
+                                            <li @click="selectSalesGroupCode(oauthList.code)"
+                                                v-for="oauthList in mngSalesGroups"
+                                                :value="oauthList.code">{{ oauthList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -271,20 +287,24 @@
                                 </div>
                             </div>
                             <div class="block-wrapper col-1">
-                                <d0iv class="input-group">
+                                <div class="input-group">
                                     <i class="star">*</i>
                                     <span class="input-group-label">区域:</span>
                                     <ul id="tierFirst" class="item-list radioCheck clearfix">
                                         <li :class="{'active': index == 0}" v-for="(searchList,index) in searchLists.regions" :value="searchList.code" ref="regionCode" :class="handleTemplate.regionCode == searchList.code ? 'active':''">{{ searchList.text }}</li>
                                     </ul>
-                                </d0iv>
+                                </div>
                             </div>
                             <div class="block-wrapper col-1">
                                 <div class="input-group">
                                     <i class="star">*</i>
                                     <span class="input-group-label">客户所在省份:</span>
                                     <ul id="tierSecond" class="item-list radioCheck clearfix">
-                                        <li @click="activeProvince(provinceList.code, index)" :class="{'active': index == isActiveProvince}" v-for="(provinceList,index) in provinceLists" :value="provinceList.code" ref="provinceCode">{{ provinceList.text }}</li>
+                                        <li @click="activeProvince(provinceList.code, index)"
+                                            :class="{'active': index == isActiveProvince}"
+                                            v-for="(provinceList,index) in provinceLists"
+                                            :value="provinceList.code"
+                                            ref="provinceCode">{{ provinceList.text }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -293,7 +313,11 @@
                                     <i class="star">*</i>
                                     <span class="input-group-label">客户属性:</span>
                                     <ul class="item-list radioCheck clearfix">
-                                        <li :class="{'active': index == 0}" v-for="(customerName,index) in customerAttr" :class="handleTemplate.regionCode == customerName.code ? 'active':''"  :value="customerName.code" ref="customerPropertiesCode">{{ customerName.text }}</li>
+                                        <li :class="{'active': index == 0}"
+                                            v-for="(customerName,index) in customerAttr"
+                                            :class="handleTemplate.regionCode == customerName.code ? 'active':''"
+                                            :value="customerName.code"
+                                            ref="customerPropertiesCode">{{ customerName.text }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -301,7 +325,12 @@
                                 <div class="input-group">
                                     <i class="star">*</i>
                                     <span class="input-group-label">客户名称:</span>
-                                    <input v-model="handleTemplate.customerName" class="input-group-form noNull" type="text">
+                                    <input @click=""
+                                           v-model="handleTemplate.customerName"
+                                           class="input-group-form noNull" type="text">
+                                    <!--@click="selectCustomer"-->
+                                    <a href="javascript:;"
+                                       style="margin-left: 10px;font-weight: bold;font-size: 18px">+</a>
                                 </div>
                             </div>
                             <div class="block-wrapper col-1">
@@ -440,6 +469,7 @@
                                         <span class="input-group-label"></span>
                                         <button @click="submitHandle" class="btn btn-sm btn-theme" type="button">提交</button>
                                     </div>
+                                </div>
                         </form>
                     </div>
                     <div class="explain">
@@ -487,6 +517,140 @@
                         </table>
                     </div>
                 </div>
+            </div>
+        </div><!-- /.main -->
+    </div>
+</div>
+<!-- 客户信息弹窗 -->
+<div class="dialog-wrap"
+     :class="{'hide': customerDialogShow}">
+    <div @click="customerDialogHide" class="dialog-cover"></div>
+    <div class="dialog-content" style="width: 1090px">
+        <div class="title clearfix">
+            <p class="pull-left">客户选择</p>
+            <p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+        </div>
+        <div class="main">
+            <div class="opera clearfix">
+                <div class="industry">
+                    <div class="dropdown-wrap">
+                        <span class="dropdown-label">行业线：</span>
+                        <div class="dropdown">
+                            <span class="dropdown-default">{{ cIndustryLineText }}</span>
+                            <i class="fa fa-angle-down"></i>
+                            <ul>
+                                <li @click="searchIndustryLineCode(searchList.code)"
+                                    v-for="searchList in searchLists.industryLines">{{ searchList.text }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <!--<div class="dropdown-wrap">-->
+                        <!--<span class="dropdown-label">行业:</span>-->
+                        <!--<div class="dropdown">-->
+                            <!--<span v-text="hDropText" class="dropdown-default"></span>-->
+                            <!--<i class="fa fa-angle-down"></i>-->
+                            <!--<ul>-->
+                                <!--<li @click="hDrop(item.text)"-->
+                                    <!--v-for="item in industry"-->
+                                    <!--v-text="item.text"></li>-->
+                            <!--</ul>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                </div>
+
+                <div class="client-num">
+                    <div class="input-group">
+                        <span class="input-group-label">客户编号:</span>
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+
+                <div class="client-name">
+                    <div class="input-group">
+                        <span class="input-group-label">客户名称:</span>
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+
+                <div class="query-reset pull-right">
+                    <div class="btn btn-theme" style="margin-right: 20px;">查询</div>
+                    <div class="btn btn-border pull-right">重置</div>
+                </div>
+            </div><!-- /.opera -->
+            <div class="client">
+                <div class="table-opera clearfix">
+                    <div class="pull-right">
+                        <div class="client-page page-css">
+                            <div @click="calcPage('client' , 'first')"
+                                 class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+                            <div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
+                                    class="fa fa-angle-left"></i></div>
+                            <span>第</span><input @keyup.enter="clientEnter" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
+                            <span>共 {{clientPageSum}} 页，</span>
+                            <div @click="calcPage('client' , 1)"
+                                 class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                            <div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                                    class="fa fa-angle-double-right"></i></div>
+                            <span>显示</span>
+                            <span style="margin-left: 5px;">{{clientPageStart}}</span>
+                            <span>-</span>
+                            <span style="margin-right: 5px;">{{clientPageEnd}}</span>
+                            <span>条，</span>
+                            <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
+                        </div>
+                    </div>
+                </div>
+                <table class="i-table">
+                    <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>报备名称</th>
+                        <th>所属事业部</th>
+                        <th>客户编号</th>
+                        <th>客户名称</th>
+                        <th>行业线</th>
+                        <th>地址</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="(item ,index) in client.root"
+                        :class="{'tr-active': index == cCheckIndex}"
+                        @click="queryClientMsg(item.customerCode, index)">
+                        <td v-text="index +1"></td>
+                        <td v-text="item.reportDate"></td>
+                        <td v-text="item.salesGroup"></td>
+                        <td v-text="item.customerCode"></td>
+                        <td v-text="item.customerName"></td>
+                        <td v-text="item.industryLine"></td>
+                        <td v-text="item.address"></td>
+                    </tr>
+                    </tbody>
+                </table>
+                <div style="text-align: right">
+                    <button @click="" class="btn btn-sm btn-theme" type="button">提交</button>
+                </div>
+
+            </div><!-- /.client -->
+        </div><!-- /.main -->
+    </div>
+</div>
+<!-- 导入 -->
+<div class="dialog-wrap"
+     :class="{'hide': uploadDialogShow}">
+    <div @click="allHide" class="dialog-cover"></div>
+    <div class="dialog-content upload-pop" style="width: 400px;min-width: 400px;overflow: hidden;">
+        <div class="title clearfix">
+            <p class="pull-left">导入文件</p>
+            <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+        </div>
+        <div class="main">
+            <div class="select-file">
+                <label for="importFile">选择文件</label>
+                <input id="importFile" type="file">
+            </div>
+            <div class="btn-group">
+                <div @click="uploadConfirm" class="btn btn-theme">确认</div>
+                <div @click="allHide" class="btn btn-border">取消</div>
             </div>
         </div><!-- /.main -->
     </div>
@@ -566,33 +730,44 @@
         el: '#app',
         data: function(){
             return {
+                // 定义搜索值信息
+                cIndustryLineText: '',     // 行业线
+                cProjectSuccessRateText: '',// 成功率
+                cMngSalesGroupText: '',    // 事业部
+                cRegionText: '',           // 区域
+                cCustomerSourText: '',     // 客户来源
+                cSoSolutionText: '',       // 解决方案
+                cLatelyChangeText: '',     // 近期变更过
+
                 // 关闭表格右侧项目更新情况
                 updateCaseShow: false,
                 ismaxWidth: false,
 
-                customerAttr: [],  // 客户属性
-                customerLists: [],     // 客户信息
-                provinceLists: [], // 客户所在省份
-                searchLists: [{   // 初始值基本信息
-                    latelyChanges: '',  // 近期变更过
-                    industryLines: ''   // 行业线
+                customerAttr: [],          // 客户属性
+                customerLists: [],         // 客户信息
+                regions: '',               // 区域code
+                isHide: false,            // 若区域下无省份，则隐藏省份块
+                provinceLists: [],         // 客户所在省份
+                searchLists: [{            // 初始值基本信息
+                    latelyChanges: '',     // 近期变更过
+                    industryLines: ''      // 行业线
                 }],
-                oauthLists: [], // 初始值权限信息
+                oauthLists: [],            // 初始值权限信息
                 mngSalesGroups: [],
-                weightedSumTotal: '',  // 加权金额
-                items: [],   // 表格数据
-                empty: false, // 搜索不到数据
+                weightedSumTotal: '',      // 加权金额
+                items: [],                 // 表格数据
+                noData: false,            // 搜索不到数据
                 emptyMsg: '',
                 // 分页
                 client: [],
-                clientPageTotal: 0,// 全部数据
-                clientPageNum: 1,// 当前页
-                clientPageSum: 1,// 共多少页
-                clientPageMost: 10,// 页容量
+                clientPageTotal: 0,        // 全部数据
+                clientPageNum: 1,          // 当前页
+                clientPageSum: 1,          // 共多少页
+                clientPageMost: 10,        // 页容量
                 clientPageStart: 0,
                 clientPageEnd: 0,
 
-                opDataKey: '',  //	查询Pipeline变动历史  操作DATA主键
+                opDataKey: '',            // 查询Pipeline变动历史  操作DATA主键
                 changeOneLists: [], //
                 tableList: {},  //存放搜索值
                 // 添加模板
@@ -616,9 +791,23 @@
                 preSaleStaffs: [], // 点击修改时获取表格的值
                 solutionSub: [], // 点击修改时获取表格的值
 
-                // 显示弹窗
+                // 新增修改弹窗
                 dialogShow: true,
                 addMsgShow: true,
+
+                // 导入
+                uploadDialogShow: true, // 导入弹窗
+                uploadFileName: '',
+                clearShow: true,
+
+                // 客户选择
+                // 客户
+                clientID: '',
+                client: [],
+                cCheckIndex: 0,
+
+                customerDialogShow: true, // 显示客户选择弹窗
+                hDropText: '',// 行业下拉框文字
             }
         },
         watch: {
@@ -653,38 +842,44 @@
 
             //// ==========搜索获取下拉code========
             // 选中行业线
-            searchIndustryLineCode: function(code) {
+            searchIndustryLineCode: function(code, text) {
                 this.tableList.industryLineCode = code;
+                vm.cIndustryLineText = text;
 
                 this.showData();
             },
             // 选中成功率
-            searchSuccessRateCode: function(code) {
+            searchSuccessRateCode: function(code, text) {
                 this.tableList.successRateCode = code;
+                vm.cProjectSuccessRateText = text;
 
                 this.showData();
             },
             // 选中事业部
-            searchSalesGroupCode: function(code) {
+            searchSalesGroupCode: function(code, text) {
                 this.tableList.salesGroupCode = code;
+                vm.cMngSalesGroupText = text;
 
                 this.showData();
             },
             // 选中区域
-            searchRegionCode: function(code) {
+            searchRegionCode: function(code, text) {
                 this.tableList.regionCode = code;
+                vm.cRegionText = text;
 
                 this.showData();
             },
             // 选中客户来源
-            searchCustomerSourceCode: function(code) {
+            searchCustomerSourceCode: function(code, text) {
                 this.tableList.customerSourceCode = code;
+                vm.cCustomerSourText = text;
 
                 this.showData();
             },
             // 选中近期变更过
-            searchLatelyChangeCode: function(code) {
+            searchLatelyChangeCode: function(code, text) {
                 this.tableList.latelyChangeCode = code;
+                vm.cLatelyChangeText = text;
 
                 this.showData();
             },
@@ -720,6 +915,7 @@
             allHide: function () {
                 vm.dialogShow = true;
                 vm.addMsgShow = true;
+                vm.uploadDialogShow = true;
             },
             activeProvince: function(code,index){
                 this.isActiveProvince = index;
@@ -833,6 +1029,12 @@
                             }
                             vm.items.push(root);
                         }
+                        // 如果表格无数据，那么关闭右侧项目更新情况
+                        if(!result.root.length) {
+                            // this.noData = true;
+                            // this.emptyMsg = '没有数据';
+                            vm.closeUpdateCase();
+                        }
 
                         vm.client = result;
                         vm.clientPageTotal = result.totalProperty;
@@ -856,7 +1058,7 @@
             },// calcPage
             // 分页输入回车事件
             clientEnter: function () {
-                vm.getClient();
+                vm.showData();
             },
             clientPage: function (type, num) {
                 switch(num)
@@ -927,9 +1129,9 @@
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
 
                         // 获取客户所在省份
-                        var regions = '';
+                        // var regions = '';
                         for(var i = 0;i < basic.regions.length;i++) {
-                            regions += basic.regions[i].code + ',';
+                            vm.regions += basic.regions[i].code + ',';
                             // console.log(basic.regions[i])
                         }
                         // console.log(regions)  // 取得所有区域code
@@ -938,10 +1140,9 @@
                             type: 'get',
                             dataType: 'json',
                             data: {
-                                'categoryCodes': regions
+                                'categoryCodes': vm.regions
                             },
                             success: function(result){
-                                // console.log(result.msg)
                                 vm.provinceLists = eval('result.msg.' + $('#tierFirst li').eq(0).attr('value'))
 
                                 $('#tierFirst li').click(function(){
@@ -963,6 +1164,18 @@
                         console.log('搜索请求失败');
                     }
                 })
+            },
+            // 重置搜索框
+            resettingHandle: function() {
+                vm.cIndustryLineText = '';     // 行业线
+                vm.cProjectSuccessRateText = '';// 成功率
+                vm.cMngSalesGroupText = '';    // 事业部
+                vm.cRegionText = '';           // 区域
+                vm.cCustomerSourText = '';    // 客户来源
+                vm.cSoSolutionText = '';      // 解决方案
+                vm.cLatelyChangeText = '';     // 近期变更过
+                this.tableList = {};
+                this.showData();
             },
             // 新增
             addData: function() {
@@ -1141,7 +1354,7 @@
                     }
                 })
             },
-            //查看变动历史
+            // 查看变动历史
             showChange: function(){
                 $.ajax({
                     url: 'http://172.16.8.34:8089/iboss-prism/so/queryPipelineChangeHis',
@@ -1158,7 +1371,109 @@
                         console.log('查看变动历史 请求失败');
                     }
                 })
-            }
+            },
+
+            // 客户选择
+            selectCustomer: function() {
+                vm.customerDialogShow = false;
+            },
+            customerDialogHide: function() {
+                vm.customerDialogShow = true;
+            },
+            // 行业里的点击事件
+            hDrop: function (text) {
+                vm.hDropText = text;
+            },
+            // 获取客户信息
+            getClient: function (page, limit) {
+                var obj = {
+                    page: page || 1,
+                    limit: limit || this.clientPageMost,
+                };
+                axios.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
+                    vm.client = datas.data;
+                    vm.clientPageTotal = datas.data.totalProperty;
+                    vm.firstClientCode = datas.data.root[0].customerCode;
+                    vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost)
+                    vm.clientPageStart = (vm.clientPageNum *10 -9);
+                    vm.getClientMsg();
+                    if (vm.clientPageNum === vm.clientPageSum) {
+                        vm.clientPageEnd = vm.clientPageTotal;
+                        return;
+                    }
+                    vm.clientPageEnd = vm.clientPageNum * vm.clientPageMost;
+                });
+            },
+            // 分页的判断
+            calcPage: function (type, num) {
+                type === 'client' ? vm.clientPage(type, num) : vm.msgPage(type, num);
+            },// calcPage
+
+            // 分页输入回车事件
+            clientEnter: function () {
+                vm.getClient();
+            },
+
+            // 客户分页
+            clientPage: function (type, num) {
+                vm.cCheckIndex = 0;
+                switch(num)
+                {
+                    case 'first':
+                        vm.getClient(1);
+                        vm.clientPageNum = 1;
+                        break;
+                    case 'last':
+                        vm.getClient(vm.clientPageSum);
+                        vm.clientPageNum = vm.clientPageSum;
+                        vm.clientPageEnd = vm.clientPageTotal;
+                        break;
+                    case 1:
+                        if(vm.clientPageNum >= vm.clientPageSum)  return;
+                        vm.clientPageNum++;
+                        vm.getClient(vm.clientPageNum);
+                        break;
+                    case -1:
+                        if(vm.clientPageNum <= 1)  return;
+                        vm.clientPageNum--;
+                        vm.getClient(vm.clientPageNum);
+                        break;
+
+                }
+            },
+
+            // 导入
+            upload: function () {
+                vm.uploadDialogShow = false;
+            },
+            // 确认导入
+            uploadConfirm: function () {
+                var file = importFile.files[0];
+                vm.uploadFileName = importFile.files[0].name;
+                if(importFile.files[0] == undefined) {
+                    toastr.warning('请选择上传的文件 ！');
+                    return
+                };
+                var fd = new FormData();
+                fd.append('crmFile', file);
+                var obj = {
+                    crmFile: fd,
+                };
+
+                console.log(vm.uploadFileName);
+                console.log(fd);
+                console.log(obj)
+                axios.post('/iboss-prism/crm/importCrm', {params: obj}).then(function (datas){
+                    console.log(datas);
+                    if (datas.data.code === 201) {
+                        toastr.error(datas.data.msg)
+                    } else{
+                        toastr.success('文件上传成功 ！');
+                        vm.hidePop();
+                    }
+
+                });
+            },
         }
     })
 </script>

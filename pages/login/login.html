@@ -1,14 +1,23 @@
-<link rel="stylesheet" href="../static/styles/login/login.css">
-<style>
-    #navContent {
-        background: #1d242c url("../static/images/bg.png") no-repeat;
-        background-size: cover;
-        background-position: top center;
-    }
-    #wrapper #navContent .content-item {
-        background: transparent;
-    }
-</style>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="../../static/css/base.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome/font-awesome.css">
+    <link rel="stylesheet" href="../../static/styles/login/login.css">
+    <style>
+        html, body {
+            height: 100%;
+        }
+        body {
+            background: #1d242c url("../../static/images/bg.png") no-repeat;
+            background-size: cover;
+            background-position: top center;
+        }
+    </style>
+</head>
+<body>
 <div class="main" id="app">
     <div class="description">
         <h1>Pipeline管理平台</h1>
@@ -32,14 +41,19 @@
             <div style="display: none">
                 <input id="zidong" type="checkbox"> <label @click="remeberMe" for="zidong">下次自动登录</label>
             </div>
-            <div style="text-align: right">
-                <a href="">忘记密码</a>
-            </div>
+            <!--<div style="text-align: right">-->
+                <!--<a href="">忘记密码</a>-->
+            <!--</div>-->
             <p class="error">{{ msg }}</p>
             <button @click="submitHandle" class="btn btn-lg btn-theme" type="button">登录</button>
         </div>
     </div>
 </div>
+<script src="../../static/js/vue.min.js"></script>
+<script src="../../static/js/vue-resource.js"></script>
+<script src="../../static/js/jquery-1.12.4.min.js"></script>
+<script src="../../static/js/base.js"></script>
+<script src="../../static/scripts/home.js"></script>
 <script>
     var vm = new Vue({
         el: '#app',
@@ -53,7 +67,7 @@
             // 登陆
             submitHandle: function() {
                 $.ajax({
-                    url: 'http://172.16.8.34:8089/iboss-prism/oauth/login',
+                    url: PATH + '/oauth/login',
                     type: 'get',
                     data: this.loginList,
                     dataType: 'json',
@@ -64,6 +78,7 @@
                             return;
                         }
                         // window.location.href = ''
+                        loadMainPage('.content-item', 'manage/manage.html');
                     },
                     error: function(result){
                         console.log('登陆 请求失败')
@@ -82,3 +97,5 @@
         }
     })
 </script>
+</body>
+</html>

@@ -4,8 +4,8 @@ body {
 
 .description {
   max-width: 1400px;
-  margin: 2% auto;
-  margin-top: 13%;
+  padding-left: 5%;
+  padding-top: 13%;
   color: #fff;
   text-shadow: 0 0 5px rgba(0, 0, 0, 0.6); }
   .description h1 {
@@ -21,7 +21,7 @@ body {
   color: #fff;
   width: 500px;
   position: absolute;
-  top: 60px;
+  top: 0;
   right: 0;
   bottom: 0;
   padding-top: 10%; }
