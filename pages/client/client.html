@@ -15,9 +15,9 @@
                     <span v-text="hDropText" class="dropdown-default"></span>
                     <i class="fa fa-angle-down"></i>
                     <ul>
-                        <li @click="hDrop(item.text)"
-                            v-for="item in industry"
-                            v-text="item.text"></li>
+                        <li v-for="item in industry"
+                            v-text="item.text"
+                            @click="hDrop(item.code, item.text)"></li>
                     </ul>
                 </div>
             </div>
@@ -26,20 +26,20 @@
         <div class="client-num">
             <div class="input-group">
                 <span class="input-group-label">客户编号:</span>
-                <input type="text" class="input-group-form">
+                <input v-model="hClientCode" type="text" class="input-group-form">
             </div>
         </div>
 
         <div class="client-name">
             <div class="input-group">
                 <span class="input-group-label">客户名称:</span>
-                <input type="text" class="input-group-form">
+                <input v-model="hClientName" type="text" class="input-group-form">
             </div>
         </div>
 
         <div class="query-reset pull-right">
-            <div class="btn btn-theme" style="margin-right: 20px;">查询</div>
-            <div class="btn btn-border pull-right">重置</div>
+            <div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>
+            <div @click="resetBtn" class="btn btn-border pull-right">重置</div>
         </div>
     </div><!-- /.opera -->
 

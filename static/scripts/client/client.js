@@ -3,7 +3,12 @@ var vm = new Vue({
 
     data: {
         industry: [],// 行业线
+        // 查询
         hDropText: '',// 行业下拉框文字
+        hDropCode: '',// 行业 code
+        hClientCode: '',// 客户编号
+        hClientName: '',// 客户名称
+
         clientSubmit: false,
         msgSubmit: false,
 
@@ -157,12 +162,13 @@ var vm = new Vue({
         },
 
         // 获取客户信息
-        getClient: function (page, limit) {
-            var obj = {
+        getClient: function (page, limit, obj) {
+            var params = {
                 page: page || 1,
                 limit: limit || this.clientPageMost,
             };
-            axios.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
+            params = Object.assign(params, obj);
+            axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
                 vm.client = datas.data;
                 vm.clientPageTotal = datas.data.totalProperty;
                 vm.firstClientCode = datas.data.root[0].customerCode;
@@ -192,7 +198,8 @@ var vm = new Vue({
 
         // 分页输入回车事件
         clientEnter: function () {
-            vm.getClient();
+            console.log(vm.clientPageNum)
+            vm.getClient(vm.clientPageNum);
         },
 
         // 客户分页
@@ -529,12 +536,32 @@ var vm = new Vue({
         },
 
 
+        // 查询
+        queryBtn: function () {
+            var obj = {
+                customerCode: vm.hClientCode,
+                customerName: vm.hClientName,
+                industryLine: vm.hDropCode,
+            };
+            // axios.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
+            //     console.log(datas)
+            // });
+            vm.getClient('','',obj)
+        },
+
+        resetBtn: function () {
+            vm.hClientCode = '';
+            vm.hClientName = '';
+            vm.hDropText = '';
+            vm.hDropCode = '';
+        },
 
 
 
         // 行业里的点击事件
-        hDrop: function (text) {
+        hDrop: function (code, text) {
             vm.hDropText = text;
+            vm.hDropCode = code;
         },
     },// methods
 
