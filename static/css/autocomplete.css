@@ -38,6 +38,8 @@ https://github.com/lorecioni
 }
 
 .proposal-list {
+	max-height: 300px;
+	overflow: auto;
 	list-style: none;
 	box-shadow: 1px 1px 5px rgba(0, 0, 0, 0.44);
 }
@@ -49,6 +51,7 @@ https://github.com/lorecioni
 	border-bottom: 1px solid #DDDEE1;
 	height: 30px;
 	line-height: 30px;
+	overflow: hidden;
 	background-color: #fff;
 	cursor: pointer;
 }
