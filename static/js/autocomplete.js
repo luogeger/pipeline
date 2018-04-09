@@ -113,6 +113,7 @@ Author: Lorenzo Cioni - https://github.com/lorecioni
 								currentProposals.push(params.hints[test]);
 								var element = $('<li></li>')
 									.html(params.hints[test])
+                                    .attr('title', params.hints[test])
 									.attr('code', params.codeval[test])
 									.addClass('proposal')
 									.click(function(){
