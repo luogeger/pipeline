@@ -199,7 +199,6 @@ $('.user-info').click(function (e) {
 $('.user-info li').each(function (index, item) {
     $(item).click(function (e) {
         e.stopPropagation();
-        console.log(23432)
         $('.user-info').children('ul').addClass('hide');
     })
 });

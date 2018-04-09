@@ -43,6 +43,16 @@
           td:nth-child(7){
             text-align: left;
           }
+          td:last-child{
+            .types-show{
+              span{
+                line-height: 30px;
+              }
+            }
+            .operas-btn{
+              line-height: 30px;
+            }
+          }
         }
       }
     }

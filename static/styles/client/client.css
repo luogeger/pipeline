@@ -15,6 +15,10 @@
 .main .client .i-table tbody tr td:nth-child(5),
 .main .client .i-table tbody tr td:nth-child(7) {
   text-align: left; }
+.main .client .i-table tbody tr td:last-child .types-show span {
+  line-height: 30px; }
+.main .client .i-table tbody tr td:last-child .operas-btn {
+  line-height: 30px; }
 .main .table-opera {
   padding-bottom: 10px; }
 .main .upload-pop {

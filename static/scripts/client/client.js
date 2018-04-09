@@ -1,3 +1,4 @@
+
 var vm = new Vue({
     el: '#app',
 
@@ -88,6 +89,7 @@ var vm = new Vue({
     },// data
 
     created: function (){
+        console.log(123)
         this.getIndustry();
         this.getClient();
     },// created
@@ -123,8 +125,6 @@ var vm = new Vue({
             province = province || 'regionHd';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
                 vm.provinceList = datas.data.msg[province];
-                //vm.cProvinceCode = datas.data.msg[province][0].code;
-
             });
         },// 省份
 
@@ -564,5 +564,3 @@ var vm = new Vue({
     },// methods
 
 });// app
-
-// li-checkbox
