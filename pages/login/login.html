@@ -76,8 +76,7 @@
                             vm.msg = result.msg
                             return;
                         }
-                        // window.location.href = ''
-                        loadMainPage('.content-item', 'manage/manage.html');
+                        location.pathname = '/pipeline/pages/home.html'
                     },
                     error: function(result){
                         console.log('登陆 请求失败')
