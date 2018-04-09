@@ -9,8 +9,8 @@ var vm = new Vue({
         hClientCode: '',// 客户编号
         hClientName: '',// 客户名称
 
-        clientSubmit: false,
-        msgSubmit: false,
+        clientSubmit: false,// 控制添加和编辑客户的 btn,title
+        msgSubmit: false,// 控制添加和编辑机要信息的 btn,title
 
         // 分页
         clientPageTotal: 0,// 全部数据
@@ -162,17 +162,24 @@ var vm = new Vue({
         },
 
         // 获取客户信息
-        getClient: function (page, limit, obj) {
+        getClient: function (page, limit,) {
             var params = {
-                page: page || 1,
-                limit: limit || this.clientPageMost,
+                page:         page || 1,
+                limit:        limit || this.clientPageMost,
+                customerCode: this.hClientCode,
+                customerName: this.hClientName,
+                industryLine: this.hDropCode,
             };
-            params = Object.assign(params, obj);
+            //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
+                if (datas.data.root.length === 0) {
+                    toastr.warning('没有相关信息 ！');
+                    return;
+                }
                 vm.client = datas.data;
                 vm.clientPageTotal = datas.data.totalProperty;
                 vm.firstClientCode = datas.data.root[0].customerCode;
-                vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost)
+                vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost);
                 vm.clientPageStart = (vm.clientPageNum *10 -9);
                 vm.getClientMsg();
                 if (vm.clientPageNum === vm.clientPageSum) {
@@ -198,7 +205,7 @@ var vm = new Vue({
 
         // 分页输入回车事件
         clientEnter: function () {
-            console.log(vm.clientPageNum)
+            console.log(vm.clientPageNum);
             vm.getClient(vm.clientPageNum);
         },
 
@@ -226,7 +233,6 @@ var vm = new Vue({
                     vm.clientPageNum--;
                     vm.getClient(vm.clientPageNum);
                     break;
-
             }
         },
 
@@ -538,15 +544,7 @@ var vm = new Vue({
 
         // 查询
         queryBtn: function () {
-            var obj = {
-                customerCode: vm.hClientCode,
-                customerName: vm.hClientName,
-                industryLine: vm.hDropCode,
-            };
-            // axios.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
-            //     console.log(datas)
-            // });
-            vm.getClient('','',obj)
+            vm.getClient()
         },
 
         resetBtn: function () {
