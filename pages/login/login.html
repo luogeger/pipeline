@@ -52,21 +52,22 @@
 <script src="../../static/js/vue.min.js"></script>
 <script src="../../static/js/vue-resource.js"></script>
 <script src="../../static/js/jquery-1.12.4.min.js"></script>
-<script src="../../static/scripts/home.js"></script>
 <script>
     var vm = new Vue({
         el: '#app',
         data: function(){
             return {
                 loginList: {},
-                msg: ''
+                msg: '',
+                PATH: 'http://172.16.8.130:8080/iboss-prism',
             }
         },
         methods: {
             // 登陆
             submitHandle: function() {
+                var _this = this;
                 $.ajax({
-                    url: PATH + '/oauth/login',
+                    url: _this.PATH + '/oauth/login',
                     type: 'get',
                     data: this.loginList,
                     dataType: 'json',
