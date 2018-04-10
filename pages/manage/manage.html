@@ -538,107 +538,107 @@
         </div>
     </div>
     <!-- 客户信息弹窗 -->
-    <div class="dialog-wrap"
-         :class="{'hide': customerDialogShow}">
-        <div @click="customerDialogHide" class="dialog-cover"></div>
-        <div class="dialog-content" style="width: 1090px">
-            <div class="title clearfix">
-                <p class="pull-left">客户选择</p>
-                <p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
-            </div>
-            <div class="main">
-                <div class="opera clearfix">
-                    <div class="industry">
-                        <div class="dropdown-wrap">
-                            <span class="dropdown-label">行业:</span>
-                            <div class="dropdown">
-                                <span v-text="hDropText" class="dropdown-default"></span>
-                                <i class="fa fa-angle-down"></i>
-                                <ul>
-                                    <li v-for="searchList in searchLists.industryLines"
-                                        v-text="searchList.text"
-                                        @click="hDrop(searchList.code, searchList.text)"></li>
-                                </ul>
-                            </div>
-                        </div>
-                    </div>
+    <!--<div class="dialog-wrap"-->
+         <!--:class="{'hide': customerDialogShow}">-->
+        <!--<div @click="customerDialogHide" class="dialog-cover"></div>-->
+        <!--<div class="dialog-content" style="width: 1090px">-->
+            <!--<div class="title clearfix">-->
+                <!--<p class="pull-left">客户选择</p>-->
+                <!--<p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>-->
+            <!--</div>-->
+            <!--<div class="main">-->
+                <!--<div class="opera clearfix">-->
+                    <!--<div class="industry">-->
+                        <!--<div class="dropdown-wrap">-->
+                            <!--<span class="dropdown-label">行业:</span>-->
+                            <!--<div class="dropdown">-->
+                                <!--<span v-text="hDropText" class="dropdown-default"></span>-->
+                                <!--<i class="fa fa-angle-down"></i>-->
+                                <!--<ul>-->
+                                    <!--<li v-for="searchList in searchLists.industryLines"-->
+                                        <!--v-text="searchList.text"-->
+                                        <!--@click="hDrop(searchList.code, searchList.text)"></li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
 
-                    <div class="client-num">
-                        <div class="input-group">
-                            <span class="input-group-label">客户编号:</span>
-                            <input v-model="hClientCode" type="text" class="input-group-form">
-                        </div>
-                    </div>
+                    <!--<div class="client-num">-->
+                        <!--<div class="input-group">-->
+                            <!--<span class="input-group-label">客户编号:</span>-->
+                            <!--<input v-model="hClientCode" type="text" class="input-group-form">-->
+                        <!--</div>-->
+                    <!--</div>-->
 
-                    <div class="client-name">
-                        <div class="input-group">
-                            <span class="input-group-label">客户名称:</span>
-                            <input v-model="hClientName" type="text" class="input-group-form">
-                        </div>
-                    </div>
+                    <!--<div class="client-name">-->
+                        <!--<div class="input-group">-->
+                            <!--<span class="input-group-label">客户名称:</span>-->
+                            <!--<input v-model="hClientName" type="text" class="input-group-form">-->
+                        <!--</div>-->
+                    <!--</div>-->
 
-                    <div class="query-reset pull-right">
-                        <div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>
-                        <div @click="resetBtn" class="btn btn-border pull-right">重置</div>
-                    </div>
-                </div><!-- /.opera -->
-                <div class="client">
-                    <div class="table-opera clearfix">
-                        <div class="pull-right">
-                            <div class="client-page page-css">
-                                <div @click="calcPage('client' , 'first')"
-                                     class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
-                                <div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
-                                        class="fa fa-angle-left"></i></div>
-                                <span>第</span><input @keyup.enter="clientEnter" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
-                                <span>共 {{clientPageSum}} 页，</span>
-                                <div @click="calcPage('client' , 1)"
-                                     class="page-css-next"><i class="fa fa-angle-right  "></i></div>
-                                <div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
-                                        class="fa fa-angle-double-right"></i></div>
-                                <span>显示</span>
-                                <span style="margin-left: 5px;">{{clientPageStart}}</span>
-                                <span>-</span>
-                                <span style="margin-right: 5px;">{{clientPageEnd}}</span>
-                                <span>条，</span>
-                                <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
-                            </div>
-                        </div>
-                    </div>
-                    <table class="i-table">
-                        <thead style="background-color: #FAD3B2;color: #433C38;">
-                        <tr>
-                            <th>序号</th>
-                            <th>报备名称</th>
-                            <th>所属事业部</th>
-                            <th>客户编号</th>
-                            <th>客户名称</th>
-                            <th>行业线</th>
-                            <th>地址</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr v-for="(item ,index) in client.root"
-                            :class="{'tr-active': index == cCheckIndex}"
-                            @click="selectCustomerName(item.customerName, index)">
-                            <td v-text="index +1"></td>
-                            <td v-text="item.reportDate"></td>
-                            <td v-text="item.salesGroup"></td>
-                            <td v-text="item.customerCode"></td>
-                            <td v-text="item.customerName"></td>
-                            <td v-text="item.industryLine"></td>
-                            <td v-text="item.address"></td>
-                        </tr>
-                        </tbody>
-                    </table>
-                    <div style="text-align: right">
-                        <button @click="selectHandle" class="btn btn-sm btn-theme" type="button">选中</button>
-                    </div>
+                    <!--<div class="query-reset pull-right">-->
+                        <!--<div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>-->
+                        <!--<div @click="resetBtn" class="btn btn-border pull-right">重置</div>-->
+                    <!--</div>-->
+                <!--</div>&lt;!&ndash; /.opera &ndash;&gt;-->
+                <!--<div class="client">-->
+                    <!--<div class="table-opera clearfix">-->
+                        <!--<div class="pull-right">-->
+                            <!--<div class="client-page page-css">-->
+                                <!--<div @click="calcPage('client' , 'first')"-->
+                                     <!--class="page-css-first"><i class="fa fa-angle-double-left"></i></div>-->
+                                <!--<div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i-->
+                                        <!--class="fa fa-angle-left"></i></div>-->
+                                <!--<span>第</span><input @keyup.enter="clientEnter" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>-->
+                                <!--<span>共 {{clientPageSum}} 页，</span>-->
+                                <!--<div @click="calcPage('client' , 1)"-->
+                                     <!--class="page-css-next"><i class="fa fa-angle-right  "></i></div>-->
+                                <!--<div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i-->
+                                        <!--class="fa fa-angle-double-right"></i></div>-->
+                                <!--<span>显示</span>-->
+                                <!--<span style="margin-left: 5px;">{{clientPageStart}}</span>-->
+                                <!--<span>-</span>-->
+                                <!--<span style="margin-right: 5px;">{{clientPageEnd}}</span>-->
+                                <!--<span>条，</span>-->
+                                <!--<span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>-->
+                            <!--</div>-->
+                        <!--</div>-->
+                    <!--</div>-->
+                    <!--<table class="i-table">-->
+                        <!--<thead style="background-color: #FAD3B2;color: #433C38;">-->
+                        <!--<tr>-->
+                            <!--<th>序号</th>-->
+                            <!--<th>报备名称</th>-->
+                            <!--<th>所属事业部</th>-->
+                            <!--<th>客户编号</th>-->
+                            <!--<th>客户名称</th>-->
+                            <!--<th>行业线</th>-->
+                            <!--<th>地址</th>-->
+                        <!--</tr>-->
+                        <!--</thead>-->
+                        <!--<tbody>-->
+                        <!--<tr v-for="(item ,index) in client.root"-->
+                            <!--:class="{'tr-active': index == cCheckIndex}"-->
+                            <!--@click="selectCustomerName(item.customerName, index)">-->
+                            <!--<td v-text="index +1"></td>-->
+                            <!--<td v-text="item.reportDate"></td>-->
+                            <!--<td v-text="item.salesGroup"></td>-->
+                            <!--<td v-text="item.customerCode"></td>-->
+                            <!--<td v-text="item.customerName"></td>-->
+                            <!--<td v-text="item.industryLine"></td>-->
+                            <!--<td v-text="item.address"></td>-->
+                        <!--</tr>-->
+                        <!--</tbody>-->
+                    <!--</table>-->
+                    <!--<div style="text-align: right">-->
+                        <!--<button @click="selectHandle" class="btn btn-sm btn-theme" type="button">选中</button>-->
+                    <!--</div>-->
 
-                </div><!-- /.client -->
-            </div><!-- /.main -->
-        </div>
-    </div>
+                <!--</div>&lt;!&ndash; /.client &ndash;&gt;-->
+            <!--</div>&lt;!&ndash; /.main &ndash;&gt;-->
+        <!--</div>-->
+    <!--</div>-->
     <!-- 导入 -->
     <div class="dialog-wrap"
          :class="{'hide': uploadDialogShow}">
@@ -998,9 +998,10 @@
                 return sum;
             },
             // 表格查询
-            showData: function(){
-                this.tableList.page = parseInt(this.clientPageNum);
-                this.tableList.limit = 10;
+            showData: function(page, limit){
+                // this.tableList.page = parseInt(this.clientPageNum);
+                this.tableList.page = page || 1;
+                this.tableList.limit = limit || this.clientPageMost;
                 console.log(this.tableList)
                 this.items = []
                 $.ajax({
@@ -1051,31 +1052,30 @@
             },// calcPage
             // 分页输入回车事件
             clientEnter: function () {
-                vm.showData();
+                vm.showData(vm.clientPageNum);
             },
             clientPage: function (type, num) {
+                vm.cCheckIndex = 0;
                 switch(num)
                 {
                     case 'first':
                         vm.clientPageNum = 1;
-                        vm.showData();
+                        vm.showData(1);
                         break;
                     case 'last':
                         vm.clientPageNum = vm.clientPageSum;
                         vm.clientPageEnd = vm.clientPageTotal;
-                        vm.showData();
-                        // console.log(vm.clientPageTotal)
-                        // console.log(vm.clientPageEnd)
+                        vm.showData(vm.clientPageNum);
                         break;
                     case 1:
                         if(vm.clientPageNum >= vm.clientPageSum)  return;
                         vm.clientPageNum++;
-                        vm.showData();
+                        vm.showData(vm.clientPageNum);
                         break;
                     case -1:
                         if(vm.clientPageNum <= 1)  return;
                         vm.clientPageNum--;
-                        vm.showData();
+                        vm.showData(vm.clientPageNum);
                         break;
 
                 }
@@ -1396,7 +1396,7 @@
                 vm.hDropText = text;
                 vm.hDropCode = code;
             },
-            // 获取客户信息
+            /*// 获取客户信息
             getClient: function (page, limit) {
                 var params = {
                     page:         page || 1,
@@ -1463,7 +1463,7 @@
             selectCustomerName: function(name, index) {
                 vm.cCheckIndex = index;
                 vm.handleTemplate.customerName = name;
-            },
+            },*/
             // 选中事件
             selectHandle: function() {
                 vm.customerDialogShow = true;
