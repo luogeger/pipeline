@@ -332,9 +332,8 @@
                                         <input @click=""
                                                v-model="handleTemplate.customerName"
                                                class="input-group-form noNull" type="text">
-                                        <!---->
-                                        <a @click="selectCustomer"
-                                           href="javascript:;"
+                                        <!-- @click="selectCustomer"-->
+                                        <a href="javascript:;"
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px">+</a>
                                     </div>
                                 </div>
@@ -356,7 +355,9 @@
                                             <span id="industryLineCode" ref="industryLineCode" class="selected dropdown-default">请选择</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
-                                                <li @click="selectIndustryLineCode(searchList.code)" v-for="searchList in searchLists.industryLines" :value="searchList.code">{{ searchList.text }}</li>
+                                                <li @click="selectIndustryLineCode(searchList.code)"
+                                                    v-for="searchList in searchLists.industryLines"
+                                                    :value="searchList.code">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -549,47 +550,36 @@
                 <div class="opera clearfix">
                     <div class="industry">
                         <div class="dropdown-wrap">
-                            <span class="dropdown-label">行业线：</span>
+                            <span class="dropdown-label">行业:</span>
                             <div class="dropdown">
-                                <span class="dropdown-default">{{ cIndustryLineText }}</span>
+                                <span v-text="hDropText" class="dropdown-default"></span>
                                 <i class="fa fa-angle-down"></i>
                                 <ul>
-                                    <li @click="searchIndustryLineCode(searchList.code)"
-                                        v-for="searchList in searchLists.industryLines">{{ searchList.text }}</li>
+                                    <li v-for="searchList in searchLists.industryLines"
+                                        v-text="searchList.text"
+                                        @click="hDrop(searchList.code, searchList.text)"></li>
                                 </ul>
                             </div>
                         </div>
-                        <!--<div class="dropdown-wrap">-->
-                            <!--<span class="dropdown-label">行业:</span>-->
-                            <!--<div class="dropdown">-->
-                                <!--<span v-text="hDropText" class="dropdown-default"></span>-->
-                                <!--<i class="fa fa-angle-down"></i>-->
-                                <!--<ul>-->
-                                    <!--<li @click="hDrop(item.text)"-->
-                                        <!--v-for="item in industry"-->
-                                        <!--v-text="item.text"></li>-->
-                                <!--</ul>-->
-                            <!--</div>-->
-                        <!--</div>-->
                     </div>
 
                     <div class="client-num">
                         <div class="input-group">
                             <span class="input-group-label">客户编号:</span>
-                            <input type="text" class="input-group-form">
+                            <input v-model="hClientCode" type="text" class="input-group-form">
                         </div>
                     </div>
 
                     <div class="client-name">
                         <div class="input-group">
                             <span class="input-group-label">客户名称:</span>
-                            <input type="text" class="input-group-form">
+                            <input v-model="hClientName" type="text" class="input-group-form">
                         </div>
                     </div>
 
                     <div class="query-reset pull-right">
-                        <div class="btn btn-theme" style="margin-right: 20px;">查询</div>
-                        <div class="btn btn-border pull-right">重置</div>
+                        <div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>
+                        <div @click="resetBtn" class="btn btn-border pull-right">重置</div>
                     </div>
                 </div><!-- /.opera -->
                 <div class="client">
@@ -823,7 +813,10 @@
                 cCheckIndex: 0,
 
                 customerDialogShow: true,  // 显示客户选择弹窗
-                hDropText: ''              // 行业下拉框文字
+                hDropText: '',// 行业下拉框文字
+                hDropCode: '',// 行业 code
+                hClientCode: '',// 客户编号
+                hClientName: '',// 客户名称
             }
         },
         mounted: function(){
@@ -1028,10 +1021,12 @@
                             vm.items.push(root);
                         }
                         // 如果表格无数据，那么关闭右侧项目更新情况
-                        if(!result.root.length) {
+                        if(result.root.length === 0) {
                             // this.noData = true;
                             // this.emptyMsg = '没有数据';
                             vm.closeUpdateCase();
+                            toastr.warning('没有相关信息 ！');
+                            return;
                         }
 
                         vm.client = result;
@@ -1385,23 +1380,42 @@
             customerDialogHide: function() {
                 vm.customerDialogShow = true;
             },
+            // 查询
+            queryBtn: function () {
+                vm.getClient()
+            },
+
+            resetBtn: function () {
+                vm.hClientCode = '';
+                vm.hClientName = '';
+                vm.hDropText = '';
+                vm.hDropCode = '';
+            },
             // 行业里的点击事件
-            hDrop: function (text) {
+            hDrop: function (code, text) {
                 vm.hDropText = text;
+                vm.hDropCode = code;
             },
             // 获取客户信息
             getClient: function (page, limit) {
-                var obj = {
-                    page: page || 1,
-                    limit: limit || this.clientPageMost,
+                var params = {
+                    page:         page || 1,
+                    limit:        limit || this.clientPageMost,
+                    customerCode: this.hClientCode,
+                    customerName: this.hClientName,
+                    industryLine: this.hDropCode,
                 };
-                axios.get(PATH +'/crm/queryCustomerList', {params: obj}).then(function (datas){
+                //params = Object.assign(params, obj);
+                axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
+                    if (datas.data.root.length === 0) {
+                        toastr.warning('没有相关信息 ！');
+                        return;
+                    }
                     vm.client = datas.data;
                     vm.clientPageTotal = datas.data.totalProperty;
                     vm.firstClientCode = datas.data.root[0].customerCode;
-                    vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost)
+                    vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost);
                     vm.clientPageStart = (vm.clientPageNum *10 -9);
-                    // vm.getClientMsg();
                     if (vm.clientPageNum === vm.clientPageSum) {
                         vm.clientPageEnd = vm.clientPageTotal;
                         return;
