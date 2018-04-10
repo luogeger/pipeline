@@ -48,6 +48,8 @@ body {
           width: 100%;
           font-size: 16px;
           border-radius: 4px; }
+          .login-wrapper .login-con .block-wrapper .input-group .input-group-form:-webkit-autofill {
+            -webkit-box-shadow: 0 0 0 1000px white inset !important; }
     .login-wrapper .login-con a {
       color: #fff; }
       .login-wrapper .login-con a:hover, .login-wrapper .login-con a:active {
