@@ -46,6 +46,20 @@
     <div class="client">
         <div class="table-opera clearfix">
             <div class="pull-left">
+                <div class="user-level-tabs">
+                    <div :class="{'level-active': levelActive == 'me' }"
+                         @click="changeClientList('me')"
+                         class=" btn btn-border user-level-me">个人</div>
+                    <div :class="{'level-active': levelActive == 'department' }"
+                         @click="changeClientList('department')"
+                         class="btn btn-border user-level-department">部门
+                    </div>
+                    <div :class="{'level-active': levelActive == 'all' }"
+                         @click="changeClientList('all')"
+                         class="btn btn-border user-level-all">全部
+                    </div>
+                </div>
+
                 <div @click="addClient" class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户</span>
@@ -87,6 +101,7 @@
                     <th>客户名称</th>
                     <th>行业线</th>
                     <th>地址</th>
+                    <th>操作</th>
                     <th style="width: 200px;">审批状态</th>
                 </tr>
             </thead>
@@ -101,23 +116,22 @@
                     <td v-text="item.customerName"></td>
                     <td v-text="item.industryLine"></td>
                     <td v-text="item.address"></td>
+                    <td @click="editClient(index, item.id)"
+                    ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
                     <td style="padding-right: 20px;">
                         <div class="pull-left types-show">
-                            <!--<span class="type-audit">待审核</span>-->
-                            <!--<span class="type-pass">通过</span>-->
-                            <span class="type-reject">驳回</span>
-                            <!--<span class="type-withdraw ">已撤回</span>-->
+                            <span v-if="item.status == 'pending' " class="type-pending">待审核</span>
+                            <span v-if="item.status == 'pass' " class="type-pass">通过</span>
+                            <span v-if="item.status == 'reject' " class="type-reject">驳回</span>
+                            <span v-if="item.status == 'remove' " class="type-withdraw ">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
-                            <div class="btn btn-xs btn-border opera-">重新编辑</div>
-                            <div class="btn btn-xs btn-border opera-ignore">忽略</div>
-                            <!--<div class="btn btn-xs btn-border opera-withdraw">撤回</div>-->
-                            <!--<div class="btn btn-xs btn-border opera-edit">修改</div>-->
+                            <div v-if="item.status == 'pending' " class="btn btn-xs btn-border opera-withdraw">撤回</div>
+                            <div v-if="item.status == 'pass' " class="btn btn-xs btn-border opera-edit">编辑</div>
+                            <div v-if="item.status == 'reject' " class="btn btn-xs btn-border opera-ignore">忽略</div>
                         </div>
 
                     </td>
-                    <!--<td @click="editClient(index, item.id)"-->
-                    <!--&gt;<i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>-->
                 </tr>
             </tbody>
         </table>

@@ -36,6 +36,14 @@
   }// opera
 
   .client{
+    .user-level-tabs{
+      display: inline-block;
+      .level-active{
+        background-color: #ED6D00;
+        color: #FFFFFF;
+      }
+    }
+
     .i-table{
       tbody{
         tr{
@@ -48,9 +56,23 @@
               span{
                 line-height: 30px;
               }
-            }
+              .type-pending{
+                color: #14a6ef;
+              }
+              .type-pass{
+                color: #5eb95e;
+              }
+
+              .type-reject{
+                color: #dd514c;
+              }
+              .type-withdraw{
+                color: #eeeeee;
+              }
+            }// .type-show
             .operas-btn{
               line-height: 30px;
+
             }
           }
         }

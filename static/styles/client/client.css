@@ -12,11 +12,24 @@
   width: 300px; }
 .main .opera .client-name .input-group-form {
   width: 300px; }
+.main .client .user-level-tabs {
+  display: inline-block; }
+  .main .client .user-level-tabs .level-active {
+    background-color: #ED6D00;
+    color: #FFFFFF; }
 .main .client .i-table tbody tr td:nth-child(5),
 .main .client .i-table tbody tr td:nth-child(7) {
   text-align: left; }
 .main .client .i-table tbody tr td:last-child .types-show span {
   line-height: 30px; }
+.main .client .i-table tbody tr td:last-child .types-show .type-pending {
+  color: #14a6ef; }
+.main .client .i-table tbody tr td:last-child .types-show .type-pass {
+  color: #5eb95e; }
+.main .client .i-table tbody tr td:last-child .types-show .type-reject {
+  color: #dd514c; }
+.main .client .i-table tbody tr td:last-child .types-show .type-withdraw {
+  color: #eeeeee; }
 .main .client .i-table tbody tr td:last-child .operas-btn {
   line-height: 30px; }
 .main .table-opera {

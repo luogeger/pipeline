@@ -4,6 +4,10 @@ var vm = new Vue({
 
     data: {
         industry: [],// 行业线
+        // 用户级别
+        userLevel: userLevel,
+        levelActive: 'all',
+
         // 查询
         hDropText: '',// 行业下拉框文字
         hDropCode: '',// 行业 code
@@ -89,7 +93,6 @@ var vm = new Vue({
     },// data
 
     created: function (){
-        console.log(123)
         this.getIndustry();
         this.getClient();
     },// created
@@ -169,9 +172,11 @@ var vm = new Vue({
                 customerCode: this.hClientCode,
                 customerName: this.hClientName,
                 industryLine: this.hDropCode,
+                queryType:    this.levelActive,
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
+                console.log(datas.data)
                 if (datas.data.root.length === 0) {
                     toastr.warning('没有相关信息 ！');
                     return;
@@ -248,7 +253,11 @@ var vm = new Vue({
             vm.cCheckIndex = index;
         },
 
-
+        // 用户级别信息查询
+        changeClientList:function (level) {
+            vm.levelActive = level;
+            this.getClient()
+        },
 
 
         // 添加客户 按钮事件
@@ -425,7 +434,7 @@ var vm = new Vue({
 
                         }).catch(err => {
                             // 处理reject失败的数据
-                            console.log(err);
+                            console.log(err, 'Promise');
                         })
                     }
                 });
