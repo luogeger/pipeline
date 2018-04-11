@@ -6,7 +6,7 @@ var vm = new Vue({
         industry: [],// 行业线
         // 用户级别
         userLevel: userLevel,
-        levelActive: 'all',
+        levelActive: 'me',
 
         // 查询
         hDropText: '',// 行业下拉框文字
@@ -90,6 +90,11 @@ var vm = new Vue({
         uploadFileName: '',
         clearShow: true,
 
+        // 表格没有数据
+        noData: false,
+        noDataMsg: false,
+        clientNameQuery: false,
+        clientNameQueryMsg: false,
     },// data
 
     created: function (){
@@ -179,8 +184,12 @@ var vm = new Vue({
                 console.log(datas.data)
                 if (datas.data.root.length === 0) {
                     toastr.warning('没有相关信息 ！');
-                    return;
+                    vm.noData = true;
+                    vm.clientNameQuery = true;
+
                 }
+                vm.noData = false;
+                vm.clientNameQuery = false;
                 vm.client = datas.data;
                 vm.clientPageTotal = datas.data.totalProperty;
                 vm.firstClientCode = datas.data.root[0].customerCode;
@@ -199,7 +208,13 @@ var vm = new Vue({
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
             axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
-                vm.clientMsg = datas.data;
+                if (datas.data.root.length === 0) {
+                    vm.noDataMsg = true;
+                    vm.clientMsg = [];
+                } else{
+                    vm.noDataMsg = false;
+                    vm.clientMsg = datas.data;
+                }
             });
         },
 
@@ -256,6 +271,15 @@ var vm = new Vue({
         // 用户级别信息查询
         changeClientList:function (level) {
             vm.levelActive = level;
+            if (level == 'all') {
+                //toastr.info('请输入客户名称进行查询！');
+                vm.clientNameQuery = true;
+                vm.client = [];
+                return;
+            }
+            if (level == 'me') {
+                this.resetBtn();
+            }
             this.getClient()
         },
 

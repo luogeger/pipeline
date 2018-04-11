@@ -13,6 +13,7 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     userCode = msg.userCode;
     userAvatar = msg.avatar;
     userLevel = msg.level;
+    console.log(msg.level)
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
 });

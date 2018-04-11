@@ -46,17 +46,19 @@
     <div class="client">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div class="user-level-tabs">
+                <div v-if="userLevel !== 'dqxyh' " class="user-level-tabs">
                     <div :class="{'level-active': levelActive == 'me' }"
                          @click="changeClientList('me')"
-                         class=" btn btn-border user-level-me">个人</div>
+                         v-if="userLevel !== 'xsld' "
+                         class=" btn btn-border user-level-me">客户信息</div>
                     <div :class="{'level-active': levelActive == 'department' }"
                          @click="changeClientList('department')"
-                         class="btn btn-border user-level-department">部门
+                         v-if="userLevel !== 'xs' "
+                         class="btn btn-border user-level-department">客户信息
                     </div>
                     <div :class="{'level-active': levelActive == 'all' }"
                          @click="changeClientList('all')"
-                         class="btn btn-border user-level-all">全部
+                         class="btn btn-border user-level-all">客户信息查询
                     </div>
                 </div>
 
@@ -106,6 +108,7 @@
                 </tr>
             </thead>
             <tbody>
+
                 <tr v-for="(item ,index) in client.root"
                     :class="{'tr-active': index == cCheckIndex}"
                     @click="queryClientMsg(item.customerCode, index)">
@@ -123,7 +126,7 @@
                             <span v-if="item.status == 'pending' " class="type-pending">待审核</span>
                             <span v-if="item.status == 'pass' " class="type-pass">通过</span>
                             <span v-if="item.status == 'reject' " class="type-reject">驳回</span>
-                            <span v-if="item.status == 'remove' " class="type-withdraw ">已撤回</span>
+                            <span v-if="item.status == 'revoke' " class="type-withdraw ">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
                             <div v-if="item.status == 'pending' " class="btn btn-xs btn-border opera-withdraw">撤回</div>
@@ -135,6 +138,8 @@
                 </tr>
             </tbody>
         </table>
+        <div  v-if="noData" style="padding: 10px; text-align: center">没有数据!</div>
+        <div  v-if="clientNameQuery" style="padding: 10px; text-align: center">请输入客户名称进行查询！</div>
     </div><!-- /.client -->
 
     <div class="client-msg">
@@ -192,6 +197,7 @@
                 </tr>
             </tbody>
         </table>
+        <div  v-if="noDataMsg" style="padding: 10px; text-align: center">没有数据!</div>
     </div><!-- /.client-mag -->
 
 
