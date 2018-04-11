@@ -1,9 +1,21 @@
+.main .user-level-tabs > div {
+  float: left;
+  line-height: 30px;
+  padding: 0 15px;
+  border: 1px solid #DDDEE1;
+  border-radius: 4px 4px 0 0;
+  border-bottom: none;
+  cursor: pointer; }
+.main .user-level-tabs .level-active {
+  background-color: #ED6D00;
+  border-color: #ED6D00;
+  color: #FFFFFF; }
 .main .opera,
 .main .client,
 .main .client-msg {
   padding: 10px;
-  margin-top: 10px;
-  background-color: #fff; }
+  background-color: #fff;
+  border: 1px solid #DDDEE1; }
 .main .opera > div {
   float: left; }
 .main .opera > div:not(:last-child) {
@@ -12,11 +24,6 @@
   width: 300px; }
 .main .opera .client-name .input-group-form {
   width: 300px; }
-.main .client .user-level-tabs {
-  display: inline-block; }
-  .main .client .user-level-tabs .level-active {
-    background-color: #ED6D00;
-    color: #FFFFFF; }
 .main .client .i-table tbody tr td:nth-child(5),
 .main .client .i-table tbody tr td:nth-child(7) {
   text-align: left; }

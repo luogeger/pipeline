@@ -24,7 +24,7 @@ var vm = new Vue({
         clientPageMost: 10,// 页容量
         clientPageStart: 1,
         clientPageEnd: 1,
-        firstClientCode: '',
+        firstClientCode: '',// 第一条记录的 客户编号
 
         // nowIndex
         industryNowIndex: 0,// 事业部
@@ -90,11 +90,12 @@ var vm = new Vue({
         uploadFileName: '',
         clearShow: true,
 
-        // 表格没有数据
+        // 点击客户信息以后需要隐藏和现实的dom元素
         noData: false,
         noDataMsg: false,
         clientNameQuery: false,
-        clientNameQueryMsg: false,
+        clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号
+
     },// data
 
     created: function (){
@@ -181,16 +182,17 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                console.log(datas.data)
+                console.log(datas.data, '--------');
+                console.log(vm.userLevel, 'level, client.js');
                 if (datas.data.root.length === 0) {
-                    toastr.warning('没有相关信息 ！');
                     vm.noData = true;
-                    vm.clientNameQuery = true;
-
+                    vm.noDataMsg = true;
+                    return;
                 }
                 vm.noData = false;
                 vm.clientNameQuery = false;
-                vm.client = datas.data;
+                vm.client = datas.data;// 数据list
+                // 分页
                 vm.clientPageTotal = datas.data.totalProperty;
                 vm.firstClientCode = datas.data.root[0].customerCode;
                 vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost);
@@ -271,13 +273,21 @@ var vm = new Vue({
         // 用户级别信息查询
         changeClientList:function (level) {
             vm.levelActive = level;
-            if (level == 'all') {
-                //toastr.info('请输入客户名称进行查询！');
+            if (level === 'all') {
                 vm.clientNameQuery = true;
+                vm.clientMsgQueryBtn = false;
                 vm.client = [];
+
+                vm.clientPageTotal = 0;// 全部数据
+                vm.clientPageNum = 1;// 当前页
+                vm.clientPageSum = 0;// 共多少页
+                vm.clientPageStart = 0;// 开始
+                vm.clientPageEnd = 0;// 结束
+
                 return;
             }
-            if (level == 'me') {
+            if (level === 'me') {
+                vm.clientMsgQueryBtn = true;
                 this.resetBtn();
             }
             this.getClient()

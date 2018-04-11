@@ -7,8 +7,24 @@
         <span>客户管理</span>
     </div><!-- /.breadcrumb-->
 
+    <div v-if="userLevel !== 'dqxyh' " class="user-level-tabs clearfix">
+        <div :class="{'level-active': levelActive == 'me' }"
+             @click="changeClientList('me')"
+             v-if="userLevel !== 'xsld' "
+             class="user-level-me">客户信息</div>
+        <div :class="{'level-active': levelActive == 'department' }"
+             @click="changeClientList('department')"
+             v-if="userLevel !== 'xs' "
+             class="user-level-department">客户信息
+        </div>
+        <div :class="{'level-active': levelActive == 'all' }"
+             @click="changeClientList('all')"
+             class="user-level-all">客户信息查询
+        </div>
+    </div>
+
     <div class="opera clearfix">
-        <div class="industry">
+        <div v-if="clientMsgQueryBtn" class="industry">
             <div class="dropdown-wrap">
                 <span class="dropdown-label">行业:</span>
                 <div class="dropdown">
@@ -23,7 +39,7 @@
             </div>
         </div>
 
-        <div class="client-num">
+        <div v-if="clientMsgQueryBtn" class="client-num">
             <div class="input-group">
                 <span class="input-group-label">客户编号:</span>
                 <input v-model="hClientCode" type="text" class="input-group-form">
@@ -46,21 +62,6 @@
     <div class="client">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div v-if="userLevel !== 'dqxyh' " class="user-level-tabs">
-                    <div :class="{'level-active': levelActive == 'me' }"
-                         @click="changeClientList('me')"
-                         v-if="userLevel !== 'xsld' "
-                         class=" btn btn-border user-level-me">客户信息</div>
-                    <div :class="{'level-active': levelActive == 'department' }"
-                         @click="changeClientList('department')"
-                         v-if="userLevel !== 'xs' "
-                         class="btn btn-border user-level-department">客户信息
-                    </div>
-                    <div :class="{'level-active': levelActive == 'all' }"
-                         @click="changeClientList('all')"
-                         class="btn btn-border user-level-all">客户信息查询
-                    </div>
-                </div>
 
                 <div @click="addClient" class="btn btn-theme">
                     <i class="fa fa-plus"></i>

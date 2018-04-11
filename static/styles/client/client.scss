@@ -1,10 +1,30 @@
 .main{
+
+
+  .user-level-tabs{
+    >div {
+      float: left;
+      line-height: 30px;
+      padding: 0 15px;
+      border: 1px solid #DDDEE1;
+      border-radius: 4px 4px 0 0;
+      border-bottom: none;
+      cursor: pointer;
+    }
+    .level-active{
+      background-color: #ED6D00;
+      border-color: #ED6D00;
+      color: #FFFFFF;
+    }
+  }
+
   .opera,
   .client,
   .client-msg{
     padding: 10px;
-    margin-top: 10px;
+    //margin-top: 10px;
     background-color: #fff;
+    border: 1px solid #DDDEE1;
   }
 
 
@@ -36,14 +56,6 @@
   }// opera
 
   .client{
-    .user-level-tabs{
-      display: inline-block;
-      .level-active{
-        background-color: #ED6D00;
-        color: #FFFFFF;
-      }
-    }
-
     .i-table{
       tbody{
         tr{

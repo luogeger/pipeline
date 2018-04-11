@@ -1,6 +1,6 @@
 $.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.130:8080/iboss-prism';
-// var PATH = '/iboss-prism';
+// var PATH = '/iboss-prism';// 131
 var timeYear,
     userName,
     userCode,
@@ -13,7 +13,7 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     userCode = msg.userCode;
     userAvatar = msg.avatar;
     userLevel = msg.level;
-    console.log(msg.level)
+    console.log(msg.level, 'home.js')
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
 });
@@ -221,4 +221,3 @@ $('.sign-out').click(function () {
 
 
 loadMainPage('.content-item', 'manage/manage.html');
-// loadMainPage('.content-item', 'client/client.html');
