@@ -100,7 +100,7 @@
         </div>
         <div class="input-group pull-right">
             <span class="input-group-label"></span>
-            <button @click="resettingHandle"
+            <button @click="clearSearchForm"
                     class="btn btn-sm btn-theme"
                     type="button">重置</button>
         </div>
@@ -216,6 +216,8 @@
                             </tbody>
                         </table>
                 </div>
+                <div v-if="noData"
+                     style="padding: 20px;text-align: center">暂无相关数据</div>
             </div>
         </div>
             <div class="updateCase" :class="{'hide': updateCaseShow}">
@@ -416,7 +418,9 @@
                                             <span id="successRateCode" ref="successRateCode" class="selected dropdown-default">请选择</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
-                                                <li @click="selectSuccessRateCode(searchList.code)" v-for="searchList in searchLists.projectSuccessRates" :value="searchList.code">{{ searchList.text }}</li>
+                                                <li @click="selectSuccessRateCode(searchList.code)"
+                                                    v-for="searchList in searchLists.projectSuccessRates"
+                                                    :value="searchList.code">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -745,9 +749,8 @@
         }else{
             $('#addTreeName').text(treeNode.name);
 
-            // preSaleStaffs.userCode
             //新增/修改的时候传解决方案code
-            vm.solutionSub.solutionCode = treeNode.id;
+            vm.solutionSub.solutionCode = treeNode.code;
         }
         // console.log("[onClick ]&nbsp;&nbsp;clickFlag = " + clickFlag + " (" + (clickFlag===1 ? "普通选中": (clickFlag===0 ? "<b>取消选中</b>" : "<b>追加选中</b>")) + ")");
         event.stopPropagation();
@@ -916,6 +919,8 @@
             // 选中成功率
             selectSuccessRateCode: function(code) {
                 this.handleTemplate.successRateCode = code;
+
+                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code)
             },
             // 选中项目阶段
             selectProgressCode: function(code) {
@@ -1117,9 +1122,10 @@
                         if(result.root.length === 0) {
                             vm.closeUpdateCase();
                             toastr.warning('没有相关信息 ！');
+                            vm.noData = true;
                             return;
                         }
-
+                        vm.noData = false;
                         vm.data = result;
                         vm.dataPageTotal = result.totalProperty;
                         vm.dataPageSum = Math.ceil(vm.dataPageTotal / vm.dataPageMost)
@@ -1227,8 +1233,8 @@
                     }
                 })
             },
-            // 重置搜索框
-            resettingHandle: function() {
+            // 清空搜索框
+            clearSearchForm: function() {
                 vm.cIndustryLineText = '';        // 行业线
                 vm.cExpectSignDateRange = '';     // 预计签约时间
                 vm.cProjectSuccessRateText = '';  // 成功率
@@ -1240,9 +1246,13 @@
                 this.tableList = {};
                 this.showData();
             },
+            // 清空新增/修改表单
+            clearHandle: function() {
+                vm.hCustomerName = '';
+            },
             // 新增
             addData: function() {
-
+                this.clearHandle();
                 this.customerData(); // 获取客户属性
                 this.searchData();   // 只是获取区域的默认第一个那条语句
 
@@ -1270,6 +1280,7 @@
             // 修改
             handleData: function(item){
                 vm.dialogShow = false;
+                this.clearHandle();
                 // $('.radioCheck li').removeClass('active');
                 // 已获取销售code
                 // console.log(item.soCoreCode)
@@ -1298,7 +1309,7 @@
                         console.log(vm.handleTemplate);
 
                         vm.getProvince(vm.handleTemplate.regionCode);// 获取省份信息
-
+                        vm.hCustomerName = vm.handleTemplate.customerName;
 
                         if(vm.handleTemplate.preSaleStaffs) {
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
@@ -1360,6 +1371,7 @@
                                 }
                             }
                         }
+                        console.log(vm.handleTemplate.customerSourceCode)
                     },
                     error: function(){
                         console.log('修改信息 请求失败');
@@ -1368,11 +1380,12 @@
             },
             // 添加修改提交
             submitHandle: function(addObj){
-                var addObj = {
-                    reportDate:         vm.hReportDate
-                }
+                // var addObj = {
+                //     reportDate:         vm.hReportDate
+                // }
 
                 vm.handleTemplate.salesStaffCode = userCode;  // 销售代码
+                vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 	加权金额(万元)
 
                 if($(this.$refs.regionCode).hasClass('active')){
                     vm.handleTemplate.regionCode = $(this.$refs.regionCode).attr('value') // 区域
@@ -1402,7 +1415,7 @@
                 //TODO 数组下对象未修改完成
                 vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
                 vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
-                // console.log(vm.handleTemplate)
+
                 var paramm = $.param(vm.handleTemplate)
 
                 console.log('-----新增/修改完成后准备提交的数据------');
