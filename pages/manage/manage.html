@@ -229,7 +229,10 @@
                 <ul class="block">
                     <li v-for="changeOneList in changeOneLists">
                         <h4>{{ changeOneList.opTime }}</h4>
-                        <p>{{ changeOneList.operName }}{{ changeOneList.opDetail }}</p>
+                        <p>
+                            <span v-html="changeOneList.operName"></span>
+                            <span v-html="changeOneList.opDetail"></span>
+                        </p>
                     </li>
                 </ul>
             </div>
@@ -308,9 +311,8 @@
                                             <!--:class="{'active': index == isActiveProvince}"-->
                                             <li @click="selectProvince(provinceList.code, index)"
                                                 v-for="(provinceList,index) in provinceLists"
-                                                :value="provinceList.code"
-                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''"
-                                                ref="provinceCode">{{ provinceList.text }}</li>
+                                                ref="provinceCode"
+                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''">{{ provinceList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -321,7 +323,7 @@
                                         <ul class="item-list radioCheck clearfix">
                                             <li v-for="(customerName,index) in customerAttr"
                                                 :class="handleTemplate.customerPropertiesCode == customerName.code ? 'active':''"
-                                                :value="customerName.code"
+                                                @click="selectCustomerAttr(customerName.code, index)"
                                                 ref="customerPropertiesCode">{{ customerName.text }}</li>
                                         </ul>
                                     </div>
@@ -370,8 +372,8 @@
                                             <span class="input-group-label">项目性质:</span>
                                             <ul class="item-list radioCheck clearfix">
                                                 <li v-for="(searchList,index) in searchLists.projectNatures"
-                                                    :value="searchList.code"
                                                     :class="handleTemplate.projectNatureCode == searchList.code ? 'active':''"
+                                                    @click="selectProjectNature(searchList.code, index)"
                                                     ref="projectNatureCode">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
@@ -652,8 +654,8 @@
             </div>
             <div class="main">
                 <div class="select-file">
-                    <label for="importFile">选择文件</label>
-                    <input id="importFile" type="file">
+                    <label for="importpipeline">选择文件</label>
+                    <input id="importpipeline" type="file">
                 </div>
                 <div class="btn-group">
                     <div @click="uploadConfirm" class="btn btn-theme">确认</div>
@@ -723,6 +725,8 @@
             vm.showData();
         }else{
             $('#addTreeName').text(treeNode.name);
+
+            // preSaleStaffs.userCode
             //新增/修改的时候传解决方案code
             vm.solutionSub.solutionCode = treeNode.id;
         }
@@ -898,6 +902,14 @@
             selectCustomerSourceCode: function(code) {
                 this.handleTemplate.customerSourceCode = code;
             },
+            // 选中客户属性
+            /*selectCustomerAttr: function(code) {
+                this.handleTemplate.customerSourceCode = code;
+            },
+            // 选中项目性质
+            selectProjectNature: function(code) {
+                this.handleTemplate.projectNatureCode = code;
+            },*/
             addClient: function () {
                 vm.dialogShow = false;
             },
@@ -913,6 +925,7 @@
             // 选中区域
             selectRegion: function(code) {
                 this.handleTemplate.regionCode = code;
+                this.isActiveProvince = -1;
                 this.getRegion(code);
             },
             // 获取省份
@@ -927,6 +940,8 @@
                     },
                     success: function(result){
                         vm.provinceLists = result.msg[province];
+
+                        console.log(vm.provinceLists)
 
                        /* vm.provinceLists = eval('result.msg.' + $('#tierFirst li').eq(0).attr('value'))
 
@@ -945,10 +960,11 @@
                 })
             },
             // 选中省份
-            selectProvince: function(code,index){
-                this.isActiveProvince = index;
-
+            selectProvince: function(code){
+                // this.isActiveProvince = index;
+                console.log(code)
                 this.handleTemplate.provinceCode = code;
+                console.log(this.handleTemplate.provinceCode)
             },
             // 获取客户属性
             customerData: function(){
@@ -1227,19 +1243,19 @@
                 vm.dialogShow = false;
                 $('.selected').text('');
                 $('#addTreeName').text('');
-                $('.radioCheck li').removeClass('active');
+                // $('.radioCheck li').removeClass('active');
 
                 vm.handleTemplate = {}
                 vm.preSaleStaffs = []
                 vm.solutionSub = []
 
-                $('.radioCheck').each(function() {
-                    var li = $(this).children('li');
-                    li.click(function () {
-                        $(this).addClass('active');
-                        $(this).siblings().removeClass("active");
-                    })
-                })
+                // $('.radioCheck').each(function() {
+                //     var li = $(this).children('li');
+                //     li.click(function () {
+                //         $(this).addClass('active');
+                //         $(this).siblings().removeClass("active");
+                //     })
+                // })
             },
             // 修改
             handleData: function(item){
@@ -1265,6 +1281,9 @@
                         vm.handleTemplate = result.msg
                         console.log(vm.handleTemplate);
 
+                        console.log(vm.handleTemplate.customerPropertiesCode);
+
+
                         if(vm.handleTemplate.preSaleStaffs) {
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
                                 vm.preSaleStaffs = vm.handleTemplate.preSaleStaffs[i]
@@ -1273,7 +1292,8 @@
                         }
                         if(vm.handleTemplate.solutionSub) {
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
-                                vm.solutionSub = vm.handleTemplate.solutionSub[i]
+                                console.log(vm.handleTemplate.solutionSub[i])
+                                $('#addTreeName').text(vm.handleTemplate.solutionSub[i].solutionName);
                             }
                         }
                         // 遍历修改接口数组中的数据，并赋值给下拉框
@@ -1521,28 +1541,24 @@
             },
             // 确认导入
             uploadConfirm: function () {
-                var file = importFile.files[0];
-                vm.uploadFileName = importFile.files[0].name;
-                if(importFile.files[0] == undefined) {
+                var file = importpipeline.files[0];
+                vm.uploadFileName = importpipeline.files[0].name;
+                if(importpipeline.files[0] == undefined) {
                     toastr.warning('请选择上传的文件 ！');
                     return
                 };
                 var fd = new FormData();
-                fd.append('crmFile', file);
-                var obj = {
-                    crmFile: fd,
-                };
+                fd.append('pipelineFile', file);
 
                 console.log(vm.uploadFileName);
                 console.log(fd);
-                console.log(obj)
-                axios.post('/iboss-prism/crm/importCrm', {params: obj}).then(function (datas){
+                axios.post('/iboss-prism/so/importPipeline', {params: fd}).then(function (datas){
                     console.log(datas);
                     if (datas.data.code === 201) {
                         toastr.error(datas.data.msg)
                     } else{
                         toastr.success('文件上传成功 ！');
-                        vm.hidePop();
+                        vm.allHide();
                     }
 
                 });
