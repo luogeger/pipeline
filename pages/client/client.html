@@ -63,12 +63,16 @@
         <div class="table-opera clearfix">
             <div class="pull-left">
 
-                <div @click="addClient" class="btn btn-theme">
+                <div @click="addClient"
+                     v-if="onlySale"
+                     class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户</span>
                 </div>
 
-                <div @click="upload" class="btn btn-theme">
+                <div @click="upload"
+                     v-if="onlySale"
+                     class="btn btn-theme">
                     <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
@@ -109,7 +113,6 @@
                 </tr>
             </thead>
             <tbody>
-
                 <tr v-for="(item ,index) in client.root"
                     :class="{'tr-active': index == cCheckIndex}"
                     @click="queryClientMsg(item.customerCode, index)">
@@ -146,7 +149,7 @@
     <div class="client-msg">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div @click="addMsg" class="btn btn-theme">
+                <div v-if="msgBtnIsShow" @click="addMsg" class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户机要信息</span>
                 </div>
@@ -237,15 +240,6 @@
 
                 </div><!-- item -->
 
-                <!--<div class="msg-item">-->
-                    <!--<div class="msg-item-left">客户编号：</div>-->
-                    <!--<div class="msg-item-right">-->
-                        <!--<div class="input-group">-->
-                            <!--<input v-model="cCustomerCode" type="text" class="input-group-form">-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
-
                 <div class="msg-item">
                     <div class="msg-item-left">客户名称：</div>
                     <div class="msg-item-right">
@@ -294,8 +288,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">提交</div>
-                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">a提交</div>
+                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">e提交</div>
                     </div>
                 </div>
             </div><!-- /.main -->
