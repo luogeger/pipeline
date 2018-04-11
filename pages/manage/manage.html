@@ -257,7 +257,7 @@
                                 <div class="block-wrapper">
                                     <div class="input-group">
                                         <span class="input-group-label">报备日期:</span>
-                                        <span style="line-height: 30px;">{{ cReportDate }}</span>
+                                        <span style="line-height: 30px;">{{ hReportDate }}</span>
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -279,7 +279,7 @@
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">负责销售:</span>
-                                        <span style="line-height: 30px;">{{ cSalesStaffCode }}</span>
+                                        <span style="line-height: 30px;">{{ hSalesStaffName }}</span>
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -293,13 +293,15 @@
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">区域:</span>
-                                        <ul id="tierFirst" class="item-list radioCheck clearfix">
+                                        <ul class="item-list clearfix">
                                             <!--:class="{'active': index == 0}"-->
                                             <li @click="selectRegion(searchList.code, index)"
                                                 v-for="(searchList,index) in searchLists.regions"
                                                 :value="searchList.code"
                                                 ref="regionCode"
-                                                :class="handleTemplate.regionCode == searchList.code ? 'active':''">{{ searchList.text }}</li>
+                                                :class="{'active': handleTemplate.regionCode == searchList.code}">{{ searchList.text }}</li>
+
+                                            <!--:class="handleTemplate.regionCode == searchList.code ? 'active':''"-->
                                         </ul>
                                     </div>
                                 </div>
@@ -307,12 +309,16 @@
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户所在省份:</span>
-                                        <ul id="tierSecond" class="item-list radioCheck clearfix">
+                                        <ul class="item-list radioCheck clearfix">
                                             <!--:class="{'active': index == isActiveProvince}"-->
-                                            <li @click="selectProvince(provinceList.code, index)"
+                                            <li @click="selectProvince(provinceList.code, provinceList)"
                                                 v-for="(provinceList,index) in provinceLists"
                                                 ref="provinceCode"
-                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''">{{ provinceList.text }}</li>
+                                                :value="provinceList.code"
+                                                :class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>
+                                            <!--
+                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''"
+                                                -->
                                         </ul>
                                     </div>
                                 </div>
@@ -321,9 +327,10 @@
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户属性:</span>
                                         <ul class="item-list radioCheck clearfix">
-                                            <li v-for="(customerName,index) in customerAttr"
-                                                :class="handleTemplate.customerPropertiesCode == customerName.code ? 'active':''"
-                                                @click="selectCustomerAttr(customerName.code, index)"
+                                            <li @click="selectCustomerAttr(customerName.code, index)"
+                                                v-for="(customerName,index) in customerAttr"
+                                                :value="customerName.code"
+                                                :class="{'active': customerName.code == handleTemplate.customerPropertiesCode}"
                                                 ref="customerPropertiesCode">{{ customerName.text }}</li>
                                         </ul>
                                     </div>
@@ -333,7 +340,7 @@
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户名称:</span>
                                         <input @click=""
-                                               v-model="handleTemplate.customerName"
+                                               v-model="hCustomerName"
                                                class="input-group-form noNull" type="text">
                                         <!-- -->
                                         <a @click="selectCustomer"
@@ -367,128 +374,134 @@
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
-                                        <div class="input-group">
-                                            <i class="star">*</i>
-                                            <span class="input-group-label">项目性质:</span>
-                                            <ul class="item-list radioCheck clearfix">
-                                                <li v-for="(searchList,index) in searchLists.projectNatures"
-                                                    :class="handleTemplate.projectNatureCode == searchList.code ? 'active':''"
-                                                    @click="selectProjectNature(searchList.code, index)"
-                                                    ref="projectNatureCode">{{ searchList.text }}</li>
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">项目性质:</span>
+                                        <ul class="item-list radioCheck clearfix">
+                                            <li v-for="(searchList,index) in searchLists.projectNatures"
+                                                :class="{'active': searchList.code == handleTemplate.projectNatureCode}"
+                                                @click="selectProjectNature(searchList.code, index)"
+                                                :value="searchList.code"
+                                                ref="projectNatureCode">{{ searchList.text }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">合作伙伴:</span>
+                                        <input v-model="handleTemplate.cooperativePartner" class="input-group-form" type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label" style="width: auto">预计签约金额（万元）:</span>
+                                        <input v-model="solutionSub.expectSignSum"
+                                               class="input-group-form noNull"
+                                               type="text"
+                                               style="text-align: right;padding-right: 10px">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label" style="width: auto">加权金额总计（万元）:</span>
+                                        <span style="line-height: 30px;">{{ hWeightedSum }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">成功率：</span>
+                                        <div class="dropdown noNull">
+                                            <span id="successRateCode" ref="successRateCode" class="selected dropdown-default">请选择</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectSuccessRateCode(searchList.code)" v-for="searchList in searchLists.projectSuccessRates" :value="searchList.code">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
                                     </div>
-                                    <div class="block-wrapper col-1">
-                                        <div class="input-group">
-                                            <span class="input-group-label">合作伙伴:</span>
-                                            <input v-model="handleTemplate.cooperativePartner" class="input-group-form" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="block-wrapper">
-                                        <!--TODO  如何获取对象下的数组-->
-                                        <div class="input-group">
-                                            <i class="star">*</i>
-                                            <span class="input-group-label" style="width: auto">预计签约金额（万元）:</span>
-                                            <input v-model="solutionSub.expectSignSum"
-                                                   class="input-group-form noNull"
-                                                   type="text"
-                                                   style="text-align: right;padding-right: 10px">
-                                        </div>
-                                    </div>
-                                    <div class="block-wrapper">
-                                        <div class="input-group">
-                                            <span class="input-group-label">预计签约时间：</span>
-                                            <div class="i-date-picker-container">
-                                                <div class="date-input-box  icon iconfont icon-cale-a">
-                                                    <input v-model="handleTemplate.expectSignDate"
-                                                           type="text"
-                                                           id="signDate"
-                                                           class="i-date-picker"
-                                                           data-calendar="true" >
-                                                </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">预计签约时间：</span>
+                                        <div class="i-date-picker-container">
+                                            <div class="date-input-box  icon iconfont icon-cale-a">
+                                                <input v-model="handleTemplate.expectSignDate"
+                                                       type="text"
+                                                       id="signDate"
+                                                       class="i-date-picker"
+                                                       data-calendar="true" >
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="block-wrapper">
-                                        <div class="dropdown-wrap">
-                                            <i class="star">*</i>
-                                            <span class="dropdown-label">成功率：</span>
-                                            <div class="dropdown noNull">
-                                                <span id="successRateCode" ref="successRateCode" class="selected dropdown-default">请选择</span>
-                                                <i class="fa fa-angle-down"></i>
-                                                <ul>
-                                                    <li @click="selectSuccessRateCode(searchList.code)" v-for="searchList in searchLists.projectSuccessRates" :value="searchList.code">{{ searchList.text }}</li>
-                                                </ul>
-                                            </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">项目阶段：</span>
+                                        <div class="dropdown noNull">
+                                            <span id="progressCode" ref="progressCode" class="selected dropdown-default">请选择</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectProgressCode(searchList.code)" v-for="searchList in searchLists.progresss" :value="searchList.code">{{ searchList.text }}</li>
+                                            </ul>
                                         </div>
                                     </div>
-                                    <div class="block-wrapper">
-                                        <div class="dropdown-wrap">
-                                            <i class="star">*</i>
-                                            <span class="dropdown-label">项目阶段：</span>
-                                            <div class="dropdown noNull">
-                                                <span id="progressCode" ref="progressCode" class="selected dropdown-default">请选择</span>
-                                                <i class="fa fa-angle-down"></i>
-                                                <ul>
-                                                    <li @click="selectProgressCode(searchList.code)" v-for="searchList in searchLists.progresss" :value="searchList.code">{{ searchList.text }}</li>
-                                                </ul>
-                                            </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <span class="dropdown-label">客户来源：</span>
+                                        <div class="dropdown">
+                                            <span id="customerSourceCode" ref="customerSourceCode" class="selected dropdown-default">请选择</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectCustomerSourceCode(searchList.code)" v-for="searchList in searchLists.customerSours" :value="searchList.code">{{ searchList.text }}</li>
+                                            </ul>
                                         </div>
                                     </div>
-                                    <div class="block-wrapper">
-                                        <div class="dropdown-wrap">
-                                            <span class="dropdown-label">客户来源：</span>
-                                            <div class="dropdown">
-                                                <span id="customerSourceCode" ref="customerSourceCode" class="selected dropdown-default">请选择</span>
-                                                <i class="fa fa-angle-down"></i>
-                                                <ul>
-                                                    <li @click="selectCustomerSourceCode(searchList.code)" v-for="searchList in searchLists.customerSours" :value="searchList.code">{{ searchList.text }}</li>
-                                                </ul>
-                                            </div>
+                                </div>
+                                <div class="block-wsrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">金融银行分类:</span>
+                                        <input v-model="handleTemplate.classificationOfFinancialIndustry" class="input-group-form" type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group" style="display: block;">
+                                        <span class="input-group-label">项目跟进情况:</span>
+                                        <div>
+                                       <textarea v-model="handleTemplate.projectFollowUpRemark" class="input-group-form" style="display: block"
+                                                 placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
                                         </div>
                                     </div>
-                                    <div class="block-wsrapper">
-                                        <div class="input-group">
-                                            <span class="input-group-label">金融银行分类:</span>
-                                            <input v-model="handleTemplate.classificationOfFinancialIndustry" class="input-group-form" type="text">
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group" style="display: block;">
+                                        <span class="input-group-label" style="width: auto">需要其他部门配合的地方:</span>
+                                        <div>
+                                        <textarea v-model="handleTemplate.othDescription" class="input-group-form" style="display: block"
+                                                  placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
                                         </div>
                                     </div>
-                                    <div class="block-wrapper col-1">
-                                        <div class="input-group" style="display: block;">
-                                            <span class="input-group-label">项目跟进情况:</span>
-                                            <div>
-                                           <textarea v-model="handleTemplate.projectFollowUpRemark" class="input-group-form" style="display: block"
-                                                     placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
-                                            </div>
-                                        </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">竞争对手:</span>
+                                        <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
                                     </div>
-                                    <div class="block-wrapper col-1">
-                                        <div class="input-group" style="display: block;">
-                                            <span class="input-group-label" style="width: auto">需要其他部门配合的地方:</span>
-                                            <div>
-                                            <textarea v-model="handleTemplate.othDescription" class="input-group-form" style="display: block"
-                                                      placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
-                                            </div>
-                                        </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">备注-项目名称:</span>
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
                                     </div>
-                                    <div class="block-wrapper col-1">
-                                        <div class="input-group">
-                                            <span class="input-group-label">竞争对手:</span>
-                                            <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
-                                        </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label"></span>
+                                        <button @click="submitHandle" class="btn btn-sm btn-theme" type="button">提交</button>
                                     </div>
-                                    <div class="block-wrapper col-1">
-                                        <div class="input-group">
-                                            <span class="input-group-label">备注-项目名称:</span>
-                                            <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
-                                        </div>
-                                    </div>
-                                    <div class="block-wrapper">
-                                        <div class="input-group">
-                                            <span class="input-group-label"></span>
-                                            <button @click="submitHandle" class="btn btn-sm btn-theme" type="button">提交</button>
-                                        </div>
-                                    </div>
+                                </div>
                             </form>
                         </div>
                         <div class="explain">
@@ -624,7 +637,7 @@
                         <tbody>
                         <tr v-for="(item ,index) in client.root"
                             :class="{'tr-active': index == cCheckIndex}"
-                            @click="selectCustomerName(item.customerName, index)">
+                            @click="selectCustomerName(item.customerCode, item.customerName, index)">
                             <td>{{ (vm.clientPageNum -1) * 10 + (index + 1) }}</td>
                             <td v-text="item.reportDate"></td>
                             <td v-text="item.salesGroup"></td>
@@ -692,6 +705,12 @@
         laydate.render({
             elem: '#signDate' //指定元素
             ,type: 'month'
+            ,done: function(value) {
+                console.log(value)
+                // vm.hExpectSignDate = value;
+                vm.handleTemplate.expectSignDate = value;
+
+            }
         });
     })
     //zTree
@@ -721,7 +740,7 @@
             vm.cSoSolutionText = treeNode.name
             //搜索的时候传解决方案名称code
             vm.tableList.soSolutionCode = treeNode.code;
-            console.log(vm.tableList.soSolutionCode)
+            // console.log(vm.tableList.soSolutionCode)
             vm.showData();
         }else{
             $('#addTreeName').text(treeNode.name);
@@ -805,8 +824,13 @@
                 isClicked: false,           // 是否点击table的tr
                 isActiveProvince: -1,
                 // 添加
-                cReportDate: timeYear,      // 报备时间
-                cSalesStaffCode: userName,  // 负责销售
+                hReportDate: timeYear,      // 报备时间
+                // hSalesStaffCode: userCode,  // 负责销售code
+                hSalesStaffName: userName,  // 负责销售名字
+                hCustomerName: '',          // 客户名称
+                hWeightedSum: '',           // 加权金额总计（万元）
+                hExpectSignDate: '',        // 预计签约时间
+
                 cSalesGroupCode: '',        // 事业部
                 csuccessRateCode: '',       // 成功率
 
@@ -836,7 +860,6 @@
             }
         },
         mounted: function(){
-            this.customerData();
             this.searchCustomer();
             this.searchData();
             this.showData();
@@ -903,45 +926,36 @@
                 this.handleTemplate.customerSourceCode = code;
             },
             // 选中客户属性
-            /*selectCustomerAttr: function(code) {
-                this.handleTemplate.customerSourceCode = code;
+            selectCustomerAttr: function(code) {
+                this.handleTemplate.customerPropertiesCode = code;
             },
             // 选中项目性质
             selectProjectNature: function(code) {
-                this.handleTemplate.projectNatureCode = code;
-            },*/
-            addClient: function () {
-                vm.dialogShow = false;
-            },
-            addMsg: function () {
-                vm.dialogShow = false;
-                vm.addMsgShow = false;
-            },
-            allHide: function () {
-                vm.dialogShow = true;
-                vm.addMsgShow = true;
-                vm.uploadDialogShow = true;
+                vm.handleTemplate.projectNatureCode = code;
+                console.log(this.handleTemplate.projectNatureCode)
             },
             // 选中区域
             selectRegion: function(code) {
                 this.handleTemplate.regionCode = code;
                 this.isActiveProvince = -1;
-                this.getRegion(code);
+                this.getProvince(code);
             },
             // 获取省份
-            getRegion: function(province) {
+            getProvince: function(province) {
+                province = province || 'regionHd';
                 $.ajax({
                     url:  PATH + '/basic/queryDictDataByCategory',
                     type: 'get',
                     dataType: 'json',
                     data: {
-                        // 'categoryCodes': vm.regions
                         'categoryCodes': province
                     },
                     success: function(result){
                         vm.provinceLists = result.msg[province];
 
-                        console.log(vm.provinceLists)
+                        vm.handleTemplate.provinceCode = vm.provinceLists[0].code;// 默认选中第一个
+
+                        // console.log(vm.provinceLists)
 
                        /* vm.provinceLists = eval('result.msg.' + $('#tierFirst li').eq(0).attr('value'))
 
@@ -960,11 +974,23 @@
                 })
             },
             // 选中省份
-            selectProvince: function(code){
+            selectProvince: function(code, item){
                 // this.isActiveProvince = index;
-                console.log(code)
                 this.handleTemplate.provinceCode = code;
-                console.log(this.handleTemplate.provinceCode)
+                // this.isActiveProvince = code;
+            },
+
+            addClient: function () {
+                vm.dialogShow = false;
+            },
+            addMsg: function () {
+                vm.dialogShow = false;
+                vm.addMsgShow = false;
+            },
+            allHide: function () {
+                vm.dialogShow = true;
+                vm.addMsgShow = true;
+                vm.uploadDialogShow = true;
             },
             // 获取客户属性
             customerData: function(){
@@ -978,6 +1004,8 @@
                     success: function(result){
                         // console.log(result.msg.customerAttr)
                         vm.customerAttr = result.msg.customerAttr;
+
+                        vm.handleTemplate.customerPropertiesCode = vm.customerAttr[0].code;// 默认选中第一个
                     },
                     error: function(result) {
                         console.log(' 请求失败');
@@ -1064,6 +1092,7 @@
             showData: function(page, limit){
                 this.tableList.page = page || 1;
                 this.tableList.limit = limit || this.dataPageMost;
+                console.log('---查询pipeline的请求参数------')
                 console.log(this.tableList)
                 this.items = []
                 $.ajax({
@@ -1072,6 +1101,7 @@
                     dataType: 'json',
                     data: this.tableList,
                     success: function(result){
+                        console.log('---查询到的pipeline表哥数据------')
                         console.log(result);
                         vm.weightedSumTotal = result.oth.weightedSumTotal;
 
@@ -1142,7 +1172,6 @@
             },
             // 搜索框赋值
             searchData: function(){
-                console.log(this.tableList.expectSignDateStart)
                 var basic,
                     oauth;
                 $.ajax({
@@ -1155,12 +1184,15 @@
                         if(result !== null){
                             if(basic !== null){
                                 vm.searchLists = basic;
+                                vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
+                                vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
                             }
                             if(oauth !== null){
                                 vm.oauthLists = oauth;
                                 vm.mngSalesGroups = vm.oauthLists.userInfo.mngSalesGroups;
                             }
                         }
+
                         // 获取解决方案树
                         var treeList = basic.soSolution4Tree;
                         if(treeList != null) {
@@ -1189,36 +1221,6 @@
                         }
                         // console.log(zNodes);
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
-
-                        // 获取客户所在省份
-                       /* for(var i = 0;i < basic.regions.length;i++) {
-                            vm.regions += basic.regions[i].code + ',';
-                            // console.log(basic.regions[i])
-                        }
-                        // console.log(regions)  // 取得所有区域code
-                        $.ajax({
-                            url:  PATH + '/basic/queryDictDataByCategory',
-                            type: 'get',
-                            dataType: 'json',
-                            data: {
-                                'categoryCodes': vm.regions
-                            },
-                            success: function(result){
-                                vm.provinceLists = eval('result.msg.' + $('#tierFirst li').eq(0).attr('value'))
-
-                                $('#tierFirst li').click(function(){
-                                    var code = $(this).attr('value');
-                                    // console.log(code)  // 获取到每个点击li的code值
-                                    // console.log(eval('result.msg.' + code))
-                                    vm.provinceLists = [];
-                                    vm.provinceLists = eval('result.msg.' + code)
-                                })
-
-                            },
-                            error:function(){
-                                console.log("获取客户所在省份请求失败")
-                            }
-                        })*/
                     },
                     error: function(result) {
                         console.log('搜索请求失败');
@@ -1240,34 +1242,42 @@
             },
             // 新增
             addData: function() {
+
+                this.customerData(); // 获取客户属性
+                this.searchData();   // 只是获取区域的默认第一个那条语句
+
                 vm.dialogShow = false;
+
+                // vm.getRegion();// 获取区域信息
+                this.getProvince();// 获取省份信息
+
                 $('.selected').text('');
                 $('#addTreeName').text('');
-                // $('.radioCheck li').removeClass('active');
+                $('.radioCheck li').removeClass('active');
 
                 vm.handleTemplate = {}
                 vm.preSaleStaffs = []
                 vm.solutionSub = []
 
-                // $('.radioCheck').each(function() {
-                //     var li = $(this).children('li');
-                //     li.click(function () {
-                //         $(this).addClass('active');
-                //         $(this).siblings().removeClass("active");
-                //     })
-                // })
+                $('.radioCheck').each(function() {
+                    var li = $(this).children('li');
+                    li.click(function () {
+                        $(this).addClass('active');
+                        $(this).siblings().removeClass("active");
+                    })
+                })
             },
             // 修改
             handleData: function(item){
                 vm.dialogShow = false;
-                $('.radioCheck li').removeClass('active');
+                // $('.radioCheck li').removeClass('active');
                 // 已获取销售code
                 // console.log(item.soCoreCode)
 
-                $('.radioCheck li').click(function () {
-                    $(this).addClass('active');
-                    $(this).siblings().removeClass("active");
-                })
+                // $('.radioCheck li').click(function () {
+                //     $(this).addClass('active');
+                //     $(this).siblings().removeClass("active");
+                // })
 
                 $.ajax({
                     url:  PATH + '/so/queryPipelineOne',
@@ -1278,10 +1288,16 @@
                     },
                     success: function(result){
 
-                        vm.handleTemplate = result.msg
+                        if (result.code === 201) {
+                            toastr.error(msg);
+                            return;
+                        }
+
+                        vm.handleTemplate = result.msg;
+                        console.log('-----点击修改的本条数据------');
                         console.log(vm.handleTemplate);
 
-                        console.log(vm.handleTemplate.customerPropertiesCode);
+                        vm.getProvince(vm.handleTemplate.regionCode);// 获取省份信息
 
 
                         if(vm.handleTemplate.preSaleStaffs) {
@@ -1290,10 +1306,12 @@
                                 // console.log(vm.preSaleStaffs.userCode);
                             }
                         }
+                        // 获取解决方案名称和预计签约金额
                         if(vm.handleTemplate.solutionSub) {
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
-                                console.log(vm.handleTemplate.solutionSub[i])
+                                // console.log(vm.handleTemplate.solutionSub[i])
                                 $('#addTreeName').text(vm.handleTemplate.solutionSub[i].solutionName);
+                                vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum
                             }
                         }
                         // 遍历修改接口数组中的数据，并赋值给下拉框
@@ -1342,16 +1360,6 @@
                                 }
                             }
                         }
-                        // 客户所在省份
-                        // if($('#tierFirst li').hasClass('active')) {
-                        //     var code = $(this).attr('value');
-                        //     vm.provinceLists = [];
-                        //     vm.provinceLists = eval('result.msg.' + code)
-                        // }
-
-                        // vm.handleTemplate = {}
-                        // vm.preSaleStaffs = []
-                        // vm.solutionSub = []
                     },
                     error: function(){
                         console.log('修改信息 请求失败');
@@ -1361,8 +1369,10 @@
             // 添加修改提交
             submitHandle: function(addObj){
                 var addObj = {
-                    reportDate:         vm.cReportDate
+                    reportDate:         vm.hReportDate
                 }
+
+                vm.handleTemplate.salesStaffCode = userCode;  // 销售代码
 
                 if($(this.$refs.regionCode).hasClass('active')){
                     vm.handleTemplate.regionCode = $(this.$refs.regionCode).attr('value') // 区域
@@ -1377,7 +1387,7 @@
                     vm.handleTemplate.projectNatureCode = $(this.$refs.projectNatureCode).attr('value') // 项目性质
                 }
 
-                var  preSaleStaffList = [], // 点击修改时获取表格的值
+                var preSaleStaffList = [], // 点击修改时获取表格的值
                     solutionSubList = []; // 点击修改时获取表格的值
 
                 preSaleStaffList.push({
@@ -1394,6 +1404,8 @@
                 vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
                 // console.log(vm.handleTemplate)
                 var paramm = $.param(vm.handleTemplate)
+
+                console.log('-----新增/修改完成后准备提交的数据------');
                 console.log(paramm)
 
                 $.ajax({
@@ -1406,7 +1418,6 @@
                             toastr.error(result.msg)
                             return;
                         }
-
                         if(result.success){
                             vm.dialogShow = true;
                             vm.handleTemplate = {};  // 还原模板
@@ -1478,6 +1489,7 @@
                         toastr.warning('没有相关信息 ！');
                         return;
                     }
+                    console.log('-----客户信息数据------');
                     console.log(datas.data);
                     vm.client = datas.data;
                     vm.clientPageTotal = datas.data.totalProperty;
@@ -1525,9 +1537,10 @@
                 }
             },
             // 选中客户表格tr
-            selectCustomerName: function(name, index) {
+            selectCustomerName: function(code, name, index) {
                 vm.cCheckIndex = index;
-                vm.handleTemplate.customerName = name;
+                vm.handleTemplate.customerCode = code;
+                vm.hCustomerName = name;
             },
             // 选中事件
             selectHandle: function() {
@@ -1549,10 +1562,7 @@
                 };
                 var fd = new FormData();
                 fd.append('pipelineFile', file);
-
-                console.log(vm.uploadFileName);
-                console.log(fd);
-                axios.post('/iboss-prism/so/importPipeline', {params: fd}).then(function (datas){
+                axios.post('/iboss-prism/so/importPipeline', fd).then(function (datas){
                     console.log(datas);
                     if (datas.data.code === 201) {
                         toastr.error(datas.data.msg)
