@@ -1,15 +1,19 @@
 $.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.130:8080/iboss-prism';
+// var PATH = '/iboss-prism';// 131
 var timeYear,
     userName,
     userCode,
-    userAvatar;
+    userAvatar,
+    userLevel;// 用户级别
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg = datas.msg;
     timeYear = (msg.currentDate).substring(0, 10);
     userName = msg.userName;
     userCode = msg.userCode;
     userAvatar = msg.avatar;
+    userLevel = msg.level;
+    console.log(msg.level, 'home.js')
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
 });
@@ -199,7 +203,6 @@ $('.user-info').click(function (e) {
 $('.user-info li').each(function (index, item) {
     $(item).click(function (e) {
         e.stopPropagation();
-        console.log(23432)
         $('.user-info').children('ul').addClass('hide');
     })
 });
@@ -218,4 +221,35 @@ $('.sign-out').click(function () {
 
 
 loadMainPage('.content-item', 'manage/manage.html');
-// loadMainPage('.content-item', 'client/client.html');
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+function accAdd (arg1, arg2) {
+    var r1,r2,m;
+    try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
+    try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
+    m=Math.pow(10,Math.max(r1,r2))
+    return (arg1*m+arg2*m)/m
+
+};
+
+function accMul(arg1,arg2) {
+    var m=0,s1=arg1.toString(),s2=arg2.toString();
+    try{m+=s1.split(".")[1].length}catch(e){}
+    try{m+=s2.split(".")[1].length}catch(e){}
+    return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
+};

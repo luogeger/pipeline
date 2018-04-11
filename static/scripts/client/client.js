@@ -1,8 +1,13 @@
+
 var vm = new Vue({
     el: '#app',
 
     data: {
         industry: [],// 行业线
+        // 用户级别
+        userLevel: userLevel,// xs, xsld, dquyh
+        levelActive: '',
+
         // 查询
         hDropText: '',// 行业下拉框文字
         hDropCode: '',// 行业 code
@@ -19,7 +24,7 @@ var vm = new Vue({
         clientPageMost: 10,// 页容量
         clientPageStart: 1,
         clientPageEnd: 1,
-        firstClientCode: '',
+        firstClientCode: '',// 第一条记录的 客户编号
 
         // nowIndex
         industryNowIndex: 0,// 事业部
@@ -85,12 +90,39 @@ var vm = new Vue({
         uploadFileName: '',
         clearShow: true,
 
+        // 点击客户信息以后需要隐藏和现实的dom元素
+        noData: false,// 客户table的 '没有数据!'
+        noDataMsg: false,// 客户table的 '请输入客户名称进行查询!'
+        clientNameQuery: false,// 请输入客户名称进行查询！ == 是否显示
+        clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号
+
+        onlySale: true,// 只有在销售的客户信息层面才能看到添加客户和导入按钮
+        msgBtnIsShow: true,// 添加机要信息按钮
+
     },// data
 
     created: function (){
+        if (this.userLevel !== 'xs') this.onlySale = false;// (添加客户 + 导入)按钮
+        switch(this.userLevel) {
+            case 'xs':
+                this.levelActive = 'me';
+                break;
+            case 'xsld':
+                this.levelActive = 'department';
+                break;
+            case 'dqxyh':
+                this.levelActive = 'all';
+                break;
+        };// 不同客户查看到不同的客户信息
+        console.log(this.levelActive,809)
+
         this.getIndustry();
         this.getClient();
     },// created
+
+    mounted (){
+
+    },
 
     methods: {
 
@@ -123,8 +155,6 @@ var vm = new Vue({
             province = province || 'regionHd';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
                 vm.provinceList = datas.data.msg[province];
-                //vm.cProvinceCode = datas.data.msg[province][0].code;
-
             });
         },// 省份
 
@@ -169,14 +199,26 @@ var vm = new Vue({
                 customerCode: this.hClientCode,
                 customerName: this.hClientName,
                 industryLine: this.hDropCode,
+                queryType:    this.levelActive,
             };
+            console.log(this.levelActive, 123)
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                if (datas.data.root.length === 0) {
-                    toastr.warning('没有相关信息 ！');
+                if (datas.data.root.length === 0) {// 客户信息为空
+                    vm.msgBtnIsShow = false;// 机要信息按钮
+                    vm.noData = true;// 客户table的 '没有数据!'
+                    vm.noDataMsg = true;// 客户table的 '请输入客户名称进行查询!'
+                    vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
+                    vm.client = [];// 数据list
+
+                    toastr.info('没有数据 !');
                     return;
-                }
-                vm.client = datas.data;
+                };
+                vm.noData = false;// 客户table的 '没有数据!'
+                vm.clientNameQuery = false;// 请输入客户名称进行查询！ == 是否显示
+                vm.client = datas.data;// 数据list
+                vm.msgBtnIsShow = true;// 不能显示添加机要信息按钮
+                // 分页
                 vm.clientPageTotal = datas.data.totalProperty;
                 vm.firstClientCode = datas.data.root[0].customerCode;
                 vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost);
@@ -194,7 +236,13 @@ var vm = new Vue({
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
             axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
-                vm.clientMsg = datas.data;
+                if (datas.data.root.length === 0) {
+                    vm.noDataMsg = true;
+                    vm.clientMsg = [];
+                } else{
+                    vm.noDataMsg = false;
+                    vm.clientMsg = datas.data;
+                }
             });
         },
 
@@ -205,7 +253,6 @@ var vm = new Vue({
 
         // 分页输入回车事件
         clientEnter: function () {
-            console.log(vm.clientPageNum);
             vm.getClient(vm.clientPageNum);
         },
 
@@ -248,7 +295,43 @@ var vm = new Vue({
             vm.cCheckIndex = index;
         },
 
+        // 用户级别信息查询
+        changeClientList:function (level) {
+            vm.levelActive = level;
+            if (level === 'all') {
+                vm.client = [];// 清空客户信息
+                vm.clientMsg = [];// 清空客户机要信息
 
+                vm.clientMsgQueryBtn = false;// 行业 + 客户编号
+                vm.noData = false;// 客户table的 '没有数据!'
+                vm.noDataMsg = true;// 客户机要信息table的 '没有数据!'
+                vm.clientNameQuery = true;// 客户table的 '请输入客户名称进行查询!'
+                vm.onlySale = false;// (添加客户 + 导入)按钮
+                vm.msgBtnIsShow = false;// 机要信息按钮
+
+                // 分页数据修改
+                vm.clientPageTotal = 0;// 全部数据
+                vm.clientPageNum = 1;// 当前页
+                vm.clientPageSum = 0;// 共多少页
+                vm.clientPageStart = 0;// 开始
+                vm.clientPageEnd = 0;// 结束
+
+                this.resetBtn();
+                return;
+            }
+            if (level === 'me') {
+                vm.clientMsgQueryBtn = true;// 行业 + 客户编号
+                vm.noData = true;// 客户table的 '没有数据!'
+                vm.noDataMsg = false;// 客户机要信息table的 '没有数据!'
+                vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
+                vm.onlySale = true;// (添加客户 + 导入)按钮
+                vm.msgBtnIsShow = true;// 机要信息按钮
+
+                this.resetBtn();
+            }
+
+            this.getClient()
+        },
 
 
         // 添加客户 按钮事件
@@ -306,7 +389,6 @@ var vm = new Vue({
                 address:            vm.cAddress,
                 remark:             vm.cRemark
             };
-            console.log(addObj)
 
             this.addClientURL(addObj);
         },// addClientConfirm
@@ -318,8 +400,8 @@ var vm = new Vue({
                     toastr.error(datas.data.msg)
                     return;
                 }
-                this.hidePop();
-                this.getClient();
+                vm.hidePop();
+                vm.getClient();
                 toastr.success('添加客户成功');
             });
         },
@@ -421,11 +503,10 @@ var vm = new Vue({
                             vm.msgSubmit = true;
                             vm.dialogShow = false;
                             vm.addMsgShow = false;
-                            console.log(vm.mRegionCode)
 
                         }).catch(err => {
                             // 处理reject失败的数据
-                            console.log(err);
+                            console.log(err, 'Promise');
                         })
                     }
                 });
@@ -451,7 +532,6 @@ var vm = new Vue({
             axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: editMsgObj} ).then(function (datas) {
                var msg = datas.data.msg;
                var code = datas.data.code;
-               console.log(datas.data);
                if (code === 201) {
                    toastr.error(msg)
                    return;
@@ -564,5 +644,3 @@ var vm = new Vue({
     },// methods
 
 });// app
-
-// li-checkbox

@@ -4,7 +4,11 @@ html,
 body {
   height: 100%;
 }
-
+body {
+  //background-size: cover;
+  //background-position: top center;
+  background: #1d242c url("../../../static/images/bg.png") no-repeat;
+}
 // 登录
 .description {
   max-width: 1400px;

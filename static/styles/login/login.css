@@ -2,6 +2,9 @@ html,
 body {
   height: 100%; }
 
+body {
+  background: #1d242c url("../../../static/images/bg.png") no-repeat; }
+
 .description {
   max-width: 1400px;
   padding-left: 5%;

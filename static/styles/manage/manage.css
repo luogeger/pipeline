@@ -22,8 +22,7 @@
     transition: width .3s; }
     .main-wrapper .data .table-wrapper {
       margin-top: 15px;
-      position: relative;
-      background: url("../../images/watermark.png") repeat left top; }
+      position: relative; }
       .main-wrapper .data .table-wrapper th,
       .main-wrapper .data .table-wrapper td {
         min-width: 45px;

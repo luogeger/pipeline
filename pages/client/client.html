@@ -7,8 +7,24 @@
         <span>客户管理</span>
     </div><!-- /.breadcrumb-->
 
+    <div v-if="userLevel !== 'dqxyh' " class="user-level-tabs clearfix">
+        <div :class="{'level-active': levelActive == 'me' }"
+             @click="changeClientList('me')"
+             v-if="userLevel !== 'xsld' "
+             class="user-level-me">客户信息</div>
+        <div :class="{'level-active': levelActive == 'department' }"
+             @click="changeClientList('department')"
+             v-if="userLevel !== 'xs' "
+             class="user-level-department">客户信息
+        </div>
+        <div :class="{'level-active': levelActive == 'all' }"
+             @click="changeClientList('all')"
+             class="user-level-all">客户信息查询
+        </div>
+    </div>
+
     <div class="opera clearfix">
-        <div class="industry">
+        <div v-if="clientMsgQueryBtn" class="industry">
             <div class="dropdown-wrap">
                 <span class="dropdown-label">行业:</span>
                 <div class="dropdown">
@@ -23,7 +39,7 @@
             </div>
         </div>
 
-        <div class="client-num">
+        <div v-if="clientMsgQueryBtn" class="client-num">
             <div class="input-group">
                 <span class="input-group-label">客户编号:</span>
                 <input v-model="hClientCode" type="text" class="input-group-form">
@@ -46,12 +62,17 @@
     <div class="client">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div @click="addClient" class="btn btn-theme">
+
+                <div @click="addClient"
+                     v-if="onlySale"
+                     class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户</span>
                 </div>
 
-                <div @click="upload" class="btn btn-theme">
+                <div @click="upload"
+                     v-if="onlySale"
+                     class="btn btn-theme">
                     <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
@@ -88,6 +109,7 @@
                     <th>行业线</th>
                     <th>地址</th>
                     <th>操作</th>
+                    <th style="width: 200px;">审批状态</th>
                 </tr>
             </thead>
             <tbody>
@@ -103,15 +125,31 @@
                     <td v-text="item.address"></td>
                     <td @click="editClient(index, item.id)"
                     ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                    <td style="padding-right: 20px;">
+                        <div class="pull-left types-show">
+                            <span v-if="item.status == 'pending' " class="type-pending">待审核</span>
+                            <span v-if="item.status == 'pass' " class="type-pass">通过</span>
+                            <span v-if="item.status == 'reject' " class="type-reject">驳回</span>
+                            <span v-if="item.status == 'revoke' " class="type-withdraw ">已撤回</span>
+                        </div>
+                        <div class="pull-right operas-btn">
+                            <div v-if="item.status == 'pending' " class="btn btn-xs btn-border opera-withdraw">撤回</div>
+                            <div v-if="item.status == 'pass' " class="btn btn-xs btn-border opera-edit">编辑</div>
+                            <div v-if="item.status == 'reject' " class="btn btn-xs btn-border opera-ignore">忽略</div>
+                        </div>
+
+                    </td>
                 </tr>
             </tbody>
         </table>
+        <div  v-if="noData" style="padding: 10px; text-align: center">没有数据!</div>
+        <div  v-if="clientNameQuery" style="padding: 10px; text-align: center">请输入客户名称进行查询！</div>
     </div><!-- /.client -->
 
     <div class="client-msg">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div @click="addMsg" class="btn btn-theme">
+                <div v-if="msgBtnIsShow" @click="addMsg" class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户机要信息</span>
                 </div>
@@ -163,6 +201,7 @@
                 </tr>
             </tbody>
         </table>
+        <div  v-if="noDataMsg" style="padding: 10px; text-align: center">没有数据!</div>
     </div><!-- /.client-mag -->
 
 
@@ -200,15 +239,6 @@
                     </div>
 
                 </div><!-- item -->
-
-                <!--<div class="msg-item">-->
-                    <!--<div class="msg-item-left">客户编号：</div>-->
-                    <!--<div class="msg-item-right">-->
-                        <!--<div class="input-group">-->
-                            <!--<input v-model="cCustomerCode" type="text" class="input-group-form">-->
-                        <!--</div>-->
-                    <!--</div>-->
-                <!--</div>-->
 
                 <div class="msg-item">
                     <div class="msg-item-left">客户名称：</div>
@@ -258,8 +288,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">提交</div>
-                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">a提交</div>
+                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">e提交</div>
                     </div>
                 </div>
             </div><!-- /.main -->

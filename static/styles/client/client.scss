@@ -1,10 +1,30 @@
 .main{
+
+
+  .user-level-tabs{
+    >div {
+      float: left;
+      line-height: 30px;
+      padding: 0 15px;
+      border: 1px solid #DDDEE1;
+      border-radius: 4px 4px 0 0;
+      border-bottom: none;
+      cursor: pointer;
+    }
+    .level-active{
+      background-color: #ED6D00;
+      border-color: #ED6D00;
+      color: #FFFFFF;
+    }
+  }
+
   .opera,
   .client,
   .client-msg{
     padding: 10px;
-    margin-top: 10px;
+    //margin-top: 10px;
     background-color: #fff;
+    border: 1px solid #DDDEE1;
   }
 
 
@@ -42,6 +62,30 @@
           td:nth-child(5),
           td:nth-child(7){
             text-align: left;
+          }
+          td:last-child{
+            .types-show{
+              span{
+                line-height: 30px;
+              }
+              .type-pending{
+                color: #14a6ef;
+              }
+              .type-pass{
+                color: #5eb95e;
+              }
+
+              .type-reject{
+                color: #dd514c;
+              }
+              .type-withdraw{
+                color: #eeeeee;
+              }
+            }// .type-show
+            .operas-btn{
+              line-height: 30px;
+
+            }
           }
         }
       }
