@@ -117,26 +117,26 @@
                 </div>
                 加权金额总计（万元）：<span class="theme-color">{{  weightedSumTotal }}</span>
                 <div class="pull-right">
-                    <div class="client-page page-css">
-                        <div @click="calcPage('client' , 'first')"
+                    <div class="data-page page-css">
+                        <div @click="calcDataPage('data' , 'first')"
                              class="page-css-first">
                             <i class="fa fa-angle-double-left"></i></div>
-                        <div @click="calcPage('client' , -1)"
+                        <div @click="calcDataPage('data' , -1)"
                              class="page-css-prev"
                              style="margin-right: 10px;">
                             <i class="fa fa-angle-left"></i></div>
-                        <span>第</span><input @keyup.enter="showData" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>
-                        <span>共 {{clientPageSum}} 页，</span>
-                        <div @click="calcPage('client' , 1)"
+                        <span>第</span><input @keyup.enter="dataEnter" type="text" style="margin: 0 5px;" v-model="dataPageNum"><span>页，</span>
+                        <span>共 {{dataPageSum}} 页，</span>
+                        <div @click="calcDataPage('data' , 1)"
                              class="page-css-next"><i class="fa fa-angle-right  "></i></div>
-                        <div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                        <div @click="calcDataPage('data' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
                                 class="fa fa-angle-double-right"></i></div>
                         <span>显示</span>
-                        <span style="margin-left: 5px;">{{clientPageStart}}</span>
+                        <span style="margin-left: 5px;">{{dataPageStart}}</span>
                         <span>-</span>
-                        <span style="margin-right: 5px;">{{clientPageEnd}}</span>
+                        <span style="margin-right: 5px;">{{dataPageEnd}}</span>
                         <span>条，</span>
-                        <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
+                        <span>共&nbsp; {{dataPageTotal}} &nbsp;条</span>
                     </div>
                 </div>
             </div>
@@ -173,17 +173,17 @@
                                 <th>金融银行分类</th>
                             </tr>
                             </thead>
-                            <!--<tbody :class="{'hide': noData}">-->
-                            <!--<tr>-->
-                                <!--<td colspan="25" style="height: 48px;">{{ emptyMsg }}</td>-->
-                            <!--</tr>-->
-                            <!--</tbody>-->
                             <tbody>
                                 <tr v-for="(item, index) in items"
                                     @click="showOneChange(item,index)"
-                                    :class="{'active': (vm.clientPageNum -1) * 10 + (index + 1) == 1} ">
-                                    <td>{{ (vm.clientPageNum -1) * 10 + (index + 1) }}</td>
-                                    <td><a @click="handleData(item)" data-toggle="modal" data-target=".myModal" class="modelDomBtn" href="javascript:;"><i class="fa fa-edit"></i></a></td>
+                                    :class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1} ">
+                                    <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
+                                    <td>
+                                        <a @click="handleData(item)"
+                                           data-toggle="modal"
+                                           data-target=".myModal"
+                                           class="modelDomBtn"
+                                           href="javascript:;"><i class="fa fa-edit"></i></a></td>
                                     <td>{{ item.reportDate }}</td>
                                     <td>{{ item.salesGroupName }}</td>
                                     <td>{{ item.salesStaffName }}</td>
@@ -229,7 +229,10 @@
                 <ul class="block">
                     <li v-for="changeOneList in changeOneLists">
                         <h4>{{ changeOneList.opTime }}</h4>
-                        <p>{{ changeOneList.operName }}{{ changeOneList.opDetail }}</p>
+                        <p>
+                            <span v-html="changeOneList.operName"></span>
+                            <span v-html="changeOneList.opDetail"></span>
+                        </p>
                     </li>
                 </ul>
             </div>
@@ -292,7 +295,8 @@
                                         <span class="input-group-label">区域:</span>
                                         <ul id="tierFirst" class="item-list radioCheck clearfix">
                                             <!--:class="{'active': index == 0}"-->
-                                            <li v-for="(searchList,index) in searchLists.regions"
+                                            <li @click="selectRegion(searchList.code, index)"
+                                                v-for="(searchList,index) in searchLists.regions"
                                                 :value="searchList.code"
                                                 ref="regionCode"
                                                 :class="handleTemplate.regionCode == searchList.code ? 'active':''">{{ searchList.text }}</li>
@@ -305,11 +309,10 @@
                                         <span class="input-group-label">客户所在省份:</span>
                                         <ul id="tierSecond" class="item-list radioCheck clearfix">
                                             <!--:class="{'active': index == isActiveProvince}"-->
-                                            <li @click="activeProvince(provinceList.code, index)"
+                                            <li @click="selectProvince(provinceList.code, index)"
                                                 v-for="(provinceList,index) in provinceLists"
-                                                :value="provinceList.code"
-                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''"
-                                                ref="provinceCode">{{ provinceList.text }}</li>
+                                                ref="provinceCode"
+                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''">{{ provinceList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -320,7 +323,7 @@
                                         <ul class="item-list radioCheck clearfix">
                                             <li v-for="(customerName,index) in customerAttr"
                                                 :class="handleTemplate.customerPropertiesCode == customerName.code ? 'active':''"
-                                                :value="customerName.code"
+                                                @click="selectCustomerAttr(customerName.code, index)"
                                                 ref="customerPropertiesCode">{{ customerName.text }}</li>
                                         </ul>
                                     </div>
@@ -332,8 +335,9 @@
                                         <input @click=""
                                                v-model="handleTemplate.customerName"
                                                class="input-group-form noNull" type="text">
-                                        <!-- @click="selectCustomer"-->
-                                        <a href="javascript:;"
+                                        <!-- -->
+                                        <a @click="selectCustomer"
+                                                href="javascript:;"
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px">+</a>
                                     </div>
                                 </div>
@@ -368,8 +372,8 @@
                                             <span class="input-group-label">项目性质:</span>
                                             <ul class="item-list radioCheck clearfix">
                                                 <li v-for="(searchList,index) in searchLists.projectNatures"
-                                                    :value="searchList.code"
                                                     :class="handleTemplate.projectNatureCode == searchList.code ? 'active':''"
+                                                    @click="selectProjectNature(searchList.code, index)"
                                                     ref="projectNatureCode">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
@@ -490,7 +494,7 @@
                         <div class="explain">
                             <div class="title clearfix">
                                 <span>项目更新情况</span>
-                                <a onclick="loadMainPage('.content-item', 'client/client.html')"
+                                <a onclick="loadMainPage('.content-item', 'client/data.html')"
                                    class="theme-color pull-right" href="javascript:;">清空配置</a>
                             </div>
                             <div class="content">
@@ -538,107 +542,107 @@
         </div>
     </div>
     <!-- 客户信息弹窗 -->
-    <!--<div class="dialog-wrap"-->
-         <!--:class="{'hide': customerDialogShow}">-->
-        <!--<div @click="customerDialogHide" class="dialog-cover"></div>-->
-        <!--<div class="dialog-content" style="width: 1090px">-->
-            <!--<div class="title clearfix">-->
-                <!--<p class="pull-left">客户选择</p>-->
-                <!--<p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>-->
-            <!--</div>-->
-            <!--<div class="main">-->
-                <!--<div class="opera clearfix">-->
-                    <!--<div class="industry">-->
-                        <!--<div class="dropdown-wrap">-->
-                            <!--<span class="dropdown-label">行业:</span>-->
-                            <!--<div class="dropdown">-->
-                                <!--<span v-text="hDropText" class="dropdown-default"></span>-->
-                                <!--<i class="fa fa-angle-down"></i>-->
-                                <!--<ul>-->
-                                    <!--<li v-for="searchList in searchLists.industryLines"-->
-                                        <!--v-text="searchList.text"-->
-                                        <!--@click="hDrop(searchList.code, searchList.text)"></li>-->
-                                <!--</ul>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
+    <div class="dialog-wrap"
+         :class="{'hide': customerDialogShow}">
+        <div @click="customerDialogHide" class="dialog-cover"></div>
+        <div class="dialog-content" style="width: 1090px">
+            <div class="title clearfix">
+                <p class="pull-left">客户选择</p>
+                <p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+                <div class="opera clearfix">
+                    <div class="industry">
+                        <div class="dropdown-wrap">
+                            <span class="dropdown-label">行业:</span>
+                            <div class="dropdown">
+                                <span v-text="hDropText" class="dropdown-default"></span>
+                                <i class="fa fa-angle-down"></i>
+                                <ul>
+                                    <li v-for="searchList in searchLists.industryLines"
+                                        v-text="searchList.text"
+                                        @click="hDrop(searchList.code, searchList.text)"></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!--<div class="client-num">-->
-                        <!--<div class="input-group">-->
-                            <!--<span class="input-group-label">客户编号:</span>-->
-                            <!--<input v-model="hClientCode" type="text" class="input-group-form">-->
-                        <!--</div>-->
-                    <!--</div>-->
+                    <div class="client-num">
+                        <div class="input-group">
+                            <span class="input-group-label">客户编号:</span>
+                            <input v-model="hClientCode" type="text" class="input-group-form">
+                        </div>
+                    </div>
 
-                    <!--<div class="client-name">-->
-                        <!--<div class="input-group">-->
-                            <!--<span class="input-group-label">客户名称:</span>-->
-                            <!--<input v-model="hClientName" type="text" class="input-group-form">-->
-                        <!--</div>-->
-                    <!--</div>-->
+                    <div class="client-name">
+                        <div class="input-group">
+                            <span class="input-group-label">客户名称:</span>
+                            <input v-model="hClientName" type="text" class="input-group-form">
+                        </div>
+                    </div>
 
-                    <!--<div class="query-reset pull-right">-->
-                        <!--<div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>-->
-                        <!--<div @click="resetBtn" class="btn btn-border pull-right">重置</div>-->
-                    <!--</div>-->
-                <!--</div>&lt;!&ndash; /.opera &ndash;&gt;-->
-                <!--<div class="client">-->
-                    <!--<div class="table-opera clearfix">-->
-                        <!--<div class="pull-right">-->
-                            <!--<div class="client-page page-css">-->
-                                <!--<div @click="calcPage('client' , 'first')"-->
-                                     <!--class="page-css-first"><i class="fa fa-angle-double-left"></i></div>-->
-                                <!--<div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i-->
-                                        <!--class="fa fa-angle-left"></i></div>-->
-                                <!--<span>第</span><input @keyup.enter="clientEnter" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页，</span>-->
-                                <!--<span>共 {{clientPageSum}} 页，</span>-->
-                                <!--<div @click="calcPage('client' , 1)"-->
-                                     <!--class="page-css-next"><i class="fa fa-angle-right  "></i></div>-->
-                                <!--<div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i-->
-                                        <!--class="fa fa-angle-double-right"></i></div>-->
-                                <!--<span>显示</span>-->
-                                <!--<span style="margin-left: 5px;">{{clientPageStart}}</span>-->
-                                <!--<span>-</span>-->
-                                <!--<span style="margin-right: 5px;">{{clientPageEnd}}</span>-->
-                                <!--<span>条，</span>-->
-                                <!--<span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</div>-->
-                    <!--<table class="i-table">-->
-                        <!--<thead style="background-color: #FAD3B2;color: #433C38;">-->
-                        <!--<tr>-->
-                            <!--<th>序号</th>-->
-                            <!--<th>报备名称</th>-->
-                            <!--<th>所属事业部</th>-->
-                            <!--<th>客户编号</th>-->
-                            <!--<th>客户名称</th>-->
-                            <!--<th>行业线</th>-->
-                            <!--<th>地址</th>-->
-                        <!--</tr>-->
-                        <!--</thead>-->
-                        <!--<tbody>-->
-                        <!--<tr v-for="(item ,index) in client.root"-->
-                            <!--:class="{'tr-active': index == cCheckIndex}"-->
-                            <!--@click="selectCustomerName(item.customerName, index)">-->
-                            <!--<td v-text="index +1"></td>-->
-                            <!--<td v-text="item.reportDate"></td>-->
-                            <!--<td v-text="item.salesGroup"></td>-->
-                            <!--<td v-text="item.customerCode"></td>-->
-                            <!--<td v-text="item.customerName"></td>-->
-                            <!--<td v-text="item.industryLine"></td>-->
-                            <!--<td v-text="item.address"></td>-->
-                        <!--</tr>-->
-                        <!--</tbody>-->
-                    <!--</table>-->
-                    <!--<div style="text-align: right">-->
-                        <!--<button @click="selectHandle" class="btn btn-sm btn-theme" type="button">选中</button>-->
-                    <!--</div>-->
+                    <div class="query-reset pull-right">
+                        <div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>
+                        <div @click="resetBtn" class="btn btn-border pull-right">重置</div>
+                    </div>
+                </div><!-- /.opera -->
+                <div class="client">
+                    <div class="table-opera clearfix">
+                        <div class="pull-right">
+                            <div class="client-page page-css">
+                                <div @click="calcPage('client' , 'first')"
+                                     class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+                                <div @click="calcPage('client' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
+                                        class="fa fa-angle-left"></i></div>
+                                <span>第</span><input @keyup.enter="clientEnter" type="text" style="margin: 0 5px;" v-model="clientPageNum"><span>页</span>
+                                <span>共 {{clientPageSum}} 页，</span>
+                                <div @click="calcPage('client' , 1)"
+                                     class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                                <div @click="calcPage('client' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                                        class="fa fa-angle-double-right"></i></div>
+                                <span>显示</span>
+                                <span style="margin-left: 5px;">{{clientPageStart}}</span>
+                                <span>-</span>
+                                <span style="margin-right: 5px;">{{clientPageEnd}}</span>
+                                <span>条，</span>
+                                <span>共&nbsp; {{clientPageTotal}} &nbsp;条</span>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="i-table">
+                        <thead style="background-color: #FAD3B2;color: #433C38;">
+                        <tr>
+                            <th>序号</th>
+                            <th>报备名称</th>
+                            <th>所属事业部</th>
+                            <th>客户编号</th>
+                            <th>客户名称</th>
+                            <th>行业线</th>
+                            <th>地址</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(item ,index) in client.root"
+                            :class="{'tr-active': index == cCheckIndex}"
+                            @click="selectCustomerName(item.customerName, index)">
+                            <td>{{ (vm.clientPageNum -1) * 10 + (index + 1) }}</td>
+                            <td v-text="item.reportDate"></td>
+                            <td v-text="item.salesGroup"></td>
+                            <td v-text="item.customerCode"></td>
+                            <td v-text="item.customerName"></td>
+                            <td v-text="item.industryLine"></td>
+                            <td v-text="item.address"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                    <div style="text-align: right">
+                        <button @click="selectHandle" class="btn btn-sm btn-theme" type="button">选中</button>
+                    </div>
 
-                <!--</div>&lt;!&ndash; /.client &ndash;&gt;-->
-            <!--</div>&lt;!&ndash; /.main &ndash;&gt;-->
-        <!--</div>-->
-    <!--</div>-->
+                </div><!-- /.client -->
+            </div><!-- /.main -->
+        </div>
+    </div>
     <!-- 导入 -->
     <div class="dialog-wrap"
          :class="{'hide': uploadDialogShow}">
@@ -650,8 +654,8 @@
             </div>
             <div class="main">
                 <div class="select-file">
-                    <label for="importFile">选择文件</label>
-                    <input id="importFile" type="file">
+                    <label for="importpipeline">选择文件</label>
+                    <input id="importpipeline" type="file">
                 </div>
                 <div class="btn-group">
                     <div @click="uploadConfirm" class="btn btn-theme">确认</div>
@@ -717,9 +721,12 @@
             vm.cSoSolutionText = treeNode.name
             //搜索的时候传解决方案名称code
             vm.tableList.soSolutionCode = treeNode.code;
+            console.log(vm.tableList.soSolutionCode)
             vm.showData();
         }else{
             $('#addTreeName').text(treeNode.name);
+
+            // preSaleStaffs.userCode
             //新增/修改的时候传解决方案code
             vm.solutionSub.solutionCode = treeNode.id;
         }
@@ -763,7 +770,17 @@
                 items: [],                    // 表格数据
                 noData: false,               // 搜索不到数据
                 emptyMsg: '',
-                // 分页
+
+                // pipeline表格分页
+                data: [],
+                dataPageTotal: 0,          // 全部数据
+                dataPageNum: 1,            // 当前页
+                dataPageSum: 1,            // 共多少页
+                dataPageMost: 10,          // 页容量
+                dataPageStart: 0,
+                dataPageEnd: 0,
+
+                // 客户分页
                 client: [],
                 clientPageTotal: 0,          // 全部数据
                 clientPageNum: 1,            // 当前页
@@ -809,8 +826,7 @@
                 // 客户选择
                 // 客户
                 clientID: '',
-                client: [],
-                cCheckIndex: 0,
+                cCheckIndex: -1,
 
                 customerDialogShow: true,  // 显示客户选择弹窗
                 hDropText: '',// 行业下拉框文字
@@ -886,6 +902,14 @@
             selectCustomerSourceCode: function(code) {
                 this.handleTemplate.customerSourceCode = code;
             },
+            // 选中客户属性
+            /*selectCustomerAttr: function(code) {
+                this.handleTemplate.customerSourceCode = code;
+            },
+            // 选中项目性质
+            selectProjectNature: function(code) {
+                this.handleTemplate.projectNatureCode = code;
+            },*/
             addClient: function () {
                 vm.dialogShow = false;
             },
@@ -898,10 +922,49 @@
                 vm.addMsgShow = true;
                 vm.uploadDialogShow = true;
             },
-            activeProvince: function(code,index){
-                this.isActiveProvince = index;
+            // 选中区域
+            selectRegion: function(code) {
+                this.handleTemplate.regionCode = code;
+                this.isActiveProvince = -1;
+                this.getRegion(code);
+            },
+            // 获取省份
+            getRegion: function(province) {
+                $.ajax({
+                    url:  PATH + '/basic/queryDictDataByCategory',
+                    type: 'get',
+                    dataType: 'json',
+                    data: {
+                        // 'categoryCodes': vm.regions
+                        'categoryCodes': province
+                    },
+                    success: function(result){
+                        vm.provinceLists = result.msg[province];
 
+                        console.log(vm.provinceLists)
+
+                       /* vm.provinceLists = eval('result.msg.' + $('#tierFirst li').eq(0).attr('value'))
+
+                        $('#tierFirst li').click(function(){
+                            var code = $(this).attr('value');
+                            // console.log(code)  // 获取到每个点击li的code值
+                            // console.log(eval('result.msg.' + code))
+                            vm.provinceLists = [];
+                            vm.provinceLists = eval('result.msg.' + code)
+                        })
+*/
+                    },
+                    error:function(){
+                        console.log("获取客户所在省份请求失败")
+                    }
+                })
+            },
+            // 选中省份
+            selectProvince: function(code){
+                // this.isActiveProvince = index;
+                console.log(code)
                 this.handleTemplate.provinceCode = code;
+                console.log(this.handleTemplate.provinceCode)
             },
             // 获取客户属性
             customerData: function(){
@@ -999,9 +1062,8 @@
             },
             // 表格查询
             showData: function(page, limit){
-                // this.tableList.page = parseInt(this.clientPageNum);
                 this.tableList.page = page || 1;
-                this.tableList.limit = limit || this.clientPageMost;
+                this.tableList.limit = limit || this.dataPageMost;
                 console.log(this.tableList)
                 this.items = []
                 $.ajax({
@@ -1023,23 +1085,21 @@
                         }
                         // 如果表格无数据，那么关闭右侧项目更新情况
                         if(result.root.length === 0) {
-                            // this.noData = true;
-                            // this.emptyMsg = '没有数据';
                             vm.closeUpdateCase();
                             toastr.warning('没有相关信息 ！');
                             return;
                         }
 
-                        vm.client = result;
-                        vm.clientPageTotal = result.totalProperty;
-                        vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost)
-                        vm.clientPageStart = (vm.clientPageNum -1) * vm.clientPageMost + 1;
+                        vm.data = result;
+                        vm.dataPageTotal = result.totalProperty;
+                        vm.dataPageSum = Math.ceil(vm.dataPageTotal / vm.dataPageMost)
+                        vm.dataPageStart = (vm.dataPageNum -1) * vm.dataPageMost + 1;
 
-                        if (vm.clientPageNum === vm.clientPageSum) {
-                            vm.clientPageEnd = vm.clientPageTotal;
+                        if (vm.dataPageNum === vm.dataPageSum) {
+                            vm.dataPageEnd = vm.dataPageTotal;
                             return;
                         }
-                        vm.clientPageEnd = vm.clientPageStart - 1 + vm.clientPageMost;
+                        vm.dataPageEnd = vm.dataPageStart - 1 + vm.dataPageMost;
                     },
                     error: function(result) {
                         console.log('表格查询请求失败');
@@ -1047,35 +1107,35 @@
                 })
             },
             // 分页
-            calcPage: function (type, num) {
-                type === 'client' ? vm.clientPage(type, num) : vm.msgPage(type, num);
-            },// calcPage
+            calcDataPage: function (type, num) {
+                type === 'data' ? vm.dataPage(type, num) : '';
+            },// calcDataPage
             // 分页输入回车事件
-            clientEnter: function () {
-                vm.showData(vm.clientPageNum);
+            dataEnter: function () {
+                vm.showData(vm.dataPageNum);
             },
-            clientPage: function (type, num) {
-                vm.cCheckIndex = 0;
+            dataPage: function (type, num) {
+                vm.cCheckIndex = -1;
                 switch(num)
                 {
                     case 'first':
-                        vm.clientPageNum = 1;
+                        vm.dataPageNum = 1;
                         vm.showData(1);
                         break;
                     case 'last':
-                        vm.clientPageNum = vm.clientPageSum;
-                        vm.clientPageEnd = vm.clientPageTotal;
-                        vm.showData(vm.clientPageNum);
+                        vm.dataPageNum = vm.dataPageSum;
+                        vm.dataPageEnd = vm.dataPageTotal;
+                        vm.showData(vm.dataPageNum);
                         break;
                     case 1:
-                        if(vm.clientPageNum >= vm.clientPageSum)  return;
-                        vm.clientPageNum++;
-                        vm.showData(vm.clientPageNum);
+                        if(vm.dataPageNum >= vm.dataPageSum)  return;
+                        vm.dataPageNum++;
+                        vm.showData(vm.dataPageNum);
                         break;
                     case -1:
-                        if(vm.clientPageNum <= 1)  return;
-                        vm.clientPageNum--;
-                        vm.showData(vm.clientPageNum);
+                        if(vm.dataPageNum <= 1)  return;
+                        vm.dataPageNum--;
+                        vm.showData(vm.dataPageNum);
                         break;
 
                 }
@@ -1131,7 +1191,7 @@
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
 
                         // 获取客户所在省份
-                        for(var i = 0;i < basic.regions.length;i++) {
+                       /* for(var i = 0;i < basic.regions.length;i++) {
                             vm.regions += basic.regions[i].code + ',';
                             // console.log(basic.regions[i])
                         }
@@ -1158,7 +1218,7 @@
                             error:function(){
                                 console.log("获取客户所在省份请求失败")
                             }
-                        })
+                        })*/
                     },
                     error: function(result) {
                         console.log('搜索请求失败');
@@ -1183,19 +1243,19 @@
                 vm.dialogShow = false;
                 $('.selected').text('');
                 $('#addTreeName').text('');
-                $('.radioCheck li').removeClass('active');
+                // $('.radioCheck li').removeClass('active');
 
                 vm.handleTemplate = {}
                 vm.preSaleStaffs = []
                 vm.solutionSub = []
 
-                $('.radioCheck').each(function() {
-                    var li = $(this).children('li');
-                    li.click(function () {
-                        $(this).addClass('active');
-                        $(this).siblings().removeClass("active");
-                    })
-                })
+                // $('.radioCheck').each(function() {
+                //     var li = $(this).children('li');
+                //     li.click(function () {
+                //         $(this).addClass('active');
+                //         $(this).siblings().removeClass("active");
+                //     })
+                // })
             },
             // 修改
             handleData: function(item){
@@ -1208,6 +1268,7 @@
                     $(this).addClass('active');
                     $(this).siblings().removeClass("active");
                 })
+
                 $.ajax({
                     url:  PATH + '/so/queryPipelineOne',
                     type: 'get',
@@ -1220,6 +1281,9 @@
                         vm.handleTemplate = result.msg
                         console.log(vm.handleTemplate);
 
+                        console.log(vm.handleTemplate.customerPropertiesCode);
+
+
                         if(vm.handleTemplate.preSaleStaffs) {
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
                                 vm.preSaleStaffs = vm.handleTemplate.preSaleStaffs[i]
@@ -1228,7 +1292,8 @@
                         }
                         if(vm.handleTemplate.solutionSub) {
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
-                                vm.solutionSub = vm.handleTemplate.solutionSub[i]
+                                console.log(vm.handleTemplate.solutionSub[i])
+                                $('#addTreeName').text(vm.handleTemplate.solutionSub[i].solutionName);
                             }
                         }
                         // 遍历修改接口数组中的数据，并赋值给下拉框
@@ -1376,6 +1441,8 @@
             // 客户选择
             selectCustomer: function() {
                 vm.customerDialogShow = false;
+                this.getClient();
+                vm.cCheckIndex = -1;
             },
             customerDialogHide: function() {
                 vm.customerDialogShow = true;
@@ -1396,7 +1463,7 @@
                 vm.hDropText = text;
                 vm.hDropCode = code;
             },
-            /*// 获取客户信息
+            // 获取客户信息
             getClient: function (page, limit) {
                 var params = {
                     page:         page || 1,
@@ -1411,9 +1478,9 @@
                         toastr.warning('没有相关信息 ！');
                         return;
                     }
+                    console.log(datas.data);
                     vm.client = datas.data;
                     vm.clientPageTotal = datas.data.totalProperty;
-                    vm.firstClientCode = datas.data.root[0].customerCode;
                     vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost);
                     vm.clientPageStart = (vm.clientPageNum *10 -9);
                     if (vm.clientPageNum === vm.clientPageSum) {
@@ -1425,16 +1492,15 @@
             },
             // 分页的判断
             calcPage: function (type, num) {
-                type === 'client' ? vm.clientPage(type, num) : vm.msgPage(type, num);
+                type === 'client' ? vm.clientPage(type, num) : '';
             },// calcPage
 
             // 分页输入回车事件
             clientEnter: function () {
-                vm.getClient();
+                vm.getClient(vm.clientPageNum);
             },
             // 客户分页
             clientPage: function (type, num) {
-                vm.cCheckIndex = 0;
                 switch(num)
                 {
                     case 'first':
@@ -1456,14 +1522,13 @@
                         vm.clientPageNum--;
                         vm.getClient(vm.clientPageNum);
                         break;
-
                 }
             },
             // 选中客户表格tr
             selectCustomerName: function(name, index) {
                 vm.cCheckIndex = index;
                 vm.handleTemplate.customerName = name;
-            },*/
+            },
             // 选中事件
             selectHandle: function() {
                 vm.customerDialogShow = true;
@@ -1476,28 +1541,24 @@
             },
             // 确认导入
             uploadConfirm: function () {
-                var file = importFile.files[0];
-                vm.uploadFileName = importFile.files[0].name;
-                if(importFile.files[0] == undefined) {
+                var file = importpipeline.files[0];
+                vm.uploadFileName = importpipeline.files[0].name;
+                if(importpipeline.files[0] == undefined) {
                     toastr.warning('请选择上传的文件 ！');
                     return
                 };
                 var fd = new FormData();
-                fd.append('crmFile', file);
-                var obj = {
-                    crmFile: fd,
-                };
+                fd.append('pipelineFile', file);
 
                 console.log(vm.uploadFileName);
                 console.log(fd);
-                console.log(obj)
-                axios.post('/iboss-prism/crm/importCrm', {params: obj}).then(function (datas){
+                axios.post('/iboss-prism/so/importPipeline', {params: fd}).then(function (datas){
                     console.log(datas);
                     if (datas.data.code === 201) {
                         toastr.error(datas.data.msg)
                     } else{
                         toastr.success('文件上传成功 ！');
-                        vm.hidePop();
+                        vm.allHide();
                     }
 
                 });
