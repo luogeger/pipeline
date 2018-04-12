@@ -117,6 +117,10 @@ textarea {
   border-radius: 4px;
   display: inline-block;
   vertical-align: top; }
+  textarea:focus {
+    outline: none;
+    border-color: #ED6C1C;
+    box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px; }
 
 fieldset {
   border: 1px solid #c0c0c0;
@@ -421,9 +425,8 @@ textarea:hover {
   border-color: #ED6C1C; }
 
 input:not(.i-date-picker):focus,
-input:not(input[type="file"]):focus,
-textarea:focus {
-  outline: 0;
+input:not(input[type="file"]):focus {
+  outline: none;
   border-color: #ED6C1C;
   box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px; }
 
@@ -2894,13 +2897,31 @@ button.toast-close-button {
     overflow: auto;
     background: #fff;
     top: 10%;
-    bottom: 60%;
     left: 50%;
     transform: translate(-50%);
     z-index: 10;
     border-radius: 4px;
     box-shadow: 0 0 5px 0 #464068;
     line-height: 1.6; }
+    .dialog-wrap .dialog-content-small .title {
+      padding: 10px;
+      background-color: #F1F1F1; }
+      .dialog-wrap .dialog-content-small .title i {
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-top: 3px;
+        color: #FF8A41; }
+        .dialog-wrap .dialog-content-small .title i:hover {
+          color: #ED6C1C; }
+    .dialog-wrap .dialog-content-small .content {
+      padding: 30px;
+      text-align: center; }
+    .dialog-wrap .dialog-content-small .foot {
+      text-align: right;
+      padding: 0 30px 10px 0; }
+      .dialog-wrap .dialog-content-small .foot div:first-child {
+        margin-right: 30px; }
 
 .selection-component {
   position: relative;

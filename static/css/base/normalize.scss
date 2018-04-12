@@ -133,6 +133,12 @@ textarea {
   border-radius:    4px;
   display:          inline-block;
   vertical-align:   top;
+  &:focus{
+    outline: none;
+    border-color: $theme-hover;
+    box-shadow: $theme-rgb1 0px 0px 0px 2px;
+
+  }
 }
 
 fieldset {

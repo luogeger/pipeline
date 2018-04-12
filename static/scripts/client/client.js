@@ -37,6 +37,10 @@ var vm = new Vue({
         client: [],
         cCheckIndex: 0,
 
+        // 审批的数据
+        currentClientID: '',
+        disposeRemark: '',
+
         // 添加客户
         cAddIndustryCode: '',// 编辑客户，行业线，选项默认选中
         cGroupText: '',// 所属于事业部
@@ -84,7 +88,12 @@ var vm = new Vue({
         addClientShow: true,
         addMsgShow: true,
         uploadShow: true,
+        revokeShow: true,// 撤回pop
         disposeShow: true,// 审批pop
+        ignoreShow: true,// 忽略pop
+
+        // 审批 (通过、驳回)
+
 
 
         // upload
@@ -203,7 +212,7 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                console.log(datas.data.root[0])
+                console.log(datas.data.root)
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -289,10 +298,11 @@ var vm = new Vue({
         },
 
         // 查询机要信息 绑定在tr上
-        queryClientMsg: function (code, index) {
+        queryClientMsg: function (code, index, id) {
             vm.firstClientCode = code;
             vm.getClientMsg(code)
             vm.cCheckIndex = index;
+            vm.currentClientID = id;
         },
 
         // 用户级别信息查询
@@ -349,10 +359,13 @@ var vm = new Vue({
         },
 
         hidePop: function () {
-            vm.dialogShow =     true;
-            vm.addClientShow =  true;
-            vm.addMsgShow =     true;
-            vm.uploadShow =     true;
+            this.dialogShow =     true;
+            this.addClientShow =  true;
+            this.addMsgShow =     true;
+            this.uploadShow =     true;
+            this.revokeShow =     true;// 撤回pop
+            this.disposeShow =    true;// 审批pop
+            this.ignoreShow =     true;// 忽略pop
         },
 
         // 点击添加客户，清空弹窗信息
@@ -635,21 +648,49 @@ var vm = new Vue({
             vm.hDropCode = '';
         },
 
-
-        // 审批
-        disposeBtn: function () {
-
-        },
-
         // 撤回
         revokeBtn: function (id) {
             this.showPop();
+            this.revokeShow = false;
+        },
+
+
+        // 审批
+        disposeBtn: function (id) {
+            this.showPop();
             this.disposeShow = false;
+
+        },
+
+        // 审批 -- 通过
+        passRevokeBtn: function (type,) {
+
+
+            var params = {
+                id: this.currentClientID,
+                auditType: type,
+                remark: this.disposeRemark,
+            };
+            axios.get(PATH +'/crm/audit', {params: params}).then(function (datas){
+                var data = datas.data;
+                if (data.code === 200) {
+                    vm.hidePop();
+                    vm.disposeRemark = '';// 清空审批的备注
+                    vm.getClient()
+                    toastr.success('审批完成 !')
+                };
+                if (data.code !== 200) {
+                    toastr.error(data.msg)
+                }
+
+            });
         },
 
         // 忽略
         ignoreBtn: function () {
 
+            this.showPop();
+            this.ignoreShow = false;
         },
 
 

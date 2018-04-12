@@ -199,14 +199,39 @@
     overflow: auto;
     background: #fff;
     top: 10%;
-    bottom: 60%;
     left: 50%;
     transform: translate(-50%);
     z-index: 10;
     border-radius: 4px;
     box-shadow: 0 0 5px 0 #464068;
     line-height: 1.6;
-  }
+    .title{
+      padding: 10px;
+      background-color: #F1F1F1;
+      i{
+        width: 20px;
+        height: 20px;
+        cursor: pointer;
+        margin-top: 3px;
+        color: $theme-normal;
+        &:hover {
+          color: $theme-hover;
+        }
+
+      }
+    }
+    .content{
+      padding: 30px;
+      text-align: center;
+    }
+    .foot{
+      text-align: right;
+      padding: 0 30px 10px 0;
+      div:first-child{
+        margin-right: 30px;
+      }
+    }
+  }// content-small
 
 
 }// wrap

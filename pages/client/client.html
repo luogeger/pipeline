@@ -115,7 +115,7 @@
             <tbody>
                 <tr v-for="(item ,index) in client.root"
                     :class="{'tr-active': index == cCheckIndex}"
-                    @click="queryClientMsg(item.customerCode, index)">
+                    @click="queryClientMsg(item.customerCode, index, item.id)">
                     <td v-text="index +1"></td>
                     <td v-text="item.reportDate"></td>
                     <td v-text="item.salesGroup"></td>
@@ -136,14 +136,14 @@
                         </div>
                         <div class="pull-right operas-btn">
                             <div v-if="item.status == 'pending' && userLevel == 'xsld'  "
-                                 @click="disposeBtn()"
+                                 @click="disposeBtn(item.id)"
                                  class="btn btn-xs btn-border opera-withdraw">审批</div>
 
                             <div v-if="item.status == 'pending' && userLevel == 'xs'  "
                                  @click="revokeBtn(item.id)"
                                  class="btn btn-xs btn-border opera-withdraw">撤回</div>
 
-                            <div v-if="item.status == 'pass' "
+                            <div v-if="item.status == 'pass' || item.status == 'reject' "
                                  @click="editClient(index, item.id)"
                                  class="btn btn-xs btn-border opera-edit">编辑</div>
 
@@ -219,9 +219,8 @@
     </div><!-- /.client-mag -->
 
 
-    <div class="dialog-wrap"
-         :class="{'hide': dialogShow}">
-        <div @click="hidePop" class="dialog-cover"></div>
+    <div :class="{'hide': dialogShow}" class="dialog-wrap">
+        <div @click="hidePop" class="dialog-cover"></div><!-- /.dialog-cover -->
         <!-- 添加客户 -->
         <div :class="{'hide': addClientShow}" class="dialog-content">
              <div class="title clearfix">
@@ -429,11 +428,41 @@
             </div>
         </div>
 
-        <!-- 审批 -->
-        <!--<div :class="{'hide': disposeShow}" class="dialog-content-small dispose-pop">-->
+        <!-- 撤回 -->
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定撤回吗 ？</div>
+            <div class="foot">
+                <div class="btn btn-theme">确定</div>
+                <div class="btn btn-border">取消</div>
+            </div>
+        </div>
 
-        <!--</div>-->
-    </div>
+        <!-- 忽略 -->
+        <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定忽略吗 ？</div>
+            <div class="foot">
+                <div class="btn btn-theme">确定</div>
+                <div class="btn btn-border">取消</div>
+            </div>
+        </div>
+
+        <!-- 审批 -->
+        <div :class="{'hide': disposeShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">
+                <p class="text-left">备注：</p>
+                <textarea v-model="disposeRemark" style="width: 100%;"></textarea>
+            </div>
+            <div class="foot">
+                <div @click="passRevokeBtn('pass')" class="btn btn-theme">同意</div>
+                <div @click="passRevokeBtn('reject')" class="btn btn-border">驳回</div>
+            </div>
+        </div>
+
+
+    </div><!-- /.dialog-wrap -->
 </div><!-- /.main -->
 
 <script src="../static/scripts/client/client.js"></script>
