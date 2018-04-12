@@ -35,8 +35,8 @@
   color: #5eb95e; }
 .main .client .i-table tbody tr td:last-child .types-show .type-reject {
   color: #dd514c; }
-.main .client .i-table tbody tr td:last-child .types-show .type-withdraw {
-  color: #eeeeee; }
+.main .client .i-table tbody tr td:last-child .types-show .type-revoke {
+  color: #222; }
 .main .client .i-table tbody tr td:last-child .operas-btn {
   line-height: 30px; }
   .main .client .i-table tbody tr td:last-child .operas-btn div {

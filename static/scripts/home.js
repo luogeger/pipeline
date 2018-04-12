@@ -1,6 +1,6 @@
 $.ajaxSettings.async = false;// 同步请求
-var PATH = 'http://172.16.8.130:8080/iboss-prism';
-// var PATH = '/iboss-prism';// 131
+// var PATH = 'http://172.16.8.130:8080/iboss-prism';
+var PATH = '/iboss-prism';// 131
 var timeYear,
     userName,
     userCode,

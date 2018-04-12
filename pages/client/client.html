@@ -132,24 +132,24 @@
                                   class="type-pending">待审核</span>
                             <span v-if="item.status == 'pass' " class="type-pass">通过</span>
                             <span v-if="item.status == 'reject' " class="type-reject">驳回</span>
-                            <span v-if="item.status == 'revoke' " class="type-withdraw ">已撤回</span>
+                            <span v-if="item.status == 'revoke' " class="type-revoke">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
                             <div v-if="item.status == 'pending' && userLevel == 'xsld'  "
                                  @click="disposeBtn(item.id)"
-                                 class="btn btn-xs btn-border opera-withdraw">审批</div>
+                                 class="btn btn-xs btn-border">审批</div>
 
                             <div v-if="item.status == 'pending' && userLevel == 'xs'  "
                                  @click="revokeBtn(item.id)"
-                                 class="btn btn-xs btn-border opera-withdraw">撤回</div>
+                                 class="btn btn-xs btn-border">撤回</div>
 
-                            <div v-if="item.status == 'pass' || item.status == 'reject' "
+                            <div v-if="item.status == 'pass' || item.status == 'reject' || item.status == 'revoke' "
                                  @click="editClient(index, item.id)"
-                                 class="btn btn-xs btn-border opera-edit">编辑</div>
+                                 class="btn btn-xs btn-border">编辑</div>
 
-                            <div v-if="item.status == 'reject' "
+                            <div v-if="item.status == 'reject' || item.status == 'revoke' "
                                  @click="ignoreBtn()"
-                                 class="btn btn-xs btn-border opera-ignore">忽略</div>
+                                 class="btn btn-xs btn-border">忽略</div>
                         </div>
 
                     </td>
@@ -433,18 +433,18 @@
             <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定撤回吗 ？</div>
             <div class="foot">
-                <div class="btn btn-theme">确定</div>
-                <div class="btn btn-border">取消</div>
+                <div @click="passRevokeBtn('revoke')" class="btn btn-theme">确定</div>
+                <div @click="hidePop" class="btn btn-border">取消</div>
             </div>
         </div>
 
         <!-- 忽略 -->
         <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop">
-            <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
+            <div class="title">提示<i @click="hidePop" class="fa fa-close pull-right"></i></div>
             <div class="content">确定忽略吗 ？</div>
             <div class="foot">
-                <div class="btn btn-theme">确定</div>
-                <div class="btn btn-border">取消</div>
+                <div @click="confirmIgnore" class="btn btn-theme">确定</div>
+                <div @click="hidePop" class="btn btn-border">取消</div>
             </div>
         </div>
 

@@ -654,18 +654,45 @@ var vm = new Vue({
             this.revokeShow = false;
         },
 
+        // 确认撤回
+        confirmRevoke: function () {
+
+        },
+
+        // 忽略
+        ignoreBtn: function () {
+            this.showPop();
+            this.ignoreShow = false;// 忽略的pop
+        },
+
+        // 确认忽略
+        confirmIgnore: function () {
+            var params = {
+                id: this.currentClientID,
+            };
+            axios.get(PATH +'/crm/ignore', {params: params}).then(function (datas){
+                var data = datas.data;
+                console.log(data);
+                if (data.code === 200) {
+                    vm.hidePop();
+                    vm.getClient()
+                    toastr.success('客户信息已忽略 !')
+                };
+                if (data.code !== 200) {
+                    toastr.error(data.msg)
+                }
+            });
+        },
+
 
         // 审批
         disposeBtn: function (id) {
             this.showPop();
             this.disposeShow = false;
-
         },
 
         // 审批 -- 通过
-        passRevokeBtn: function (type,) {
-
-
+        passRevokeBtn: function (type) {
             var params = {
                 id: this.currentClientID,
                 auditType: type,
@@ -681,16 +708,9 @@ var vm = new Vue({
                 };
                 if (data.code !== 200) {
                     toastr.error(data.msg)
-                }
+                };
 
             });
-        },
-
-        // 忽略
-        ignoreBtn: function () {
-
-            this.showPop();
-            this.ignoreShow = false;
         },
 
 
