@@ -49,8 +49,17 @@
         <div class="client-name">
             <div class="input-group">
                 <span class="input-group-label">客户名称:</span>
-                <input v-model="hClientName" type="text" class="input-group-form">
+                <input v-model="hClientName"
+                       @blur="hideFuzzyQuery(1)"
+                       @keyup="getFuzzyList(1)"
+                       type="text" class="input-group-form">
             </div>
+            <ul class="fuzzy-query">
+                <li @click="selectFuzzyText(1)"
+                    v-for="item in fuzzyQueryList_1"
+                    v-text="item"
+                ></li>
+            </ul>
         </div>
 
         <div class="query-reset pull-right">
@@ -109,7 +118,7 @@
                     <th>行业线</th>
                     <th>地址</th>
                     <!--<th>操作</th>-->
-                    <th style="width: 200px;">审批状态</th>
+                    <th style="">审批状态</th>
                 </tr>
             </thead>
             <tbody>
@@ -143,7 +152,8 @@
                                  @click="revokeBtn(item.id)"
                                  class="btn btn-xs btn-border">撤回</div>
 
-                            <div v-if="item.status == 'pass' || item.status == 'reject' || item.status == 'revoke' "
+                            <div
+                                    v-if="(item.status == 'pass' || item.status == 'reject' || item.status == 'revoke') && userLevel !== 'dqxyh' "
                                  @click="editClient(index, item.id)"
                                  class="btn btn-xs btn-border">编辑</div>
 
@@ -257,7 +267,16 @@
                     <div class="msg-item-left">客户名称：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input v-model="cCustomerName" type="text" class="input-group-form">
+                            <input v-model="cCustomerName"
+                                   @blur="hideFuzzyQuery(2)"
+                                   @keyup="getFuzzyList(2)"
+                                   type="text" class="input-group-form">
+                            <ul class="fuzzy-query">
+                                <li @click="selectFuzzyText(2)"
+                                    v-for="item in fuzzyQueryList_2"
+                                    v-text="item"
+                                ></li>
+                            </ul>
                         </div>
                     </div>
                 </div>

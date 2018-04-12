@@ -5,7 +5,7 @@ var vm = new Vue({
     data: {
         industry: [],// 行业线
         // 用户级别
-        userLevel: userLevel,// xs, xsld, dquyh
+        userLevel: userLevel,// xs, xsld, dqxyh
         levelActive: '',
 
         // 查询
@@ -92,7 +92,9 @@ var vm = new Vue({
         disposeShow: true,// 审批pop
         ignoreShow: true,// 忽略pop
 
-        // 审批 (通过、驳回)
+        // 模糊查询
+        fuzzyQueryList_1: [111,222],
+        fuzzyQueryList_2: [333,444],
 
 
 
@@ -712,8 +714,55 @@ var vm = new Vue({
 
             });
         },
+        
+        // 模糊查询
+        hideFuzzyQuery: function (type) {
+            // 失去焦点，数据都清空
+            switch (type) {
+                case 1:
+                    this.fuzzyQueryList_1 = [];
+                    break;
+                case 2:
+                    this.fuzzyQueryList_2 = [];
+                    break;
+            };
+        },
 
+        getFuzzyList: function (type) {
+            var clientName, params;
+            switch (type) {
+                case 1:
+                    clientName = vm.hClientName;
+                    break;
+                case 2:
+                    clientName = vm.cCustomerName;
+                    break;
+            }
+            params = {
+                customerName: clientName,
+            };
+            axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
+                var data = datas.data;
+                if (data.code === 201 || data.msg.length === 0) {
+                    vm.fuzzyQueryList_1 = [];
+                    vm.fuzzyQueryList_2 = [];
+                    return;
+                }
 
+                switch (type) {
+                    case 1:
+                        vm.fuzzyQueryList_1 = data.msg;
+                        break;
+                    case 2:
+                        vm.fuzzyQueryList_2 = data.msg;
+                        break;
+                }
+            });
+        },
+
+        selectFuzzyText: function (type) {
+            
+        },
 
 
         // 行业里的点击事件
