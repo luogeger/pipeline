@@ -84,7 +84,13 @@
             }// .type-show
             .operas-btn{
               line-height: 30px;
-
+              div{
+                transition: .2s;
+                &:hover{
+                  background-color: #FF8319;
+                  color: #FFFFFF;
+                }
+              }
             }
           }
         }

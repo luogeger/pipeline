@@ -193,6 +193,21 @@
 
   }// content
 
+  .dialog-content-small{
+    width: 20%;
+    position: fixed;
+    overflow: auto;
+    background: #fff;
+    top: 10%;
+    bottom: 60%;
+    left: 50%;
+    transform: translate(-50%);
+    z-index: 10;
+    border-radius: 4px;
+    box-shadow: 0 0 5px 0 #464068;
+    line-height: 1.6;
+  }
+
 
 }// wrap
 

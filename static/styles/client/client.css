@@ -39,6 +39,11 @@
   color: #eeeeee; }
 .main .client .i-table tbody tr td:last-child .operas-btn {
   line-height: 30px; }
+  .main .client .i-table tbody tr td:last-child .operas-btn div {
+    transition: .2s; }
+    .main .client .i-table tbody tr td:last-child .operas-btn div:hover {
+      background-color: #FF8319;
+      color: #FFFFFF; }
 .main .table-opera {
   padding-bottom: 10px; }
 .main .upload-pop {

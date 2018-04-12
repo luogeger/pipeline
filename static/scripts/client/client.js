@@ -84,6 +84,7 @@ var vm = new Vue({
         addClientShow: true,
         addMsgShow: true,
         uploadShow: true,
+        disposeShow: true,// 审批pop
 
 
         // upload
@@ -114,7 +115,6 @@ var vm = new Vue({
                 this.levelActive = 'all';
                 break;
         };// 不同客户查看到不同的客户信息
-        console.log(this.levelActive,809)
 
         this.getIndustry();
         this.getClient();
@@ -201,9 +201,9 @@ var vm = new Vue({
                 industryLine: this.hDropCode,
                 queryType:    this.levelActive,
             };
-            console.log(this.levelActive, 123)
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
+                console.log(datas.data.root[0])
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -338,13 +338,14 @@ var vm = new Vue({
         addClient: function () {
             this.getGroup();
             this.showPop();// 显示弹框
+            this.addClientShow = false;
             this.clearClient('c');// 清空弹窗信息
         },
 
         // 显示弹框
         showPop: function () {
             vm.dialogShow = false;
-            vm.addClientShow = false;
+            //vm.addClientShow = false;
         },
 
         hidePop: function () {
@@ -633,6 +634,24 @@ var vm = new Vue({
             vm.hDropText = '';
             vm.hDropCode = '';
         },
+
+
+        // 审批
+        disposeBtn: function () {
+
+        },
+
+        // 撤回
+        revokeBtn: function (id) {
+            this.showPop();
+            this.disposeShow = false;
+        },
+
+        // 忽略
+        ignoreBtn: function () {
+
+        },
+
 
 
 
