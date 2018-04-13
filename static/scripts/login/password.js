@@ -27,7 +27,7 @@ var vm = new Vue({
                         vm.msg = result.msg
                     }else {
                         toastr.success('修改密码成功');
-                        location.pathname = '/pipeline/pages/login/login.html'
+                        location.pathname = '/iboss-prism/pipeline/pages/login/login.html'
                     }
                 },
                 error: function(result){
