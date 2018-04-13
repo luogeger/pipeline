@@ -1,3 +1,14 @@
+// content-item 的自适应高度
+function getContentSize() {
+    var wh = document.documentElement.clientHeight;
+    var eh = 60;
+    ch = (wh - eh) + "px";
+    document.getElementById( "contentItem" ).style.minHeight = ch;
+}
+//window.onload = getContentSize;这个去掉
+window.onresize = getContentSize;
+setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
+
 $.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.130:8080/iboss-prism';
 // var PATH = '/iboss-prism';// 131
