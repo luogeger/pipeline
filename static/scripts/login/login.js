@@ -12,7 +12,6 @@ var vm = new Vue({
         // 登陆
         submitHandle: function() {
             var _this = this;
-            vm.loginList = {};
             $.ajax({
                 url: _this.PATH + '/oauth/login',
                 type: 'get',
