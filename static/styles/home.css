@@ -17,18 +17,20 @@
       #wrapper #navHeadTop .user .user-info {
         display: inline-block;
         position: relative; }
-        #wrapper #navHeadTop .user .user-info > a {
+        #wrapper #navHeadTop .user .user-info .user-group {
+          padding: 0 10px; }
+        #wrapper #navHeadTop .user .user-info .user-name {
           position: relative;
           padding-right: 25px;
           transition: .2s; }
-          #wrapper #navHeadTop .user .user-info > a:after {
+          #wrapper #navHeadTop .user .user-info .user-name:after {
             font: normal normal normal 14px/1 FontAwesome;
             font-size: 14px;
             content: '\f0dd';
             position: absolute;
             top: 0px;
             right: 10px; }
-          #wrapper #navHeadTop .user .user-info > a:hover {
+          #wrapper #navHeadTop .user .user-info .user-name:hover {
             color: #ED6D00; }
         #wrapper #navHeadTop .user .user-info ul {
           position: absolute;

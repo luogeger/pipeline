@@ -34,7 +34,10 @@ html, body{
       .user-info{
         display: inline-block;
         position: relative;
-        >a{
+        .user-group{
+          padding: 0 10px;
+        }
+        .user-name{
           position: relative;
           padding-right: 25px;
           transition: .2s;

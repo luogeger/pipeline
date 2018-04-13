@@ -16,6 +16,7 @@ var timeYear,
     userName,
     userCode,
     userAvatar,
+    userGroup,
     userLevel;// 用户级别
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg = datas.msg;
@@ -24,9 +25,10 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     userCode = msg.userCode;
     userAvatar = msg.avatar;
     userLevel = msg.level;
-    console.log(msg.level, 'home.js')
+    userGroup = msg.departmentName;
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
+    $('.user .user-group').text(userGroup)
 });
 
 var data = {
@@ -206,9 +208,9 @@ $('.nav-top-panels').iTopNav(data.msg);
 
 
 // user
-$('.user-info').click(function (e) {
+$('.user-name').click(function (e) {
     e.stopPropagation();
-    $(this).children('ul').removeClass('hide');
+    $(this).siblings('ul').removeClass('hide');
 });
 
 $('.user-info li').each(function (index, item) {
