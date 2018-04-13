@@ -269,13 +269,11 @@
                                         <i class="star">*</i>
                                         <span class="dropdown-label">事业部：</span>
                                         <div class="dropdown">
-                                            <!--todo  id="salesGroupCode" ref="salesGroupCode"   都可删除-->
                                             <span class="dropdown-default">{{ hSalesGroupText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
                                                 <li @click="selectSalesGroupCode(oauthList.code, oauthList.text)"
                                                     v-for="oauthList in mngSalesGroups">{{ oauthList.text }}</li>
-                                                <!--:value="oauthList.code"-->
                                             </ul>
                                         </div>
                                     </div>
@@ -302,8 +300,6 @@
                                                 v-for="(searchList,index) in searchLists.regions"
                                                 :class="{'active': handleTemplate.regionCode == searchList.code}">{{ searchList.text }}</li>
                                             <!--:class="handleTemplate.regionCode == searchList.code ? 'active':''"-->
-                                            <!--:value="searchList.code"
-                                                ref="regionCode"-->
                                         </ul>
                                     </div>
                                 </div>
@@ -313,14 +309,9 @@
                                         <span class="input-group-label">客户所在省份:</span>
                                         <ul class="item-list clearfix">
                                             <!--:class="{'active': index == isActiveProvince}"-->
-                                            <li v-for="(provinceList,index) in provinceLists"
-                                                @click="selectProvince(provinceList.code)"
+                                            <li @click="selectProvince(provinceList.code)"
+                                                v-for="(provinceList,index) in provinceLists"
                                                 :class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>
-                                            <!--
-                                                :class="handleTemplate.provinceCode == provinceList.code ? 'active':''"
-                                                ref="provinceCode"
-                                                :value="provinceList.code"
-                                                -->
                                         </ul>
                                     </div>
                                 </div>
@@ -332,9 +323,6 @@
                                             <li @click="selectCustomerAttr(customerName.code, index)"
                                                 v-for="(customerName,index) in customerAttr"
                                                 :class="{'active': customerName.code == handleTemplate.customerPropertiesCode}">{{ customerName.text }}</li>
-                                            <!--:value="customerName.code"
-                                            ref="customerPropertiesCode"
-                                            -->
                                         </ul>
                                     </div>
                                 </div>
@@ -354,7 +342,6 @@
                                     <div class="dropdown-wrap">
                                         <span class="dropdown-label">解决方案：</span>
                                         <div class="dropdown-zTree">
-                                            <!-- id="addTreeName"-->
                                             <span class="dropdown-default">{{ hSolutionText}}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul class="handleTree ztree soSolutionTree"
@@ -367,7 +354,6 @@
                                         <i class="star">*</i>
                                         <span class="dropdown-label">行业线：</span>
                                         <div class="dropdown noNull">
-                                            <!--id="industryLineCode" ref="industryLineCode" -->
                                             <span class="dropdown-default">{{ hIndustryLineText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
@@ -387,8 +373,6 @@
                                                 v-for="(searchList,index) in searchLists.projectNatures"
                                                 :class="{'active': handleTemplate.projectNatureCode == searchList.code}">{{ searchList.text }}</li>
                                         </ul>
-                                        <!--:value="searchList.code"
-                                                ref="projectNatureCode"-->
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -420,13 +404,11 @@
                                         <i class="star">*</i>
                                         <span class="dropdown-label">成功率：</span>
                                         <div class="dropdown">
-                                            <!-- id="successRateCode" ref="successRateCode"-->
                                             <span class="dropdown-default">{{ hSuccessRateText}}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
                                                 <li @click="selectSuccessRateCode(searchList.code, searchList.text)"
                                                     v-for="searchList in searchLists.projectSuccessRates">{{ searchList.text }}</li>
-                                                <!--:value="searchList.code"-->
                                             </ul>
                                         </div>
                                     </div>
@@ -450,13 +432,11 @@
                                         <i class="star">*</i>
                                         <span class="dropdown-label">项目阶段：</span>
                                         <div class="dropdown noNull">
-                                            <!--id="progressCode" ref="progressCode"-->
                                             <span class="dropdown-default">{{ hProgressText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
                                                 <li @click="selectProgressCode(searchList.code, searchList.text)"
                                                     v-for="searchList in searchLists.progresss">{{ searchList.text }}</li>
-                                                <!--:value="searchList.code"-->
                                             </ul>
                                         </div>
                                     </div>
@@ -465,13 +445,11 @@
                                     <div class="dropdown-wrap">
                                         <span class="dropdown-label">客户来源：</span>
                                         <div class="dropdown">
-                                            <!--id="customerSourceCode" ref="customerSourceCode"-->
                                             <span class="dropdown-default">{{ hCustomerSourceText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
                                                 <li @click="selectCustomerSourceCode(searchList.code, searchList.text)"
                                                     v-for="searchList in searchLists.customerSours">{{ searchList.text }}</li>
-                                                <!--:value="searchList.code"-->
                                             </ul>
                                         </div>
                                     </div>
@@ -845,6 +823,7 @@
 
                 // 添加/修改  显示信息
                 hReportDate: timeYear,      // 报备时间
+                hSalesGroupText: '',        // 事业部
                 // hSalesStaffCode: userCode,  // 负责销售code
                 hSalesStaffName: userName,  // 负责销售名字
                 hCustomerName: '',          // 客户名称
@@ -855,12 +834,6 @@
                 hCustomerSourceText: '',    // 客户来源名称
                 hWeightedSum: 0,            // 加权金额总计（万元）
                 hExpectSignDate: '',        // 预计签约时间
-
-                hSalesGroupText: '',        // 事业部
-
-                cSalesGroupCode: '',        // 事业部
-                csuccessRateCode: '',       // 成功率
-
 
                 preSaleStaffs: [],          // 点击修改时获取表格的值
                 solutionSub: [],            // 点击修改时获取表格的值
@@ -880,11 +853,10 @@
                 cCheckIndex: -1,
 
                 customerDialogShow: true,  // 显示客户选择弹窗
-                hDropText: '',// 行业下拉框文字
-                hDropCode: '',// 行业 code
-                hClientCode: '',// 客户编号
-                hClientName: '',// 客户名称
-                a: ''
+                hDropText: '',             // 行业下拉框文字
+                hDropCode: '',             // 行业 code
+                hClientCode: '',           // 客户编号
+                hClientName: '',           // 客户名称
             }
         },
         mounted: function(){
@@ -1041,6 +1013,7 @@
             selectCustomerAttr: function(code) {
                 vm.handleTemplate.customerPropertiesCode = code;
                 console.log(code)
+                console.log(vm.handleTemplate.customerPropertiesCode)
             },
             // 选中项目性质
             selectProjectNature: function(code) {
@@ -1298,6 +1271,8 @@
 
                 vm.dialogShow = false;       // 调用（弹窗）
 
+                console.log(vm.handleTemplate)
+
             },
             // 修改
             handleData: function(item){
@@ -1334,14 +1309,11 @@
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
                                 vm.preSaleStaffs = vm.handleTemplate.preSaleStaffs[i]
                                 vm.preSaleStaffs.userCode = vm.handleTemplate.preSaleStaffs[i].userCode;
-                                // console.log(vm.preSaleStaffs.userCode);
                             }
                         }
                         // 获取解决方案名称和预计签约金额
                         if(vm.handleTemplate.solutionSub) {
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
-                                // console.log(vm.handleTemplate.solutionSub[i])
-                                // $('#addTreeName').text(vm.handleTemplate.solutionSub[i].solutionName);
                                 vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
                                 vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
                             }
@@ -1354,11 +1326,8 @@
                             //事业部
                             if(userInfo.mngSalesGroups != null) {
                                 for(var i = 0;i<userInfo.mngSalesGroups.length;i++){
-                                    // console.log(userInfo.mngSalesGroups[i].code);
-                                    // console.log(vm.handleTemplate.salesGroupCode);
                                     if(userInfo.mngSalesGroups[i].code == vm.handleTemplate.salesGroupCode){
                                         vm.hSalesGroupText = userInfo.mngSalesGroups[i].text
-                                        // $("#salesGroupCode").text(userInfo.mngSalesGroups[i].text);
                                     }
                                 }
                             }
@@ -1369,7 +1338,6 @@
                                 for(var i = 0;i<vm.searchLists.industryLines.length;i++){
                                     if(vm.searchLists.industryLines[i].code == vm.handleTemplate.industryLineCode){
                                         vm.hIndustryLineText = vm.searchLists.industryLines[i].text;
-                                        // $("#industryLineCode").text(vm.searchLists.industryLines[i].text);
                                     }
                                 }
                             }
@@ -1378,7 +1346,6 @@
                                 for(var i = 0;i<vm.searchLists.projectSuccessRates.length;i++){
                                     if(vm.searchLists.projectSuccessRates[i].code == vm.handleTemplate.successRateCode){
                                         vm.hSuccessRateText = vm.searchLists.projectSuccessRates[i].text;
-                                        // $("#successRateCode").text(vm.searchLists.projectSuccessRates[i].text);
                                     }
                                 }
                             }
@@ -1387,7 +1354,6 @@
                                 for(var i = 0;i<vm.searchLists.progresss.length;i++){
                                     if(vm.searchLists.progresss[i].code == vm.handleTemplate.progressCode){
                                         vm.hProgressText = vm.searchLists.progresss[i].text;
-                                        // $("#progressCode").text(vm.searchLists.progresss[i].text);
                                     }
                                 }
                             }
@@ -1396,7 +1362,6 @@
                                 for(var i = 0;i<vm.searchLists.customerSours.length;i++){
                                     if(vm.searchLists.customerSours[i].code == vm.handleTemplate.customerSourceCode){
                                         vm.hCustomerSourceText = vm.searchLists.customerSours[i].text;
-                                        // $("#customerSourceCode").text(vm.searchLists.customerSours[i].text);
                                     }
                                 }
                             }
@@ -1411,20 +1376,6 @@
             submitHandle: function(){
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
-
-/*
-                if($(this.$refs.regionCode).hasClass('active')){
-                    vm.handleTemplate.regionCode = $(this.$refs.regionCode).attr('value') // 区域
-                }
-                if($(this.$refs.provinceCode).hasClass('active')){
-                    vm.handleTemplate.provinceCode = $(this.$refs.provinceCode).attr('value') // 所在省份
-                }
-                if($(this.$refs.customerPropertiesCode).hasClass('active')){
-                    vm.handleTemplate.customerPropertiesCode = $(this.$refs.customerPropertiesCode).attr('value') // 客户属性
-                }
-                if($(this.$refs.projectNatureCode).hasClass('active')){
-                    vm.handleTemplate.projectNatureCode = $(this.$refs.projectNatureCode).attr('value') // 项目性质
-                }*/
 
                 var preSaleStaffList = [],     // 点击修改时获取表格的值
                     solutionSubList = [];      // 点击修改时获取表格的值
@@ -1460,7 +1411,6 @@
                         if(result.success){
                             vm.dialogShow = true;       // 调用（弹窗）
                             vm.clearHandle();           // 调用（清空新增/修改表单）
-                            // vm.handleTemplate = {};  // 还原模板
                             vm.showData();              // 再调用（表格查询）
                         }
                         toastr.success('操作成功');
@@ -1545,45 +1495,36 @@
             // 获取机要信息
             getClientMsg: function (code) {
                 code = code || this.firstClientCode;
+                var message = "";
                 $.ajax({
-                    async: false,
                     url: PATH +'/crm/queryCustomerContactList',
                     data: code,
                     type: 'get',
+                    async: false,
                     dataType: 'json',
                     success: function(result) {
                         if (result.root.length === 0) {
-                            // alert('no')
-                            // vm.noDataMsg = true;
-                            // vm.clientMsg = [];
+                            message = 'noData';
+                        }else{
+                            message = "haveData"
                         }
                     },
                     error: function(result) {
                         console.log('请求失败');
                     }
                 })
-                /*axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
-                    if (datas.data.root.length === 0) {
-                        alert('no')
-                        return false;
-                        // vm.noDataMsg = true;
-                        // vm.clientMsg = [];
-                    }
-                    else{
-                        alert('yes')
-                        // vm.noDataMsg = false;
-                        // vm.clientMsg = datas.data;
-                    }
-                });*/
+                return message;
             },
             // 选中客户表格tr
             selectCustomerName: function(code, name, index) {
-                var a = vm.getClientMsg();
-                console.log(a);
-
-                vm.cCheckIndex = index;
-                vm.handleTemplate.customerCode = code;
-                vm.hCustomerName = name;
+                var getMessage = vm.getClientMsg();
+                if(getMessage == 'noData'){
+                    toastr.info('该客户下无机要信息 !');
+                }else {
+                    vm.cCheckIndex = index;
+                    vm.handleTemplate.customerCode = code;
+                    vm.hCustomerName = name;
+                }
             },
             // 选中事件
             selectHandle: function() {

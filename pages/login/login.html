@@ -29,21 +29,24 @@
             <div class="block-wrapper">
                 <div class="input-group">
                     <i class="fa fa-user-o"></i>
-                    <input onkeydown="vm.keybordEnter()" v-model="loginList.loginAccount" type="text" class="input-group-form" placeholder="请输入登录账号">
+                    <input onkeydown="vm.keybordEnter()"
+                           v-model="loginList.loginAccount"
+                           type="text" class="input-group-form" placeholder="请输入登录账号">
                 </div>
             </div>
             <div class="block-wrapper">
                 <div class="input-group">
                     <i class="fa fa-key"></i>
-                    <input onkeydown="vm.keybordEnter()" v-model="loginList.loginPass" type="password" class="input-group-form" placeholder="输入您的密码">
+                    <input onkeydown="vm.keybordEnter()"
+                           v-model="loginList.loginPass"
+                           type="password" class="input-group-form" placeholder="输入您的密码">
                 </div>
             </div>
             <div style="display: none">
-                <input id="zidong" type="checkbox"> <label @click="remeberMe" for="zidong">下次自动登录</label>
+                <input id="zidong" type="checkbox">
+                <label for="zidong">下次自动登录</label>
+                <!--@click="remeberMe"-->
             </div>
-            <!--<div style="text-align: right">-->
-                <!--<a href="">忘记密码</a>-->
-            <!--</div>-->
             <p class="error" v-text="msg"></p>
             <button @click="submitHandle" class="btn btn-lg btn-theme" type="button">登录</button>
         </div>
@@ -52,51 +55,6 @@
 <script src="/iboss-prism/static/js/vue.min.js"></script>
 <script src="/iboss-prism/static/js/vue-resource.js"></script>
 <script src="/iboss-prism/static/js/jquery-1.12.4.min.js"></script>
-<script>
-    var vm = new Vue({
-        el: '#app',
-        data: function(){
-            return {
-                loginList: {},
-                msg: '',
-               // PATH: 'http://172.16.8.130:8080/iboss-prism',
-                PATH: '/iboss-prism',
-            }
-        },
-        methods: {
-            // 登陆
-            submitHandle: function() {
-                var _this = this;
-                vm.loginList = {};
-                $.ajax({
-                    url: _this.PATH + '/oauth/login',
-                    type: 'get',
-                    data: this.loginList,
-                    dataType: 'json',
-                    success: function(result){
-                        console.log(result)
-                        if (result.code === 201) {
-                            vm.msg = result.msg
-                            return;
-                        }
-                        location.pathname = '/iboss-prism/pages/home.html'
-                    },
-                    error: function(result){
-                        console.log('登陆 请求失败')
-                    }
-                })
-            },
-            // 键盘回车登录
-            keybordEnter: function() {
-                var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
-                if (ikeyCode == 13){
-                    this.submitHandle()
-                }
-            },
-            // 记住我
-            remeberMe: function() {}
-        }
-    })
-</script>
+<script src="/iboss-prism/static/scripts/login/login.js"></script>
 </body>
 </html>
