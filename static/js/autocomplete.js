@@ -120,6 +120,7 @@ Author: Lorenzo Cioni - https://github.com/lorecioni
 										input.val($(this).html());
 										proposalList.empty();
 										params.onSubmit($(this).attr('code'));
+                                        params.onSubmit($(this).attr('html'));
 									})
 									.mouseenter(function() {
 										$(this).addClass('selected');

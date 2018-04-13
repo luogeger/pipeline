@@ -41,7 +41,7 @@
             var option = $(this).text();
             _this.children('ul').slideUp(speed)
             _this.children('i').css({'transform':'rotate(0deg)'})
-            _this.children('.dropdown-default').text(option)
+            // _this.children('.dropdown-default').text(option)
             _this.removeClass('dropdown-shadow flag-open')
         })
 
