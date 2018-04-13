@@ -93,8 +93,8 @@ var vm = new Vue({
         ignoreShow: true,// 忽略pop
 
         // 模糊查询
-        fuzzyQueryList_1: [111,222],
-        fuzzyQueryList_2: [333,444],
+        fuzzyQueryList_1: [],
+        fuzzyQueryList_2: [],
 
 
 
@@ -717,16 +717,11 @@ var vm = new Vue({
         
         // 模糊查询
         hideFuzzyQuery: function (type) {
-            // 失去焦点，数据都清空
-            switch (type) {
-                case 1:
-                    this.fuzzyQueryList_1 = [];
-                    break;
-                case 2:
-                    this.fuzzyQueryList_2 = [];
-                    break;
-            };
-        },
+            // var list = 'fuzzyQueryList_' +type;
+            // vm[list] = [];
+            vm.fuzzyQueryList_1 = [];
+            vm.fuzzyQueryList_2 = [];
+        },// 失焦隐藏模糊列表
 
         getFuzzyList: function (type) {
             var clientName, params;
@@ -743,26 +738,24 @@ var vm = new Vue({
             };
             axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
                 var data = datas.data;
-                if (data.code === 201 || data.msg.length === 0) {
-                    vm.fuzzyQueryList_1 = [];
-                    vm.fuzzyQueryList_2 = [];
-                    return;
-                }
-
-                switch (type) {
-                    case 1:
-                        vm.fuzzyQueryList_1 = data.msg;
-                        break;
-                    case 2:
-                        vm.fuzzyQueryList_2 = data.msg;
-                        break;
-                }
+                var list = 'fuzzyQueryList_' +type;
+                if (data.code === 201 || data.msg.length === 0) return;
+                vm[list] = data.msg;
             });
-        },
+        },// 获取数据
 
-        selectFuzzyText: function (type) {
-            
-        },
+        selectFuzzyText: function (type, text) {
+            console.log(type)
+            console.log(text)
+            switch (type) {
+                case 1:
+                    vm.hClientName = text;
+                    break;
+                case 2:
+                    vm.cCustomerName = text;
+                    break;
+            }
+        },// 选中文字，隐藏模糊列表
 
 
         // 行业里的点击事件

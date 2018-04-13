@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../static/styles/client/client.css">
 
-<div id="app" class="main">
+<div id="app" class="main" @click="hideFuzzyQuery">
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
@@ -46,17 +46,16 @@
             </div>
         </div>
 
-        <div class="client-name">
+        <div class="client-name" style="position: relative;">
             <div class="input-group">
                 <span class="input-group-label">客户名称:</span>
                 <input v-model="hClientName"
-                       @blur="hideFuzzyQuery(1)"
                        @keyup="getFuzzyList(1)"
                        type="text" class="input-group-form">
             </div>
-            <ul class="fuzzy-query">
-                <li @click="selectFuzzyText(1)"
-                    v-for="item in fuzzyQueryList_1"
+            <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 85px">
+                <li v-for="item in fuzzyQueryList_1"
+                    @click="selectFuzzyText(1, item)"
                     v-text="item"
                 ></li>
             </ul>
@@ -266,13 +265,12 @@
                 <div class="msg-item">
                     <div class="msg-item-left">客户名称：</div>
                     <div class="msg-item-right">
-                        <div class="input-group">
+                        <div class="input-group" style="position: relative;">
                             <input v-model="cCustomerName"
-                                   @blur="hideFuzzyQuery(2)"
                                    @keyup="getFuzzyList(2)"
                                    type="text" class="input-group-form">
-                            <ul class="fuzzy-query">
-                                <li @click="selectFuzzyText(2)"
+                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                <li @click="selectFuzzyText(2, item)"
                                     v-for="item in fuzzyQueryList_2"
                                     v-text="item"
                                 ></li>
