@@ -116,8 +116,7 @@
                     <th>客户名称</th>
                     <th>行业线</th>
                     <th>地址</th>
-                    <!--<th>操作</th>-->
-                    <th style="">审批状态</th>
+                    <th v-if="clientMsgQueryBtn">审批状态</th>
                 </tr>
             </thead>
             <tbody>
@@ -132,7 +131,7 @@
                     <td v-text="item.industryLine"></td>
                     <td v-text="item.address"></td>
                     <!--<td @click="editClient(index, item.id)"><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>-->
-                    <td style="padding-right: 20px;">
+                    <td v-if="clientMsgQueryBtn" style="padding-right: 20px;">
                         <div class="pull-left types-show">
                             <span v-if="item.status == 'pending' && userLevel == 'xsld' "
                                   class="type-pending">待审批</span>
@@ -227,7 +226,6 @@
         <div  v-if="noDataMsg" style="padding: 10px; text-align: center">没有数据!</div>
     </div><!-- /.client-mag -->
 
-
     <div :class="{'hide': dialogShow}" class="dialog-wrap">
         <div @click="hidePop" class="dialog-cover"></div><!-- /.dialog-cover -->
         <!-- 添加客户 -->
@@ -245,19 +243,20 @@
 
                 <div class="msg-item">
                     <div class="msg-item-left">所属事业部：</div>
-                    <div class="msg-item-right">
-                        <div class="dropdown-wrap">
-                            <div class="dropdown">
-                                <span v-text="cGroupText"
-                                      class="dropdown-default"></span>
-                                <i class="fa fa-angle-down"></i>
-                                <ul>
-                                    <li v-for="item in cSalesGroupList"
-                                        v-text="item.text"
-                                        @click="selectGroup(item.code, item.text)"></li>
-                                </ul>
-                            </div>
-                        </div><!-- drop -->
+                    <div class="msg-item-right" v-text="cGroupText">
+
+                        <!--<div class="dropdown-wrap">-->
+                            <!--<div class="dropdown">-->
+                                <!--<span v-text="cGroupText"-->
+                                      <!--class="dropdown-default"></span>-->
+                                <!--<i class="fa fa-angle-down"></i>-->
+                                <!--<ul>-->
+                                    <!--<li v-for="item in cSalesGroupList"-->
+                                        <!--v-text="item.text"-->
+                                        <!--@click="selectGroup(item.code, item.text)"></li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>&lt;!&ndash; drop &ndash;&gt;-->
                     </div>
 
                 </div><!-- item -->

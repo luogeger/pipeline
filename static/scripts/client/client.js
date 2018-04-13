@@ -106,10 +106,11 @@ var vm = new Vue({
         noData: false,// 客户table的 '没有数据!'
         noDataMsg: false,// 客户table的 '请输入客户名称进行查询!'
         clientNameQuery: false,// 请输入客户名称进行查询！ == 是否显示
-        clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号
+        clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号 + 状态 + 操作
 
         onlySale: true,// 只有在销售的客户信息层面才能看到添加客户和导入按钮
         msgBtnIsShow: true,// 添加机要信息按钮
+        //statusIsShow: true,// 客户信息查询的时候，就不显示 状态 和 操作
 
     },// data
 
@@ -147,7 +148,11 @@ var vm = new Vue({
         // 所属事业部
         getGroup: function () {
             axios.get(PATH +'/oauth/queryUserInfo').then(function (datas){
-                vm.cSalesGroupList = datas.data.msg.mngSalesGroups;
+                var data = datas.data;
+                vm.cSalesGroupList = data.msg.mngSalesGroups;
+                console.log(data.msg)
+                vm.cSalesGroupCode = data.msg.mngSalesGroups[0].code;// 只有一条数据，赋值给所属事业部，同时code 也赋值
+                vm.cGroupText = data.msg.mngSalesGroups[0].text;// 只有一条数据，赋值给所属事业部，同时code 也赋值
             });
         },
 
@@ -706,6 +711,10 @@ var vm = new Vue({
                     vm.hidePop();
                     vm.disposeRemark = '';// 清空审批的备注
                     vm.getClient()
+                    if (type === 'revoke') {
+                        toastr.success('撤回成功 !');
+                        return;
+                    }
                     toastr.success('审批完成 !')
                 };
                 if (data.code !== 200) {
