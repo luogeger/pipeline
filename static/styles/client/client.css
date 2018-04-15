@@ -49,6 +49,8 @@
     cursor: pointer; }
     .main .client .i-table tbody tr td:last-child .operas-btn div:last-child .fa {
       font-size: 16px !important; }
+    .main .client .i-table tbody tr td:last-child .operas-btn div:last-child .has-reject {
+      color: #ff0000 !important; }
 .main .table-opera {
   padding-bottom: 10px; }
 .main .upload-pop {

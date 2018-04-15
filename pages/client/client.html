@@ -152,8 +152,7 @@
                                  @click="revokeBtn(item.id)"
                                  class="btn btn-xs btn-border">撤回</div>
 
-                            <div
-                                    v-if="(item.status == 'pass' || item.status == 'reject' || item.status == 'revoke') && userLevel !== 'dqxyh' && item.power == 'pri' "
+                            <div v-if="(item.status == 'pass' || item.status == 'reject' || item.status == 'revoke') && userLevel !== 'dqxyh' && item.power == 'pri' "
                                  @click="editClient(index, item.id)"
                                  class="btn btn-xs btn-border">编辑</div>
 
@@ -161,8 +160,10 @@
                                  @click="ignoreBtn()"
                                  class="btn btn-xs btn-border">忽略</div>
                             <!-- 历史记录 -->
-                            <div class="btn btn-xs">
+                            <div class="btn btn-xs"
+                                 @click="queryClientHistory(item.id)">
                                 <i class="fa fa-clock-o"
+                                   :class="{'has-reject': item.hasReject !== 0}"
                                    v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel == 'xsld' && item.power == 'pro') || item.power == 'pub'"></i>
                             </div>
                         </div>

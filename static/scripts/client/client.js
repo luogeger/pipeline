@@ -775,6 +775,17 @@ var vm = new Vue({
             }
         },// 选中文字，隐藏模糊列表
 
+        // 查询客户的审核记录
+        queryClientHistory: function (id) {
+            console.log(id)
+            var params = {
+                id: id,
+            };
+            axios.get(PATH +'/crm/queryCustomerOne', {params: params}).then(function (datas){
+                console.log(datas.data)
+            });
+        },
+
 
         // 行业里的点击事件
         hDrop: function (code, text) {
