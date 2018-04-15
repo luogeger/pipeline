@@ -16,6 +16,8 @@ var timeYear,
     userName,
     userCode,
     userAvatar,
+    userGroup,// 用户所在事业部
+    navData,// 导航数据
     userLevel;// 用户级别  xs  xsld  dqcyh
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg = datas.msg;
