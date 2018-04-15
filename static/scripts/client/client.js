@@ -192,7 +192,7 @@ var vm = new Vue({
         },
 
         // 获取客户信息
-        getClient: function (page, limit,) {
+        getClient: function (page, limit) {
             var params = {
                 page:         page || 1,
                 limit:        limit || this.clientPageMost,

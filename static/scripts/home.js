@@ -5,7 +5,7 @@ var timeYear,
     userName,
     userCode,
     userAvatar,
-    userLevel;// 用户级别
+    userLevel;// 用户级别  xs  xsld  dqcyh
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg = datas.msg;
     timeYear = (msg.currentDate).substring(0, 10);
