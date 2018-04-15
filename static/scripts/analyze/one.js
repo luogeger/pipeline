@@ -275,7 +275,17 @@ var quarterTable = new Vue({
 
     created:function () {
         var month = this.currentTime.substring(5,7);
-        console.log(month)
+        var arr = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
+        var qActiveIndex;
+        arr.forEach(function (p1, p2) {
+            p1.forEach(function (p1) {
+                if (Number(month) === p1) {
+                    qActiveIndex = p2;
+                }
+            })
+        })
+
+        this.Qevent(qActiveIndex);// 选中当前季度
     },
 
     methods: {
