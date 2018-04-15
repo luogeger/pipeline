@@ -173,7 +173,7 @@
     <div class="client-msg">
         <div class="table-opera clearfix">
             <div class="pull-left">
-                <div v-if="msgBtnIsShow && userLevel == 'xs'" @click="addMsg" class="btn btn-theme">
+                <div v-if="msgBtnIsShow" @click="addMsg" class="btn btn-theme">
                     <i class="fa fa-plus"></i>
                     <span>添加客户机要信息</span>
                 </div>
@@ -207,7 +207,7 @@
                     <th>头衔</th>
                     <th>联系电话</th>
                     <th>邮件</th>
-                    <th v-if="userLevel == 'xs' ">操作</th>
+                    <th>操作</th>
                 </tr>
             </thead>
             <tbody>
@@ -220,9 +220,10 @@
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td @click="editMsg(item.id)"
-                        v-if="userLevel == 'xs' "
-                    ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                    <td @click="editMsg(item.id)">
+                        <i v-if="item.power == 'pri'"
+                            class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i>
+                    </td>
                 </tr>
             </tbody>
         </table>

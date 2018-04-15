@@ -196,7 +196,6 @@ var vm = new Vue({
             console.log(vm.uploadFileName);
             console.log(fd);
             axios.post('/iboss-prism/crm/importCrm', fd).then(function (datas){
-                console.log(datas);
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
                 } else{
@@ -208,7 +207,7 @@ var vm = new Vue({
         },
 
         // 获取客户信息
-        getClient: function (page, limit,) {
+        getClient: function (page, limit) {
             var params = {
                 page:         page || 1,
                 limit:        limit || this.clientPageMost,
@@ -219,7 +218,6 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                console.log(datas.data.root)
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -252,7 +250,7 @@ var vm = new Vue({
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
             axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
-                console.log(datas.data.root)
+                console.log(datas.data, 'msg')
                 if (datas.data.root.length === 0) {
                     vm.noDataMsg = true;
                     vm.clientMsg = [];
@@ -704,6 +702,10 @@ var vm = new Vue({
 
         // 审批 -- 通过
         passRevokeBtn: function (type) {
+            if (!checkSpace(vm.disposeRemark) && type === 'reject') {
+                toastr.warning('驳回请填写备注!')
+                return;
+            }
             var params = {
                 id: this.currentClientID,
                 auditType: type,

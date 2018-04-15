@@ -10,13 +10,14 @@ window.onresize = getContentSize;
 setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
 
 $.ajaxSettings.async = false;// 同步请求
-var PATH = 'http://172.16.8.130:8080/iboss-prism';
-// var PATH = '/iboss-prism';// 131
+// var PATH = 'http://172.16.8.130:8080/iboss-prism';
+var PATH = '/iboss-prism';// 131
 var timeYear,
     userName,
     userCode,
     userAvatar,
     userGroup,
+    navData,// 导航数据
     userLevel;// 用户级别
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg = datas.msg;
@@ -32,6 +33,10 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     console.log(userLevel)
 });
 
+$.getJSON('http://172.16.8.130:8080/iboss-prism/oauth/queryMenu4Nav', function (datas) {
+    navData = datas.msg;
+
+});
 var data = {
     "code": 200,
     "msg": [
@@ -204,7 +209,8 @@ var data = {
     "success": true
 };
 
-$('.nav-top-panels').iTopNav(data.msg);
+// $('.nav-top-panels').iTopNav(data.msg);
+$('.nav-top-panels').iTopNav(navData);
 
 
 
@@ -267,3 +273,14 @@ function accMul(arg1,arg2) {
     try{m+=s2.split(".")[1].length}catch(e){}
     return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
 };
+
+// 判断内容都为空
+function checkSpace(str){
+    while(str.lastIndexOf(" ")>=0){
+        str = str.replace(" ","");
+    }
+    if(str.length === 0){
+        return 0;// 为空
+    }
+    return 1;// 不为空
+}
