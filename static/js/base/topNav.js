@@ -121,8 +121,15 @@
                 var _item = $(item);
                 _item.click(function () {
                     $(this).parent('.panel').siblings('.panel').each(function (inx, itm) {
-                        $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col')
-                    })
+                        $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col');// 清除一级菜单的样式
+
+                        $(itm).find('li').each(function (i, v) {
+                            $(v).removeClass('i-active')
+                        });// 清除二级菜单样式
+                    });
+
+
+
 
                     $(this).parent('.panel').addClass('i-border-col').children('.panel-title').addClass('i-text-col')
                 });

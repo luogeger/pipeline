@@ -208,6 +208,7 @@ var vm = new Vue({
 
         // 获取客户信息
         getClient: function (page, limit) {
+            vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
             var params = {
                 page:         page || 1,
                 limit:        limit || this.clientPageMost,
@@ -648,6 +649,7 @@ var vm = new Vue({
         // 查询
         queryBtn: function () {
             vm.getClient()
+            vm.clientMsg.root = '';
         },
 
         resetBtn: function () {
