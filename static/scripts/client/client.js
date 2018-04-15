@@ -6,7 +6,7 @@ var vm = new Vue({
         industry: [],// 行业线
         // 用户级别
         userLevel: userLevel,// xs, xsld, dqxyh
-        levelActive: '',
+        levelActive: '',// 控制客户信息tabs是否选中
 
         // 查询
         hDropText: '',// 行业下拉框文字
@@ -252,6 +252,7 @@ var vm = new Vue({
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
             axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
+                console.log(datas.data.root)
                 if (datas.data.root.length === 0) {
                     vm.noDataMsg = true;
                     vm.clientMsg = [];
@@ -335,6 +336,9 @@ var vm = new Vue({
 
                 this.resetBtn();
                 return;
+            }
+            if (level === 'department') {
+                this.resetBtn();
             }
             if (level === 'me') {
                 vm.clientMsgQueryBtn = true;// 行业 + 客户编号

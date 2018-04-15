@@ -269,9 +269,15 @@ var quarterTable = new Vue({
         head: data.quarter.Q1.head,
         list: data.quarter.Q1.body,
         foot: data.quarter.Q1.foot,
-        isActive: 'Q1',
-
+        isActive: '',
+        currentTime: timeYear,
     },
+
+    created:function () {
+        var month = this.currentTime.substring(5,7);
+        console.log(month)
+    },
+
     methods: {
         Qevent: function (index) {
             var _key = 'Q' + (index + 1);
@@ -280,7 +286,10 @@ var quarterTable = new Vue({
             this.head = data.quarter[_key].head;
             this.list = data.quarter[_key].body;
             this.foot = data.quarter[_key].foot;
-        }
+        },
+
+        // 计算当前的季度
+
     }
 });
 

@@ -10,8 +10,8 @@ window.onresize = getContentSize;
 setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
 
 $.ajaxSettings.async = false;// 同步请求
-// var PATH = 'http://172.16.8.130:8080/iboss-prism';
-var PATH = '/iboss-prism';// 131
+var PATH = 'http://172.16.8.130:8080/iboss-prism';
+// var PATH = '/iboss-prism';// 131
 var timeYear,
     userName,
     userCode,
@@ -29,6 +29,7 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
     $('.user .user-group').text(userGroup)
+    console.log(userLevel)
 });
 
 var data = {

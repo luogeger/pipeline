@@ -59,6 +59,7 @@
           color: #c9c9c9; }
     .main-wrapper .updateCase .content {
       height: calc(100% - 45px);
+      padding: 10px 0;
       overflow-x: hidden;
       word-break: break-all; }
       .main-wrapper .updateCase .content .block li {
