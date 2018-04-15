@@ -19,7 +19,7 @@
             var click = 'onclick=\"loadPage(\'.content-item\', \'url\')\"';
             var html = '';
             opt.forEach(function (item, index) {// 遍历一级菜单
-                if (index === 0) {
+                if (index === 0) {// 数组默认第一个选中
                     html += '<div class="panel i-border-col">';
                     if (!Boolean(item.children)) {// 没有子菜单可以点击
                         html += '<div class="panel-title i-text-col" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
