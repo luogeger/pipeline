@@ -160,6 +160,11 @@
                             <div v-if="item.status == 'reject' || item.status == 'revoke' "
                                  @click="ignoreBtn()"
                                  class="btn btn-xs btn-border">忽略</div>
+                            <!-- 历史记录 -->
+                            <div class="btn btn-xs">
+                                <i class="fa fa-clock-o"
+                                   v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel == 'xsld' && item.power == 'pro') || item.power == 'pub'"></i>
+                            </div>
                         </div>
 
                     </td>
