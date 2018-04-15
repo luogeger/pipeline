@@ -33,7 +33,7 @@ Author: Lorenzo Cioni - https://github.com/lorecioni
 				// .css('height', params.height * 2);   ---kelly
 
 			//Text input
-			var input = $('<input type="text" autocomplete="off" name="query">')
+			var input = $('<input id="autocompleteInput" type="text" autocomplete="off" name="query">')
 				.attr('placeholder', params.placeholder)
 				.addClass('input-group-form')
 				.css({
@@ -59,25 +59,25 @@ Author: Lorenzo Cioni - https://github.com/lorecioni
 				console.log(e.which)
 				switch(e.which) {
 					case 38: // Up arrow
-					e.preventDefault();
-					$('ul.proposal-list li').removeClass('selected');
-					if((currentSelection - 1) >= 0){
-						currentSelection--;
-						$( "ul.proposal-list li:eq(" + currentSelection + ")" )
-							.addClass('selected');
-					} else {
-						currentSelection = -1;
-					}
-					break;
-					case 40: // Down arrow
-					e.preventDefault();
-					if((currentSelection + 1) < currentProposals.length){
+						e.preventDefault();
 						$('ul.proposal-list li').removeClass('selected');
-						currentSelection++;
-						$( "ul.proposal-list li:eq(" + currentSelection + ")" )
-							.addClass('selected');
-					}
-					break;
+						if((currentSelection - 1) >= 0){
+							currentSelection--;
+							$( "ul.proposal-list li:eq(" + currentSelection + ")" )
+								.addClass('selected');
+						} else {
+							currentSelection = -1;
+						}
+						break;
+					case 40: // Down arrow
+						e.preventDefault();
+						if((currentSelection + 1) < currentProposals.length){
+							$('ul.proposal-list li').removeClass('selected');
+							currentSelection++;
+							$( "ul.proposal-list li:eq(" + currentSelection + ")" )
+								.addClass('selected');
+						}
+						break;
 					case 13: // Enter
 						var code;
 						if(currentSelection > -1){
@@ -89,6 +89,7 @@ Author: Lorenzo Cioni - https://github.com/lorecioni
 						}
 						currentSelection = -1;
 						proposalList.empty();
+                        // proposalList.css('display', 'none');
 						params.onSubmit(code);
 						break;
 					case 27: // Esc button
@@ -155,6 +156,7 @@ Author: Lorenzo Cioni - https://github.com/lorecioni
 					})
 					.click(function(){
 						proposalList.empty();
+						alert('click')
 						params.onSubmit(input.val());
 					});
 				searchContainer.append(button);

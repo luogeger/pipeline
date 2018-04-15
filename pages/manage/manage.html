@@ -107,11 +107,13 @@
     </div>
     <div class="main-wrapper">
         <div :class="{maxWidth: ismaxWidth}" class="data">
-            <div class="subInformation">
-                <button @click="addData"
+            <div class="subInformation clearfix">
+                <button v-if="userLevel == 'xs'"
+                        @click="addData"
                         class="btn btn-sm btn-theme modelDomBtn"
                         style="margin-right: 10px">新增 Pipeline</button>
-                <div @click="upload" class="btn btn-theme" style="margin-right: 15px">
+                <div v-if="userLevel == 'xs'"
+                     @click="upload" class="btn btn-theme" style="margin-right: 15px">
                     <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
@@ -146,7 +148,7 @@
                             <thead>
                             <tr>
                                 <th>序号</th>
-                                <th>操作</th>
+                                <th v-if="userLevel == 'xs'">操作</th>
                                 <th>报备日期</th>
                                 <th>销售事业部</th>
                                 <th>销售</th>
@@ -178,7 +180,7 @@
                                     @click="showOneChange(item,index)"
                                     :class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1} ">
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
-                                    <td>
+                                    <td v-if="userLevel == 'xs'">
                                         <a @click="handleData(item)"
                                            data-toggle="modal"
                                            data-target=".myModal"
@@ -193,7 +195,7 @@
                                     <td>{{ item.region }}</td>
                                     <td>{{ item.province }}</td>
                                     <td>{{ item.customerProperties }}</td>
-                                    <td>{{ item.salesStaffName }}</td>
+                                    <td>{{ item.customerCode }}</td>
                                     <td>{{ item.customerName }}</td>
                                     <td><div v-for="solutionSub in item.solutionSub">
                                         {{ solutionSub.solutionName }}
@@ -258,6 +260,7 @@
                         <div class="main">
                             <form class="clearfix" id="dataSubmit" action="">
                                 <input type="hidden" v-model="handleTemplate.soCoreCode" name="soCoreCode">
+                                <input type="hidden" v-model="nothing">  <!--多选框需触发-->
                                 <div class="block-wrapper">
                                     <div class="input-group">
                                         <span class="input-group-label">报备日期:</span>
@@ -280,13 +283,13 @@
                                 </div>
                                 <div class="block-wrapper">
                                     <div class="input-group">
-                                        <i class="star">*</i>
                                         <span class="input-group-label">负责销售:</span>
                                         <span style="line-height: 30px;">{{ hSalesStaffName }}</span>
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
                                     <div class="input-group">
+                                        <i class="star">*</i>
                                         <span class="input-group-label">负责售前:</span>
                                         <input v-model="preSaleStaffs.userCode" class="input-group-form" type="text">
                                     </div>
@@ -319,14 +322,13 @@
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户属性:</span>
-                                        <ul class="item-list clearfix">
+                                        <ul id="selected" class="item-list selected clearfix">
                                             <li @click="selectCustomerAttr(customerName.code, index)"
                                                 v-for="(customerName,index) in customerAttr"
                                                 :class="{'active': customerName.code == handleTemplate.customerPropertiesCode}">{{ customerName.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
-
                                 <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
@@ -342,7 +344,7 @@
                                     <div class="dropdown-wrap">
                                         <span class="dropdown-label">解决方案：</span>
                                         <div class="dropdown-zTree">
-                                            <span class="dropdown-default">{{ hSolutionText}}</span>
+                                            <span class="dropdown-default">{{ hSolutionText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul class="handleTree ztree soSolutionTree"
                                                 style="max-height: 200px;overflow-y: auto;"></ul>
@@ -389,7 +391,7 @@
                                         <span class="input-group-label" style="width: auto">预计签约金额（万元）:</span>
                                         <input v-model="solutionSub.expectSignSum"
                                                class="input-group-form"
-                                               type="text"
+                                               type="number"
                                                style="text-align: right;padding-right: 10px">
                                     </div>
                                 </div>
@@ -415,6 +417,7 @@
                                 </div>
                                 <div class="block-wrapper">
                                     <div class="input-group">
+                                        <i class="star">*</i>
                                         <span class="input-group-label">预计签约时间：</span>
                                         <div class="i-date-picker-container">
                                             <div class="date-input-box  icon iconfont icon-cale-a">
@@ -443,6 +446,7 @@
                                 </div>
                                 <div class="block-wrapper">
                                     <div class="dropdown-wrap">
+                                        <i class="star">*</i>
                                         <span class="dropdown-label">客户来源：</span>
                                         <div class="dropdown">
                                             <span class="dropdown-default">{{ hCustomerSourceText }}</span>
@@ -504,11 +508,14 @@
                                 <a onclick="loadMainPage('.content-item', 'client/data.html')"
                                    class="theme-color pull-right" href="javascript:;">清空配置</a>
                             </div>
-                            <div class="content">
-                                <div>区域：<span>华北-北京</span></div>
-                                <div>成功率：<span> 100%，90% </span></div>
-                                <p class="tips">温馨提示:功率从10%50%。客户所在省份从广东省调整为云南省。 预计签约金额从2018年1月调整到2019年2月。</p>
+                            <div class="content" style="text-align: center;padding: 20px">
+                                暂无项目更新情况
                             </div>
+                            <!--<div class="content">-->
+                                <!--<div>区域：<span>华北-北京</span></div>-->
+                                <!--<div>成功率：<span> 100%，90% </span></div>-->
+                                <!--<p class="tips">温馨提示:功率从10%50%。客户所在省份从广东省调整为云南省。 预计签约金额从2018年1月调整到2019年2月。</p>-->
+                            <!--</div>-->
                         </div>
                     </div>
                     <div v-if="handleTemplate.soCoreCode != null" class="historyLog">
@@ -681,6 +688,7 @@
             elem: '#startDate' //指定元素
             ,type: 'month'
             ,range: true
+            // ,format: 'yyyy-MM - yyyy-MM'
             // 参数可选value, date(起始时间), endDate(结束时间)
             ,done: function(value) {
                 vm.cExpectSignDateRange = value;
@@ -730,15 +738,18 @@
     }
     function onClick(event, treeId, treeNode, clickFlag) {
         vm.solutionSub.solutionCode = '';
+
+        // $('#undefined_1').css('display', 'none');
+
         if($(event.currentTarget).hasClass('selectTree')){
             vm.cSoSolutionText = treeNode.name;
             //搜索的时候传解决方案名称code
             vm.tableList.soSolutionCode = treeNode.code;
-            // console.log(vm.tableList.soSolutionCode)
             vm.showData();
         }else{
+            // if($(event.currentTarget).hasClass('handleTree'))
+
             vm.hSolutionText = treeNode.name;
-            // $('#addTreeName').text(treeNode.name);
 
             //新增/修改的时候传解决方案code
             vm.solutionSub.solutionCode = treeNode.code;
@@ -821,6 +832,8 @@
                 isClicked: false,           // 是否点击table的tr
                 isActiveProvince: -1,
 
+                nothing: '',
+
                 // 添加/修改  显示信息
                 hReportDate: timeYear,      // 报备时间
                 hSalesGroupText: '',        // 事业部
@@ -860,6 +873,7 @@
             }
         },
         mounted: function(){
+            // this.selectProjectNature();
             this.searchCustomer();
             this.searchData();
             this.showData();
@@ -890,11 +904,12 @@
                             showButton: false,
                             width: 200,
                             height: 30,
-                            onSubmit: function(code, html){
-                                vm.tableList.customerCode = code;
-                                console.log(html);
-                                vm.showData();
-                            }
+                            // onSubmit: function(code, html){
+                            //     vm.tableList.customerCode = code;
+                            //     alert('vue click')
+                            //     console.log(html,'autoooo');
+                            //     vm.showData();
+                            // }
                         });
                     },
                     error: function(result) {
@@ -952,9 +967,9 @@
                     success: function(result){
                         vm.provinceLists = result.msg[province];
 
-                        if(vm.provinceLists){
+                        /*if(vm.provinceLists){
                             vm.handleTemplate.provinceCode = vm.provinceLists[0].code;// 默认选中第一个
-                        }
+                        }*/
                     },
                     error:function(){
                         console.log("获取客户所在省份请求失败")
@@ -997,7 +1012,10 @@
                 this.handleTemplate.successRateCode = code;
                 vm.hSuccessRateText = text;
 
-                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code)
+                if(vm.solutionSub.expectSignSum != '') {
+                    vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code);
+                    vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
+                }
             },
             // 选中项目阶段
             selectProgressCode: function(code, text) {
@@ -1012,12 +1030,14 @@
             // 选中客户属性
             selectCustomerAttr: function(code) {
                 vm.handleTemplate.customerPropertiesCode = code;
-                console.log(code)
-                console.log(vm.handleTemplate.customerPropertiesCode)
+
+                vm.nothing = code;
             },
             // 选中项目性质
             selectProjectNature: function(code) {
                 vm.handleTemplate.projectNatureCode = code;
+
+                vm.nothing = code;
             },
             // 选中区域
             selectRegion: function(code) {
@@ -1028,8 +1048,9 @@
             // 选中省份
             selectProvince: function(code){
                 vm.handleTemplate.provinceCode = code;
-            },
 
+                vm.nothing = code;
+            },
             addClient: function () {
                 vm.dialogShow = false;
             },
@@ -1192,6 +1213,8 @@
                                 vm.searchLists = basic;
                                 vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
                                 vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
+                                // console.log(vm.handleTemplate.regionCode)
+                                // console.log(vm.handleTemplate.projectNatureCode)
                             }
                             if(oauth !== null){
                                 vm.oauthLists = oauth;
@@ -1202,6 +1225,8 @@
 
                         // 获取解决方案树
                         var treeList = basic.soSolution4Tree;
+
+                        console.log(treeList, 'tree')
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
                                 var pObj = {
@@ -1209,7 +1234,7 @@
                                     pId: treeList[i].parentId,
                                     name: treeList[i].text,
                                     t: treeList[i].text,
-                                    open:true, click:false
+                                    open:false, click:false
                                 }
                                 zNodes.push(pObj);
                                 if(treeList[i].children != null) {
@@ -1244,6 +1269,9 @@
                 vm.cCustomerSourText = '';        // 客户来源
                 vm.cSoSolutionText = '';          // 解决方案
                 vm.cLatelyChangeText = '';        // 近期变更过
+
+                $('#autocompleteInput').val('');  // 客户
+
                 this.tableList = {};
                 this.showData();
             },
@@ -1271,6 +1299,11 @@
 
                 vm.dialogShow = false;       // 调用（弹窗）
 
+                /*$('#selected li').click(function() {
+                    alert('in')
+                    $(this).addClass('active').siblings().removeClass('active');
+                })
+*/
                 console.log(vm.handleTemplate)
 
             },
@@ -1278,7 +1311,7 @@
             handleData: function(item){
                 this.clearHandle();          // 调用（清空新增/修改表单）
                 this.customerData();         // 调用（获取客户属性）
-                this.getProvince();          // 调用（获取省份信息）
+                // this.getProvince();          // 调用（获取省份信息）
 
                 vm.dialogShow = false;       // 调用（弹窗）
                 // 已获取销售code
@@ -1302,8 +1335,12 @@
                         console.log(vm.handleTemplate);
 
                         vm.getProvince(vm.handleTemplate.regionCode);               // 获取省份信息
+                        console.log(vm.handleTemplate.regionCode)
+
                         // vm.customerData(vm.handleTemplate.customerPropertiesCode);  // 获取客户属性code
                         vm.hCustomerName = vm.handleTemplate.customerName;          // 获取客户名称
+                        vm.hReportDate = vm.handleTemplate.reportDate;              // 获取报备日期
+                        vm.hSalesStaffName = vm.handleTemplate.salesStaffCode;      // 获取销售
 
                         if(vm.handleTemplate.preSaleStaffs) {
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
@@ -1320,6 +1357,8 @@
                         }
                         // 获取加权金额
                         vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
+                        vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
+
                         // 遍历修改接口数组中的数据，并赋值给下拉框
                         var userInfo = vm.oauthLists.userInfo;
                         if(userInfo != null) {
@@ -1485,6 +1524,7 @@
                     vm.clientPageTotal = datas.data.totalProperty;
                     vm.clientPageSum = Math.ceil(vm.clientPageTotal / vm.clientPageMost);
                     vm.clientPageStart = (vm.clientPageNum *10 -9);
+                    vm.getClientMsg();
                     if (vm.clientPageNum === vm.clientPageSum) {
                         vm.clientPageEnd = vm.clientPageTotal;
                         return;
@@ -1494,18 +1534,25 @@
             },
             // 获取机要信息
             getClientMsg: function (code) {
-                code = code || this.firstClientCode;
                 var message = "";
+                console.log(code)
                 $.ajax({
                     url: PATH +'/crm/queryCustomerContactList',
-                    data: code,
+                    data: {
+                        soCustomerCode: code
+                    },
                     type: 'get',
                     async: false,
                     dataType: 'json',
                     success: function(result) {
+                        console.log(result.root);
                         if (result.root.length === 0) {
                             message = 'noData';
+                            console.log('`````````````');
+                            console.log('no');
                         }else{
+                            console.log('`````````````');
+                            console.log(result.root);
                             message = "haveData"
                         }
                     },
@@ -1515,9 +1562,12 @@
                 })
                 return message;
             },
+
             // 选中客户表格tr
             selectCustomerName: function(code, name, index) {
-                var getMessage = vm.getClientMsg();
+                var getMessage = vm.getClientMsg(code);
+                vm.cCheckIndex = index;
+
                 if(getMessage == 'noData'){
                     toastr.info('该客户下无机要信息 !');
                 }else {
