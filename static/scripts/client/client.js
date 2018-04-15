@@ -5,8 +5,8 @@ var vm = new Vue({
     data: {
         industry: [],// 行业线
         // 用户级别
-        userLevel: userLevel,// xs, xsld, dquyh
-        levelActive: '',
+        userLevel: userLevel,// xs, xsld, dqxyh
+        levelActive: '',// 控制客户信息tabs是否选中
 
         // 查询
         hDropText: '',// 行业下拉框文字
@@ -36,6 +36,10 @@ var vm = new Vue({
         clientID: '',
         client: [],
         cCheckIndex: 0,
+
+        // 审批的数据
+        currentClientID: '',
+        disposeRemark: '',
 
         // 添加客户
         cAddIndustryCode: '',// 编辑客户，行业线，选项默认选中
@@ -84,6 +88,14 @@ var vm = new Vue({
         addClientShow: true,
         addMsgShow: true,
         uploadShow: true,
+        revokeShow: true,// 撤回pop
+        disposeShow: true,// 审批pop
+        ignoreShow: true,// 忽略pop
+
+        // 模糊查询
+        fuzzyQueryList_1: [],
+        fuzzyQueryList_2: [],
+
 
 
         // upload
@@ -94,10 +106,11 @@ var vm = new Vue({
         noData: false,// 客户table的 '没有数据!'
         noDataMsg: false,// 客户table的 '请输入客户名称进行查询!'
         clientNameQuery: false,// 请输入客户名称进行查询！ == 是否显示
-        clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号
+        clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号 + 状态 + 操作
 
         onlySale: true,// 只有在销售的客户信息层面才能看到添加客户和导入按钮
         msgBtnIsShow: true,// 添加机要信息按钮
+        //statusIsShow: true,// 客户信息查询的时候，就不显示 状态 和 操作
 
     },// data
 
@@ -114,7 +127,6 @@ var vm = new Vue({
                 this.levelActive = 'all';
                 break;
         };// 不同客户查看到不同的客户信息
-        console.log(this.levelActive,809)
 
         this.getIndustry();
         this.getClient();
@@ -136,7 +148,11 @@ var vm = new Vue({
         // 所属事业部
         getGroup: function () {
             axios.get(PATH +'/oauth/queryUserInfo').then(function (datas){
-                vm.cSalesGroupList = datas.data.msg.mngSalesGroups;
+                var data = datas.data;
+                vm.cSalesGroupList = data.msg.mngSalesGroups;
+                console.log(data.msg)
+                vm.cSalesGroupCode = data.msg.mngSalesGroups[0].code;// 只有一条数据，赋值给所属事业部，同时code 也赋值
+                vm.cGroupText = data.msg.mngSalesGroups[0].text;// 只有一条数据，赋值给所属事业部，同时code 也赋值
             });
         },
 
@@ -180,7 +196,6 @@ var vm = new Vue({
             console.log(vm.uploadFileName);
             console.log(fd);
             axios.post('/iboss-prism/crm/importCrm', fd).then(function (datas){
-                console.log(datas);
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
                 } else{
@@ -193,6 +208,7 @@ var vm = new Vue({
 
         // 获取客户信息
         getClient: function (page, limit) {
+            vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
             var params = {
                 page:         page || 1,
                 limit:        limit || this.clientPageMost,
@@ -201,7 +217,6 @@ var vm = new Vue({
                 industryLine: this.hDropCode,
                 queryType:    this.levelActive,
             };
-            console.log(this.levelActive, 123)
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
                 if (datas.data.root.length === 0) {// 客户信息为空
@@ -236,6 +251,7 @@ var vm = new Vue({
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
             axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
+                console.log(datas.data, 'msg')
                 if (datas.data.root.length === 0) {
                     vm.noDataMsg = true;
                     vm.clientMsg = [];
@@ -289,10 +305,11 @@ var vm = new Vue({
         },
 
         // 查询机要信息 绑定在tr上
-        queryClientMsg: function (code, index) {
+        queryClientMsg: function (code, index, id) {
             vm.firstClientCode = code;
             vm.getClientMsg(code)
             vm.cCheckIndex = index;
+            vm.currentClientID = id;
         },
 
         // 用户级别信息查询
@@ -319,6 +336,9 @@ var vm = new Vue({
                 this.resetBtn();
                 return;
             }
+            if (level === 'department') {
+                this.resetBtn();
+            }
             if (level === 'me') {
                 vm.clientMsgQueryBtn = true;// 行业 + 客户编号
                 vm.noData = true;// 客户table的 '没有数据!'
@@ -338,20 +358,24 @@ var vm = new Vue({
         addClient: function () {
             this.getGroup();
             this.showPop();// 显示弹框
+            this.addClientShow = false;
             this.clearClient('c');// 清空弹窗信息
         },
 
         // 显示弹框
         showPop: function () {
             vm.dialogShow = false;
-            vm.addClientShow = false;
+            //vm.addClientShow = false;
         },
 
         hidePop: function () {
-            vm.dialogShow =     true;
-            vm.addClientShow =  true;
-            vm.addMsgShow =     true;
-            vm.uploadShow =     true;
+            this.dialogShow =     true;
+            this.addClientShow =  true;
+            this.addMsgShow =     true;
+            this.uploadShow =     true;
+            this.revokeShow =     true;// 撤回pop
+            this.disposeShow =    true;// 审批pop
+            this.ignoreShow =     true;// 忽略pop
         },
 
         // 点击添加客户，清空弹窗信息
@@ -625,6 +649,7 @@ var vm = new Vue({
         // 查询
         queryBtn: function () {
             vm.getClient()
+            vm.clientMsg.root = '';
         },
 
         resetBtn: function () {
@@ -634,6 +659,120 @@ var vm = new Vue({
             vm.hDropCode = '';
         },
 
+        // 撤回
+        revokeBtn: function (id) {
+            this.showPop();
+            this.revokeShow = false;
+        },
+
+        // 确认撤回
+        confirmRevoke: function () {
+
+        },
+
+        // 忽略
+        ignoreBtn: function () {
+            this.showPop();
+            this.ignoreShow = false;// 忽略的pop
+        },
+
+        // 确认忽略
+        confirmIgnore: function () {
+            var params = {
+                id: this.currentClientID,
+            };
+            axios.get(PATH +'/crm/ignore', {params: params}).then(function (datas){
+                var data = datas.data;
+                console.log(data);
+                if (data.code === 200) {
+                    vm.hidePop();
+                    vm.getClient()
+                    toastr.success('客户信息已忽略 !')
+                };
+                if (data.code !== 200) {
+                    toastr.error(data.msg)
+                }
+            });
+        },
+
+
+        // 审批
+        disposeBtn: function (id) {
+            this.showPop();
+            this.disposeShow = false;
+        },
+
+        // 审批 -- 通过
+        passRevokeBtn: function (type) {
+            if (!checkSpace(vm.disposeRemark) && type === 'reject') {
+                toastr.warning('驳回请填写备注!')
+                return;
+            }
+            var params = {
+                id: this.currentClientID,
+                auditType: type,
+                remark: this.disposeRemark,
+            };
+            axios.get(PATH +'/crm/audit', {params: params}).then(function (datas){
+                var data = datas.data;
+                if (data.code === 200) {
+                    vm.hidePop();
+                    vm.disposeRemark = '';// 清空审批的备注
+                    vm.getClient()
+                    if (type === 'revoke') {
+                        toastr.success('撤回成功 !');
+                        return;
+                    }
+                    toastr.success('审批完成 !')
+                };
+                if (data.code !== 200) {
+                    toastr.error(data.msg)
+                };
+
+            });
+        },
+        
+        // 模糊查询
+        hideFuzzyQuery: function (type) {
+            // var list = 'fuzzyQueryList_' +type;
+            // vm[list] = [];
+            vm.fuzzyQueryList_1 = [];
+            vm.fuzzyQueryList_2 = [];
+        },// 失焦隐藏模糊列表
+
+        getFuzzyList: function (type) {
+            var clientName, params;
+            switch (type) {
+                case 1:
+                    clientName = vm.hClientName;
+                    break;
+                case 2:
+                    clientName = vm.cCustomerName;
+                    break;
+            }
+            params = {
+                customerName: clientName,
+            };
+            axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
+                var data = datas.data;
+                var list = 'fuzzyQueryList_' +type;
+                if (data.code === 201 || data.msg.length === 0) return;
+                vm[list] = data.msg;
+            });
+        },// 获取数据
+
+        selectFuzzyText: function (type, text) {
+            console.log(type)
+            console.log(text)
+            switch (type) {
+                case 1:
+                    vm.hClientName = text;
+                    break;
+                case 2:
+                    vm.cCustomerName = text;
+                    break;
+            }
+        },// 选中文字，隐藏模糊列表
 
 
         // 行业里的点击事件

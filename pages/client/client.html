@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../static/styles/client/client.css">
 
-<div id="app" class="main">
+<div id="app" class="main" @click="hideFuzzyQuery">
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
@@ -46,11 +46,19 @@
             </div>
         </div>
 
-        <div class="client-name">
+        <div class="client-name" style="position: relative;">
             <div class="input-group">
                 <span class="input-group-label">客户名称:</span>
-                <input v-model="hClientName" type="text" class="input-group-form">
+                <input v-model="hClientName"
+                       @keyup="getFuzzyList(1)"
+                       type="text" class="input-group-form">
             </div>
+            <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 85px">
+                <li v-for="item in fuzzyQueryList_1"
+                    @click="selectFuzzyText(1, item)"
+                    v-text="item"
+                ></li>
+            </ul>
         </div>
 
         <div class="query-reset pull-right">
@@ -104,45 +112,61 @@
                     <th>序号</th>
                     <th>报备名称</th>
                     <th>所属事业部</th>
+                    <th>负责销售</th>
                     <th>客户编号</th>
-                    <th>客户名称</th>
+                    <th class="text-left">客户名称</th>
                     <th>行业线</th>
-                    <th>地址</th>
-                    <th>操作</th>
-                    <th style="width: 200px;">审批状态</th>
+                    <th class="text-left">地址</th>
+                    <th v-if="clientMsgQueryBtn" class="text-left">审批状态</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="(item ,index) in client.root"
                     :class="{'tr-active': index == cCheckIndex}"
-                    @click="queryClientMsg(item.customerCode, index)">
+                    @click="queryClientMsg(item.customerCode, index, item.id)">
                     <td v-text="index +1"></td>
                     <td v-text="item.reportDate"></td>
                     <td v-text="item.salesGroup"></td>
+                    <td v-text="item.creatorName"></td>
                     <td v-text="item.customerCode"></td>
                     <td v-text="item.customerName"></td>
                     <td v-text="item.industryLine"></td>
                     <td v-text="item.address"></td>
-                    <td @click="editClient(index, item.id)"
-                    ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
-                    <td style="padding-right: 20px;">
+                    <!--<td @click="editClient(index, item.id)"><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>-->
+                    <td v-if="clientMsgQueryBtn" style="padding-right: 10px;">
                         <div class="pull-left types-show">
-                            <span v-if="item.status == 'pending' " class="type-pending">待审核</span>
+                            <span v-if="item.status == 'pending' && userLevel == 'xsld' "
+                                  class="type-pending">待审批</span>
+                            <span v-if="item.status == 'pending' && userLevel == 'xs'  "
+                                  class="type-pending">待审核</span>
                             <span v-if="item.status == 'pass' " class="type-pass">通过</span>
                             <span v-if="item.status == 'reject' " class="type-reject">驳回</span>
-                            <span v-if="item.status == 'revoke' " class="type-withdraw ">已撤回</span>
+                            <span v-if="item.status == 'revoke' " class="type-revoke">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
-                            <div v-if="item.status == 'pending' " class="btn btn-xs btn-border opera-withdraw">撤回</div>
-                            <div v-if="item.status == 'pass' " class="btn btn-xs btn-border opera-edit">编辑</div>
-                            <div v-if="item.status == 'reject' " class="btn btn-xs btn-border opera-ignore">忽略</div>
+                            <div v-if="item.status == 'pending' && userLevel == 'xsld' && item.power == 'pro' "
+                                 @click="disposeBtn(item.id)"
+                                 class="btn btn-xs btn-border">审批</div>
+
+                            <div v-if="item.status == 'pending' && userLevel == 'xs'  "
+                                 @click="revokeBtn(item.id)"
+                                 class="btn btn-xs btn-border">撤回</div>
+
+                            <div
+                                    v-if="(item.status == 'pass' || item.status == 'reject' || item.status == 'revoke') && userLevel !== 'dqxyh' && item.power == 'pri' "
+                                 @click="editClient(index, item.id)"
+                                 class="btn btn-xs btn-border">编辑</div>
+
+                            <div v-if="item.status == 'reject' || item.status == 'revoke' "
+                                 @click="ignoreBtn()"
+                                 class="btn btn-xs btn-border">忽略</div>
                         </div>
 
                     </td>
                 </tr>
             </tbody>
         </table>
-        <div  v-if="noData" style="padding: 10px; text-align: center">没有数据!</div>
+        <div  v-if="noData" style="padding: 10px; text-align: center">暂无相关数据</div>
         <div  v-if="clientNameQuery" style="padding: 10px; text-align: center">请输入客户名称进行查询！</div>
     </div><!-- /.client -->
 
@@ -176,7 +200,7 @@
             <thead>
                 <tr>
                     <th>序号</th>
-                    <th>负责销售</th>
+                    <th>填报人</th>
                     <th>客户所在省份</th>
                     <th>姓名</th>
                     <th>所在部门</th>
@@ -196,18 +220,18 @@
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td @click="editMsg(item.id)"
-                    ><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                    <td @click="editMsg(item.id)">
+                        <i v-if="item.power == 'pri'"
+                            class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i>
+                    </td>
                 </tr>
             </tbody>
         </table>
-        <div  v-if="noDataMsg" style="padding: 10px; text-align: center">没有数据!</div>
+        <div  v-if="noDataMsg" style="padding: 10px; text-align: center">暂无相关数据</div>
     </div><!-- /.client-mag -->
 
-
-    <div class="dialog-wrap"
-         :class="{'hide': dialogShow}">
-        <div @click="hidePop" class="dialog-cover"></div>
+    <div :class="{'hide': dialogShow}" class="dialog-wrap">
+        <div @click="hidePop" class="dialog-cover"></div><!-- /.dialog-cover -->
         <!-- 添加客户 -->
         <div :class="{'hide': addClientShow}" class="dialog-content">
              <div class="title clearfix">
@@ -223,19 +247,20 @@
 
                 <div class="msg-item">
                     <div class="msg-item-left">所属事业部：</div>
-                    <div class="msg-item-right">
-                        <div class="dropdown-wrap">
-                            <div class="dropdown">
-                                <span v-text="cGroupText"
-                                      class="dropdown-default"></span>
-                                <i class="fa fa-angle-down"></i>
-                                <ul>
-                                    <li v-for="item in cSalesGroupList"
-                                        v-text="item.text"
-                                        @click="selectGroup(item.code, item.text)"></li>
-                                </ul>
-                            </div>
-                        </div><!-- drop -->
+                    <div class="msg-item-right" v-text="cGroupText">
+
+                        <!--<div class="dropdown-wrap">-->
+                            <!--<div class="dropdown">-->
+                                <!--<span v-text="cGroupText"-->
+                                      <!--class="dropdown-default"></span>-->
+                                <!--<i class="fa fa-angle-down"></i>-->
+                                <!--<ul>-->
+                                    <!--<li v-for="item in cSalesGroupList"-->
+                                        <!--v-text="item.text"-->
+                                        <!--@click="selectGroup(item.code, item.text)"></li>-->
+                                <!--</ul>-->
+                            <!--</div>-->
+                        <!--</div>&lt;!&ndash; drop &ndash;&gt;-->
                     </div>
 
                 </div><!-- item -->
@@ -243,8 +268,16 @@
                 <div class="msg-item">
                     <div class="msg-item-left">客户名称：</div>
                     <div class="msg-item-right">
-                        <div class="input-group">
-                            <input v-model="cCustomerName" type="text" class="input-group-form">
+                        <div class="input-group" style="position: relative;">
+                            <input v-model="cCustomerName"
+                                   @keyup="getFuzzyList(2)"
+                                   type="text" class="input-group-form">
+                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                <li @click="selectFuzzyText(2, item)"
+                                    v-for="item in fuzzyQueryList_2"
+                                    v-text="item"
+                                ></li>
+                            </ul>
                         </div>
                     </div>
                 </div>
@@ -414,7 +447,42 @@
                 </div>
             </div>
         </div>
-    </div>
+
+        <!-- 撤回 -->
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定撤回吗 ？</div>
+            <div class="foot">
+                <div @click="passRevokeBtn('revoke')" class="btn btn-theme">确定</div>
+                <div @click="hidePop" class="btn btn-border">取消</div>
+            </div>
+        </div>
+
+        <!-- 忽略 -->
+        <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hidePop" class="fa fa-close pull-right"></i></div>
+            <div class="content">确定忽略吗 ？</div>
+            <div class="foot">
+                <div @click="confirmIgnore" class="btn btn-theme">确定</div>
+                <div @click="hidePop" class="btn btn-border">取消</div>
+            </div>
+        </div>
+
+        <!-- 审批 -->
+        <div :class="{'hide': disposeShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">
+                <p class="text-left">备注：</p>
+                <textarea v-model="disposeRemark" style="width: 100%;"></textarea>
+            </div>
+            <div class="foot">
+                <div @click="passRevokeBtn('pass')" class="btn btn-theme">同意</div>
+                <div @click="passRevokeBtn('reject')" class="btn btn-border">驳回</div>
+            </div>
+        </div>
+
+
+    </div><!-- /.dialog-wrap -->
 </div><!-- /.main -->
 
 <script src="../static/scripts/client/client.js"></script>

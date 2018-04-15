@@ -59,8 +59,8 @@
     .i-table{
       tbody{
         tr{
-          td:nth-child(5),
-          td:nth-child(7){
+          td:nth-child(6),
+          td:nth-child(8){
             text-align: left;
           }
           td:last-child{
@@ -78,13 +78,19 @@
               .type-reject{
                 color: #dd514c;
               }
-              .type-withdraw{
-                color: #eeeeee;
+              .type-revoke{
+                color: #222;
               }
             }// .type-show
             .operas-btn{
               line-height: 30px;
-
+              div{
+                transition: .2s;
+                &:hover{
+                  background-color: #FF8319;
+                  color: #FFFFFF;
+                }
+              }
             }
           }
         }

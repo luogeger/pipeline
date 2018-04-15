@@ -1,6 +1,17 @@
+// content-item 的自适应高度
+function getContentSize() {
+    var wh = document.documentElement.clientHeight;
+    var eh = 60;
+    ch = (wh - eh) + "px";
+    document.getElementById( "contentItem" ).style.minHeight = ch;
+}
+//window.onload = getContentSize;这个去掉
+window.onresize = getContentSize;
+setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
+
 $.ajaxSettings.async = false;// 同步请求
-// var PATH = 'http://172.16.8.130:8080/iboss-prism';
-var PATH = '/iboss-prism';// 131
+var PATH = 'http://172.16.8.130:8080/iboss-prism';
+// var PATH = '/iboss-prism';// 131
 var timeYear,
     userName,
     userCode,
@@ -13,11 +24,18 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     userCode = msg.userCode;
     userAvatar = msg.avatar;
     userLevel = msg.level;
-    console.log(msg.level, 'home.js')
+    userGroup = msg.departmentName;
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
+    $('.user .user-group').text(userGroup)
+    console.log(userLevel)
 });
 
+// $.getJSON('http://172.16.8.130:8080/iboss-prism/oauth/queryMenu4Nav', function (datas) {
+$.getJSON(PATH +'/oauth/queryMenu4Nav', function (datas) {
+    navData = datas.msg;
+
+});
 var data = {
     "code": 200,
     "msg": [
@@ -190,14 +208,15 @@ var data = {
     "success": true
 };
 
-$('.nav-top-panels').iTopNav(data.msg);
+// $('.nav-top-panels').iTopNav(data.msg);
+$('.nav-top-panels').iTopNav(navData);
 
 
 
 // user
-$('.user-info').click(function (e) {
+$('.user-name').click(function (e) {
     e.stopPropagation();
-    $(this).children('ul').removeClass('hide');
+    $(this).siblings('ul').removeClass('hide');
 });
 
 $('.user-info li').each(function (index, item) {
@@ -253,3 +272,14 @@ function accMul(arg1,arg2) {
     try{m+=s2.split(".")[1].length}catch(e){}
     return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
 };
+
+// 判断内容都为空
+function checkSpace(str){
+    while(str.lastIndexOf(" ")>=0){
+        str = str.replace(" ","");
+    }
+    if(str.length === 0){
+        return 0;// 为空
+    }
+    return 1;// 不为空
+}

@@ -19,7 +19,7 @@
             var click = 'onclick=\"loadPage(\'.content-item\', \'url\')\"';
             var html = '';
             opt.forEach(function (item, index) {// 遍历一级菜单
-                if (index === 0) {
+                if (index === 0) {// 数组默认第一个选中
                     html += '<div class="panel i-border-col">';
                     if (!Boolean(item.children)) {// 没有子菜单可以点击
                         html += '<div class="panel-title i-text-col" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
@@ -121,8 +121,15 @@
                 var _item = $(item);
                 _item.click(function () {
                     $(this).parent('.panel').siblings('.panel').each(function (inx, itm) {
-                        $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col')
-                    })
+                        $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col');// 清除一级菜单的样式
+
+                        $(itm).find('li').each(function (i, v) {
+                            $(v).removeClass('i-active')
+                        });// 清除二级菜单样式
+                    });
+
+
+
 
                     $(this).parent('.panel').addClass('i-border-col').children('.panel-title').addClass('i-text-col')
                 });

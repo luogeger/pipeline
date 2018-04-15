@@ -24,8 +24,8 @@
   width: 300px; }
 .main .opera .client-name .input-group-form {
   width: 300px; }
-.main .client .i-table tbody tr td:nth-child(5),
-.main .client .i-table tbody tr td:nth-child(7) {
+.main .client .i-table tbody tr td:nth-child(6),
+.main .client .i-table tbody tr td:nth-child(8) {
   text-align: left; }
 .main .client .i-table tbody tr td:last-child .types-show span {
   line-height: 30px; }
@@ -35,10 +35,15 @@
   color: #5eb95e; }
 .main .client .i-table tbody tr td:last-child .types-show .type-reject {
   color: #dd514c; }
-.main .client .i-table tbody tr td:last-child .types-show .type-withdraw {
-  color: #eeeeee; }
+.main .client .i-table tbody tr td:last-child .types-show .type-revoke {
+  color: #222; }
 .main .client .i-table tbody tr td:last-child .operas-btn {
   line-height: 30px; }
+  .main .client .i-table tbody tr td:last-child .operas-btn div {
+    transition: .2s; }
+    .main .client .i-table tbody tr td:last-child .operas-btn div:hover {
+      background-color: #FF8319;
+      color: #FFFFFF; }
 .main .table-opera {
   padding-bottom: 10px; }
 .main .upload-pop {
