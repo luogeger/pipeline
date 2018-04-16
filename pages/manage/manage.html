@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="../static/styles/manage/manage.css">
-<div class="main" id="app">
+<div class="main" id="app" @click="hideFuzzyQuery">
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
@@ -9,7 +9,19 @@
     <div class="search-wrapper clearfix">
         <div class="input-group">
             <span class="input-group-label">客户：</span>
-            <div class="autoComplete-wrapper" id="autoCompleteWrapper"></div>
+            <div class="input-group1" style="position: relative;display: inline-block;">
+                <!--onkeydown="vm.keybordEnter()"-->
+                <input v-model="cCustomerName"
+                       @keyup="getFuzzyList(1)"
+                       type="text" class="input-group-form">
+                <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
+                    <li v-for="item in fuzzyQueryList_1"
+                        @click="selectFuzzyText(1, item)"
+                        v-text="item"
+                    ></li>
+                </ul>
+            </div>
+            <!--<div class="autoComplete-wrapper" id="autoCompleteWrapper"></div>-->
         </div>
         <div class="dropdown-wrap">
             <span class="dropdown-label">行业线：</span>
@@ -333,11 +345,22 @@
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户名称:</span>
-                                        <input v-model="hCustomerName"
+                                        <div style="position: relative;display: inline-block;">
+                                            <input v-model="hCustomerName"
+                                                   @keyup="getFuzzyList(2)"
+                                                   type="text" class="input-group-form">
+                                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                                <li @click="selectFuzzyText(2, item)"
+                                                    v-for="item in fuzzyQueryList_2"
+                                                    v-text="item"
+                                                ></li>
+                                            </ul>
+                                        </div>
+                                        <!--<input v-model="hCustomerName"
                                                class="input-group-form" type="text">
                                         <a @click="selectCustomer"
                                            href="javascript:;"
-                                           style="margin-left: 10px;font-weight: bold;font-size: 18px">+</a>
+                                           style="margin-left: 10px;font-weight: bold;font-size: 18px;display: none;">+</a>-->
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -591,7 +614,18 @@
                     <div class="client-name">
                         <div class="input-group">
                             <span class="input-group-label">客户名称:</span>
-                            <input v-model="hClientName" type="text" class="input-group-form">
+                            <div style="position: relative;display: inline-block;">
+                                <!--<input v-model="hClientName"-->
+                                       <!--@keyup="getFuzzyList(2)"-->
+                                       <!--type="text" class="input-group-form">-->
+                                <!--<ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">-->
+                                    <!--<li @click="selectFuzzyText(2, item)"-->
+                                        <!--v-for="item in fuzzyQueryList_2"-->
+                                        <!--v-text="item"-->
+                                    <!--&gt;</li>-->
+                                <!--</ul>-->
+                            </div>
+                            <!--<input v-model="hClientName" type="text" class="input-group-form">-->
                         </div>
                     </div>
 
@@ -763,8 +797,17 @@
         el: '#app',
         data: function(){
             return {
+                // 模糊查询
+                fuzzyQueryList_1: [],
+                fuzzyQueryList_2: [],
+
+
                 // 定义搜索值信息
                 tableList: {},                //存放搜索值
+
+                cCustomerName: '',// 客户名称
+
+
                 cIndustryLineText: '',        // 行业线
                 cProjectSuccessRateText: '',  // 成功率
                 cMngSalesGroupText: '',       // 事业部
@@ -874,48 +917,69 @@
         },
         mounted: function(){
             // this.selectProjectNature();
-            this.searchCustomer();
+            // this.searchCustomer();
             this.searchData();
             this.showData();
             this.showChange();
         },
         methods: {
-            // 搜索需要--获取客户信息
-            searchCustomer: function(){
-                $.ajax({
-                    url:  PATH + '/crm/queryCustomerList',
-                    type: 'get',
-                    dataType: 'json',
-                    data: {
-                        'name': name
-                    },
-                    success: function(result){
-                        // console.log(result);
-                        var root = result.root,
-                            array = new Array(),
-                            codeArr = new Array();
-                        for(var i = 0;i < root.length;i++){
-                            array.push(root[i].customerName);
-                            codeArr.push(root[i].customerCode);
-                        }
-                        $('#autoCompleteWrapper').autocomplete({
-                            hints: array,
-                            codeval:codeArr,
-                            showButton: false,
-                            width: 200,
-                            height: 30,
-                            // onSubmit: function(code, html){
-                            //     vm.tableList.customerCode = code;
-                            //     alert('vue click')
-                            //     console.log(html,'autoooo');
-                            //     vm.showData();
-                            // }
-                        });
-                    },
-                    error: function(result) {
-                        console.log('搜索客户信息请求失败');
-                    }
-                })
+            // 模糊查询
+            hideFuzzyQuery: function (type) {
+                // var list = 'fuzzyQueryList_' +type;
+                // vm[list] = [];
+                vm.fuzzyQueryList_1 = [];
+                vm.fuzzyQueryList_2 = [];
+            },// 失焦隐藏模糊列表
+            getFuzzyList: function (type) {
+                var clientName, params;
+                switch (type) {
+                    case 1:
+                        clientName = vm.cCustomerName;
+
+                        // vm.tableList.customerCode = vm.cCustomerName;
+
+                        break;
+                    case 2:
+                        clientName = vm.hCustomerName;
+
+                        // clientName = vm.handleTemplate.customerCode;
+                        break;
+                }
+                params = {
+                    customerName: clientName,
+                };
+                axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
+                    var data = datas.data;
+                    var list = 'fuzzyQueryList_' +type;
+                    if (data.code === 201 || data.msg.length === 0) return;
+                    vm[list] = data.msg;
+
+                    // this.showData();
+                    console.log(vm[list], 'mo')
+                });
+            },// 获取数据
+            selectFuzzyText: function (type, text) {
+                console.log(type)
+                console.log(text)
+                switch (type) {
+                    case 1:
+                        vm.tableList.customerCode = text;
+                        vm.cCustomerName = text;
+
+                        this.showData();
+                        break;
+                    case 2:
+                        // vm.handleTemplate.customerCode = text;
+                        vm.hCustomerName = text;
+                        break;
+                }
+            },// 选中文字，隐藏模糊列表
+            // 键盘回车搜索客户信息
+            keybordEnter: function() {
+                var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+                if (ikeyCode == 13){
+                    this.selectFuzzyText(1, vm.cCustomerName)
+                }
             },
             //// ==========搜索获取下拉code========
             // 选中行业线
@@ -1261,6 +1325,7 @@
             },
             // 清空搜索框
             clearSearchForm: function() {
+                vm.cCustomerName = '';            // 客户
                 vm.cIndustryLineText = '';        // 行业线
                 vm.cExpectSignDateRange = '';     // 预计签约时间
                 vm.cProjectSuccessRateText = '';  // 成功率
@@ -1415,6 +1480,7 @@
             submitHandle: function(){
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
+                vm.handleTemplate.customerCode = vm.hCustomerName; // 客户名称
 
                 var preSaleStaffList = [],     // 点击修改时获取表格的值
                     solutionSubList = [];      // 点击修改时获取表格的值
