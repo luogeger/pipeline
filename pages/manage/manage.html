@@ -815,8 +815,6 @@
     function onClick(event, treeId, treeNode, clickFlag) {
         vm.solutionSub.solutionCode = '';
 
-        // $('#undefined_1').css('display', 'none');
-
         if($(event.currentTarget).hasClass('selectTree')){
             vm.cSoSolutionText = treeNode.name;
             //搜索的时候传解决方案名称code
@@ -1529,6 +1527,7 @@
                         // 获取解决方案名称和预计签约金额
                         if(vm.handleTemplate.solutionSub) {
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
+                                vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
                                 vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
                                 vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
                             }
@@ -1593,6 +1592,7 @@
             submitHandle: function(){
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
+
                 // vm.handleTemplate.customerCode = vm.hCustomerName; // 客户名称
 
                 var preSaleStaffList = [],     // 点击修改时获取表格的值
@@ -1606,7 +1606,6 @@
                     'solutionCode':  vm.solutionSub.solutionCode,
                     'expectSignSum': vm.solutionSub.expectSignSum
                 })
-
 
                 vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
                 vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
