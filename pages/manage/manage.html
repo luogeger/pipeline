@@ -1,5 +1,5 @@
 <link rel="stylesheet" href="../static/styles/manage/manage.css">
-<div class="main" id="app" @click="hideFuzzyQuery">
+<div class="main" id="app" @click="hideFuzzyQuery" v-cloak>
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
@@ -10,14 +10,13 @@
         <div class="input-group">
             <span class="input-group-label">客户：</span>
             <div class="input-group1" style="position: relative;display: inline-block;">
-                <!--onkeydown="vm.keybordEnter()"-->
                 <input v-model="cCustomerName"
                        @keyup="getFuzzyList(1)"
                        type="text" class="input-group-form">
                 <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
                     <li v-for="item in fuzzyQueryList_1"
-                        @click="selectFuzzyText(1, item)"
-                        v-text="item"
+                        @click="selectFuzzyText(1, item.name)"
+                        v-text="item.name"
                     ></li>
                 </ul>
             </div>
@@ -34,9 +33,10 @@
                 </ul>
             </div>
         </div>
-        <div class="input-group">
+        <div class="input-group" style="display: none">
             <span class="input-group-label">预计签约时间：</span>
             <input class="input-group-form"
+                   readonly="readonly"
                    id="startDate"
                    @click=""
                    v-model="tableList.expectSignDateStart">
@@ -245,8 +245,12 @@
                 <div v-model="noUpdateCase"
                      style="text-align: center">{{ updateCaseMsg }}</div>
                 <ul class="block">
+                    <!--<p v-time="timeNow"></p>-->
+                    <!--<p>{{ timeNow }}</p>-->
                     <li v-for="changeOneList in changeOneLists">
-                        <h4>{{ changeOneList.opTime }}</h4>
+                        <h4 ref="optime">{{ changeOneList.opTime }}</h4>
+                        <!--.getTime()-->
+                        <h4></h4>
                         <p>
                             <span v-html="changeOneList.operName"></span>
                             <span v-html="changeOneList.opDetail"></span>
@@ -350,9 +354,9 @@
                                                    @keyup="getFuzzyList(2)"
                                                    type="text" class="input-group-form">
                                             <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
-                                                <li @click="selectFuzzyText(2, item)"
+                                                <li @click="selectFuzzyText(2, item.name, item.code)"
                                                     v-for="item in fuzzyQueryList_2"
-                                                    v-text="item"
+                                                    v-text="item.name"
                                                 ></li>
                                             </ul>
                                         </div>
@@ -445,6 +449,7 @@
                                         <div class="i-date-picker-container">
                                             <div class="date-input-box  icon iconfont icon-cale-a">
                                                 <input v-model="handleTemplate.expectSignDate"
+                                                       readonly="readonly"
                                                        type="text"
                                                        id="signDate"
                                                        class="i-date-picker"
@@ -749,6 +754,43 @@
             }
         });
     })
+    // 项目更新清空时间修改
+   /* var minute = 1000 * 60;
+    var hour = minute * 60;
+    var day = hour * 24;
+    var halfamonth = day * 15;
+    var month = day * 30;
+    function getDateDiff(dateTimeStamp){
+        var now = new Date().getTime();
+        var diffValue = now - dateTimeStamp;
+        if(diffValue < 0){
+            //若日期不符则弹出窗口告之
+            //alert("结束日期不能小于开始日期！");
+        }
+        var monthC =diffValue/month;
+        var weekC =diffValue/(7*day);
+        var dayC =diffValue/day;
+        var hourC =diffValue/hour;
+        var minC =diffValue/minute;
+        if(monthC>=1){
+            result="发表于" + parseInt(monthC) + "个月前";
+        }
+        else if(weekC>=1){
+            result="发表于" + parseInt(weekC) + "周前";
+        }
+        else if(dayC>=1){
+            result="发表于"+ parseInt(dayC) +"天前";
+        }
+        else if(hourC>=1){
+            result="发表于"+ parseInt(hourC) +"个小时前";
+        }
+        else if(minC>=1){
+            result="发表于"+ parseInt(minC) +"分钟前";
+        }else
+            result="刚刚发表";
+        return result;
+    }*/
+
     //zTree
     var setting = {
         data: {
@@ -773,8 +815,6 @@
     function onClick(event, treeId, treeNode, clickFlag) {
         vm.solutionSub.solutionCode = '';
 
-        // $('#undefined_1').css('display', 'none');
-
         if($(event.currentTarget).hasClass('selectTree')){
             vm.cSoSolutionText = treeNode.name;
             //搜索的时候传解决方案名称code
@@ -793,6 +833,73 @@
     }
 </script>
 <script>
+    var Time = {
+        //获取当前时间戳
+        getUnix:function(){
+            var date = new Date();
+            console.log(date.getTime())
+            return date.getTime();
+        },
+        //获取今天0点0分0秒的时间戳
+        getTodayUnix:function(){
+            var date = new Date();
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            return date.getTime(); },
+        //获取今年1月1日0点0分0秒的时间戳
+        getYearUnix:function(){
+            var date = new Date();
+            date.setMonth(0);
+            date.setDate(1);
+            date.setHours(0);
+            date.setMinutes(0);
+            date.setSeconds(0);
+            date.setMilliseconds(0);
+            return date.getTime();
+        },
+        //获取标准年月日
+        getLastDate:function(time){
+            var date = new Date(time);
+            var month = date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1;
+            var day = date.getDate() < 10 ? '0' + date.getDate() : date.getDate();
+            return date.getFullYear() + '-' + month + '-' + day; },
+        //转换时间
+        getFormatTime:function(timestamp){
+            var now = this.getUnix();// 当前时间戳
+            var today = this.getTodayUnix();// 今天0点的时间戳
+            var year = this.getYearUnix(); // 今年0点的时间戳
+            var timer = (now - timestamp) / 1000; // 转换为秒级时间戳
+            var tip = '';
+            if(timer <= 0){
+                tip = '刚刚';
+            }else if(Math.floor(timer/60) <= 0){
+                tip = '刚刚';
+            }else if(timer < 3600){
+                tip = Math.floor(timer/60) + '分钟前';
+            }else if(timer >= 3600 && (timestamp - today >= 0)){
+                tip = Math.floor(timer/3600) + '小时前';
+            }else if(timer/86400 <= 31){
+                tip = Math.ceil(timer/86400) + '天前';
+            }else{
+                tip = this.getLastDate(timestamp);
+            }
+            return tip;
+        }
+    }
+    Vue.directive('time',{
+        bind:function(el, binding){
+            el.innerHTML = Time.getFormatTime(binding.value);
+            el.__timeout__ = setInterval(function(){
+                el.innerHTML = Time.getFormatTime(binding.value);
+            }, 60000)
+        },
+        unbind:function(el){
+            clearInterval(el.__timeout__);
+            delete el.__timeout__;
+        }
+    })
     var vm = new Vue({
         el: '#app',
         data: function(){
@@ -800,7 +907,8 @@
                 // 模糊查询
                 fuzzyQueryList_1: [],
                 fuzzyQueryList_2: [],
-
+                // customerCodeArray: [],
+                // customerNameArray: [],
 
                 // 定义搜索值信息
                 tableList: {},                //存放搜索值
@@ -821,6 +929,8 @@
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
+                timeNow:(new Date()).getTime(),  //================
+                updateTime: '',                     //
                 noUpdateCase: false,          //
                 updateCaseMsg: '',            // 提示语句
                 updateCaseShow: false,
@@ -935,32 +1045,27 @@
                 switch (type) {
                     case 1:
                         clientName = vm.cCustomerName;
-
-                        // vm.tableList.customerCode = vm.cCustomerName;
-
                         break;
                     case 2:
                         clientName = vm.hCustomerName;
-
-                        // clientName = vm.handleTemplate.customerCode;
                         break;
                 }
                 params = {
                     customerName: clientName,
                 };
-                axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
+                axios.get(PATH +'/crm/selectCustomer4PipelineLike', {params: params}).then(function (datas){
                     var data = datas.data;
                     var list = 'fuzzyQueryList_' +type;
                     if (data.code === 201 || data.msg.length === 0) return;
-                    vm[list] = data.msg;
 
-                    // this.showData();
-                    console.log(vm[list], 'mo')
+                    vm[list] = data.msg;
+                    console.log(vm[list], 'mo');
                 });
             },// 获取数据
-            selectFuzzyText: function (type, text) {
+            selectFuzzyText: function (type, text, code) {
                 console.log(type)
                 console.log(text)
+                console.log(code)
                 switch (type) {
                     case 1:
                         vm.tableList.customerCode = text;
@@ -969,8 +1074,8 @@
                         this.showData();
                         break;
                     case 2:
-                        // vm.handleTemplate.customerCode = text;
                         vm.hCustomerName = text;
+                        vm.handleTemplate.customerCode = code;
                         break;
                 }
             },// 选中文字，隐藏模糊列表
@@ -1156,6 +1261,12 @@
                                 var root = result.root[i];
                                 vm.changeOneLists.push(root);
                             }
+
+                            // this.$refs.menuItem[index].innerText;
+                            // var a = vm.$refs.optime.innerText;
+                            // // vm.updateTime = vm.$refs.time.attr('value');
+                            // console.log(a, 'a')
+                            // vm.updateTime.getTime();
                         }
 
                     },
@@ -1416,6 +1527,7 @@
                         // 获取解决方案名称和预计签约金额
                         if(vm.handleTemplate.solutionSub) {
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
+                                vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
                                 vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
                                 vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
                             }
@@ -1480,7 +1592,8 @@
             submitHandle: function(){
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
-                vm.handleTemplate.customerCode = vm.hCustomerName; // 客户名称
+
+                // vm.handleTemplate.customerCode = vm.hCustomerName; // 客户名称
 
                 var preSaleStaffList = [],     // 点击修改时获取表格的值
                     solutionSubList = [];      // 点击修改时获取表格的值
@@ -1493,7 +1606,6 @@
                     'solutionCode':  vm.solutionSub.solutionCode,
                     'expectSignSum': vm.solutionSub.expectSignSum
                 })
-
 
                 vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
                 vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
