@@ -15,7 +15,7 @@
                        type="text" class="input-group-form">
                 <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
                     <li v-for="item in fuzzyQueryList_1"
-                        @click="selectFuzzyText(1, item.name)"
+                        @click="selectFuzzyText(1, item.name, item.code)"
                         v-text="item.name"
                     ></li>
                 </ul>
@@ -33,7 +33,7 @@
                 </ul>
             </div>
         </div>
-        <div class="input-group" style="display: none">
+        <div class="input-group">
             <span class="input-group-label">预计签约时间：</span>
             <input class="input-group-form"
                    readonly="readonly"
@@ -1068,7 +1068,7 @@
                 console.log(code)
                 switch (type) {
                     case 1:
-                        vm.tableList.customerCode = text;
+                        vm.tableList.customerCode = code;
                         vm.cCustomerName = text;
 
                         this.showData();
@@ -1386,6 +1386,7 @@
                         if(result !== null){
                             if(basic !== null){
                                 vm.searchLists = basic;
+
                                 vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
                                 vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
                                 // console.log(vm.handleTemplate.regionCode)
