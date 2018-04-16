@@ -226,8 +226,8 @@
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td @click="editMsg(item.id)">
-                        <i v-if="item.power == 'pri'"
+                    <td><i v-if="item.power == 'pri'"
+                           @click="editMsg(item.id)"
                             class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i>
                     </td>
                 </tr>
@@ -327,8 +327,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">a提交</div>
-                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">e提交</div>
+                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div><!-- /.main -->
@@ -344,7 +344,7 @@
             <div class="main">
 
                 <div class="msg-item">
-                    <div class="msg-item-left">销售：</div>
+                    <div class="msg-item-left">填报人：</div>
                     <div v-text="mSalesStaffName" class="msg-item-right"></div>
                 </div>
                 <div class="msg-item">
@@ -430,7 +430,7 @@
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
                         <div v-if="!msgSubmit" @click="addMsgConfirm" class="btn btn-theme">提交</div>
-                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">e提交</div>
+                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div>
