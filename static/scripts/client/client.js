@@ -110,6 +110,9 @@ var vm = new Vue({
 
         onlySale: true,// 只有在销售的客户信息层面才能看到添加客户和导入按钮
         msgBtnIsShow: true,// 添加机要信息按钮
+        auditHistoryShow: false,// 审核历史记录
+        auditHistoryTitle: '',// 审核历史记录 客户姓名
+        auditHistoryList: [],// 审核历史记录数据
         //statusIsShow: true,// 客户信息查询的时候，就不显示 状态 和 操作
 
     },// data
@@ -219,7 +222,7 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                console.log(datas.data.root)
+                console.log(datas.data.root, 12312312)
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -377,6 +380,7 @@ var vm = new Vue({
             this.revokeShow =     true;// 撤回pop
             this.disposeShow =    true;// 审批pop
             this.ignoreShow =     true;// 忽略pop
+            this.auditHistoryShow = false;// 审核记录
         },
 
         // 点击添加客户，清空弹窗信息
@@ -782,7 +786,10 @@ var vm = new Vue({
                 id: id,
             };
             axios.get(PATH +'/crm/queryCustomerOne', {params: params}).then(function (datas){
-                console.log(datas.data)
+                vm.auditHistoryList = datas.data.msg.auditLogs;
+                vm.auditHistoryTitle = datas.data.msg.customerName
+                vm.showPop();
+                vm.auditHistoryShow = true;// 审核记录
             });
         },
 
