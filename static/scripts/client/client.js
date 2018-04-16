@@ -227,7 +227,7 @@ var vm = new Vue({
                     vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
                     vm.client = [];// 数据list
 
-                    toastr.info('没有数据 !');
+                    toastr.warning('没有相关信息 !');
                     return;
                 };
                 vm.noData = false;// 客户table的 '没有数据!'
