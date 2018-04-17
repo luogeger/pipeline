@@ -255,8 +255,6 @@
                 <div v-model="noUpdateCase"
                      style="text-align: center">{{ updateCaseMsg }}</div>
                 <ul class="block">
-                    <!--<p v-time="timeNow"></p>-->
-                    <!--<p>{{ timeNow }}</p>-->
                     <li v-for="changeOneList in changeOneLists">
                         <h4 ref="optime">{{ changeOneList.opTime }}</h4>
                         <!--.getTime()-->
@@ -297,15 +295,16 @@
                                 <div class="block-wrapper">
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
-                                        <span class="dropdown-label">事业部：</span>
-                                        <div class="dropdown">
+                                        <span class="dropdown-label">所属事业部：</span>
+                                        <span style="line-height: 30px;">{{ hSalesGroupText }}</span>
+                                        <!--<div class="dropdown">
                                             <span class="dropdown-default">{{ hSalesGroupText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
                                                 <li @click="selectSalesGroupCode(oauthList.code, oauthList.text)"
                                                     v-for="oauthList in mngSalesGroups">{{ oauthList.text }}</li>
                                             </ul>
-                                        </div>
+                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -986,7 +985,7 @@
 
                 // 添加/修改 模板
                 handleTemplate: {},
-                changeLists: [],             // 变动历史
+                changeLists: [],             // 存放历史变动信息
                 isnoNull: 0,
                 isActive: 0,
                 isModal: false,
@@ -1042,9 +1041,10 @@
             // this.searchCustomer();
             this.searchData();
             this.showData();
-            this.showChange();
+            // this.showChange();
         },
         methods: {
+            // 新增/修改 填写预计签约金额
             sumKeyup: function() {
                 vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
                 vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
@@ -1248,7 +1248,7 @@
                 vm.addMsgShow = true;
                 vm.uploadDialogShow = true;
             },
-            // 单人查看变动历史
+            // 表格右侧项目更新情况
             showOneChange: function(item,index) {
                 // 点击tr的时候，给它添加'active'
                 $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
@@ -1291,9 +1291,9 @@
                     }
                 })
 
-                var date = new Date($(vm.$refs.optime).text());
-                console.log(date,'date');
-                vm.opTime = Date.parse(date);
+                // var date = new Date($(vm.$refs.optime).text());
+                // console.log(date,'date');
+                // vm.opTime = Date.parse(date);
             },
             // 关闭表格右侧内容
             closeUpdateCase: function() {
@@ -1341,6 +1341,7 @@
                             vm.noData = true;
                             return;
                         }
+
                         vm.noData = false;
                         vm.data = result;
                         vm.dataPageTotal = result.totalProperty;
@@ -1421,7 +1422,6 @@
 
                         // 获取解决方案树
                         var treeList = basic.soSolution4Tree;
-
                         console.log(treeList, 'tree')
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
@@ -1494,6 +1494,10 @@
                 this.searchData();           // 调用（--）只是获取区域的默认第一个那条语句
                 this.getProvince();          // 调用（获取省份信息）
 
+                // 默认填写所属事业部
+                vm.handleTemplate.salesGroupCode = vm.oauthLists.userInfo.mngSalesGroups[0].code;
+                vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;
+
                 vm.dialogShow = false;       // 调用（弹窗）
             },
             // 修改
@@ -1501,6 +1505,11 @@
                 this.clearHandle();          // 调用（清空新增/修改表单）
                 this.customerData();         // 调用（获取客户属性）
                 // this.getProvince();          // 调用（获取省份信息）
+                this.showChange();           // 调用（历史变更信息）
+
+                // 默认填写所属事业部
+                vm.handleTemplate.salesGroupCode = vm.oauthLists.userInfo.mngSalesGroups[0].code;
+                vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;
 
                 vm.dialogShow = false;       // 调用（弹窗）
                 // 已获取销售code
@@ -1661,7 +1670,7 @@
                     }
                 })
             },
-            // 查看变动历史
+            // 历史变更信息
             showChange: function(){
                 $.ajax({
                     url: PATH + '/so/queryPipelineChangeHis',
