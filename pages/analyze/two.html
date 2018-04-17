@@ -11,12 +11,12 @@
     </div><!-- /.breadcrumb-->
 
     <div class="year-contrast">
-        <div class="year-opera clearfix">
-            <div class="year-half pull-left">
-                <span id="yearHalfFirst" class="year-half-first year-half-active">上半年</span>
-                <span id="yearHalfLast" class="year-half-last">下半年</span>
+        <div class="operas clearfix">
+            <div class="operas-list pull-left">
+                <span class="active">上半年</span>
+                <span class="">下半年</span>
             </div>
-            <div class="year-whole pull-right">
+            <div class="pull-right">
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">预计签约年度:</span>
                     <div class="dropdown">
@@ -42,24 +42,105 @@
         <div class="year-chart" id="yearChart" style="width: 99%; height: 400px;"></div><!-- /.year-chart -->
 
         <div class="year-table">
-
+            <div class="table-tab-list clearfix">
+                <div class="table-tab-item active">10%  -  100%</div>
+                <div class="table-tab-item">30%  -  100%</div>
+            </div>
+            <table class="i-table i-table-border">
+                <thead>
+                    <tr>
+                        <th>销售事业部</th>
+                        <th>加权平均额(日期范围1)</th>
+                        <th>加权平均额(日期范围2)</th>
+                        <th>H1目标</th>
+                        <th>增长额</th>
+                        <th>增长率</th>
+                    </tr>
+                </thead>
+                <tobdy>
+                    <tr v-for="item in list">
+                        <td>{{item.complete}}</td>
+                        <td>{{item.difference}}</td>
+                        <td>{{item.scale}}</td>
+                        <td>{{item.m1Target}}</td>
+                        <td>{{item.m2Target}}</td>
+                        <td>{{item.m2Complete}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{foot.saleGroup}}</td>
+                        <td>{{foot.target}}</td>
+                        <td>{{foot.complete}}</td>
+                        <td>{{foot.difference}}</td>
+                        <td>{{foot.m1}}</td>
+                        <td>{{foot.c1}}</td>
+                    </tr>
+                </tobdy>
+            </table>
         </div><!-- /.year-table -->
     </div><!-- /.year-contrast -->
 
-    <div class="quarter-contrast">
 
-        <div class="input-group">
-            <span class="input-group-label ">日期范围1</span>
-            <input type="text" id="dateOne" class="input-group-form i-date-form-range" placeholder="开始时间 - 结束时间">
-        </div>
+    <div class="quarter-contrast">
+        <div class="operas clearfix">
+            <div class="operas-list">
+                <span class="active">Q1</span>
+                <span class="">Q2</span>
+                <span class="">Q3</span>
+                <span class="">Q4</span>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-label ">日期范围1</span>
+                <input type="text" id="dateOne" class="input-group-form i-date-form-range" placeholder="开始时间 - 结束时间">
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-label ">日期范围2</span>
+                <input type="text" id="dateTwo" class="input-group-form i-date-form-range" placeholder="开始时间 - 结束时间">
+            </div>
+        </div><!-- /.year-opera -->
+
+        <div class="quarter-chart" id="quarterChart" style="width: 99%; height: 400px;"></div><!-- /.quarter-chart -->
+
+        <div class="quarter-table">
+            <div class="table-tab-list clearfix">
+                <div class="table-tab-item active">10%  -  100%</div>
+                <div class="table-tab-item">30%  -  100%</div>
+            </div>
+
+            <table class="i-table i-table-border">
+                <thead>
+                <tr>
+                    <th>销售事业部</th>
+                    <th>加权平均额(日期范围1)</th>
+                    <th>加权平均额(日期范围2)</th>
+                    <th>H1目标</th>
+                    <th>增长额</th>
+                    <th>增长率</th>
+                </tr>
+                </thead>
+                <tobdy>
+                    <tr v-for="item in list">
+                        <td>{{item.complete}}</td>
+                        <td>{{item.difference}}</td>
+                        <td>{{item.scale}}</td>
+                        <td>{{item.m1Target}}</td>
+                        <td>{{item.m2Target}}</td>
+                        <td>{{item.m2Complete}}</td>
+                    </tr>
+                    <tr>
+                        <td>{{foot.saleGroup}}</td>
+                        <td>{{foot.target}}</td>
+                        <td>{{foot.complete}}</td>
+                        <td>{{foot.difference}}</td>
+                        <td>{{foot.m1}}</td>
+                        <td>{{foot.c1}}</td>
+                    </tr>
+                </tobdy>
+            </table>
+        </div><!-- /.quarter-table -->
 
     </div><!-- /.quarter-contrast -->
-
-
-
-
-
-
 </div><!-- /.main -->
 
 

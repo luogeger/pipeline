@@ -1,20 +1,69 @@
 .main .year-contrast,
 .main .quarter-contrast {
   background-color: #FFFFFF;
-  height: 500px;
+  padding: 10px; }
+  .main .year-contrast table thead tr th:nth-child(5),
+  .main .year-contrast table thead tr th:nth-child(6),
+  .main .quarter-contrast table thead tr th:nth-child(5),
+  .main .quarter-contrast table thead tr th:nth-child(6) {
+    color: #ED6D00; }
+  .main .year-contrast table tbody tr td:nth-child(5),
+  .main .year-contrast table tbody tr td:nth-child(6),
+  .main .quarter-contrast table tbody tr td:nth-child(5),
+  .main .quarter-contrast table tbody tr td:nth-child(6) {
+    color: #ED6D00; }
+  .main .year-contrast .operas,
+  .main .quarter-contrast .operas {
+    padding: 5px;
+    border-bottom: 1px solid #E9EAEC; }
+    .main .year-contrast .operas .operas-list,
+    .main .quarter-contrast .operas .operas-list {
+      display: inline-block; }
+      .main .year-contrast .operas .operas-list span,
+      .main .quarter-contrast .operas .operas-list span {
+        display: inline-block;
+        padding: 0 10px;
+        border-bottom: 2px solid transparent;
+        line-height: 30px;
+        cursor: pointer; }
+        .main .year-contrast .operas .operas-list span:hover,
+        .main .quarter-contrast .operas .operas-list span:hover {
+          color: #FF8A41; }
+      .main .year-contrast .operas .operas-list .active,
+      .main .quarter-contrast .operas .operas-list .active {
+        border-color: #FF8A41;
+        color: #FF8A41; }
+  .main .year-contrast .table-tab-list,
+  .main .quarter-contrast .table-tab-list {
+    position: relative;
+    top: 1px;
+    left: 1px; }
+    .main .year-contrast .table-tab-list .table-tab-item,
+    .main .quarter-contrast .table-tab-list .table-tab-item {
+      float: left;
+      line-height: 20px;
+      padding: 5px 20px;
+      border: 1px solid #E6E7E9;
+      border-bottom: none;
+      border-radius: 4px 4px 0 0;
+      transition: .2s;
+      cursor: pointer; }
+      .main .year-contrast .table-tab-list .table-tab-item:hover,
+      .main .quarter-contrast .table-tab-list .table-tab-item:hover {
+        color: #ED6D00; }
+    .main .year-contrast .table-tab-list .table-tab-item:not(:first-child),
+    .main .quarter-contrast .table-tab-list .table-tab-item:not(:first-child) {
+      margin-left: -1px; }
+    .main .year-contrast .table-tab-list .active,
+    .main .quarter-contrast .table-tab-list .active {
+      border-color: #ED6D00;
+      background-color: #ED6D00;
+      color: #FFFFFF !important;
+      position: relative;
+      z-index: 1; }
+.main .year-contrast {
   margin-bottom: 20px; }
-.main .year-contrast .year-opera {
-  padding: 5px;
-  border-bottom: 1px solid #E9EAEC; }
-  .main .year-contrast .year-opera .year-half span {
-    display: inline-block;
-    padding: 0 10px;
-    border-bottom: 2px solid transparent;
-    line-height: 30px;
-    cursor: pointer; }
-  .main .year-contrast .year-opera .year-half .year-half-active {
-    border-color: #FF8A41; }
-.main .quarter-contrast {
-  margin-bottom: 10px; }
+.main .quarter-contrast .operas > div {
+  margin-right: 50px; }
 
 /*# sourceMappingURL=two.css.map */
