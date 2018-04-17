@@ -1252,7 +1252,7 @@
             // 表格右侧项目更新情况
             showOneChange: function(item, index) {
                 // 点击tr的时候，给它添加'active'
-                // $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
+                $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
                 this.updateCaseShow = false
                 this.ismaxWidth = false
 
@@ -1268,7 +1268,7 @@
                         'opDataKey': item.soCoreCode
                     },
                     success: function(result){
-                        console.log(result.root);
+                        console.log(result.root, 'change');
                         if(result.root.length == 0) {
                             vm.noUpdateCase = true;
                             vm.updateCaseMsg = '暂无项目更新情况';
