@@ -1,4 +1,20 @@
-h1 {
-  color: red; }
+.main .year-contrast,
+.main .quarter-contrast {
+  background-color: #FFFFFF;
+  height: 500px;
+  margin-bottom: 20px; }
+.main .year-contrast .year-opera {
+  padding: 5px;
+  border-bottom: 1px solid #E9EAEC; }
+  .main .year-contrast .year-opera .year-half span {
+    display: inline-block;
+    padding: 0 10px;
+    border-bottom: 2px solid transparent;
+    line-height: 30px;
+    cursor: pointer; }
+  .main .year-contrast .year-opera .year-half .year-half-active {
+    border-color: #FF8A41; }
+.main .quarter-contrast {
+  margin-bottom: 10px; }
 
 /*# sourceMappingURL=two.css.map */
