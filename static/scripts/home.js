@@ -241,7 +241,7 @@ $('.sign-out').click(function () {
 })
 
 
-loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'analyze/two.html');
 
 
 

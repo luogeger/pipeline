@@ -347,3 +347,36 @@
     background-color: $sixF;
   }// end -- .dateBox:before
 }// end -- .container
+
+
+// 重写日期样式
+
+.i-date-form-range{
+  min-width: 200px;
+  + i{
+    color: rgb(204, 204, 204);
+    position: relative;
+    right: 25px;
+    top: 3px;
+    @include transition();
+  }
+
+  &:hover,
+  &:focus{
+    + i{
+      color: $theme-hover;
+    }
+  }
+}
+
+
+// 日期输入框    icon iconfont icon-cale-a  加载 div.input-group 上面
+.input-group{
+  position: relative;
+  &:before{
+    color: rgb(204, 204, 204);
+    position: absolute;
+    right: 5px;
+    top: -1px;
+  }
+}

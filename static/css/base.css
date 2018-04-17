@@ -424,11 +424,9 @@ input:hover,
 textarea:hover {
   border-color: #ED6C1C; }
 
-input:not(.i-date-picker):focus,
-input:not(input[type="file"]):focus {
-  outline: none;
-  border-color: #ED6C1C;
-  box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px; }
+input:focus {
+  border-color: #ED6C1C !important;
+  box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px !important; }
 
 input.disabled {
   border: 1px dashed #DDDEE1;
@@ -1877,6 +1875,25 @@ div.i-thumbnail {
   border-left: 1px solid #CCCCCC;
   border-top: 1px solid #CCCCCC;
   background-color: #ffffff; }
+
+.i-date-form-range {
+  min-width: 200px; }
+  .i-date-form-range + i {
+    color: #cccccc;
+    position: relative;
+    right: 25px;
+    top: 3px;
+    transition: 0.2s all ease-in-out; }
+  .i-date-form-range:hover + i, .i-date-form-range:focus + i {
+    color: #ED6C1C; }
+
+.input-group {
+  position: relative; }
+  .input-group:before {
+    color: #cccccc;
+    position: absolute;
+    right: 5px;
+    top: -1px; }
 
 /*! laydate-v5.0.9 日期与时间组件 MIT License  http://www.layui.com/laydate/  By 贤心 */
 .laydate-set-ym,
