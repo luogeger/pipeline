@@ -191,6 +191,7 @@
                                 <tr v-for="(item, index) in items"
                                     @click="showOneChange(item,index)"
                                     :class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1} ">
+                                    <!--:class="{ active: isClicked == index }"-->
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                                     <td v-if="userLevel == 'xs'">
                                         <a @click="handleData(item)"
@@ -942,8 +943,9 @@
                 opTime: '',
                 noUpdateCase: false,          //
                 updateCaseMsg: '',            // 提示语句
-                updateCaseShow: false,
-                ismaxWidth: false,
+                updateCaseShow: true,
+                ismaxWidth: true,
+                isClicked: -1,                // 下标 表格tr添加active
 
                 customerAttr: [],             // 客户属性
                 customerLists: [],            // 客户信息
@@ -993,7 +995,6 @@
                 showModal: false,
                 salesStaffCode: '',
                 salesGroupCode: '',
-                isClicked: false,           // 是否点击table的tr
                 isActiveProvince: -1,
 
                 nothing: '',
@@ -1249,13 +1250,14 @@
                 vm.uploadDialogShow = true;
             },
             // 表格右侧项目更新情况
-            showOneChange: function(item,index) {
+            showOneChange: function(item, index) {
                 // 点击tr的时候，给它添加'active'
-                $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
+                // $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
                 this.updateCaseShow = false
                 this.ismaxWidth = false
 
-                this.isClicked = 1; // 显示右侧项目更新情况
+                // alert('in')
+                // this.isClicked = index; // tr添加active
                 vm.changeOneLists = []
                 // console.log(item.soCoreCode)
                 $.ajax({
@@ -1299,6 +1301,7 @@
             closeUpdateCase: function() {
                 this.updateCaseShow = true
                 this.ismaxWidth = true
+                // this.isClicked = -1;
             },
             // 表格查询 加权金额相加
             addSum: function(sumList){
@@ -1330,15 +1333,17 @@
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
                             if(i == 0){
+                                console.log(root,'root');
                                 vm.showOneChange(root);
                             }
                             vm.items.push(root);
                         }
-                        // 如果表格无数据，那么关闭右侧项目更新情况
+                        // 如果表格无数据
                         if(result.root.length === 0) {
-                            vm.closeUpdateCase();
                             toastr.warning('没有相关信息 ！');
                             vm.noData = true;
+
+                            vm.closeUpdateCase();  // 关闭右侧项目更新情况
                             return;
                         }
 
