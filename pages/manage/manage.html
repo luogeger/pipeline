@@ -201,17 +201,27 @@
                                     <td>{{ item.reportDate }}</td>
                                     <td>{{ item.salesGroupName }}</td>
                                     <td>{{ item.salesStaffName }}</td>
-                                    <td><div v-for="preSaleStaffs in item.preSaleStaffs">
-                                        {{ preSaleStaffs.userName }}
-                                    </div></td>
+                                    <td>
+                                        <div v-if="havePreSaleStaffs">
+                                            <div v-for="preSaleStaffs in item.preSaleStaffs">
+                                                {{ preSaleStaffs.userName }}
+                                            </div>
+                                        </div>
+                                        <div v-else="havePreSaleStaffs">&nbsp;</div>
+                                    </td>
                                     <td>{{ item.region }}</td>
                                     <td>{{ item.province }}</td>
                                     <td>{{ item.customerProperties }}</td>
                                     <td>{{ item.customerCode }}</td>
                                     <td>{{ item.customerName }}</td>
-                                    <td><div v-for="solutionSub in item.solutionSub">
-                                        {{ solutionSub.solutionName }}
-                                    </div></td>
+                                    <td>
+                                        <div v-if="haveSolutionSub">
+                                            <div v-for="solutionSub in item.solutionSub">
+                                                {{ solutionSub.solutionName }}
+                                            </div>
+                                        </div>
+                                        <div v-else="haveSolutionSub">&nbsp;</div>
+                                    </td>
                                     <td>{{ item.industryLine }}</td>
                                     <td>{{ item.projectNature }}</td>
                                     <td>{{ item.cooperativePartner }}</td>
@@ -305,7 +315,6 @@
                                 </div>
                                 <div class="block-wrapper">
                                     <div class="input-group">
-                                        <i class="star">*</i>
                                         <span class="input-group-label">负责售前:</span>
                                         <input v-model="preSaleStaffs.userCode" class="input-group-form" type="text">
                                     </div>
@@ -419,6 +428,7 @@
                                         <input v-model="solutionSub.expectSignSum"
                                                class="input-group-form"
                                                type="number"
+                                               ref="expectSignSum"
                                                style="text-align: right;padding-right: 10px">
                                     </div>
                                 </div>
@@ -949,8 +959,10 @@
                 mngSalesGroups: [],
                 weightedSumTotal: '',         // 加权金额
                 items: [],                    // 表格数据
-                noData: false,                // 搜索不到数据
+                noData: false,               // 搜索不到数据
                 emptyMsg: '',
+                havePreSaleStaffs: false,    // 是否有售前信息
+                haveSolutionSub: false,      // 是否有解决方案信息
 
                 // pipeline表格分页
                 data: [],
@@ -1023,6 +1035,17 @@
                 hDropCode: '',             // 行业 code
                 hClientCode: '',           // 客户编号
                 hClientName: '',           // 客户名称
+            }
+        },
+        watch: {
+            solutionSub: {
+                handler: function() {
+                    console.log(this.$refs.expectSignSum.value,'value')
+                    console.log(vm.hSuccessRateText,'success')
+                    vm.hWeightedSum = accMul(this.$refs.expectSignSum.value, vm.hSuccessRateText);
+                    vm.hWeightedSum = Math.round(vm.hWeightedSum * 100)/100; // 保留两位小数
+                },
+                deep: true
             }
         },
         mounted: function(){
@@ -1475,14 +1498,6 @@
                 this.getProvince();          // 调用（获取省份信息）
 
                 vm.dialogShow = false;       // 调用（弹窗）
-
-                /*$('#selected li').click(function() {
-                    alert('in')
-                    $(this).addClass('active').siblings().removeClass('active');
-                })
-*/
-                console.log(vm.handleTemplate)
-
             },
             // 修改
             handleData: function(item){
@@ -1520,18 +1535,29 @@
                         vm.hSalesStaffName = vm.handleTemplate.salesStaffCode;      // 获取销售
 
                         if(vm.handleTemplate.preSaleStaffs) {
+                            vm.havePreSaleStaffs = true;
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
-                                vm.preSaleStaffs = vm.handleTemplate.preSaleStaffs[i]
-                                vm.preSaleStaffs.userCode = vm.handleTemplate.preSaleStaffs[i].userCode;
+                                if(vm.handleTemplate.preSaleStaffs[i]) {
+                                    vm.havePreSaleStaffs = true;
+                                    vm.preSaleStaffs = vm.handleTemplate.preSaleStaffs[i]
+                                    vm.preSaleStaffs.userCode = vm.handleTemplate.preSaleStaffs[i].userCode;
+                                }else{
+                                    vm.havePreSaleStaffs = false;
+                                }
                             }
+                        }else{
+                            vm.havePreSaleStaffs = false;
                         }
                         // 获取解决方案名称和预计签约金额
                         if(vm.handleTemplate.solutionSub) {
+                            vm.haveSolutionSub = true;
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
                                 vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
                                 vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
                                 vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
                             }
+                        }else{
+                            vm.haveSolutionSub = false;
                         }
                         // 获取加权金额
                         vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
