@@ -260,7 +260,8 @@
                     <li v-for="changeOneList in changeOneLists">
                         <h4 ref="optime">{{ changeOneList.opTime }}</h4>
                         <!--.getTime()-->
-                        <h4></h4>
+                        <!--<div ref="optime"-->
+                             <!--v-time="opTime">{{ changeOneList.opTime }}</div>-->
                         <p>
                             <span v-html="changeOneList.operName"></span>
                             <span v-html="changeOneList.opDetail"></span>
@@ -327,7 +328,6 @@
                                             <li @click="selectRegion(searchList.code, index)"
                                                 v-for="(searchList,index) in searchLists.regions"
                                                 :class="{'active': handleTemplate.regionCode == searchList.code}">{{ searchList.text }}</li>
-                                            <!--:class="handleTemplate.regionCode == searchList.code ? 'active':''"-->
                                         </ul>
                                     </div>
                                 </div>
@@ -336,7 +336,6 @@
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户所在省份:</span>
                                         <ul class="item-list clearfix">
-                                            <!--:class="{'active': index == isActiveProvince}"-->
                                             <li @click="selectProvince(provinceList.code)"
                                                 v-for="(provinceList,index) in provinceLists"
                                                 :class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>
@@ -429,6 +428,7 @@
                                                class="input-group-form"
                                                type="number"
                                                ref="expectSignSum"
+                                               @keyup="sumKeyup()"
                                                style="text-align: right;padding-right: 10px">
                                     </div>
                                 </div>
@@ -847,7 +847,7 @@
         //获取当前时间戳
         getUnix:function(){
             var date = new Date();
-            console.log(date.getTime())
+            // console.log(date.getTime())
             return date.getTime();
         },
         //获取今天0点0分0秒的时间戳
@@ -925,7 +925,6 @@
 
                 cCustomerName: '',// 客户名称
 
-
                 cIndustryLineText: '',        // 行业线
                 cProjectSuccessRateText: '',  // 成功率
                 cMngSalesGroupText: '',       // 事业部
@@ -939,8 +938,9 @@
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
-                timeNow:(new Date()).getTime(),  //================
+                // time: '',  //================
                 updateTime: '',                     //
+                opTime: '',
                 noUpdateCase: false,          //
                 updateCaseMsg: '',            // 提示语句
                 updateCaseShow: false,
@@ -1037,17 +1037,6 @@
                 hClientName: '',           // 客户名称
             }
         },
-        watch: {
-            solutionSub: {
-                handler: function() {
-                    console.log(this.$refs.expectSignSum.value,'value')
-                    console.log(vm.hSuccessRateText,'success')
-                    vm.hWeightedSum = accMul(this.$refs.expectSignSum.value, vm.hSuccessRateText);
-                    vm.hWeightedSum = Math.round(vm.hWeightedSum * 100)/100; // 保留两位小数
-                },
-                deep: true
-            }
-        },
         mounted: function(){
             // this.selectProjectNature();
             // this.searchCustomer();
@@ -1056,6 +1045,10 @@
             this.showChange();
         },
         methods: {
+            sumKeyup: function() {
+                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
+                vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
+            },
             // 模糊查询
             hideFuzzyQuery: function (type) {
                 // var list = 'fuzzyQueryList_' +type;
@@ -1283,13 +1276,13 @@
                             for(var i = 0;i < result.root.length;i++){
                                 var root = result.root[i];
                                 vm.changeOneLists.push(root);
-                            }
 
-                            // this.$refs.menuItem[index].innerText;
-                            // var a = vm.$refs.optime.innerText;
-                            // // vm.updateTime = vm.$refs.time.attr('value');
-                            // console.log(a, 'a')
-                            // vm.updateTime.getTime();
+                                for(var j = 0;j < vm.changeOneLists.length;j++) {
+                                    var date = new Date(vm.changeOneLists[j].opTime);
+                                    vm.updateTime = Date.parse(date);
+                                    // console.log(vm.updateTime);
+                                }
+                            }
                         }
 
                     },
@@ -1297,6 +1290,10 @@
                         console.log('查看单人变动历史 请求失败');
                     }
                 })
+
+                var date = new Date($(vm.$refs.optime).text());
+                console.log(date,'date');
+                vm.opTime = Date.parse(date);
             },
             // 关闭表格右侧内容
             closeUpdateCase: function() {
@@ -1535,7 +1532,7 @@
                         vm.hSalesStaffName = vm.handleTemplate.salesStaffCode;      // 获取销售
 
                         if(vm.handleTemplate.preSaleStaffs) {
-                            vm.havePreSaleStaffs = true;
+
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
                                 if(vm.handleTemplate.preSaleStaffs[i]) {
                                     vm.havePreSaleStaffs = true;
