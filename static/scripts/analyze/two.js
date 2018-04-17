@@ -29,8 +29,6 @@ var vm = new Vue({
                 color: ['#ED6D00', '#FFC732'],
                 barMaxWidth: '20%',// 柱子宽度
                 barGap: 0,// 柱子之间没有间隙
-
-
                 title : {
                     text: '加权平均额周期对比 (加权平均vs目标) (单位：万元)',
                     x:'left',
@@ -80,6 +78,15 @@ var vm = new Vue({
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
                         },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#000',
+                                }
+                            }
+                        },
                         data: [1200, 2000, 1500, 800, 700,],
                     },
                     {
@@ -87,6 +94,15 @@ var vm = new Vue({
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#000',
+                                }
+                            }
                         },
                         data: [3120, 1200, 2150, 980, 370,],
                     },
@@ -153,6 +169,15 @@ var vm = new Vue({
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
                         },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#000',
+                                }
+                            }
+                        },
                         data: [1200, 2000, 1500, 800, 700,],
                     },
                     {
@@ -160,6 +185,15 @@ var vm = new Vue({
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#000',
+                                }
+                            }
                         },
                         data: [3120, 1200, 2150, 980, 370,],
                     },
