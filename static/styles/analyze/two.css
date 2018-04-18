@@ -7,11 +7,17 @@
   .main .quarter-contrast table thead tr th:nth-child(5),
   .main .quarter-contrast table thead tr th:nth-child(6) {
     color: #ED6D00; }
+  .main .year-contrast table thead tr th:nth-child(5),
+  .main .quarter-contrast table thead tr th:nth-child(5) {
+    border-left: 2px solid #F0F2F5; }
   .main .year-contrast table tbody tr td:nth-child(5),
   .main .year-contrast table tbody tr td:nth-child(6),
   .main .quarter-contrast table tbody tr td:nth-child(5),
   .main .quarter-contrast table tbody tr td:nth-child(6) {
     color: #ED6D00; }
+  .main .year-contrast table tbody tr td:nth-child(5),
+  .main .quarter-contrast table tbody tr td:nth-child(5) {
+    border-left: 2px solid #F0F2F5; }
   .main .year-contrast .operas,
   .main .quarter-contrast .operas {
     padding: 5px;

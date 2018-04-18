@@ -11,7 +11,9 @@
           th:nth-child(5),
           th:nth-child(6){
             color: #ED6D00;
-            //text-align: left;
+          }
+          th:nth-child(5){
+            border-left: 2px solid #F0F2F5;
           }
         }
       }
@@ -20,12 +22,14 @@
           td:nth-child(5),
           td:nth-child(6){
             color: #ED6D00;
-            //text-align: left;
+          }
+          td:nth-child(5){
+            border-left: 2px solid #F0F2F5;
           }
         }
+
       }
     }
-
 
     .operas{
       padding: 5px;
