@@ -91,12 +91,24 @@
 
             <div class="input-group">
                 <span class="input-group-label ">日期范围1</span>
-                <input type="text" id="dateOne" class="input-group-form i-date-form-range" placeholder="开始时间 - 结束时间">
+                <input v-model="dateOne"
+                       @click="rangeBlur(1)"
+                       id="dateOne"
+                       class="input-group-form i-date-form-range"
+                       placeholder="开始时间 - 结束时间"
+                       readonly
+                       type="text">
             </div>
 
             <div class="input-group">
                 <span class="input-group-label ">日期范围2</span>
-                <input type="text" id="dateTwo" class="input-group-form i-date-form-range" placeholder="开始时间 - 结束时间">
+                <input v-model="dateTwo"
+                       @click="rangeBlur(2)"
+                       id="dateTwo"
+                       class="input-group-form i-date-form-range"
+                       placeholder="开始时间 - 结束时间"
+                       readonly
+                       type="text">
             </div>
         </div><!-- /.year-opera -->
 

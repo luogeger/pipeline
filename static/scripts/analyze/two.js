@@ -1,27 +1,26 @@
 console.log('two.js')
 
-// laydate
-laydate.render({
-    elem: '#dateOne', //指定元素
-    range: true,
-});
-laydate.render({
-    elem: '#dateTwo', //指定元素
-    range: true,
-});
+
 
 var vm = new Vue({
     ele: '#app',
     data: {
-
+        dateOne: '',
+        dateTwo: '',
     },
 
     created: function () {
         this.yearChart();
         this.quarterChart();
+        this.renderDate();
+
     },
 
     methods: {
+        getData: function (obj) {
+            
+        },
+        
         yearChart: function () {
             var box = echarts.init(document.getElementById('yearChart'));
 
@@ -44,7 +43,7 @@ var vm = new Vue({
                     }
                 },
                 legend: {
-                    data: ['目标额', '完成额',]
+                    data: ['日期范围1', '日期范围2',]
                 },
 
                 grid: {
@@ -73,7 +72,7 @@ var vm = new Vue({
                 ],
                 series: [
                     {
-                        name: '目标额',
+                        name: '日期范围1',
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -90,7 +89,7 @@ var vm = new Vue({
                         data: [1200, 2000, 1500, 800, 700,],
                     },
                     {
-                        name: '完成额',
+                        name: '日期范围2',
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -135,7 +134,7 @@ var vm = new Vue({
                     }
                 },
                 legend: {
-                    data: ['目标额', '完成额',]
+                    data: ['日期范围1', '日期范围2',]
                 },
 
                 grid: {
@@ -164,7 +163,7 @@ var vm = new Vue({
                 ],
                 series: [
                     {
-                        name: '目标额',
+                        name: '日期范围1',
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -181,7 +180,7 @@ var vm = new Vue({
                         data: [1200, 2000, 1500, 800, 700,],
                     },
                     {
-                        name: '完成额',
+                        name: '日期范围2',
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -202,6 +201,34 @@ var vm = new Vue({
             box.setOption(option);
         },
 
+        renderDate: function () {
+            laydate.render({
+                elem: '#dateOne', //指定元素
+                range: true,
+                done: function(val) {
+                    vm.getDateRange(val, 1);
+                }
+            });
+            laydate.render({
+                elem: '#dateTwo', //指定元素
+                range: true,
+                done: function(val) {
+                    vm.getDateRange(val, 2);
+                }
+            });
+        },
+
+        getDateRange: function (val, type) {
+            type === 1? dateOne(val) : dateTwo(val);
+
+            function dateOne(val) {
+                vm.dateOne = val;
+            };
+
+            function dateTwo(val) {
+                vm.dateTwo = val;
+            };
+        },
 
     },
 });
