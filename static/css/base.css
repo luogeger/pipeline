@@ -1876,16 +1876,14 @@ div.i-thumbnail {
   border-top: 1px solid #CCCCCC;
   background-color: #ffffff; }
 
-.i-date-form-range {
-  min-width: 200px; }
-  .i-date-form-range + i {
-    color: #cccccc;
-    position: relative;
-    right: 25px;
-    top: 3px;
-    transition: 0.2s all ease-in-out; }
-  .i-date-form-range:hover + i, .i-date-form-range:focus + i {
-    color: #ED6C1C; }
+.i-date-form-range + i {
+  color: #cccccc;
+  position: relative;
+  right: 25px;
+  top: 3px;
+  transition: 0.2s all ease-in-out; }
+.i-date-form-range:hover + i, .i-date-form-range:focus + i {
+  color: #ED6C1C; }
 
 .input-group {
   position: relative; }
@@ -2940,31 +2938,46 @@ button.toast-close-button {
       .dialog-wrap .dialog-content-small .foot div:first-child {
         margin-right: 30px; }
 
-.selection-component {
+.selection-wrap {
   position: relative;
   display: inline-block;
   vertical-align: middle; }
-  .selection-component .selection-show {
-    height: 30px;
+  .selection-wrap .selection-label,
+  .selection-wrap .selection-show {
+    display: inline-block;
+    vertical-align: middle;
+    height: 30px; }
+  .selection-wrap .selection-label {
+    padding-right: 5px;
+    line-height: 30px; }
+  .selection-wrap .selection-show {
     min-width: 162px;
+    line-height: 32px;
     color: #595959;
     padding-left: 10px;
     border: 1px solid #DDDEE1;
     border-radius: 4px;
     cursor: pointer;
     transition: 0.2s all ease-in-out; }
-    .selection-component .selection-show i {
+    .selection-wrap .selection-show:before {
       position: absolute;
-      top: 10px;
-      right: 10px; }
-    .selection-component .selection-show:hover {
+      content: '\f107';
+      right: 10px;
+      transition: 0.2s all ease-in-out; }
+    .selection-wrap .selection-show:hover {
       border-color: #ED6C1C; }
-      .selection-component .selection-show:hover i {
+      .selection-wrap .selection-show:hover:before {
         color: #ED6C1C; }
-  .selection-component .selection-list {
+  .selection-wrap .selection-show.active {
+    border-color: #ED6C1C !important;
+    box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px !important; }
+    .selection-wrap .selection-show.active:before {
+      color: #ED6C1C;
+      transform: rotate(180deg); }
+  .selection-wrap .selection-list {
     position: absolute;
     top: 33px; }
-    .selection-component .selection-list ul {
+    .selection-wrap .selection-list ul {
       overflow: auto;
       max-height: 300px;
       padding: 5px 0;
@@ -2975,7 +2988,7 @@ button.toast-close-button {
       z-index: 1;
       cursor: pointer;
       box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
-      .selection-component .selection-list ul li {
+      .selection-wrap .selection-list ul li {
         padding: 0 10px;
         line-height: 30px;
         text-align: left;
@@ -2985,9 +2998,9 @@ button.toast-close-button {
         white-space: nowrap;
         /* 文字不换行*/
         transition: all 0.1s ease-in-out; }
-        .selection-component .selection-list ul li:hover {
+        .selection-wrap .selection-list ul li:hover {
           background-color: #f3f3f3; }
-      .selection-component .selection-list ul .li-checkbox {
+      .selection-wrap .selection-list ul .active {
         color: #ffffff !important;
         background-color: #FF8A41 !important; }
 

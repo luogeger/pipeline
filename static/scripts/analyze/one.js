@@ -251,6 +251,16 @@ objFn = {
 // == init
 objFn.settleData(1);
 objFn.chart(data);
+
+// == app
+var vm = new Vue({
+    el: '#app',
+    data: {
+
+    }
+});
+
+
 // == 年度表格
 var yearTable = new Vue({
     el: '#yearTable',

@@ -20,7 +20,7 @@
     border-left: 2px solid #F0F2F5; }
   .main .year-contrast .operas,
   .main .quarter-contrast .operas {
-    padding: 5px;
+    padding-bottom: 10px;
     border-bottom: 1px solid #E9EAEC; }
     .main .year-contrast .operas .operas-list,
     .main .quarter-contrast .operas .operas-list {

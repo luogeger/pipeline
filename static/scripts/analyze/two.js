@@ -1,6 +1,3 @@
-console.log('two.js')
-
-
 
 var vm = new Vue({
     ele: '#app',
@@ -25,7 +22,7 @@ var vm = new Vue({
             var box = echarts.init(document.getElementById('yearChart'));
 
             option = {
-                color: ['#ED6D00', '#FFC732'],
+                color: ['#ED6D00', '#FFC732', '#0094ff'],
                 barMaxWidth: '20%',// 柱子宽度
                 barGap: 0,// 柱子之间没有间隙
                 title : {
@@ -43,7 +40,7 @@ var vm = new Vue({
                     }
                 },
                 legend: {
-                    data: ['日期范围1', '日期范围2',]
+                    data: ['日期范围1', '日期范围2', '目标额']
                 },
 
                 grid: {
@@ -68,12 +65,24 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                    }
+                    },
+                    // {
+                        // type: 'value',
+                        // name: '目标额',
+                        // min: 0,
+                        // max: 25,
+                        // interval: 5,
+                        // axisLabel: {
+                        //     formatter: '{value} °C'
+                        // }
+                    // }
+                    
                 ],
                 series: [
                     {
                         name: '日期范围1',
                         type: 'bar',
+                        //animationDuration: 5000,// 动画持续时间
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
                         },
@@ -82,7 +91,7 @@ var vm = new Vue({
                                 show: true,
                                 position: 'top',
                                 textStyle: {
-                                    color: '#000',
+                                    color: '#ED6D00',
                                 }
                             }
                         },
@@ -99,11 +108,31 @@ var vm = new Vue({
                                 show: true,
                                 position: 'top',
                                 textStyle: {
-                                    color: '#000',
+                                    color: '#FFC732',
                                 }
                             }
                         },
                         data: [3120, 1200, 2150, 980, 370,],
+                    },
+                    {
+                        name:'目标额',
+                        type:'line',
+                        symbol: 'arrow',
+                        symbolSize: 20,
+                        //yAxisIndex: 1, // 右边没有显示了
+                        lineStyle: {
+                            opacity: 0,// 没有线条了
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#0094ff',
+                                }
+                            }
+                        },
+                        data:[3000,2300, 3400, 1900, 2000]
                     },
                 ]
             };
@@ -114,11 +143,9 @@ var vm = new Vue({
             var box = echarts.init(document.getElementById('quarterChart'));
 
             option = {
-                color: ['#ED6D00', '#FFC732'],
+                color: ['#ED6D00', '#FFC732', '#0094ff'],
                 barMaxWidth: '20%',// 柱子宽度
                 barGap: 0,// 柱子之间没有间隙
-
-
                 title : {
                     text: '加权平均额周期对比 (加权平均vs目标) (单位：万元)',
                     x:'left',
@@ -134,7 +161,7 @@ var vm = new Vue({
                     }
                 },
                 legend: {
-                    data: ['日期范围1', '日期范围2',]
+                    data: ['日期范围1', '日期范围2', '目标额']
                 },
 
                 grid: {
@@ -159,12 +186,24 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                    }
+                    },
+                    // {
+                    // type: 'value',
+                    // name: '目标额',
+                    // min: 0,
+                    // max: 25,
+                    // interval: 5,
+                    // axisLabel: {
+                    //     formatter: '{value} °C'
+                    // }
+                    // }
+
                 ],
                 series: [
                     {
                         name: '日期范围1',
                         type: 'bar',
+                        //animationDuration: 5000,// 动画持续时间
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
                         },
@@ -173,7 +212,7 @@ var vm = new Vue({
                                 show: true,
                                 position: 'top',
                                 textStyle: {
-                                    color: '#000',
+                                    color: '#ED6D00',
                                 }
                             }
                         },
@@ -190,11 +229,31 @@ var vm = new Vue({
                                 show: true,
                                 position: 'top',
                                 textStyle: {
-                                    color: '#000',
+                                    color: '#FFC732',
                                 }
                             }
                         },
                         data: [3120, 1200, 2150, 980, 370,],
+                    },
+                    {
+                        name:'目标额',
+                        type:'line',
+                        symbol: 'arrow',
+                        symbolSize: 20,
+                        //yAxisIndex: 1, // 右边没有显示了
+                        lineStyle: {
+                            opacity: 0,// 没有线条了
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                                textStyle: {
+                                    color: '#0094ff',
+                                }
+                            }
+                        },
+                        data:[3000,2300, 3400, 1900, 2000]
                     },
                 ]
             };
@@ -204,14 +263,12 @@ var vm = new Vue({
         renderDate: function () {
             laydate.render({
                 elem: '#dateOne', //指定元素
-                range: true,
                 done: function(val) {
                     vm.getDateRange(val, 1);
                 }
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
-                range: true,
                 done: function(val) {
                     vm.getDateRange(val, 2);
                 }

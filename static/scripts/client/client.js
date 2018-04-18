@@ -662,6 +662,7 @@ var vm = new Vue({
             vm.hClientName = '';
             vm.hDropText = '';
             vm.hDropCode = '';
+            this.queryBtn();
         },
 
         // 撤回

@@ -35,6 +35,22 @@
                         </ul>
                     </div>
                 </div>
+
+
+                <!--<div class="selection-wrap">-->
+                    <!--<div class="selection-label">预计签约年度:</div>-->
+                    <!--<div @click="changeSelectionList($event)"-->
+                         <!--v-text="selectionDefaultText"-->
+                         <!--:class="{active: selectionIsShow}"-->
+                         <!--class="selection-show fa"></div>-->
+                    <!--<div v-if="selectionIsShow" style="left: 97px;" class="selection-list">-->
+                        <!--<ul>-->
+                            <!--<li @click="clickItem(item, $event)"-->
+                                <!--v-for="item in yearRange"-->
+                                <!--v-text="item"></li>-->
+                        <!--</ul>-->
+                    <!--</div>-->
+                <!--</div>-->
             </div>
         </div><!-- /.year-opera -->
 
@@ -76,13 +92,14 @@
 
     <div class="quarter" id="quarterTable">
         <h5 style="padding: 10px 0;">(单位：万元)</h5>
-        <!--<p v-for="(val, key, index) in obj">{{key}}&#45;&#45;{{val}}&#45;&#45;{{index}}</p>-->
+
         <div class="quarter-list clearfix">
             <div v-for="(val, key, index) in Q"
                  :class="{active: key == isActive}"
                  @click="Qevent(index)"
                  class="quarter-item">{{key}}</div>
         </div>
+
         <table class="i-table i-table-border">
             <thead>
                 <tr>

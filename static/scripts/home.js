@@ -12,7 +12,8 @@ setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
 $.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.130:8080/iboss-prism';
 // var PATH = '/iboss-prism';// 131
-var timeYear,
+var timeYear,// 2018-04-18
+    currentYear,
     userName,
     userCode,
     userAvatar,
@@ -20,13 +21,14 @@ var timeYear,
     navData,// 导航数据
     userLevel;// 用户级别  xs  xsld  dqcyh
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
-    var msg = datas.msg;
-    timeYear = (msg.currentDate).substring(0, 10);
-    userName = msg.userName;
-    userCode = msg.userCode;
-    userAvatar = msg.avatar;
-    userLevel = msg.level;
-    userGroup = msg.departmentName;
+    var msg         = datas.msg;
+    timeYear        = (msg.currentDate).substring(0, 10);
+    currentYear     = (msg.currentDate).substring(0, 4);
+    userName        = msg.userName;
+    userCode        = msg.userCode;
+    userAvatar      = msg.avatar;
+    userLevel       = msg.level;
+    userGroup       = msg.departmentName;
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
     $('.user .user-group').text(userGroup)
@@ -285,3 +287,8 @@ function checkSpace(str){
     }
     return 1;// 不为空
 }
+
+// one.html     签约额统计汇总
+// two.html     加权 - 周期对比
+// three.html
+// four.html    销售额完成情况
