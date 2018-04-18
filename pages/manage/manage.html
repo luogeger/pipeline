@@ -203,12 +203,15 @@
                                     <td>{{ item.salesGroupName }}</td>
                                     <td>{{ item.salesStaffName }}</td>
                                     <td>
-                                        <div v-if="havePreSaleStaffs">
+                                        <div v-if="item.preSaleStaffs">
                                             <div v-for="preSaleStaffs in item.preSaleStaffs">
-                                                {{ preSaleStaffs.userName }}
+                                                <span v-if="preSaleStaffs">
+                                                    {{ preSaleStaffs.userName }}
+                                                </span>
+
                                             </div>
                                         </div>
-                                        <div v-else="havePreSaleStaffs">&nbsp;</div>
+                                        <div v-else>&nbsp;</div>
                                     </td>
                                     <td>{{ item.region }}</td>
                                     <td>{{ item.province }}</td>
@@ -216,12 +219,14 @@
                                     <td>{{ item.customerCode }}</td>
                                     <td>{{ item.customerName }}</td>
                                     <td>
-                                        <div v-if="haveSolutionSub">
+                                        <div v-if="item.solutionSub">
                                             <div v-for="solutionSub in item.solutionSub">
-                                                {{ solutionSub.solutionName }}
+                                                <span v-if="solutionSub">
+                                                    {{ solutionSub.solutionName }}
+                                                </span>
                                             </div>
                                         </div>
-                                        <div v-else="haveSolutionSub">&nbsp;</div>
+                                        <div v-else>&nbsp;</div>
                                     </td>
                                     <td>{{ item.industryLine }}</td>
                                     <td>{{ item.projectNature }}</td>
@@ -257,10 +262,7 @@
                      style="text-align: center">{{ updateCaseMsg }}</div>
                 <ul class="block">
                     <li v-for="changeOneList in changeOneLists">
-                        <h4 ref="optime">{{ changeOneList.opTime }}</h4>
-                        <!--.getTime()-->
-                        <!--<div ref="optime"-->
-                             <!--v-time="opTime">{{ changeOneList.opTime }}</div>-->
+                        <h4 ref="optime" >{{ changeOneList.opTime }}</h4>
                         <p>
                             <span v-html="changeOneList.operName"></span>
                             <span v-html="changeOneList.opDetail"></span>
@@ -764,43 +766,6 @@
             }
         });
     })
-    // 项目更新清空时间修改
-   /* var minute = 1000 * 60;
-    var hour = minute * 60;
-    var day = hour * 24;
-    var halfamonth = day * 15;
-    var month = day * 30;
-    function getDateDiff(dateTimeStamp){
-        var now = new Date().getTime();
-        var diffValue = now - dateTimeStamp;
-        if(diffValue < 0){
-            //若日期不符则弹出窗口告之
-            //alert("结束日期不能小于开始日期！");
-        }
-        var monthC =diffValue/month;
-        var weekC =diffValue/(7*day);
-        var dayC =diffValue/day;
-        var hourC =diffValue/hour;
-        var minC =diffValue/minute;
-        if(monthC>=1){
-            result="发表于" + parseInt(monthC) + "个月前";
-        }
-        else if(weekC>=1){
-            result="发表于" + parseInt(weekC) + "周前";
-        }
-        else if(dayC>=1){
-            result="发表于"+ parseInt(dayC) +"天前";
-        }
-        else if(hourC>=1){
-            result="发表于"+ parseInt(hourC) +"个小时前";
-        }
-        else if(minC>=1){
-            result="发表于"+ parseInt(minC) +"分钟前";
-        }else
-            result="刚刚发表";
-        return result;
-    }*/
-
     //zTree
     var setting = {
         data: {
@@ -961,9 +926,6 @@
                 weightedSumTotal: '',         // 加权金额
                 items: [],                    // 表格数据
                 noData: false,               // 搜索不到数据
-                emptyMsg: '',
-                havePreSaleStaffs: false,    // 是否有售前信息
-                haveSolutionSub: false,      // 是否有解决方案信息
 
                 // pipeline表格分页
                 data: [],
@@ -1256,7 +1218,6 @@
                 this.updateCaseShow = false
                 this.ismaxWidth = false
 
-                // alert('in')
                 // this.isClicked = index; // tr添加active
                 vm.changeOneLists = []
                 // console.log(item.soCoreCode)
@@ -1268,7 +1229,6 @@
                         'opDataKey': item.soCoreCode
                     },
                     success: function(result){
-                        console.log(result.root, 'change');
                         if(result.root.length == 0) {
                             vm.noUpdateCase = true;
                             vm.updateCaseMsg = '暂无项目更新情况';
@@ -1280,9 +1240,8 @@
                                 vm.changeOneLists.push(root);
 
                                 for(var j = 0;j < vm.changeOneLists.length;j++) {
-                                    var date = new Date(vm.changeOneLists[j].opTime);
-                                    vm.updateTime = Date.parse(date);
-                                    // console.log(vm.updateTime);
+                                    // var date = new Date(vm.changeOneLists[j].opTime);
+                                     // vm.updateTime = date.getTime();
                                 }
                             }
                         }
@@ -1292,10 +1251,6 @@
                         console.log('查看单人变动历史 请求失败');
                     }
                 })
-
-                // var date = new Date($(vm.$refs.optime).text());
-                // console.log(date,'date');
-                // vm.opTime = Date.parse(date);
             },
             // 关闭表格右侧内容
             closeUpdateCase: function() {
@@ -1333,10 +1288,15 @@
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
                             if(i == 0){
-                                console.log(root,'root');
                                 vm.showOneChange(root);
                             }
                             vm.items.push(root);
+
+                            if(!root.preSaleStaffs.userName) {
+                                vm.havePreSaleStaffs = false;
+                            }else {
+                                vm.havePreSaleStaffs = true;
+                            }
                         }
                         // 如果表格无数据
                         if(result.root.length === 0) {
@@ -1546,30 +1506,25 @@
                         vm.hSalesStaffName = vm.handleTemplate.salesStaffCode;      // 获取销售
 
                         if(vm.handleTemplate.preSaleStaffs) {
-
                             for(var i = 0;i< vm.handleTemplate.preSaleStaffs.length;i++){
-                                if(vm.handleTemplate.preSaleStaffs[i]) {
-                                    vm.havePreSaleStaffs = true;
+                                 if(vm.handleTemplate.preSaleStaffs[i]) {
                                     vm.preSaleStaffs = vm.handleTemplate.preSaleStaffs[i]
                                     vm.preSaleStaffs.userCode = vm.handleTemplate.preSaleStaffs[i].userCode;
-                                }else{
-                                    vm.havePreSaleStaffs = false;
-                                }
+                                 }
                             }
-                        }else{
-                            vm.havePreSaleStaffs = false;
                         }
+
                         // 获取解决方案名称和预计签约金额
                         if(vm.handleTemplate.solutionSub) {
-                            vm.haveSolutionSub = true;
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
-                                vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
-                                vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
-                                vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
+                                if(vm.handleTemplate.solutionSub[i]) {
+                                    vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
+                                    vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
+                                    vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
+                                }
                             }
-                        }else{
-                            vm.haveSolutionSub = false;
                         }
+
                         // 获取加权金额
                         vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
                         vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
@@ -1620,6 +1575,9 @@
                                 }
                             }
                         }
+
+
+                        console.log(vm.items.preSaleStaffs,'preSaleStaffs');
                     },
                     error: function(){
                         console.log('修改信息 请求失败');
@@ -1636,16 +1594,23 @@
                 var preSaleStaffList = [],     // 点击修改时获取表格的值
                     solutionSubList = [];      // 点击修改时获取表格的值
 
-                preSaleStaffList.push({
-                    'userCode':      vm.preSaleStaffs.userCode
-                })
+                if(vm.preSaleStaffs.userCode) {
+                    preSaleStaffList.push({
+                        'userCode':      vm.preSaleStaffs.userCode
+                    })
+                }
+                if(preSaleStaffList.length == 0) {
+                    delete vm.handleTemplate.preSaleStaffs;
+                }
+                else {
+                    vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
+                }
 
                 solutionSubList.push({
                     'solutionCode':  vm.solutionSub.solutionCode,
                     'expectSignSum': vm.solutionSub.expectSignSum
                 })
 
-                vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
                 vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
 
                 var paramm = $.param(vm.handleTemplate)
@@ -1661,6 +1626,7 @@
                     success: function(result){
                         if (result.code === 201) {
                             toastr.error(result.msg)
+                            console.log(result.msg,'error')
                             return;
                         }
                         if(result.success){
