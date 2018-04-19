@@ -189,9 +189,12 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, index) in items"
-                                    @click="showOneChange(item,index)"
-                                    :class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1} ">
-                                    <!--:class="{ active: isClicked == index }"-->
+                                    @click="showOneChange(item,index)">
+                                    <!--:class="{ active: isClicked == index } "-->
+
+                                    <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
+
+                                    <!--"-->
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                                     <td v-if="userLevel == 'xs'">
                                         <a @click="handleData(item)"
@@ -236,7 +239,17 @@
                                     <td>{{ item.progress }}</td>
                                     <td>{{ item.successRate }}</td>
                                     <td>{{ item.weightedSum }}</td>
-                                    <td>{{ item.projectFollowUpRemark }}</td>
+                                    <td>
+                                        <div class="onetext"
+                                             style="max-width: 360px;
+                                                    text-overflow: ellipsis;
+                                                    overflow: hidden;
+                                                    white-space: nowrap;">
+                                            {{ item.projectFollowUpRemark }}
+                                            有关于销毁，暂时还不是很清楚。我们在console里执行下命令对 vue实例进行销毁。销毁完成后，我们再重新改变message的值，vue不再对此动作进行响应了。但是原先生成的dom元素还存在，可以这么理解，执行了destroy操作，后续就不再受vue控制了。
+                                            有关于销毁，暂时还不是很清楚。我们在console里执行下命令对 vue实例进行销毁。销毁完成后，我们再重新改变message的值，vue不再对此动作进行响应了。但是原先生成的dom元素还存在，可以这么理解，执行了destroy操作，后续就不再受vue控制了。
+                                        </div>
+                                    </td>
                                     <td>{{ item.othDescription }}</td>
                                     <td>{{ item.competitor }}</td>
                                     <td>{{ item.customerSource }}</td>
@@ -250,6 +263,12 @@
                      style="padding: 20px;text-align: center">暂无相关数据</div>
             </div>
         </div>
+        <style>
+            .onetext:hover {
+                text-overflow: inherit;
+                overflow: visible;
+            }
+        </style>
             <div class="updateCase" :class="{'hide': updateCaseShow}">
             <div class="title clearfix">
                 <span>项目更新情况</span>
@@ -261,8 +280,9 @@
                 <div v-model="noUpdateCase"
                      style="text-align: center">{{ updateCaseMsg }}</div>
                 <ul class="block">
-                    <li v-for="changeOneList in changeOneLists">
-                        <h4 ref="optime" >{{ changeOneList.opTime }}</h4>
+                    <li v-for="(changeOneList,index) in changeOneLists">
+                        <h4>{{ changeOneList.opTime }}</h4>
+                        <!--<h4 v-time="changeOneListTime[index]"></h4>-->
                         <p>
                             <span v-html="changeOneList.operName"></span>
                             <span v-html="changeOneList.opDetail"></span>
@@ -766,6 +786,7 @@
             }
         });
     })
+
     //zTree
     var setting = {
         data: {
@@ -879,11 +900,11 @@
         el: '#app',
         data: function(){
             return {
-                // 模糊查询
+                // 模糊查询客户名称
                 fuzzyQueryList_1: [],
                 fuzzyQueryList_2: [],
-                // customerCodeArray: [],
-                // customerNameArray: [],
+                customerNames: '',            // 获取客户名称
+                customerNameArray: [],        // 单独存放客户名称的name
 
                 // 定义搜索值信息
                 tableList: {},                //存放搜索值
@@ -903,9 +924,8 @@
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
-                // time: '',  //================
-                updateTime: '',                     //
-                opTime: '',
+                changeOneListTime: [],        // 显示时间
+
                 noUpdateCase: false,          //
                 updateCaseMsg: '',            // 提示语句
                 updateCaseShow: true,
@@ -1003,16 +1023,12 @@
             // this.selectProjectNature();
             // this.searchCustomer();
             this.searchData();
+            this.getFuzzyList();
             this.showData();
-            // this.showChange();
+            this.showChange();
         },
         methods: {
-            // 新增/修改 填写预计签约金额
-            sumKeyup: function() {
-                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
-                vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
-            },
-            // 模糊查询
+            // 模糊查询客户名称
             hideFuzzyQuery: function (type) {
                 // var list = 'fuzzyQueryList_' +type;
                 // vm[list] = [];
@@ -1038,6 +1054,9 @@
                     if (data.code === 201 || data.msg.length === 0) return;
 
                     vm[list] = data.msg;
+
+                    vm.customerNames =data.msg;
+
                     console.log(vm[list], 'mo');
                 });
             },// 获取数据
@@ -1213,14 +1232,20 @@
             },
             // 表格右侧项目更新情况
             showOneChange: function(item, index) {
-                // 点击tr的时候，给它添加'active'
-                $("tr:eq("+ (index + 1) +")").addClass('active').siblings().removeClass('active');
-                this.updateCaseShow = false
-                this.ismaxWidth = false
+                vm.changeOneLists = [] // 先清空项目更新情况列表
+                // 显示项目更新情况
+                // this.updateCaseShow = false
+                // this.ismaxWidth = false
+                this.updateCaseShow = true
+                this.ismaxWidth = true
 
-                // this.isClicked = index; // tr添加active
-                vm.changeOneLists = []
-                // console.log(item.soCoreCode)
+
+                this.isClicked = index; // tr添加active
+
+                // var codee = item.soCoreCode;
+
+                // console.log(item.soCoreCode,'item.soCoreCode')
+
                 $.ajax({
                     url:  PATH + '/so/queryPipelineChangeHis',
                     type: 'get',
@@ -1235,14 +1260,15 @@
                         }else {
                             vm.noUpdateCase = false;
                             vm.updateCaseMsg = '';
+
                             for(var i = 0;i < result.root.length;i++){
                                 var root = result.root[i];
                                 vm.changeOneLists.push(root);
-
+                                // 转换时间为时间戳
                                 for(var j = 0;j < vm.changeOneLists.length;j++) {
-                                    // var date = new Date(vm.changeOneLists[j].opTime);
-                                     // vm.updateTime = date.getTime();
+                                    var newDate = new Date(vm.changeOneLists[j].opTime);
                                 }
+                                vm.changeOneListTime.push(newDate.getTime());
                             }
                         }
 
@@ -1252,12 +1278,16 @@
                     }
                 })
             },
-            // 关闭表格右侧内容
+            // 关闭表格右侧项目更新情况
             closeUpdateCase: function() {
+                vm.showOneChange('', -1);
+
+                // this.isClicked = -1;
+
                 this.updateCaseShow = true
                 this.ismaxWidth = true
-                // this.isClicked = -1;
             },
+
             // 表格查询 加权金额相加
             addSum: function(sumList){
                 var sum = 0;
@@ -1284,19 +1314,24 @@
                         console.log(result);
                         vm.weightedSumTotal = result.oth.weightedSumTotal;
 
+                        // this.isClicked = 1;
+
                         // 点击tr，
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
-                            if(i == 0){
-                                vm.showOneChange(root);
-                            }
+
                             vm.items.push(root);
 
-                            if(!root.preSaleStaffs.userName) {
-                                vm.havePreSaleStaffs = false;
-                            }else {
-                                vm.havePreSaleStaffs = true;
-                            }
+                            // 默认第一条tr添加active
+                            // vm.showOneChange(root, 0);
+
+                            // console.log(item.soCoreCode,'before')
+
+
+                            // item.soCoreCode = result.root[0].soCoreCode;
+
+
+                            // console.log(item.soCoreCode,'after')
                         }
                         // 如果表格无数据
                         if(result.root.length === 0) {
@@ -1452,6 +1487,11 @@
                 vm.preSaleStaffs = []
                 vm.solutionSub = []
             },
+            // 新增/修改 填写预计签约金额
+            sumKeyup: function() {
+                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
+                vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
+            },
             // 新增
             addData: function() {
                 this.clearHandle();          // 调用（清空新增/修改表单）
@@ -1586,6 +1626,22 @@
             },
             // 添加修改提交
             submitHandle: function(){
+                if(!vm.hCustomerName) {
+                    toastr.warning('客户名称不能为空!');
+                    return
+                }
+                else{
+                    for(var i = 0;i < vm.customerNames.length;i++) {
+                        vm.customerNameArray.push(vm.customerNames[i].name);
+                    }
+                    if($.inArray(vm.hCustomerName, vm.customerNameArray) == -1) {
+                        toastr.warning('客户名称不存在!');
+                        return
+                    }
+                }
+
+
+
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
 
