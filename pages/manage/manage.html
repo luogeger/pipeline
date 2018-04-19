@@ -240,15 +240,7 @@
                                     <td>{{ item.successRate }}</td>
                                     <td>{{ item.weightedSum }}</td>
                                     <td>
-                                        <div class="onetext"
-                                             style="max-width: 360px;
-                                                    text-overflow: ellipsis;
-                                                    overflow: hidden;
-                                                    white-space: nowrap;">
-                                            {{ item.projectFollowUpRemark }}
-                                            有关于销毁，暂时还不是很清楚。我们在console里执行下命令对 vue实例进行销毁。销毁完成后，我们再重新改变message的值，vue不再对此动作进行响应了。但是原先生成的dom元素还存在，可以这么理解，执行了destroy操作，后续就不再受vue控制了。
-                                            有关于销毁，暂时还不是很清楚。我们在console里执行下命令对 vue实例进行销毁。销毁完成后，我们再重新改变message的值，vue不再对此动作进行响应了。但是原先生成的dom元素还存在，可以这么理解，执行了destroy操作，后续就不再受vue控制了。
-                                        </div>
+                                        <div class="onetext">{{ item.projectFollowUpRemark }}</div>
                                     </td>
                                     <td>{{ item.othDescription }}</td>
                                     <td>{{ item.competitor }}</td>
@@ -263,12 +255,6 @@
                      style="padding: 20px;text-align: center">暂无相关数据</div>
             </div>
         </div>
-        <style>
-            .onetext:hover {
-                text-overflow: inherit;
-                overflow: visible;
-            }
-        </style>
             <div class="updateCase" :class="{'hide': updateCaseShow}">
             <div class="title clearfix">
                 <span>项目更新情况</span>
