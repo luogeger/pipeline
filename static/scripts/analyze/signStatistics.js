@@ -224,16 +224,16 @@ var vm = new Vue({
                 var target = [], complete = [], difference = [], scale = [],
                     m1 = [], m2 =[], m3 =[], c1 =[], c2 =[], c3 = [];
                 arr.forEach(function (item) {
-                    target.push(p1.target);
-                    complete.push(p1.complete);
-                    difference.push(p1.difference);
-                    scale.push(p1.scale);
-                    m1.push(p1.m1Target);
-                    m2.push(p1.m2Target);
-                    m3.push(p1.m3Target);
-                    c1.push(p1.m1Complete);
-                    c2.push(p1.m2Complete);
-                    c3.push(p1.m3Complete);
+                    target.push(item.target);
+                    complete.push(item.complete);
+                    difference.push(item.difference);
+                    scale.push(item.scale);
+                    m1.push(item.m1Target);
+                    m2.push(item.m2Target);
+                    m3.push(item.m3Target);
+                    c1.push(item.m1Complete);
+                    c2.push(item.m2Complete);
+                    c3.push(item.m3Complete);
                 });
 
                 function sum (arr) {
