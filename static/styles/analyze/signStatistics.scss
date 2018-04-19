@@ -1,0 +1,25 @@
+.main{
+  .year,.quarter{
+    background-color: #FFFFFF;
+  }
+
+  .year{
+    margin-bottom: 20px;
+    .year-opera{
+      padding: 10px;
+      border-bottom: 1px solid #E9EAEC;
+    }
+
+    .year-chart{
+
+    }
+
+    .year-table{
+      padding: 10px;
+    }
+  }// year
+
+  .quarter{
+
+  }
+}// end

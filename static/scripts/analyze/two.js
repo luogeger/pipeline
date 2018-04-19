@@ -4,12 +4,13 @@ var vm = new Vue({
     data: {
         dateOne: '',
         dateTwo: '',
+
     },
 
     created: function () {
+        this.renderDate();
         this.yearChart();
         this.quarterChart();
-        this.renderDate();
 
     },
 

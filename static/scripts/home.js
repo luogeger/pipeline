@@ -13,7 +13,7 @@ $.ajaxSettings.async = false;// 同步请求
 var PATH = 'http://172.16.8.130:8080/iboss-prism';
 // var PATH = '/iboss-prism';// 131
 var timeYear,// 2018-04-18
-    currentYear,
+    currentYear,// 2018
     userName,
     userCode,
     userAvatar,
@@ -35,12 +35,10 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     console.log(userLevel)
 });
 
-// $.getJSON('http://172.16.8.130:8080/iboss-prism/oauth/queryMenu4Nav', function (datas) {
 $.getJSON(PATH +'/oauth/queryMenu4Nav', function (datas) {
-    navData = datas.msg;
-
+    navData = datas.msg;// 顶部导航数据
 });
-var data = {
+var dataNav = {
     "code": 200,
     "msg": [
         {
@@ -211,8 +209,7 @@ var data = {
     ],
     "success": true
 };
-
-// $('.nav-top-panels').iTopNav(data.msg);
+// $('.nav-top-panels').iTopNav(dataNav.msg);
 $('.nav-top-panels').iTopNav(navData);
 
 
@@ -243,7 +240,8 @@ $('.sign-out').click(function () {
 })
 
 
-loadMainPage('.content-item', 'analyze/two.html');
+loadMainPage('.content-item', 'analyze/signStatistics.html');
+// loadMainPage('.content-item', 'analyze/one.html');
 
 
 

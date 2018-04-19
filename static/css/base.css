@@ -3021,4 +3021,46 @@ button.toast-close-button {
     .fuzzy-query li:hover {
       background-color: #f3f3f3; }
 
+.chart-tab-list,
+.operas-list {
+  display: inline-block; }
+  .chart-tab-list span,
+  .operas-list span {
+    display: inline-block;
+    padding: 0 10px;
+    border-bottom: 2px solid transparent;
+    line-height: 30px;
+    cursor: pointer; }
+    .chart-tab-list span:hover,
+    .operas-list span:hover {
+      color: #FF8A41; }
+  .chart-tab-list .active,
+  .operas-list .active {
+    border-color: #FF8A41;
+    color: #FF8A41; }
+
+.table-tab-list {
+  position: relative;
+  top: 1px;
+  left: 1px; }
+  .table-tab-list .table-tab-item {
+    float: left;
+    line-height: 20px;
+    padding: 5px 20px;
+    border: 1px solid #E6E7E9;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    transition: .2s;
+    cursor: pointer; }
+    .table-tab-list .table-tab-item:hover {
+      color: #ED6D00; }
+  .table-tab-list .table-tab-item:not(:first-child) {
+    margin-left: -1px; }
+  .table-tab-list .active {
+    border-color: #ED6D00;
+    background-color: #ED6D00;
+    color: #FFFFFF !important;
+    position: relative;
+    z-index: 1; }
+
 /*# sourceMappingURL=base.css.map */

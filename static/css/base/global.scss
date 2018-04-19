@@ -341,6 +341,59 @@
   }
 }
 
+// 上半年、下半年
+.chart-tab-list,
+.operas-list{
+  display: inline-block;
+  span{
+    display: inline-block;
+    padding: 0 10px;
+    border-bottom: 2px solid transparent;
+    line-height: 30px;
+    cursor: pointer;
+    &:hover{
+      color: #FF8A41;
+    }
+  }
+  .active{
+    border-color: #FF8A41;
+    color: #FF8A41;
+  }
+}// operas
+
+// 季度tab样式
+.table-tab-list{
+  position: relative;
+  top: 1px;
+  left: 1px;
+
+  .table-tab-item{
+    float: left;
+    line-height: 20px;
+    padding: 5px 20px;
+    border: 1px solid #E6E7E9;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    transition: .2s;
+    cursor: pointer;
+    &:hover{
+      color: #ED6D00;
+    }
+  }
+
+  .table-tab-item:not(:first-child){
+    margin-left: -1px;
+  }
+  .active{
+    border-color: #ED6D00;
+    background-color: #ED6D00;
+    color: #FFFFFF !important;
+    position: relative;
+    z-index: 1;
+  }
+
+
+}// table-tabs
 
 
 
