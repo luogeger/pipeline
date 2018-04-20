@@ -7,7 +7,31 @@
   padding: 15px 20px;
   padding-bottom: 0;
   margin-bottom: 10px;
-  position: relative; }
+  position: relative;
+    /*:checked ~.drowicon {
+      .fa {
+        transform: rotate(180deg);
+      }
+    }
+    :checked ~ .content {
+      max-height: 500px;
+    }
+*/ }
+  .search-wrapper .drowicon {
+    z-index: 2;
+    display: inline-block;
+    text-align: center;
+    color: #8c8c8c;
+    cursor: pointer;
+    position: absolute;
+    right: 80px;
+    top: 20px; }
+    .search-wrapper .drowicon .fa {
+      color: #8c8c8c;
+      margin-left: 10px;
+      transition: all .25s; }
+  .search-wrapper .content {
+    transition: max-height .4s; }
   .search-wrapper .dropdown-wrap,
   .search-wrapper .input-group {
     margin-bottom: 15px; }
@@ -154,6 +178,17 @@
           color: #8c8c8c; }
         .data-wrapper .historyLog .content .i-table .dark {
           color: #242424; }
+
+.onetext {
+  max-width: 360px;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap; }
+  .onetext:hover {
+    text-overflow: inherit;
+    overflow: visible;
+    white-space: normal; }
 
 .opera > div {
   float: left; }
