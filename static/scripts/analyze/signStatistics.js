@@ -18,8 +18,8 @@ var vm = new Vue({
         legendName: ['部门目标', '部门完成情况'],
         legendColor: ['#E56F0B', '#FBC839'],
         chartYAxis: [],
-        chartTarget: [18203, 23489, 29034, 104970, 131744, 630230],
-        chartComplete: [19325, 23438, 31000, 121594, 134141, 681807],
+        chartTarget: [],
+        chartComplete: [],
 
         // 年份
         halfYearActive: -1,
@@ -141,7 +141,10 @@ var vm = new Vue({
             this.halfYearActive = type;
             this.year.head = this.year[half].head;
             this.year.body = this.year[half].body;
-            total(this.year[half].body);
+            total(this.year[half].body);// 合计
+
+            // 图表切换
+
 
             // 合计
             function total (arr) {
@@ -180,6 +183,7 @@ var vm = new Vue({
                 vm.chartYAxis       = group;// 图表X轴数据
                 vm.chartTarget      = target;// 图表X轴数据
                 vm.chartComplete    = complete;// 图表X轴数据
+                vm.yearChart();
                 vm.year.foot = {
                     saleGroup:  '合计',
                     target:     sum(target),
