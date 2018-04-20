@@ -15,7 +15,7 @@
                 <div class="input-group1" style="position: relative;display: inline-block;">
                     <input v-model="cCustomerName"
                            @keyup="getFuzzyList(1)"
-                           onkeydown="vm.keybordEnter()"
+                           onkeydown="vm.keyEnterCustomer()"
                            type="text" class="input-group-form">
                     <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
                         <li v-for="item in fuzzyQueryList_1"
@@ -121,9 +121,23 @@
                     </ul>
                 </div>
             </div>
+            <div v-if="userLevel !== 'xs'"
+                 class="input-group">
+                <span class="input-group-label">销售：</span>
+                <div class="input-group1" style="position: relative;display: inline-block;">
+                    <input v-model="cSalesName"
+                           @keyup="getSales"
+                           onkeydown="vm.keybordEnterSales()"
+                           type="text" class="input-group-form">
+                    <ul class="fuzzy-query" style="left: 0px">
+                        <li v-for="item in salesList"
+                            @click="selectSales(item.text, item.code)"
+                            v-text="item.text"></li>
+                    </ul>
+                </div>
+            </div>
         </div>
         <div style="position: absolute;right: 20px;top: 15px;">
-
             <div class="input-group">
                 <span class="input-group-label"></span>
                 <button @click="clearSearchForm"
@@ -205,12 +219,9 @@
                             </thead>
                             <tbody>
                                 <tr v-for="(item, index) in items"
-                                    @click="showOneChange(item,index)">
-                                    <!--:class="{ active: isClicked == index } "-->
-
+                                    @click="showOneChange(item,index)"
+                                    :class="{ active: isClicked == index } ">
                                     <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
-
-                                    <!--"-->
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                                     <td v-if="userLevel == 'xs'">
                                         <a @click="handleData(item)"
@@ -377,7 +388,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <div class="block-wrapper">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户名称:</span>
@@ -386,7 +397,7 @@
                                                    @keyup="getFuzzyList(2)"
                                                    type="text" class="input-group-form">
                                             <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
-                                                <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode)"
+                                                <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
                                                     v-for="item in fuzzyQueryList_2"
                                                     v-text="item.name"
                                                 ></li>
@@ -397,6 +408,12 @@
                                         <a @click="selectCustomer"
                                            href="javascript:;"
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px;display: none;">+</a>-->
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">项目名称:</span>
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -548,12 +565,6 @@
                                     <div class="input-group">
                                         <span class="input-group-label">竞争对手:</span>
                                         <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
-                                    </div>
-                                </div>
-                                <div class="block-wrapper col-1">
-                                    <div class="input-group">
-                                        <span class="input-group-label">备注-项目名称:</span>
-                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -913,11 +924,13 @@
                 customerNameArray: [],        // 单独存放客户名称的name
                 departmentCodeArray: [],      // 单独存放客户所在事业部的code
 
+                //模糊查询销售
+                salesList: [],
+
                 // 定义搜索值信息
                 tableList: {},                //存放搜索值
-
-                cCustomerName: '',// 客户名称
-
+                cCustomerName: '',            // 客户名称
+                cSalesName: '',               // 获取销售
                 cIndustryLineText: '',        // 行业线
                 cProjectSuccessRateText: '',  // 成功率
                 cMngSalesGroupText: '',       // 事业部
@@ -1032,6 +1045,7 @@
             this.getSoSolution4Tree();
             this.searchData();
             this.getFuzzyList();
+            this.getSales();
             this.showData();
             this.showChange();
         },
@@ -1041,8 +1055,9 @@
                 vm.tableList.soSolutionCode = treeNode.code;
                 vm.showData();
             },
+            //// ==========客户名称========
             // 客户名称键盘回车(如果input为空)
-            keybordEnter: function() {
+            keyEnterCustomer: function() {
                 var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
                 if (ikeyCode == 13){
                     if(vm.cCustomerName == '') {
@@ -1057,6 +1072,8 @@
                 // vm[list] = [];
                 vm.fuzzyQueryList_1 = [];
                 vm.fuzzyQueryList_2 = [];
+
+                vm.salesList = [];
             },// 失焦隐藏模糊列表
             getFuzzyList: function (type) {
                 var clientName, params;
@@ -1078,15 +1095,14 @@
                     vm[list] = data.msg;
                     vm.customerNames = data.msg;
 
-                    // console.log(vm[list], 'mo');
+                    console.log(vm[list], 'mo');
                 });
             },// 获取数据
-            selectFuzzyText: function (type, text, code, departmentCode) {
-                console.log(type)
-                console.log(text)
-                console.log(code)
-                console.log(departmentCode)
-
+            selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
+                console.log(text);
+                console.log(departmentCode);
+                console.log(hasConcat);
+                console.log(whole);
                 switch (type) {
                     case 1:
                         vm.tableList.customerCode = code;
@@ -1108,19 +1124,53 @@
                         if(departmentCode !== vm.handleTemplate.salesGroupCode) {
                             toastr.warning('不可建立此客户信息!');
                             return
+                        }else {
+                            // hasConcat=y   名下存在客户机要信息，hasConcat=n 不存在机要
+                            if(hasConcat == 'n') {
+                                toastr.warning('该客户名下没有机要信息!');
+                            }
+                            // whole=y 机要信息全    whole=n 机要信息不全
+                            else if (whole == 'n') {
+                                toastr.warning('该客户名下机要信息不全,请完善客户机要信息!');
+                            }
                         }
                         vm.hCustomerName = text;
                         vm.handleTemplate.customerCode = code;
                         break;
                 }
             },// 选中文字，隐藏模糊列表
-            // 键盘回车搜索客户信息
-            keybordEnter: function() {
+            //// ==========销售========
+            // 销售键盘回车(如果input为空)
+            keybordEnterSales: function() {
                 var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
                 if (ikeyCode == 13){
-                    this.selectFuzzyText(1, vm.cCustomerName)
+                    if(vm.cSalesName == '') {
+                        delete vm.tableList.salesStaffCode;
+                        vm.showData();
+                    }
                 }
             },
+            // 模糊查询销售
+            getSales: function () {
+                var params;
+                params = {
+                    name: this.cSalesName,
+                };
+                axios.get(PATH +'/crm/selectSysUser4PipelineLike', {params: params}).then(function (datas){
+                    var data = datas.data;
+                    if (data.code === 201 || data.msg.length === 0) return;
+                    vm.salesList = data.msg;
+
+                    console.log(vm.salesList, 'salesList');
+                });
+            },// 获取数据
+            selectSales: function (text, code) {
+                vm.tableList.salesStaffCode = code;
+                vm.cSalesName = text;
+
+                this.showData();
+            },// 选中文字，隐藏模糊列表
+
             //// ==========搜索获取下拉code========
             // 选中行业线
             searchIndustryLineCode: function(code, text) {
@@ -1269,10 +1319,8 @@
             showOneChange: function(item, index) {
                 vm.changeOneLists = [] // 先清空项目更新情况列表
                 // 显示项目更新情况
-                // this.updateCaseShow = false
-                // this.ismaxWidth = false
-                this.updateCaseShow = true
-                this.ismaxWidth = true
+                this.updateCaseShow = false
+                this.ismaxWidth = false
 
 
                 this.isClicked = index; // tr添加active
@@ -1524,6 +1572,7 @@
                 vm.cCustomerSourText = '';        // 客户来源
                 vm.cSoSolutionText = '';          // 解决方案
                 vm.cLatelyChangeText = '';        // 近期变更过
+                vm.cSalesName = '';               // 近期变更过
 
                 $('#autocompleteInput').val('');  // 客户
 
