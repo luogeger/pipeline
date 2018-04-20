@@ -65,7 +65,10 @@ var vm = new Vue({
             axios.get(PATH +'/a/contractVolume?aYear='+ year).then(function (datas){
                 var data = datas.data;
                 var msg  = data.msg;
-                console.log(data)
+                if (data.code === 201) {
+                    toastr.warning('没有相关信息!');
+                    return;
+                }
                 vm.year.h1.head        = msg.h1Title;
                 vm.year.h1.body        = msg.h1.half;
                 vm.year.h2.head        = msg.h2Title;
@@ -176,6 +179,7 @@ var vm = new Vue({
                 function scaleNum() {
                     var div = Math.floor((sum(complete) / sum(target)) * 10000) / 10000;
                     div = Number(div*100).toFixed(1);
+                    if (div === '0.0') div = '0';
                     div += "%";
                     return div;
                 };
@@ -256,9 +260,11 @@ var vm = new Vue({
                     return s;
                 }
 
+                console.log(difference)
                 function scaleNum(complete, target) {
                     var div = Math.floor((sum(complete) / sum(target)) * 10000) / 10000;
                     div = Number(div*100).toFixed(1);
+                    if (div === '0.0') div = '0';
                     div += "%";
                     return div;
                 };
@@ -268,8 +274,8 @@ var vm = new Vue({
                     saleGroup: '合计',
                     target:     sum(target),
                     complete:   sum(complete),
-                    difference: scaleNum(complete, target),
-                    scale:      sum(scale),
+                    difference: sum(difference),
+                    scale:      scaleNum(complete, target),
                     m1:         sum(m1),
                     m2:         sum(m2),
                     m3:         sum(m3),

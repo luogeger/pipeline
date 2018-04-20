@@ -2976,6 +2976,7 @@ button.toast-close-button {
       transform: rotate(180deg); }
   .selection-wrap .selection-list {
     position: absolute;
+    z-index: 1;
     top: 33px; }
     .selection-wrap .selection-list ul {
       overflow: auto;
