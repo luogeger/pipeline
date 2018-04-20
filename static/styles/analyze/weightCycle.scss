@@ -1,0 +1,57 @@
+@charset "utf-8";
+.main{
+
+  .year-contrast,
+  .quarter-contrast{
+    background-color: #FFFFFF;
+    padding: 10px;
+
+    .operas{
+      padding-bottom: 10px;
+      border-bottom: 1px solid #E9EAEC;
+    }
+    table{
+      thead{
+        tr{
+          th:nth-child(5),
+          th:nth-child(6){
+            color: #ED6D00;
+          }
+          th:nth-child(5){
+            border-left: 2px solid #F0F2F5;
+          }
+        }
+      }
+      tbody{
+        tr{
+          td:nth-child(5),
+          td:nth-child(6){
+            color: #ED6D00;
+          }
+          td:nth-child(5){
+            border-left: 2px solid #F0F2F5;
+          }
+        }
+
+      }
+    }
+
+  }// year + quarter
+
+  // 上部分
+  .year-contrast{
+    margin-bottom: 20px;
+  }
+
+
+  // 下部分
+  .quarter-contrast{
+    .operas{
+      >div{
+        margin-right: 50px;
+      }
+    }
+  }
+
+
+}// .main

@@ -1,0 +1,135 @@
+<link rel="stylesheet" href="../static/styles/analyze/signStatistics.css">
+
+<div class="main" id="signStatistics" @click="mainClick">
+    <div class="breadcrumb">
+        <span>首页</span>
+        <span class="line">/</span>
+        <span>Pipeline分析</span>
+        <span class="line">/</span>
+        <span>签约额统计汇总</span>
+    </div><!-- /.breadcrumb-->
+
+    <div class="year">
+        <div class="year-opera clearfix">
+            <div class="chart-tab-list pull-left">
+                <span @click="changeHalfYear(1)" :class="{'active': halfYearActive ==1}">上半年</span>
+                <span @click="changeHalfYear(2)" :class="{'active': halfYearActive ==2}">下半年</span>
+            </div>
+            <div class="pull-right">
+                <div class="selection-wrap">
+                    <div class="selection-label">预计签约年度:</div>
+                        <div @click="changeSelectionList($event)"
+                             v-text="selectionDefaultText"
+                             :class="{active: selectionIsShow}"
+                             class="selection-show fa"></div>
+                    <div v-if="selectionIsShow" style="left: 97px;" class="selection-list">
+                        <ul>
+                            <li @click="clickItem(item, $event)"
+                                v-for="item in yearRange"
+                                v-text="item"></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div><!-- /.year-opera -->
+
+        <div class="year-chart">
+            <div id="halfYearChart" style="width: 99%;height: 400px;"></div>
+        </div>
+
+        <div class="year-table">
+            <h5 style="padding: 10px 0;">(单位：万元)</h5>
+            <table class="i-table i-table-border">
+                <thead>
+                    <tr>
+                        <th>{{year.head.saleGroup}}</th>
+                        <th>{{year.head.target}}</th>
+                        <th>{{year.head.complete}}</th>
+                        <th>{{year.head.difference}}</th>
+                        <th>{{year.head.scale}}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="item in year.body">
+                        <td>{{item.saleGroup}}</td>
+                        <td>{{item.target}}</td>
+                        <td>{{item.complete}}</td>
+                        <td>{{item.difference}}</td>
+                        <td>{{item.scale}}</td>
+                    </tr>
+
+                    <tr>
+                        <td>{{year.foot.saleGroup}}</td>
+                        <td>{{year.foot.target}}</td>
+                        <td>{{year.foot.complete}}</td>
+                        <td>{{year.foot.difference}}</td>
+                        <td>{{year.foot.scale}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div><!-- /.year-table -->
+    </div><!-- /.year -->
+
+    <div class="quarter">
+        <h5 style="padding: 10px 0;">(单位：万元)</h5>
+
+        <div class="table-tab-list clearfix">
+            <div @click="changeQuarter(0)" :class="{'active': quarterTabActive == 0}" class="table-tab-item">
+                Q1</div>
+            <div @click="changeQuarter(1)" :class="{'active': quarterTabActive == 1}" class="table-tab-item">
+                Q2</div>
+            <div @click="changeQuarter(2)" :class="{'active': quarterTabActive == 2}" class="table-tab-item">
+                Q3</div>
+            <div @click="changeQuarter(3)" :class="{'active': quarterTabActive == 3}" class="table-tab-item">
+                Q4</div>
+        </div>
+
+        <table class="i-table i-table-border">
+            <thead>
+            <tr>
+                <th>{{quarter.head.saleGroup}}</th>
+                <th>{{quarter.head.target}}</th>
+                <th>{{quarter.head.complete}}</th>
+                <th>{{quarter.head.difference}}</th>
+                <th>{{quarter.head.scale}}</th>
+                <th>{{quarter.head.m1Target}}</th>
+                <th>{{quarter.head.m2Complete}}</th>
+                <th>{{quarter.head.m2Target}}</th>
+                <th>{{quarter.head.m2Complete}}</th>
+                <th>{{quarter.head.m3Target}}</th>
+                <th>{{quarter.head.m3Complete}}</th>
+            </tr>
+            </thead>
+            <tobdy>
+                <tr v-for="item in quarter.body">
+                    <td>{{item.saleGroup}}</td>
+                    <td>{{item.target}}</td>
+                    <td>{{item.complete}}</td>
+                    <td>{{item.difference}}</td>
+                    <td>{{item.scale}}</td>
+                    <td>{{item.m1Target}}</td>
+                    <td>{{item.m1Complete}}</td>
+                    <td>{{item.m2Target}}</td>
+                    <td>{{item.m2Complete}}</td>
+                    <td>{{item.m3Target}}</td>
+                    <td>{{item.m3Complete}}</td>
+                </tr>
+                <tr>
+                    <td>{{quarter.foot.saleGroup}}</td>
+                    <td>{{quarter.foot.target}}</td>
+                    <td>{{quarter.foot.complete}}</td>
+                    <td>{{quarter.foot.difference}}</td>
+                    <td>{{quarter.foot.scale}}</td>
+                    <td>{{quarter.foot.m1}}</td>
+                    <td>{{quarter.foot.c1}}</td>
+                    <td>{{quarter.foot.m2}}</td>
+                    <td>{{quarter.foot.c2}}</td>
+                    <td>{{quarter.foot.m3}}</td>
+                    <td>{{quarter.foot.c3}}</td>
+                </tr>
+            </tobdy>
+        </table>
+    </div><!-- /.quarter -->
+</div><!-- /.main -->
+
+<script src="../static/scripts/analyze/signStatistics.js"></script>

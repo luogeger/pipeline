@@ -424,11 +424,9 @@ input:hover,
 textarea:hover {
   border-color: #ED6C1C; }
 
-input:not(.i-date-picker):focus,
-input:not(input[type="file"]):focus {
-  outline: none;
-  border-color: #ED6C1C;
-  box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px; }
+input:focus {
+  border-color: #ED6C1C !important;
+  box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px !important; }
 
 input.disabled {
   border: 1px dashed #DDDEE1;
@@ -1878,6 +1876,23 @@ div.i-thumbnail {
   border-top: 1px solid #CCCCCC;
   background-color: #ffffff; }
 
+.i-date-form-range + i {
+  color: #cccccc;
+  position: relative;
+  right: 25px;
+  top: 3px;
+  transition: 0.2s all ease-in-out; }
+.i-date-form-range:hover + i, .i-date-form-range:focus + i {
+  color: #ED6C1C; }
+
+.input-group {
+  position: relative; }
+  .input-group:before {
+    color: #cccccc;
+    position: absolute;
+    right: 5px;
+    top: -1px; }
+
 /*! laydate-v5.0.9 日期与时间组件 MIT License  http://www.layui.com/laydate/  By 贤心 */
 .laydate-set-ym,
 .layui-laydate,
@@ -2923,31 +2938,47 @@ button.toast-close-button {
       .dialog-wrap .dialog-content-small .foot div:first-child {
         margin-right: 30px; }
 
-.selection-component {
+.selection-wrap {
   position: relative;
   display: inline-block;
   vertical-align: middle; }
-  .selection-component .selection-show {
-    height: 30px;
+  .selection-wrap .selection-label,
+  .selection-wrap .selection-show {
+    display: inline-block;
+    vertical-align: middle;
+    height: 30px; }
+  .selection-wrap .selection-label {
+    padding-right: 5px;
+    line-height: 30px; }
+  .selection-wrap .selection-show {
     min-width: 162px;
+    line-height: 32px;
     color: #595959;
     padding-left: 10px;
     border: 1px solid #DDDEE1;
     border-radius: 4px;
     cursor: pointer;
     transition: 0.2s all ease-in-out; }
-    .selection-component .selection-show i {
+    .selection-wrap .selection-show:before {
       position: absolute;
-      top: 10px;
-      right: 10px; }
-    .selection-component .selection-show:hover {
+      content: '\f107';
+      right: 10px;
+      transition: 0.2s all ease-in-out; }
+    .selection-wrap .selection-show:hover {
       border-color: #ED6C1C; }
-      .selection-component .selection-show:hover i {
+      .selection-wrap .selection-show:hover:before {
         color: #ED6C1C; }
-  .selection-component .selection-list {
+  .selection-wrap .selection-show.active {
+    border-color: #ED6C1C !important;
+    box-shadow: rgba(255, 138, 65, 0.1) 0px 0px 0px 2px !important; }
+    .selection-wrap .selection-show.active:before {
+      color: #ED6C1C;
+      transform: rotate(180deg); }
+  .selection-wrap .selection-list {
     position: absolute;
+    z-index: 1;
     top: 33px; }
-    .selection-component .selection-list ul {
+    .selection-wrap .selection-list ul {
       overflow: auto;
       max-height: 300px;
       padding: 5px 0;
@@ -2958,7 +2989,7 @@ button.toast-close-button {
       z-index: 1;
       cursor: pointer;
       box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
-      .selection-component .selection-list ul li {
+      .selection-wrap .selection-list ul li {
         padding: 0 10px;
         line-height: 30px;
         text-align: left;
@@ -2968,9 +2999,9 @@ button.toast-close-button {
         white-space: nowrap;
         /* 文字不换行*/
         transition: all 0.1s ease-in-out; }
-        .selection-component .selection-list ul li:hover {
+        .selection-wrap .selection-list ul li:hover {
           background-color: #f3f3f3; }
-      .selection-component .selection-list ul .li-checkbox {
+      .selection-wrap .selection-list ul .active {
         color: #ffffff !important;
         background-color: #FF8A41 !important; }
 
@@ -2990,5 +3021,47 @@ button.toast-close-button {
     /* 文字不换行*/ }
     .fuzzy-query li:hover {
       background-color: #f3f3f3; }
+
+.chart-tab-list,
+.operas-list {
+  display: inline-block; }
+  .chart-tab-list span,
+  .operas-list span {
+    display: inline-block;
+    padding: 0 10px;
+    border-bottom: 2px solid transparent;
+    line-height: 30px;
+    cursor: pointer; }
+    .chart-tab-list span:hover,
+    .operas-list span:hover {
+      color: #FF8A41; }
+  .chart-tab-list .active,
+  .operas-list .active {
+    border-color: #FF8A41;
+    color: #FF8A41; }
+
+.table-tab-list {
+  position: relative;
+  top: 1px;
+  left: 1px; }
+  .table-tab-list .table-tab-item {
+    float: left;
+    line-height: 20px;
+    padding: 5px 20px;
+    border: 1px solid #E6E7E9;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    transition: .2s;
+    cursor: pointer; }
+    .table-tab-list .table-tab-item:hover {
+      color: #ED6D00; }
+  .table-tab-list .table-tab-item:not(:first-child) {
+    margin-left: -1px; }
+  .table-tab-list .active {
+    border-color: #ED6D00;
+    background-color: #ED6D00;
+    color: #FFFFFF !important;
+    position: relative;
+    z-index: 1; }
 
 /*# sourceMappingURL=base.css.map */

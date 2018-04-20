@@ -238,34 +238,58 @@
 
 
 // 下拉框
-.selection-component{
+.selection-wrap{
   position: relative;
   display: inline-block;
   vertical-align: middle;
 
+  .selection-label,
   .selection-show{
+    display: inline-block;
+    vertical-align: middle;
     height: $height-sm;
+  }
+
+  .selection-label{
+    padding-right: 5px;
+    line-height: $height-sm;
+  }
+
+  .selection-show{
     min-width: 162px;
+    line-height: $height-sm +2;
     color: $text-col;
     padding-left: 10px;
     border: 1px solid $border-col;
     border-radius: $border-radius-base;
     cursor: pointer;
-    i{
-      position: absolute;
-      top: 10px;
-      right: 10px;
-    }
     @include transition();
+    &:before{
+      position: absolute;
+      content: '\f107';
+      right: 10px;
+      @include transition();
+    }
     &:hover{
       border-color: $theme-hover;
-      i{
+      &:before{
         color: $theme-hover;
       }
     }
+
+  }// show
+  .selection-show.active{
+    border-color: $theme-hover !important;
+    box-shadow: $theme-rgb1 0px 0px 0px 2px !important;
+    &:before{
+      color: $theme-hover;
+      transform: rotate(180deg);
+    }
   }
+
   .selection-list{
     position: absolute;
+    z-index: 1;
     top: $height-sm +3;
     ul{
       overflow: auto;
@@ -290,12 +314,12 @@
           background-color: $hover-bg;
         }
       }
-      .li-checkbox{
+      .active{
         color: $white !important;
         background-color: $theme-normal !important;
       }
     }
-  }
+  }// list
 }// selection
 
 // 模糊查询
@@ -317,6 +341,61 @@
     }
   }
 }
+
+// 上半年、下半年
+.chart-tab-list,
+.operas-list{
+  display: inline-block;
+  span{
+    display: inline-block;
+    padding: 0 10px;
+    border-bottom: 2px solid transparent;
+    line-height: 30px;
+    cursor: pointer;
+    &:hover{
+      color: #FF8A41;
+    }
+  }
+  .active{
+    border-color: #FF8A41;
+    color: #FF8A41;
+  }
+}// operas
+
+// 季度tab样式
+.table-tab-list{
+  position: relative;
+  top: 1px;
+  left: 1px;
+
+  .table-tab-item{
+    float: left;
+    line-height: 20px;
+    padding: 5px 20px;
+    border: 1px solid #E6E7E9;
+    border-bottom: none;
+    border-radius: 4px 4px 0 0;
+    transition: .2s;
+    cursor: pointer;
+    &:hover{
+      color: #ED6D00;
+    }
+  }
+
+  .table-tab-item:not(:first-child){
+    margin-left: -1px;
+  }
+  .active{
+    border-color: #ED6D00;
+    background-color: #ED6D00;
+    color: #FFFFFF !important;
+    position: relative;
+    z-index: 1;
+  }
+
+
+}// table-tabs
+
 
 
 

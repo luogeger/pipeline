@@ -1,0 +1,30 @@
+.main .year-contrast,
+.main .quarter-contrast {
+  background-color: #FFFFFF;
+  padding: 10px; }
+  .main .year-contrast .operas,
+  .main .quarter-contrast .operas {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #E9EAEC; }
+  .main .year-contrast table thead tr th:nth-child(5),
+  .main .year-contrast table thead tr th:nth-child(6),
+  .main .quarter-contrast table thead tr th:nth-child(5),
+  .main .quarter-contrast table thead tr th:nth-child(6) {
+    color: #ED6D00; }
+  .main .year-contrast table thead tr th:nth-child(5),
+  .main .quarter-contrast table thead tr th:nth-child(5) {
+    border-left: 2px solid #F0F2F5; }
+  .main .year-contrast table tbody tr td:nth-child(5),
+  .main .year-contrast table tbody tr td:nth-child(6),
+  .main .quarter-contrast table tbody tr td:nth-child(5),
+  .main .quarter-contrast table tbody tr td:nth-child(6) {
+    color: #ED6D00; }
+  .main .year-contrast table tbody tr td:nth-child(5),
+  .main .quarter-contrast table tbody tr td:nth-child(5) {
+    border-left: 2px solid #F0F2F5; }
+.main .year-contrast {
+  margin-bottom: 20px; }
+.main .quarter-contrast .operas > div {
+  margin-right: 50px; }
+
+/*# sourceMappingURL=two.css.map */

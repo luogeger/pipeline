@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../static/styles/analyze/four.css">
 
-<div class="main" id="four">
+<div class="main" id="four" @click="appClick($event)">
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
@@ -11,22 +11,37 @@
 
     <div class="top">
         <div class="top-opera">
-            <div class="dropdown-wrap">
-                <span class="dropdown-label">预计签约年度:</span>
-                <div class="dropdown">
-                    <span class="dropdown-default">2018</span>
-                    <i class="fa fa-angle-down"></i>
+            <!--<div class="dropdown-wrap">-->
+                <!--<span class="dropdown-label">预计签约年度:</span>-->
+                <!--<div class="dropdown">-->
+                    <!--<span class="dropdown-default">2018</span>-->
+                    <!--<i class="fa fa-angle-down"></i>-->
+                    <!--<ul>-->
+                        <!--<li>2013</li>-->
+                        <!--<li>2014</li>-->
+                        <!--<li>2015</li>-->
+                        <!--<li>2016</li>-->
+                        <!--<li>2017</li>-->
+                        <!--<li>2018</li>-->
+                        <!--<li>2019</li>-->
+                        <!--<li>2020</li>-->
+                        <!--<li>2021</li>-->
+                        <!--<li>2022</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
+
+            <div class="selection-wrap">
+                <div class="selection-label">预计签约年度:</div>
+                <div @click="changeSelectionList($event)"
+                     v-text="selectionDefaultText"
+                     :class="{active: selectionIsShow}"
+                     class="selection-show fa"></div>
+                <div v-if="selectionIsShow" style="left: 97px;" class="selection-list">
                     <ul>
-                        <li>2013</li>
-                        <li>2014</li>
-                        <li>2015</li>
-                        <li>2016</li>
-                        <li>2017</li>
-                        <li>2018</li>
-                        <li>2019</li>
-                        <li>2020</li>
-                        <li>2021</li>
-                        <li>2022</li>
+                        <li @click="clickItem(item, $event)"
+                            v-for="item in yearRange"
+                            v-text="item"></li>
                     </ul>
                 </div>
             </div>

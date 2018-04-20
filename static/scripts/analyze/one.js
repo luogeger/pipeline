@@ -196,8 +196,8 @@ objFn = {
                 data: ['部门目标', '部门完成情况'],
             },
             grid: {
-                left: '3%',
-                right: '4%',
+                left: '2%',
+                right: '2%',
                 bottom: '3%',
                 containLabel: true
             },
@@ -210,7 +210,7 @@ objFn = {
                 type: 'category',
                 nameTextStyle:{
                     color: '#000',
-                    fontSize: '16',
+                    fontSize: '14',
                     fontWeight: '600',
                 },
                 data: data.chart.yAxis
@@ -251,6 +251,16 @@ objFn = {
 // == init
 objFn.settleData(1);
 objFn.chart(data);
+
+// == app
+var vm = new Vue({
+    el: '#app',
+    data: {
+
+    }
+});
+
+
 // == 年度表格
 var yearTable = new Vue({
     el: '#yearTable',

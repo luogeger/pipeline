@@ -226,8 +226,8 @@
                     <td>{{item.title}}</td>
                     <td>{{item.telphone}}</td>
                     <td>{{item.email}}</td>
-                    <td @click="editMsg(item.id)">
-                        <i v-if="item.power == 'pri'"
+                    <td><i v-if="item.power == 'pri'"
+                           @click="editMsg(item.id)"
                             class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i>
                     </td>
                 </tr>
@@ -327,8 +327,8 @@
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">a提交</div>
-                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">e提交</div>
+                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div><!-- /.main -->
@@ -344,7 +344,7 @@
             <div class="main">
 
                 <div class="msg-item">
-                    <div class="msg-item-left">销售：</div>
+                    <div class="msg-item-left">填报人：</div>
                     <div v-text="mSalesStaffName" class="msg-item-right"></div>
                 </div>
                 <div class="msg-item">
@@ -430,7 +430,7 @@
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
                         <div v-if="!msgSubmit" @click="addMsgConfirm" class="btn btn-theme">提交</div>
-                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">e提交</div>
+                        <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">提交</div>
                     </div>
                 </div>
             </div>
@@ -487,7 +487,33 @@
             </div>
         </div>
 
-
+        <!-- 审核历史 -->
+        <div v-if="auditHistoryShow" class="dialog-content audit-history">
+            <div class="title clearfix">
+                <span>审核记录：   </span><span v-text="auditHistoryTitle"></span>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="table-box">
+                <table class="i-table">
+                    <thead>
+                    <tr>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in auditHistoryList">
+                        <td v-text="item.opTime"></td>
+                        <td v-text="item.operName"></td>
+                        <td v-text="item.auditStatus"></td>
+                        <td v-text="item.remark"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div><!-- /.dialog-wrap -->
 </div><!-- /.main -->
 
