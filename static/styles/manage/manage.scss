@@ -12,7 +12,7 @@
   margin-bottom: 10px;
   position: relative;
 
-    :checked ~.drowicon {
+    /*:checked ~.drowicon {
       .fa {
         transform: rotate(180deg);
       }
@@ -20,7 +20,7 @@
     :checked ~ .content {
       max-height: 500px;
     }
-
+*/
     .drowicon {
       z-index: 2;
       display: inline-block;
@@ -35,7 +35,7 @@
       }
     }
     .content {
-      max-height: 45px;
+      //max-height: 45px;
       //overflow: hidden;
       transition: max-height .4s;
     }

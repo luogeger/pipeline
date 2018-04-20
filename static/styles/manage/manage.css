@@ -7,11 +7,16 @@
   padding: 15px 20px;
   padding-bottom: 0;
   margin-bottom: 10px;
-  position: relative; }
-  .search-wrapper :checked ~ .drowicon .fa {
-    transform: rotate(180deg); }
-  .search-wrapper :checked ~ .content {
-    max-height: 500px; }
+  position: relative;
+    /*:checked ~.drowicon {
+      .fa {
+        transform: rotate(180deg);
+      }
+    }
+    :checked ~ .content {
+      max-height: 500px;
+    }
+*/ }
   .search-wrapper .drowicon {
     z-index: 2;
     display: inline-block;
@@ -26,7 +31,6 @@
       margin-left: 10px;
       transition: all .25s; }
   .search-wrapper .content {
-    max-height: 45px;
     transition: max-height .4s; }
   .search-wrapper .dropdown-wrap,
   .search-wrapper .input-group {
