@@ -7,115 +7,131 @@
     </div>
     <!-- 搜索框 -->
     <div class="search-wrapper clearfix">
-        <div class="input-group">
-            <span class="input-group-label">客户：</span>
-            <div class="input-group1" style="position: relative;display: inline-block;">
-                <input v-model="cCustomerName"
-                       @keyup="getFuzzyList(1)"
-                       type="text" class="input-group-form">
-                <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
-                    <li v-for="item in fuzzyQueryList_1"
-                        @click="selectFuzzyText(1, item.name, item.code)"
-                        v-text="item.name"
-                    ></li>
-                </ul>
+        <input id="drow" class="hide" type="checkbox">
+        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
+        <div class="content" style="width: calc(100% - 100px)">
+            <div class="input-group">
+                <span class="input-group-label">客户：</span>
+                <div class="input-group1" style="position: relative;display: inline-block;">
+                    <input v-model="cCustomerName"
+                           @keyup="getFuzzyList(1)"
+                           onkeydown="vm.keybordEnter()"
+                           type="text" class="input-group-form">
+                    <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
+                        <li v-for="item in fuzzyQueryList_1"
+                            @click="selectFuzzyText(1, item.name, item.code)"
+                            v-text="item.name"
+                        ></li>
+                    </ul>
+                </div>
             </div>
-            <!--<div class="autoComplete-wrapper" id="autoCompleteWrapper"></div>-->
-        </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">行业线：</span>
-            <div class="dropdown">
-                <span class="dropdown-default">{{ cIndustryLineText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul>
-                    <li @click="searchIndustryLineCode(searchList.code, searchList.text)"
-                        v-for="searchList in searchLists.industryLines">{{ searchList.text }}</li>
-                </ul>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">行业线：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cIndustryLineText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchIndustryLineCode('', '')">请选择</li>
+                        <li @click="searchIndustryLineCode(searchList.code, searchList.text)"
+                            v-for="searchList in searchLists.industryLines">{{ searchList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="input-group">
+                <span class="input-group-label">预计签约时间：</span>
+                <input class="input-group-form"
+                       readonly="readonly"
+                       id="startDate"
+                       @click=""
+                       v-model="cExpectSignDateRange">
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">成功率：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cProjectSuccessRateText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchSuccessRateCode('', '')">请选择</li>
+                        <li @click="searchSuccessRateCode(searchList.code, searchList.text)"
+                            v-for="searchList in searchLists.projectSuccessRates"
+                            :value="searchList.code">{{ searchList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">事业部：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <!--TODO 如果当前人是领导的话，就用userInfo.mngSalesGroups下面的code和text；否则就用userInfo.departmentCode和userInfo.departmentName-->
+                        <li @click="searchSalesGroupCode('', '')">请选择</li>
+                        <li @click="searchSalesGroupCode(oauthList.code, oauthList.text)"
+                            v-for="oauthList in mngSalesGroups"
+                            :value="oauthList.code">{{ oauthList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">区域：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cRegionText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchRegionCode('', '')">请选择</li>
+                        <li @click="searchRegionCode(searchList.code, searchList.text)"
+                            v-for="searchList in searchLists.regions"
+                            :value="searchList.code">{{ searchList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">客户来源：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cCustomerSourText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchCustomerSourceCode('', '')">请选择</li>
+                        <li @click="searchCustomerSourceCode(searchList.code, searchList.text)"
+                            v-for="searchList in searchLists.customerSours"
+                            :value="searchList.code">{{ searchList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">解决方案：</span>
+                <div class="dropdown-zTree">
+                    <span class="dropdown-default">{{ cSoSolutionText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul class="selectTree ztree soSolutionTree"
+                        style="max-height: 200px;overflow-y: auto;">
+                        <!--<li @click="selectNothing">请选择</li>-->
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">近期变更过：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cLatelyChangeText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchLatelyChangeCode('', '')">请选择</li>
+                        <li @click="searchLatelyChangeCode(searchList.code, searchList.text)"
+                            v-for="searchList in searchLists.latelyChanges">{{ searchList.text }}</li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <div class="input-group" style="display: none">
-            <span class="input-group-label">预计签约时间：</span>
-            <input class="input-group-form"
-                   readonly="readonly"
-                   id="startDate"
-                   @click=""
-                   v-model="tableList.expectSignDateStart">
-        </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">成功率：</span>
-            <div class="dropdown">
-                <span class="dropdown-default">{{ cProjectSuccessRateText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul>
-                    <li @click="searchSuccessRateCode(searchList.code, searchList.text)"
-                        v-for="searchList in searchLists.projectSuccessRates"
-                        :value="searchList.code">{{ searchList.text }}</li>
-                </ul>
+        <div style="position: absolute;right: 20px;top: 15px;">
+
+            <div class="input-group">
+                <span class="input-group-label"></span>
+                <button @click="clearSearchForm"
+                        class="btn btn-sm btn-theme"
+                        type="button">重置</button>
             </div>
         </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">事业部：</span>
-            <div class="dropdown">
-                <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul>
-                    <!--TODO 如果当前人是领导的话，就用userInfo.mngSalesGroups下面的code和text；否则就用userInfo.departmentCode和userInfo.departmentName-->
-                    <li @click="searchSalesGroupCode(oauthList.code, oauthList.text)"
-                        v-for="oauthList in mngSalesGroups"
-                        :value="oauthList.code">{{ oauthList.text }}</li>
-                </ul>
-            </div>
-        </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">区域：</span>
-            <div class="dropdown">
-                <span class="dropdown-default">{{ cRegionText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul>
-                    <li @click="searchRegionCode(searchList.code, searchList.text)"
-                        v-for="searchList in searchLists.regions"
-                        :value="searchList.code">{{ searchList.text }}</li>
-                </ul>
-            </div>
-        </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">客户来源：</span>
-            <div class="dropdown">
-                <span class="dropdown-default">{{ cCustomerSourText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul>
-                    <li @click="searchCustomerSourceCode(searchList.code, searchList.text)"
-                        v-for="searchList in searchLists.customerSours"
-                        :value="searchList.code">{{ searchList.text }}</li>
-                </ul>
-            </div>
-        </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">解决方案：</span>
-            <div class="dropdown-zTree">
-                <span class="dropdown-default">{{ cSoSolutionText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul class="selectTree ztree soSolutionTree"
-                    style="max-height: 200px;overflow-y: auto;"></ul>
-            </div>
-        </div>
-        <div class="dropdown-wrap">
-            <span class="dropdown-label">近期变更过：</span>
-            <div class="dropdown">
-                <span class="dropdown-default">{{ cLatelyChangeText }}</span>
-                <i class="fa fa-angle-down"></i>
-                <ul>
-                    <li @click="searchLatelyChangeCode(searchList.code, searchList.text)"
-                        v-for="searchList in searchLists.latelyChanges">{{ searchList.text }}</li>
-                </ul>
-            </div>
-        </div>
-        <div class="input-group pull-right">
-            <span class="input-group-label"></span>
-            <button @click="clearSearchForm"
-                    class="btn btn-sm btn-theme"
-                    type="button">重置</button>
-        </div>
+
     </div>
     <div class="main-wrapper">
         <div :class="{maxWidth: ismaxWidth}" class="data">
@@ -370,7 +386,7 @@
                                                    @keyup="getFuzzyList(2)"
                                                    type="text" class="input-group-form">
                                             <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
-                                                <li @click="selectFuzzyText(2, item.name, item.code)"
+                                                <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode)"
                                                     v-for="item in fuzzyQueryList_2"
                                                     v-text="item.name"
                                                 ></li>
@@ -745,7 +761,6 @@
             elem: '#startDate' //指定元素
             ,type: 'month'
             ,range: true
-            // ,format: 'yyyy-MM - yyyy-MM'
             // 参数可选value, date(起始时间), endDate(结束时间)
             ,done: function(value) {
                 vm.cExpectSignDateRange = value;
@@ -760,7 +775,7 @@
                 vm.showData();
             }
         });
-        // 预计签约时间
+        // 新增/修改-预计签约时间
         laydate.render({
             elem: '#signDate' //指定元素
             ,type: 'month'
@@ -799,15 +814,20 @@
 
         if($(event.currentTarget).hasClass('selectTree')){
             vm.cSoSolutionText = treeNode.name;
+
+            console.log(vm.cSoSolutionText,'搜索vm.cSoSolutionText ');
             //搜索的时候传解决方案名称code
             vm.tableList.soSolutionCode = treeNode.code;
             vm.showData();
-        }else{
-            // if($(event.currentTarget).hasClass('handleTree'))
-
+            // event.stopPropagation();
+            // return
+        }
+        else{
             vm.hSolutionText = treeNode.name;
+            console.log(vm.hSolutionText,'新增/修改vm.hSolutionText ');
 
-            //新增/修改的时候传解决方案code
+
+            // 新增/修改的时候传解决方案code
             vm.solutionSub.solutionCode = treeNode.code;
         }
         // console.log("[onClick ]&nbsp;&nbsp;clickFlag = " + clickFlag + " (" + (clickFlag===1 ? "普通选中": (clickFlag===0 ? "<b>取消选中</b>" : "<b>追加选中</b>")) + ")");
@@ -891,6 +911,7 @@
                 fuzzyQueryList_2: [],
                 customerNames: '',            // 获取客户名称
                 customerNameArray: [],        // 单独存放客户名称的name
+                departmentCodeArray: [],      // 单独存放客户所在事业部的code
 
                 // 定义搜索值信息
                 tableList: {},                //存放搜索值
@@ -1008,12 +1029,28 @@
         mounted: function(){
             // this.selectProjectNature();
             // this.searchCustomer();
+            this.getSoSolution4Tree();
             this.searchData();
             this.getFuzzyList();
             this.showData();
             this.showChange();
         },
         methods: {
+            selectNothing: function() {
+                //搜索的时候传解决方案名称code
+                vm.tableList.soSolutionCode = treeNode.code;
+                vm.showData();
+            },
+            // 客户名称键盘回车(如果input为空)
+            keybordEnter: function() {
+                var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
+                if (ikeyCode == 13){
+                    if(vm.cCustomerName == '') {
+                        delete vm.tableList.customerCode;
+                        vm.showData();
+                    }
+                }
+            },
             // 模糊查询客户名称
             hideFuzzyQuery: function (type) {
                 // var list = 'fuzzyQueryList_' +type;
@@ -1038,26 +1075,40 @@
                     var data = datas.data;
                     var list = 'fuzzyQueryList_' +type;
                     if (data.code === 201 || data.msg.length === 0) return;
-
                     vm[list] = data.msg;
+                    vm.customerNames = data.msg;
 
-                    vm.customerNames =data.msg;
-
-                    console.log(vm[list], 'mo');
+                    // console.log(vm[list], 'mo');
                 });
             },// 获取数据
-            selectFuzzyText: function (type, text, code) {
+            selectFuzzyText: function (type, text, code, departmentCode) {
                 console.log(type)
                 console.log(text)
                 console.log(code)
+                console.log(departmentCode)
+
                 switch (type) {
                     case 1:
                         vm.tableList.customerCode = code;
                         vm.cCustomerName = text;
 
+                        // 判断该客户名称是否是该销售所在事业部下的
+                        /*if(departmentCode !== vm.tableList.salesGroupCode) {
+                            toastr.warning('没有相关信息 ！');
+                            vm.noData = true;
+
+                            vm.closeUpdateCase();  // 关闭右侧项目更新情况
+                            return;
+                        }*/
+
                         this.showData();
                         break;
                     case 2:
+                        // 判断该客户名称是否是该销售所在事业部下的
+                        if(departmentCode !== vm.handleTemplate.salesGroupCode) {
+                            toastr.warning('不可建立此客户信息!');
+                            return
+                        }
                         vm.hCustomerName = text;
                         vm.handleTemplate.customerCode = code;
                         break;
@@ -1073,6 +1124,7 @@
             //// ==========搜索获取下拉code========
             // 选中行业线
             searchIndustryLineCode: function(code, text) {
+                console.log('kkkk')
                 this.tableList.industryLineCode = code;
                 vm.cIndustryLineText = text;
                 this.showData();
@@ -1119,7 +1171,6 @@
                     },
                     success: function(result){
                         vm.provinceLists = result.msg[province];
-
                         /*if(vm.provinceLists){
                             vm.handleTemplate.provinceCode = vm.provinceLists[0].code;// 默认选中第一个
                         }*/
@@ -1139,9 +1190,7 @@
                         'categoryCodes': 'customerAttr'
                     },
                     success: function(result){
-                        // console.log(result.msg.customerAttr)
                         vm.customerAttr = result.msg.customerAttr;
-
                         vm.handleTemplate.customerPropertiesCode = vm.customerAttr[0].code;// 默认选中第一个
                     },
                     error: function(result) {
@@ -1379,35 +1428,29 @@
 
                 }
             },
-            // 搜索框赋值
-            searchData: function(){
+            // 获取解决方案下拉树
+            getSoSolution4Tree: function(){
                 var basic,
                     oauth;
+                var treeList = [];
+                zNodes = [];
+                // $(".soSolutionTree").empty();
                 $.ajax({
                     url:  PATH + '/so/queryPipelineInitVal',
                     type: 'get',
                     dataType: 'json',
                     success: function(result){
                         basic = result.msg.basic;
-                        oauth = result.msg.oauth;
                         if(result !== null){
                             if(basic !== null){
                                 vm.searchLists = basic;
 
                                 vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
                                 vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
-                                // console.log(vm.handleTemplate.regionCode)
-                                // console.log(vm.handleTemplate.projectNatureCode)
                             }
-                            if(oauth !== null){
-                                vm.oauthLists = oauth;
-                                vm.mngSalesGroups = vm.oauthLists.userInfo.mngSalesGroups;
-                            }
-                            // vm.customerData();
                         }
-
                         // 获取解决方案树
-                        var treeList = basic.soSolution4Tree;
+                        treeList = basic.soSolution4Tree;
                         console.log(treeList, 'tree')
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
@@ -1433,8 +1476,37 @@
                                 }
                             }
                         }
-                        // console.log(zNodes);
+                        console.log(zNodes,'zNodes');
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
+                    },
+                    error: function(result) {
+                        console.log('获取解决方案下拉树失败');
+                    }
+                })
+            },
+            // 搜索框赋值
+            searchData: function(){
+                var basic,
+                    oauth;
+                $.ajax({
+                    url:  PATH + '/so/queryPipelineInitVal',
+                    type: 'get',
+                    dataType: 'json',
+                    success: function(result){
+                        basic = result.msg.basic;
+                        oauth = result.msg.oauth;
+                        if(result !== null){
+                            if(basic !== null){
+                                vm.searchLists = basic;
+
+                                vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
+                                vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
+                            }
+                            if(oauth !== null){
+                                vm.oauthLists = oauth;
+                                vm.mngSalesGroups = vm.oauthLists.userInfo.mngSalesGroups;
+                            }
+                        }
                     },
                     error: function(result) {
                         console.log('搜索请求失败');
@@ -1482,6 +1554,7 @@
             addData: function() {
                 this.clearHandle();          // 调用（清空新增/修改表单）
                 this.customerData();         // 调用（获取客户属性）
+                this.getSoSolution4Tree();   // 调用（获取解决方案下拉树）
                 this.searchData();           // 调用（--）只是获取区域的默认第一个那条语句
                 this.getProvince();          // 调用（获取省份信息）
 
@@ -1495,6 +1568,7 @@
             handleData: function(item){
                 this.clearHandle();          // 调用（清空新增/修改表单）
                 this.customerData();         // 调用（获取客户属性）
+                this.getSoSolution4Tree();   // 调用（获取解决方案下拉树）
                 // this.getProvince();          // 调用（获取省份信息）
                 this.showChange();           // 调用（历史变更信息）
 
