@@ -16,7 +16,7 @@ var vm = new Vue({
 
         // chart
         legendName: ['部门目标', '部门完成情况'],
-        legendColor: ['#E56F0B', '#FBC839'],
+        legendColor: chartColor,
         chartYAxis: [],
         chartTarget: [],
         chartComplete: [],
@@ -199,8 +199,8 @@ var vm = new Vue({
         },// changeHalfYear
 
         // 当前季度
-        currentQuarter: function currentQuarter() {
-            var month = timeYear.substring(5,7);
+        currentQuarter: function () {
+            var month = currentMonth;
             var arr = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
             var quarter;
             arr.forEach(function (p1, p2) {

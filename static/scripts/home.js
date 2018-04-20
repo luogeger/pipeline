@@ -5,33 +5,67 @@ function getContentSize() {
     ch = (wh - eh) + "px";
     document.getElementById( "contentItem" ).style.minHeight = ch;
 }
-//window.onload = getContentSize;这个去掉
 window.onresize = getContentSize;
 setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
 
 $.ajaxSettings.async = false;// 同步请求
+
 var PATH = 'http://172.16.8.130:8080/iboss-prism';
 // var PATH = '/iboss-prism';// 131
 var timeYear,// 2018-04-18
-    currentYear,// 2018
+    currentYear,
+    currentMonth,
+    currentDay,
+    currentAccYear,// 精确到上半年还是下班年
+    currentQuarter,// 当前季度
+    // ====
     userName,
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
     navData,// 导航数据
-    userLevel;// 用户级别  xs  xsld  dqcyh
+    userLevel,// 用户级别  xs  xsld  dqcyh
+    chartColor = ['#2F4554', '#61A0A8', '#C23531'];
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg         = datas.msg;
     timeYear        = (msg.currentDate).substring(0, 10);
     currentYear     = (msg.currentDate).substring(0, 4);
+    currentMonth    = (msg.currentDate).substring(5, 7);
+    currentDay      = (msg.currentDate).substring(8, 10);
     userName        = msg.userName;
     userCode        = msg.userCode;
     userAvatar      = msg.avatar;
     userLevel       = msg.level;
     userGroup       = msg.departmentName;
+    currentAccYear  = function () {
+        var half, arr = [[1,2,3,4,5,6],[7,8,9,10,11,12]];
+        arr.forEach(function (p1, p2) {
+            p1.forEach(function (p1) {
+                if (Number(currentMonth) === p1) {
+                    half = p2 +1;
+                }
+            })
+        });
+        return half;
+
+    }();
+    currentQuarter  = function () {
+        var quarter, arr = [[1,2,3],[4,5,6],[7,8,9],[10,11,12]];
+        arr.forEach(function (p1, p2) {
+            p1.forEach(function (p1) {
+                if (Number(currentMonth) === p1) {
+                    quarter = p2 +1;
+                }
+            })
+        });
+        return quarter;
+    }();
     $('.user>img').attr('src', userAvatar)
     $('.user .user-name').text(userName)
     $('.user .user-group').text(userGroup)
+
+
+
     console.log(userLevel)
 });
 
@@ -240,8 +274,8 @@ $('.sign-out').click(function () {
 })
 
 
-loadMainPage('.content-item', 'analyze/signStatistics.html');
-// loadMainPage('.content-item', 'analyze/one.html');
+// loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'analyze/weightCycle.html');
 
 
 
@@ -286,7 +320,3 @@ function checkSpace(str){
     return 1;// 不为空
 }
 
-// one.html     签约额统计汇总
-// two.html     加权 - 周期对比
-// three.html
-// four.html    销售额完成情况
