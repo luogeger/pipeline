@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="../static/styles/analyze/weightCycle.css">
 
 
-<div class="main" id="app">
+<div class="main" id="weightCycle">
     <div class="breadcrumb">
         <span>首页</span>
         <span class="line">/</span>
@@ -44,36 +44,31 @@
 
         <div class="year-table">
             <div class="table-tab-list clearfix">
-                <div class="table-tab-item active">10%  -  100%</div>
-                <div class="table-tab-item">30%  -  100%</div>
+                <div v-for="(item, index) in yearTableTitle"
+                     v-text="item.text"
+                     :class="{active: index == yearTabActiveIndex}"
+                     @click="changeYearTab(index)"
+                     class="table-tab-item"></div>
             </div>
             <table class="i-table i-table-border">
                 <thead>
                     <tr>
-                        <th>销售事业部</th>
-                        <th>加权平均额(日期范围1)</th>
-                        <th>加权平均额(日期范围2)</th>
-                        <th>H1目标</th>
-                        <th>增长额</th>
-                        <th>增长率</th>
+                        <th v-text="yearTable.head.unit"></th>
+                        <th v-text="yearTable.head.bz"></th>
+                        <th v-text="yearTable.head.sz"></th>
+                        <th v-text="yearTable.head.target"></th>
+                        <th v-text="yearTable.head.compareSzRise"></th>
+                        <th v-text="yearTable.head.compareSzRate"></th>
                     </tr>
                 </thead>
                 <tobdy>
-                    <tr v-for="item in list">
-                        <td>{{item.complete}}</td>
-                        <td>{{item.difference}}</td>
-                        <td>{{item.scale}}</td>
-                        <td>{{item.m1Target}}</td>
-                        <td>{{item.m2Target}}</td>
-                        <td>{{item.m2Complete}}</td>
-                    </tr>
-                    <tr>
-                        <td>{{foot.saleGroup}}</td>
-                        <td>{{foot.target}}</td>
-                        <td>{{foot.complete}}</td>
-                        <td>{{foot.difference}}</td>
-                        <td>{{foot.m1}}</td>
-                        <td>{{foot.c1}}</td>
+                    <tr v-for="item in yearTable.body">
+                        <td v-text="item.unit"></td>
+                        <td v-text="item.bz"></td>
+                        <td v-text="item.sz"></td>
+                        <td v-text="item.target"></td>
+                        <td v-text="item.compareSzRise"></td>
+                        <td v-text="item.compareSzRate"></td>
                     </tr>
                 </tobdy>
             </table>
@@ -84,10 +79,10 @@
     <div class="quarter-contrast">
         <div class="operas clearfix">
             <div class="operas-list">
-                <span class="active">Q1</span>
-                <span class="">Q2</span>
-                <span class="">Q3</span>
-                <span class="">Q4</span>
+                <span v-for="(item, index) in quarterTabList"
+                      v-text="item"
+                      @click="changeQuarterData(index)"
+                      :class="{active: index+1 == currentQuarterActive}"></span>
             </div>
 
             <div class="input-group">
@@ -117,37 +112,32 @@
 
         <div class="quarter-table">
             <div class="table-tab-list clearfix">
-                <div class="table-tab-item active">10%  -  100%</div>
-                <div class="table-tab-item">30%  -  100%</div>
+                <div v-for="(item, index) in quarterTableTitle"
+                     v-text="item.text"
+                     :class="{active: index == quarterTabActiveIndex}"
+                     @click="changeQuarterTab(index)"
+                     class="table-tab-item"></div>
             </div>
 
             <table class="i-table i-table-border">
                 <thead>
-                <tr>
-                    <th>销售事业部</th>
-                    <th>加权平均额(日期范围1)</th>
-                    <th>加权平均额(日期范围2)</th>
-                    <th>H1目标</th>
-                    <th>增长额</th>
-                    <th>增长率</th>
-                </tr>
+                    <tr>
+                        <th v-text="quarterTable.head.unit"></th>
+                        <th v-text="quarterTable.head.bz"></th>
+                        <th v-text="quarterTable.head.sz"></th>
+                        <th v-text="quarterTable.head.target"></th>
+                        <th v-text="quarterTable.head.compareSzRise"></th>
+                        <th v-text="quarterTable.head.compareSzRate"></th>
+                    </tr>
                 </thead>
                 <tobdy>
-                    <tr v-for="item in list">
-                        <td>{{item.complete}}</td>
-                        <td>{{item.difference}}</td>
-                        <td>{{item.scale}}</td>
-                        <td>{{item.m1Target}}</td>
-                        <td>{{item.m2Target}}</td>
-                        <td>{{item.m2Complete}}</td>
-                    </tr>
-                    <tr>
-                        <td>{{foot.saleGroup}}</td>
-                        <td>{{foot.target}}</td>
-                        <td>{{foot.complete}}</td>
-                        <td>{{foot.difference}}</td>
-                        <td>{{foot.m1}}</td>
-                        <td>{{foot.c1}}</td>
+                    <tr v-for="item in quarterTable.body">
+                        <td v-text="item.unit"></td>
+                        <td v-text="item.bz"></td>
+                        <td v-text="item.sz"></td>
+                        <td v-text="item.target"></td>
+                        <td v-text="item.compareSzRise"></td>
+                        <td v-text="item.compareSzRate"></td>
                     </tr>
                 </tobdy>
             </table>
@@ -156,6 +146,5 @@
     </div><!-- /.quarter-contrast -->
 
 </div><!-- /.main -->
-
 
 <script src="../static/scripts/analyze/weightCycle.js"></script>

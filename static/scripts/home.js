@@ -102,8 +102,8 @@ $('.sign-out').click(function () {
 })
 
 
-loadMainPage('.content-item', 'manage/manage.html');
-// loadMainPage('.content-item', 'analyze/weightCycle.html');
+// loadMainPage('.content-item', 'manage/manage.html');
+loadMainPage('.content-item', 'analyze/weightCycle.html');
 
 
 

@@ -1,6 +1,6 @@
 
 var vm = new Vue({
-    ele: '#app',
+    el: '#weightCycle',
     data: {
         // 参数
         currentYear: currentYear,// 当前年份
@@ -16,50 +16,103 @@ var vm = new Vue({
 
         // 数据
         chartColor: chartColor,
-        // 半年数据
-        // 表格数据
 
-        // 图表数据
+        // 半年 - 表格数据
+        yearTabActiveIndex: 0,
+        yearTableTitle: [],
+        yearTable: {
+            head: {},
+            body: [],
+            foot: {},
+        },
+
+        // 半年 - 图表数据
+        yearLegend:  ['日期范围1', '日期范围2', '目标额'],
+        yearXaxis: [],
+        yearDataOne: [],
+        yearDataTwo: [],
+        yearDataTarget: [],
+
+        // 季度 - 表格数据
+        quarterTabList: ['Q1', 'Q2', 'Q3', 'Q4'],
+        currentQuarterActive: currentQuarter,// 季度 的 active
+        quarterTabActiveIndex: 0,// tab 的 active
+        quarterTableTitle: [],
+        quarterTable: {
+            head: {},
+            body: [],
+            foot: {},
+        },
 
 
-        // 季度数据
-        // 表格数据
+        // 季度 - 图表数据
+        quarterLegend:  ['日期范围1', '日期范围2', '目标额'],
+        quarterXaxis: [],
+        quarterDataOne: [],
+        quarterDataTwo: [],
+        quarterDataTarget: [],
 
-        // 图表数据
 
     },
 
     created: function () {
-        this.getData('half');
-        this.getData('quarter');
-        this.renderDate();
-        this.yearChart();
-        this.quarterChart();
+        this.renderDate();// 日期
+        this.getYearData();
+        this.getQuarterData();
 
     },
 
     methods: {
-        getData: function (type, parmas, callback) {
-            var hq;
-            if (type === 'half')    hq = this.currentAccYear;
-            if (type === 'quarter') hq = this.currentQuarter;
+
+        getYearData: function (index, parmas, callback) {
+            index = index || 0;
             parmas = {
                 aYear: this.currentYear,
-                hq: hq,
+                hq: this.currentAccYear,
                 closingDate1: '',
                 closingDate2: '',
             };
-            console.log(parmas)
             axios.get(PATH +'/a/weightedCycleComparison', {params: parmas}).then(function (datas){
-                var data = datas.data;
-                console.log(data)
+                var data = datas.data,
+                    msg = datas.data.msg;
+                if (data.code === 201) {
+                    toastr.error('暂无相关数据!')
+                    return;
+                }
+                vm.yearTableTitle = msg.subTitles;
+                vm.yearTable.head = msg.data[index].rowTitle;
+                vm.yearTable.body = msg.data[index].rowData;
+
+                // 图表数据
+                var unit =[], prev =[], current =[], target =[];
+                msg.data[index].rowData.forEach(function (item) {
+                    unit.push(item.unit)
+                    prev.push(item.sz)
+                    current.push(item.bz)
+                    target.push(item.target)
+                });
+                vm.yearXaxis = unit;
+                vm.yearDataOne = current;
+                vm.yearDataTwo = prev;
+                vm.yearDataTarget = target;
 
 
+
+
+
+                vm.yearChart()
                 if (callback) callback();
             });
         },
 
-        getQuarterData: function (parmas, callback) {
+        changeYearTab: function (index) {
+            this.yearTabActiveIndex = index;
+            this.getYearData(index)
+        },
+
+        getQuarterData: function (index, parmas, callback) {
+            this.quarterTabActiveIndex = index = index || 0;// 季度的切换都是选中第一个tab
+
             parmas = {
                 aYear: this.currentYear,
                 hq: this.currentQuarter,
@@ -67,12 +120,46 @@ var vm = new Vue({
                 closingDate2: '',
             };
             axios.get(PATH +'/a/weightedCycleComparison', {params: parmas}).then(function (datas){
-                var data = datas.data;
-                console.log(data)
+                var data = datas.data,
+                    msg  = datas.data.msg;
+                if (data.code === 201) {
+                    toastr.error('暂无相关数据!')
+                    return;
+                }
+
+                vm.quarterTableTitle = msg.subTitles;
+                vm.quarterTable.head = msg.data[index].rowTitle;
+                vm.quarterTable.body = msg.data[index].rowData;
+
+                // 图表数据
+                var unit =[], prev =[], current =[], target =[];
+                msg.data[index].rowData.forEach(function (item) {
+                    unit.push(item.unit)
+                    prev.push(item.sz)
+                    current.push(item.bz)
+                    target.push(item.target)
+                });
+                vm.yearXaxis = unit;
+                vm.yearDataOne = current;
+                vm.yearDataTwo = prev;
+                vm.yearDataTarget = target;
 
 
+                vm.quarterChart()
                 if (callback) callback();
             });
+        },
+
+        changeQuarterTab: function (index) {
+            this.quarterTabActiveIndex = index;
+            this.getQuarterData(index)
+        },
+
+        changeQuarterData: function (quarter) {
+            this.currentQuarterActive = quarter +1;
+            this.currentQuarter = 'q'+ (quarter +1);
+            this.getQuarterData()
+
         },
         
         yearChart: function () {
@@ -97,7 +184,7 @@ var vm = new Vue({
                     }
                 },
                 legend: {
-                    data: ['日期范围1', '日期范围2', '目标额']
+                    data: this.yearLegend,
                 },
 
                 grid: {
@@ -110,13 +197,7 @@ var vm = new Vue({
                     {
                         type: 'category',
                         axisTick: {show: false},
-                        data: [
-                            '金融客户事业部',
-                            '行业客户事业部',
-                            '通用客户事业部',
-                            '港台客户事业部',
-                            '公共客户事业部',
-                        ]
+                        data: this.yearXaxis,
                     }
                 ],
                 yAxis: [
@@ -137,7 +218,7 @@ var vm = new Vue({
                 ],
                 series: [
                     {
-                        name: '日期范围1',
+                        name: this.yearLegend[0],
                         type: 'bar',
                         //animationDuration: 5000,// 动画持续时间
                         itemStyle:{
@@ -152,10 +233,10 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: [1200, 2000, 1500, 800, 700,],
+                        data: this.yearDataOne,
                     },
                     {
-                        name: '日期范围2',
+                        name: this.yearLegend[1],
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -169,10 +250,10 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: [3120, 1200, 2150, 980, 370,],
+                        data: this.yearDataTwo,
                     },
                     {
-                        name:'目标额',
+                        name: this.yearLegend[2],
                         type:'line',
                         symbol: 'arrow',
                         symbolSize: 20,
@@ -189,7 +270,7 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data:[3000,2300, 3400, 1900, 2000]
+                        data: this.yearDataTarget,
                     },
                 ]
             };
@@ -218,7 +299,7 @@ var vm = new Vue({
                     }
                 },
                 legend: {
-                    data: ['日期范围1', '日期范围2', '目标额']
+                    data: this.quarterLegend,
                 },
 
                 grid: {
@@ -231,13 +312,7 @@ var vm = new Vue({
                     {
                         type: 'category',
                         axisTick: {show: false},
-                        data: [
-                            '金融客户事业部',
-                            '行业客户事业部',
-                            '通用客户事业部',
-                            '港台客户事业部',
-                            '公共客户事业部',
-                        ]
+                        data: this.quarterXaxis,
                     }
                 ],
                 yAxis: [
@@ -248,7 +323,7 @@ var vm = new Vue({
                 ],
                 series: [
                     {
-                        name: '日期范围1',
+                        name: this.quarterLegend[0],
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -262,10 +337,10 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: [1200, 2000, 1500, 800, 700,],
+                        data: this.yearDataOne,
                     },
                     {
-                        name: '日期范围2',
+                        name: this.quarterLegend[1],
                         type: 'bar',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
@@ -279,10 +354,10 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: [3120, 1200, 2150, 980, 370,],
+                        data: this.yearDataTwo,
                     },
                     {
-                        name:'目标额',
+                        name: this.quarterLegend[2],
                         type:'line',
                         symbol: 'arrow',
                         symbolSize: 20,
@@ -299,7 +374,7 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data:[3000,2300, 3400, 1900, 2000]
+                        data: this.yearDataTarget,
                     },
                 ]
             };
