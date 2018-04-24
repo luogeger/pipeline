@@ -13,8 +13,8 @@
     <div class="year-contrast">
         <div class="operas clearfix">
             <div class="operas-list pull-left">
-                <span class="active">上半年</span>
-                <span class="">下半年</span>
+                <span @click="changeYearDate(1)" :class="{active: currentHalfYearActive == 1}">上半年</span>
+                <span @click="changeYearDate(2)" :class="{active: currentHalfYearActive == 2}">上半年</span>
             </div>
 
             <div class="pull-right">
@@ -87,23 +87,19 @@
 
             <div class="input-group">
                 <span class="input-group-label ">日期范围1</span>
-                <input v-model="dateOne"
-                       @click="rangeBlur(1)"
+                <input
                        id="dateOne"
                        class="input-group-form i-date-form-range"
                        placeholder="请选择日期范围"
-                       readonly
                        type="text">
             </div>
 
             <div class="input-group">
                 <span class="input-group-label ">日期范围2</span>
-                <input v-model="dateTwo"
-                       @click="rangeBlur(2)"
+                <input
                        id="dateTwo"
                        class="input-group-form i-date-form-range"
                        placeholder="请选择日期范围"
-                       readonly
                        type="text">
             </div>
         </div><!-- /.year-opera -->
@@ -146,5 +142,4 @@
     </div><!-- /.quarter-contrast -->
 
 </div><!-- /.main -->
-
 <script src="../static/scripts/analyze/weightCycle.js"></script>

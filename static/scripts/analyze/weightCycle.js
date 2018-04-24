@@ -18,7 +18,8 @@ var vm = new Vue({
         chartColor: chartColor,
 
         // 半年 - 表格数据
-        yearTabActiveIndex: 0,
+        currentHalfYearActive: currentAccYear,// 半年的 active
+        yearTabActiveIndex: 0,// tab 的 active
         yearTableTitle: [],
         yearTable: {
             head: {},
@@ -105,9 +106,17 @@ var vm = new Vue({
             });
         },
 
+        // 半年tab 的切换
         changeYearTab: function (index) {
             this.yearTabActiveIndex = index;
             this.getYearData(index)
+        },
+
+        // 半年的切换
+        changeYearDate: function (type) {
+            this.currentHalfYearActive = type;
+            this.currentAccYear = 'h' + type;
+            this.getYearData()
         },
 
         getQuarterData: function (index, parmas, callback) {
@@ -150,11 +159,13 @@ var vm = new Vue({
             });
         },
 
+        // 季度tab 的切换
         changeQuarterTab: function (index) {
             this.quarterTabActiveIndex = index;
             this.getQuarterData(index)
         },
 
+        // 季度 的切换
         changeQuarterData: function (quarter) {
             this.currentQuarterActive = quarter +1;
             this.currentQuarter = 'q'+ (quarter +1);
@@ -382,21 +393,25 @@ var vm = new Vue({
         },
 
         renderDate: function () {
+            console.log(laydate.render)
             laydate.render({
                 elem: '#dateOne', //指定元素
+                range: true,
                 done: function(val) {
-                    vm.getDateRange(val, 1);
+                    console.log(val, 1);
                 }
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
+                range: true,
                 done: function(val) {
-                    vm.getDateRange(val, 2);
+                    console.log(val, 2);
                 }
             });
         },
 
         getDateRange: function (val, type) {
+            console.log(val, type)
             type === 1? dateOne(val) : dateTwo(val);
 
             function dateOne(val) {
