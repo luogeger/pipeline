@@ -1,7 +1,0 @@
-{
-"version": 3,
-"mappings": "AACE,2BAAc;EACZ,gBAAgB,EAAE,OAAO;AAG3B,WAAK;EACH,aAAa,EAAE,IAAI;EACnB,uBAAW;IACT,OAAO,EAAE,IAAI;IACb,aAAa,EAAE,iBAAiB;EAOlC,uBAAW;IACT,OAAO,EAAE,IAAI;AAIjB,cAAQ;EACN,OAAO,EAAE,IAAI",
-"sources": ["signStatistics.scss"],
-"names": [],
-"file": "signStatistics.css"
-}
