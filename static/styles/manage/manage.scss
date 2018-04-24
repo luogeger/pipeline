@@ -12,15 +12,20 @@
   margin-bottom: 10px;
   position: relative;
 
-    /*:checked ~.drowicon {
+    :checked ~.drowicon {
       .fa {
         transform: rotate(180deg);
       }
     }
     :checked ~ .content {
       max-height: 500px;
+      padding-bottom: 0;
+
+      .dropdown-wrap,
+      .input-group {
+        margin-bottom: 15px;
+      }
     }
-*/
     .drowicon {
       z-index: 2;
       display: inline-block;
@@ -35,15 +40,24 @@
       }
     }
     .content {
-      //max-height: 45px;
+      max-height: 45px;
+      padding-bottom: 15px;
       //overflow: hidden;
       transition: max-height .4s;
+
+      .dropdown-wrap,
+      .input-group {
+        margin-bottom: 30px;
+        transition: all .4s;
+      }
     }
+  /*
 
   .dropdown-wrap,
   .input-group {
     margin-bottom: 15px;
   }
+  */
 
   .i-date-picker-container .date-input-box > input{
     width: 100px;
@@ -68,6 +82,39 @@
         min-width: 45px ;
         padding-top: 12px;
         padding-bottom: 12px;
+      }
+      thead {
+        .desc {
+          display: inline-block;
+          position: relative;
+          .icon-asc,
+          .icon-desc {
+            display: inline-block;
+            height: 10px;
+            width: 14px;
+            overflow: hidden;
+            position: absolute;
+            top: -16px;
+
+            .fa {
+              font-size: 18px;
+              color: #FAD3B2;
+              margin-top: -5px;
+              cursor: pointer
+            }
+          }
+          .icon-desc {
+            height: 12px;
+            top: -4px;
+            .fa {
+              position: absolute;
+              left: 2px;
+            }
+          }
+          .active .fa {
+            color: #fff;
+          }
+        }
       }
       tbody {
         tr {

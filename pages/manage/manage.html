@@ -7,8 +7,8 @@
     </div>
     <!-- 搜索框 -->
     <div class="search-wrapper clearfix">
-        <!--<input id="drow" class="hide" type="checkbox">
-        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>-->
+        <input id="drow" class="hide" type="checkbox">
+        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
         <div class="content" style="width: calc(100% - 100px)">
             <div class="input-group">
                 <span class="input-group-label">客户：</span>
@@ -155,11 +155,14 @@
                         class="btn btn-sm btn-theme modelDomBtn"
                         style="margin-right: 10px">新增 Pipeline</button>
                 <div v-if="userLevel == 'xs'"
-                     @click="upload" class="btn btn-theme" style="margin-right: 15px">
+                     @click="upload" class="btn btn-theme"
+                     style="margin-right: 15px;display: none">
                     <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
-                加权金额总计（万元）：<span class="theme-color">{{  weightedSumTotal }}</span>
+                预计签约金额(万元):
+                <span class="theme-color" style="margin-right: 15px">{{ expectSignSumTotal }}</span>
+                加权金额总计(万元):<span class="theme-color">{{  weightedSumTotal }}</span>
                 <div class="pull-right">
                     <div class="data-page page-css">
                         <div @click="calcDataPage('data' , 'first')"
@@ -199,7 +202,18 @@
                                 <th>客服所在省份</th>
                                 <th>客户属性</th>
                                 <th>客户编号</th>
-                                <th>客户名称</th>
+                                <th>客户名称
+                                    <div class="desc">
+                                    <span @click="ascClick" :class="ascActive == true?'active' : ''"
+                                          class="icon-asc">
+                                        <i class="fa fa-caret-up"></i>
+                                    </span>
+                                    <span @click="descClick"
+                                          class="icon-desc" :class="descActive == true?'active' : ''">
+                                        <i class="fa fa-caret-down"></i>
+                                    </span>
+                                    </div>
+                                </th>
                                 <th>解决方案名称</th>
                                 <th>行业线</th>
                                 <th>项目性质</th>
@@ -963,9 +977,12 @@
                 }],
                 oauthLists: [],               // 初始值权限信息
                 mngSalesGroups: [],
-                weightedSumTotal: '',         // 加权金额
+                weightedSumTotal: '',         // 加权金额总计
+                expectSignSumTotal: '',       // 预计签约金额总计
                 items: [],                    // 表格数据
                 noData: false,               // 搜索不到数据
+                ascActive: false,            // 点击表格客户名称升序
+                descActive: false,           // 点击表格客户名称降序
 
                 // pipeline表格分页
                 data: [],
@@ -1056,6 +1073,19 @@
                 vm.showData();
             },
             //// ==========客户名称========
+            // 表格查询客户名称排序
+            ascClick: function() {
+                vm.tableList.direction = 'asc';
+                this.ascActive = true;
+                this.descActive = false;
+                vm.showData();
+            },
+            descClick: function() {
+                vm.tableList.direction = 'desc';
+                this.descActive = true;
+                this.ascActive = false;
+                vm.showData();
+            },
             // 客户名称键盘回车(如果input为空)
             keyEnterCustomer: function() {
                 var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
@@ -1085,18 +1115,31 @@
                         clientName = vm.hCustomerName;
                         break;
                 }
-                params = {
+                /*params = {
                     customerName: clientName,
-                };
-                axios.get(PATH +'/crm/selectCustomer4PipelineLike', {params: params}).then(function (datas){
-                    var data = datas.data;
-                    var list = 'fuzzyQueryList_' +type;
-                    if (data.code === 201 || data.msg.length === 0) return;
-                    vm[list] = data.msg;
-                    vm.customerNames = data.msg;
+                };*/
+                $.ajax({
+                    url: PATH +'/crm/selectCustomer4PipelineLike',
+                    data: {
+                        customerName: clientName
+                    },
+                    async: false,
+                    type: 'get',
+                    async: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        var list = 'fuzzyQueryList_' +type;
+                        if (result.code === 201 || result.msg.length === 0) return;
+                        vm[list] = result.msg;
+                        vm.customerNames = result.msg;
 
-                    console.log(vm[list], 'mo');
-                });
+                        console.log(vm[list], 'mo');
+                        console.log(vm.customerNames, 'data.msg');
+                    },
+                    error: function(result) {
+                        console.log('请求失败');
+                    }
+                })
             },// 获取数据
             selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
                 console.log(text);
@@ -1396,6 +1439,7 @@
                         console.log('---查询到的pipeline表哥数据------')
                         console.log(result);
                         vm.weightedSumTotal = result.oth.weightedSumTotal;
+                        vm.expectSignSumTotal = result.oth.expectSignSumTotal;
 
                         // this.isClicked = 1;
 
@@ -1740,6 +1784,8 @@
                     return
                 }
                 else{
+                    this.getFuzzyList(2);
+
                     for(var i = 0;i < vm.customerNames.length;i++) {
                         vm.customerNameArray.push(vm.customerNames[i].name);
                     }
@@ -1748,8 +1794,6 @@
                         return
                     }
                 }
-
-
 
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
