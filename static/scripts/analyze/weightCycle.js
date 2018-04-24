@@ -2,6 +2,18 @@
 var vm = new Vue({
     el: '#weightCycle',
     data: {
+        // 下拉框年份选择
+        yearRange: [
+            2015,
+            2016,
+            2017,
+            2018,
+            2019,
+            2020,
+        ],
+        selectionDefaultText: currentYear,
+        selectionIsShow: false,
+
         // 参数
         currentYear: currentYear,// 当前年份
         currentAccYear: 'h'+ currentAccYear,// 上半年， 下半年
@@ -66,7 +78,7 @@ var vm = new Vue({
     methods: {
 
         getYearData: function (index, parmas, callback) {
-            index = index || 0;
+            this.yearTabActiveIndex = index = index || 0;// 默认选中第一个 tab
             parmas = {
                 aYear: this.currentYear,
                 hq: this.currentAccYear,
@@ -83,25 +95,9 @@ var vm = new Vue({
                 vm.yearTableTitle = msg.subTitles;
                 vm.yearTable.head = msg.data[index].rowTitle;
                 vm.yearTable.body = msg.data[index].rowData;
-
-                // 图表数据
-                var unit =[], prev =[], current =[], target =[];
-                msg.data[index].rowData.forEach(function (item) {
-                    unit.push(item.unit)
-                    prev.push(item.sz)
-                    current.push(item.bz)
-                    target.push(item.target)
-                });
-                vm.yearXaxis = unit;
-                vm.yearDataOne = current;
-                vm.yearDataTwo = prev;
-                vm.yearDataTarget = target;
+                vm.yearTable.foot = vm.totalCalc(msg.data[index].rowData, 'year');// 图表的刷新也在这个方法内部
 
 
-
-
-
-                vm.yearChart()
                 if (callback) callback();
             });
         },
@@ -139,22 +135,9 @@ var vm = new Vue({
                 vm.quarterTableTitle = msg.subTitles;
                 vm.quarterTable.head = msg.data[index].rowTitle;
                 vm.quarterTable.body = msg.data[index].rowData;
-
-                // 图表数据
-                var unit =[], prev =[], current =[], target =[];
-                msg.data[index].rowData.forEach(function (item) {
-                    unit.push(item.unit)
-                    prev.push(item.sz)
-                    current.push(item.bz)
-                    target.push(item.target)
-                });
-                vm.yearXaxis = unit;
-                vm.yearDataOne = current;
-                vm.yearDataTwo = prev;
-                vm.yearDataTarget = target;
+                vm.quarterTable.foot = vm.totalCalc(msg.data[index].rowData, 'quarter');// 图表的刷新也在这个方法内部
 
 
-                vm.quarterChart()
                 if (callback) callback();
             });
         },
@@ -392,8 +375,70 @@ var vm = new Vue({
             box.setOption(option);
         },
 
+        // 计算表格合计的方法
+        totalCalc: function (arrData, type) {
+            // 图表数据
+            var unit =[], prev =[], current =[], target =[], compareSzRise =[];
+            arrData.forEach(function (item) {
+                unit.push(item.unit)
+                prev.push(item.sz)
+                current.push(item.bz)
+                target.push(item.target)
+                compareSzRise.push(item.compareSzRise)
+            });
+            if (type === 'year') {
+                vm.yearXaxis = unit;
+                vm.yearDataOne = current;
+                vm.yearDataTwo = prev;
+                // vm.yearDataTarget = target;
+                vm.yearChart();
+            } else{
+
+                vm.yearXaxis = unit;
+                vm.yearDataOne = current;
+                vm.yearDataTwo = prev;
+                // vm.yearDataTarget = target;
+                vm.quarterChart();
+            }
+
+
+
+            // 合计数据
+            var footObj = {
+                unit: '合计',
+                bz: sum(current),
+                sz: sum(prev),
+                target: sum(target),
+                compareSzRise: sum(compareSzRise),
+                compareSzRate: scaleNum(sum(compareSzRise), sum(prev)),
+            };
+
+            function sum (arr) {
+                var s=0, i;
+                for (i=arr.length-1; i>=0; i--) {
+                    if (typeof arr[i] === 'string') {
+                        arr[i] = arr[i].substring(0, arr[i].length -1);
+                        s = accAdd(s, arr[i]);
+                    } else{
+                        s = accAdd(s, arr[i]);
+                    }
+                }
+                if (typeof arr[0] === 'string') {
+                    return s + '%';
+                }
+                return s;
+            };// 数组求和
+            function scaleNum(A, B) {
+                var div = Math.floor((A/B) *10000) / 10000;
+                div = Number(div*100).toFixed(1);
+                if (div === '0.0') div = '0';
+                div += "%";
+                return div;
+            };// 增长率的计算
+            return footObj;
+        },
+
         renderDate: function () {
-            console.log(laydate.render)
             laydate.render({
                 elem: '#dateOne', //指定元素
                 range: true,
@@ -423,6 +468,23 @@ var vm = new Vue({
             };
         },
 
-    },
+        // 日期选择
+        changeSelectionList: function (event) {
+            event.cancelBubble = true;// 阻止冒泡
+            this.selectionIsShow = true;
+        },
+        clickItem: function (item) {
+            this.selectionDefaultText = item;
+            this.selectionIsShow = false;
+
+            // 重新请求数据
+            this.currentYear = item;
+            this.getYearData();
+            this.getQuarterData();
+        },
+        mainClick: function (e) {
+            this.selectionIsShow = false;
+        },
+    },// methods
 });
 

@@ -4,8 +4,8 @@ var vm = new Vue({
         return {
             loginList: {},
             msg: '',
-            // PATH: 'http://172.16.8.130:8080/iboss-prism',
-            PATH: '/iboss-prism',
+            PATH: 'http://172.16.8.130:8080/iboss-prism',
+            // PATH: '/iboss-prism',
         }
     },
     methods: {
