@@ -14,9 +14,6 @@ var vm = new Vue({
         selectionDefaultText: currentYear,
         selectionIsShow: false,
 
-        // 时间初始值
-        dateOneInit: '',
-        dateTwoInit: '',
 
         // 参数
         currentYear: currentYear,// 当前年份
@@ -26,9 +23,9 @@ var vm = new Vue({
         unitCode: '',
         unitType: '',
         dateOne: '',
-        dateOneClose: '',
+        dateOneClose: szDate,
         dateTwo: '',
-        dateTwoClose: '',
+        dateTwoClose: sszDate,
 
         // 数据
         chartColor: chartColor,
@@ -44,7 +41,7 @@ var vm = new Vue({
         },
 
         // 半年 - 图表数据
-        yearLegend:  ['日期范围1', '日期范围2', '目标额'],
+        yearLegend:  ['截止日期1', '截止日期2', '目标额'],
         yearXaxis: [],
         yearDataOne: [],
         yearDataTwo: [],
@@ -63,7 +60,7 @@ var vm = new Vue({
 
 
         // 季度 - 图表数据
-        quarterLegend:  ['日期范围1', '日期范围2', '目标额'],
+        quarterLegend:  ['截止日期1', '截止日期2', '目标额'],
         quarterXaxis: [],
         quarterDataOne: [],
         quarterDataTwo: [],
@@ -123,16 +120,20 @@ var vm = new Vue({
             this.getYearData()
         },
 
-        getQuarterData: function (index, parmas, callback) {
+        getQuarterData: function (index, params, callback) {
             this.quarterTabActiveIndex = index = index || 0;// 季度的切换都是选中第一个tab
 
             var obj = {
                 aYear: this.currentYear,
                 hq: this.currentQuarter,
+                closingDate1: this.dateOneClose,
+                closingDate2: this.dateTwoClose,
+                // startDate1: '',
+                // startDate2: '',
             };
-            parmas = Object.assign(obj, parmas)
-            console.log(parmas)
-            axios.get(PATH +'/a/weightedCycleComparison', {params: parmas}).then(function (datas){
+            params = Object.assign(obj, params)
+            console.log(params)
+            axios.get(PATH +'/a/weightedCycleComparison', {params: params}).then(function (datas){
                 var data = datas.data,
                     msg  = datas.data.msg;
                 if (data.code === 201) {
@@ -451,14 +452,16 @@ var vm = new Vue({
         renderDate: function () {
             laydate.render({
                 elem: '#dateOne', //指定元素
-                range: true,
+                //range: true,
+                value: this.dateOneClose,
                 done: function (val) {
                     vm.getDateRange(val, 1)
                 }
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
-                range: true,
+                //range: true,
+                value: this.dateTwoClose,
                 done: function (val) {
                     vm.getDateRange(val, 2)
                 }
@@ -467,19 +470,15 @@ var vm = new Vue({
         },
 
         getDateRange: function (val, type) {
-            console.log(val, type)
             var parmas;
-            if (val === 1) {
-                vm.dataOne       = val.substring(0,10);
-                vm.dataOneClose  = val.substring(13, val.length);
-                console.log(vm.dateOneClose)
+            if (type === 1) {
+                vm.dateOneClose       = val.substring(0,10);
                 parmas = {
-                    closingDate1: vm.dataOneClose,
+                    closingDate1: vm.dateOneClose,
                 };
                 this.getQuarterData(null, parmas)
             } else {
-                vm.dateTwo       = val.substring(0,10);
-                vm.dateTwoClose  = val.substring(13, val.length);
+                vm.dateTwoClose       = val.substring(0,10);
                 parmas = {
                     closingDate2: vm.dateTwoClose,
                 };
@@ -489,6 +488,38 @@ var vm = new Vue({
 
 
         },// getDateRange
+
+        // 增长额详情
+        growthDetail: function (code, type, callback) {
+            console.log(code, type)
+            var params = {
+                aYear: this.currentYear,
+                hq: this.currentQuarter,
+                closingDate1: this.dateOneClose,
+                closingDate2: this.dateTwoClose,
+                unitCode: code,
+                unitType: type,
+            };
+            // axios.get(PATH +'', {params: params}).then(function (datas){
+            //     var data = datas.data,
+            //         msg  = datas.data.msg;
+            //     if (data.code === 201) {
+            //         toastr.error('暂无相关数据!')
+            //         return;
+            //     }
+            //
+            //     if (callback) callback();
+            // });
+        },
+
+
+
+
+
+
+
+
+
 
         // 年份选择
         changeSelectionList: function (event) {
@@ -507,8 +538,6 @@ var vm = new Vue({
         mainClick: function (e) {
             this.selectionIsShow = false;
         },
-
-
     },// methods
 
 });

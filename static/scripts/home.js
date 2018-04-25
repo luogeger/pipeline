@@ -18,6 +18,8 @@ var timeYear,// 2018-04-18
     currentDay,
     currentAccYear,// 精确到上半年还是下班年
     currentQuarter,// 当前季度
+    szDate,// 上周
+    sszDate,// 上上周
     // ====
     userName,
     userCode,
@@ -28,6 +30,8 @@ var timeYear,// 2018-04-18
     chartColor = ['#2F4554', '#61A0A8', '#C23531'];
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg         = datas.msg;
+    szDate          = (msg.szDate).substring(0, 10);// 上周
+    sszDate         = (msg.sszDate).substring(0, 10);// 上上周
     timeYear        = (msg.currentDate).substring(0, 10);
     currentYear     = (msg.currentDate).substring(0, 4);
     currentMonth    = (msg.currentDate).substring(5, 7);
@@ -66,7 +70,7 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
 
 
 
-    console.log(userLevel)
+    console.log(userLevel, szDate, sszDate)
 });
 
 $.getJSON(PATH +'/oauth/queryMenu4Nav', function (datas) {
