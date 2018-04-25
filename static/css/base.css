@@ -455,7 +455,7 @@ input.disabled {
   line-height: 30px; }
 .input-group .input-group-form {
   height: 30px;
-  width: 162px;
+  width: 200px;
   font-size: 14px;
   border-radius: 4px; }
 .input-group .input-group-btn {
@@ -2174,7 +2174,7 @@ html #layuicss-laydate {
   border-radius: 3px; }
 
 .layui-laydate-content td.laydate-selected {
-  background-color: #00F7DE; }
+  background-color: rgba(255, 138, 65, 0.2); }
 
 .laydate-selected:hover {
   background-color: #ED6C1C !important; }

@@ -14,6 +14,10 @@ var vm = new Vue({
         selectionDefaultText: currentYear,
         selectionIsShow: false,
 
+        // 时间初始值
+        dateOneInit: '',
+        dateTwoInit: '',
+
         // 参数
         currentYear: currentYear,// 当前年份
         currentAccYear: 'h'+ currentAccYear,// 上半年， 下半年
@@ -82,6 +86,7 @@ var vm = new Vue({
 
         getYearData: function (index, parmas, callback) {
             this.yearTabActiveIndex = index = index || 0;// 默认选中第一个 tab
+
             parmas = {
                 aYear: this.currentYear,
                 hq: this.currentAccYear,
@@ -121,12 +126,12 @@ var vm = new Vue({
         getQuarterData: function (index, parmas, callback) {
             this.quarterTabActiveIndex = index = index || 0;// 季度的切换都是选中第一个tab
 
-            parmas = {
+            var obj = {
                 aYear: this.currentYear,
                 hq: this.currentQuarter,
-                closingDate1: '',
-                closingDate2: '',
             };
+            parmas = Object.assign(obj, parmas)
+            console.log(parmas)
             axios.get(PATH +'/a/weightedCycleComparison', {params: parmas}).then(function (datas){
                 var data = datas.data,
                     msg  = datas.data.msg;
@@ -432,6 +437,7 @@ var vm = new Vue({
                 return s;
             };// 数组求和
             function scaleNum(A, B) {
+                if (B === 0) return '-';
                 var div = Math.floor((A/B) *10000) / 10000;
                 div = Number(div*100).toFixed(1);
                 if (div === '0.0') div = '0';
@@ -446,26 +452,43 @@ var vm = new Vue({
             laydate.render({
                 elem: '#dateOne', //指定元素
                 range: true,
+                done: function (val) {
+                    vm.getDateRange(val, 1)
+                }
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
                 range: true,
+                done: function (val) {
+                    vm.getDateRange(val, 2)
+                }
             });
 
         },
 
         getDateRange: function (val, type) {
             console.log(val, type)
-            type === 1? dateOne(val) : dateTwo(val);
+            var parmas;
+            if (val === 1) {
+                vm.dataOne       = val.substring(0,10);
+                vm.dataOneClose  = val.substring(13, val.length);
+                console.log(vm.dateOneClose)
+                parmas = {
+                    closingDate1: vm.dataOneClose,
+                };
+                this.getQuarterData(null, parmas)
+            } else {
+                vm.dateTwo       = val.substring(0,10);
+                vm.dateTwoClose  = val.substring(13, val.length);
+                parmas = {
+                    closingDate2: vm.dateTwoClose,
+                };
+                this.getQuarterData(null, parmas)
+            }
 
-            function dateOne(val) {
-                vm.dateOne = val;
-            };
 
-            function dateTwo(val) {
-                vm.dateTwo = val;
-            };
-        },
+
+        },// getDateRange
 
         // 年份选择
         changeSelectionList: function (event) {
@@ -485,8 +508,7 @@ var vm = new Vue({
             this.selectionIsShow = false;
         },
 
-        layDate: function () {
-        },
+
     },// methods
 
 });

@@ -351,7 +351,8 @@ html #layuicss-laydate {
 }
 
 .layui-laydate-content td.laydate-selected {
-  background-color: #00F7DE
+  //background-color: #00F7DE
+  background-color: $theme-rgb2;
 }
 
 .laydate-selected:hover {
