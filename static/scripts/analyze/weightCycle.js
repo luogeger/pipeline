@@ -69,10 +69,13 @@ var vm = new Vue({
     },
 
     created: function () {
-        this.renderDate();// 日期
         this.getYearData();
         this.getQuarterData();
 
+    },
+
+    mounted: function () {
+        this.renderDate();//// 绑定日期插件事件
     },
 
     methods: {
@@ -390,14 +393,14 @@ var vm = new Vue({
                 vm.yearXaxis = unit;
                 vm.yearDataOne = current;
                 vm.yearDataTwo = prev;
-                // vm.yearDataTarget = target;
+                vm.yearDataTarget = target;
                 vm.yearChart();
             } else{
 
                 vm.yearXaxis = unit;
                 vm.yearDataOne = current;
                 vm.yearDataTwo = prev;
-                // vm.yearDataTarget = target;
+                vm.yearDataTarget = target;
                 vm.quarterChart();
             }
 
@@ -438,21 +441,17 @@ var vm = new Vue({
             return footObj;
         },
 
+        // 绑定日期插件事件
         renderDate: function () {
             laydate.render({
                 elem: '#dateOne', //指定元素
                 range: true,
-                done: function(val) {
-                    console.log(val, 1);
-                }
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
                 range: true,
-                done: function(val) {
-                    console.log(val, 2);
-                }
             });
+
         },
 
         getDateRange: function (val, type) {
@@ -468,7 +467,7 @@ var vm = new Vue({
             };
         },
 
-        // 日期选择
+        // 年份选择
         changeSelectionList: function (event) {
             event.cancelBubble = true;// 阻止冒泡
             this.selectionIsShow = true;
@@ -485,6 +484,10 @@ var vm = new Vue({
         mainClick: function (e) {
             this.selectionIsShow = false;
         },
+
+        layDate: function () {
+        },
     },// methods
+
 });
 
