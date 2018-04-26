@@ -67,6 +67,53 @@ var vm = new Vue({
         quarterDataTarget: [],
 
 
+        // 增长额详情
+        growthDetailShow: false,
+        growthDetailTitle: '加权大于50.0万变动的项目信息(单位：万元)',
+        growthDetailList: [
+            {
+                "changeField": [
+                    {
+                        "field": "成功率",
+                        "original": "30%",
+                        "target": "10%"
+                    }
+                ],
+                "customerName": "北京优生国际医院管理有限公司",
+                "industryLineName": "互联网金融",
+                "remark": "-",
+                "salesStaffName": "林冠欣",
+                "weightedSumIncrease": -66.6
+            },
+            {
+                "changeField": [
+                    {
+                        "field": "成功率",
+                        "original": "30%",
+                        "target": "10%"
+                    },
+                    {
+                        "field": "签约额",
+                        "original": "30%",
+                        "target": "10%"
+                    },
+                    {
+                        "field": "项目进度",
+                        "original": "30%",
+                        "target": "10%"
+                    },
+
+                ],
+                "customerName": "北京优生国际医院管理有限公司",
+                "industryLineName": "互联网金融",
+                "remark": "-",
+                "salesStaffName": "林冠欣",
+                "weightedSumIncrease": -66.6
+            },
+
+        ]
+
+
     },
 
     created: function () {
@@ -132,7 +179,6 @@ var vm = new Vue({
                 // startDate2: '',
             };
             params = Object.assign(obj, params)
-            console.log(params)
             axios.get(PATH +'/a/weightedCycleComparison', {params: params}).then(function (datas){
                 var data = datas.data,
                     msg  = datas.data.msg;
@@ -491,6 +537,7 @@ var vm = new Vue({
 
         // 增长额详情
         growthDetail: function (code, type, callback) {
+            this.growthDetailShow = false;
             console.log(code, type)
             var params = {
                 aYear: this.currentYear,
@@ -500,16 +547,22 @@ var vm = new Vue({
                 unitCode: code,
                 unitType: type,
             };
-            // axios.get(PATH +'', {params: params}).then(function (datas){
-            //     var data = datas.data,
-            //         msg  = datas.data.msg;
-            //     if (data.code === 201) {
-            //         toastr.error('暂无相关数据!')
-            //         return;
-            //     }
-            //
-            //     if (callback) callback();
-            // });
+            console.log(params)
+            axios.get(PATH +'/a/weightedCycleComparisonDifferenceDetail', {params: params}).then(function (datas){
+                var data = datas.data, msg  = datas.data.msg;
+                console.log(data)
+                if (data.code === 201) {
+                    toastr.error('暂无相关数据!')
+                    return;
+                }
+
+                if (callback) callback();
+            });
+        },
+
+        // 取消增长额详情弹窗
+        hidePop: function () {
+            this.growthDetailShow = true;
         },
 
 

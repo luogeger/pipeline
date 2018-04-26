@@ -2885,24 +2885,30 @@ button.toast-close-button {
         color: #FF8A41; }
         .dialog-wrap .dialog-content .title .dialog-close:hover {
           color: #ED6C1C; }
+    .dialog-wrap .dialog-content .pop-main,
     .dialog-wrap .dialog-content .main {
       width: 100%;
-      padding: 30px;
+      padding: 10px;
       background-color: #fff; }
+      .dialog-wrap .dialog-content .pop-main .msg-item,
       .dialog-wrap .dialog-content .main .msg-item {
         margin-bottom: 20px; }
+        .dialog-wrap .dialog-content .pop-main .msg-item .msg-item-left,
         .dialog-wrap .dialog-content .main .msg-item .msg-item-left {
           display: inline-block;
           width: 120px; }
+        .dialog-wrap .dialog-content .pop-main .msg-item .msg-item-right,
         .dialog-wrap .dialog-content .main .msg-item .msg-item-right {
           display: inline-block;
           width: 80%; }
+          .dialog-wrap .dialog-content .pop-main .msg-item .msg-item-right .area li,
           .dialog-wrap .dialog-content .main .msg-item .msg-item-right .area li {
             display: inline-block;
             border-radius: 3px;
             padding: 3px 7px;
             color: #838383;
             cursor: pointer; }
+          .dialog-wrap .dialog-content .pop-main .msg-item .msg-item-right .area .area-active,
           .dialog-wrap .dialog-content .main .msg-item .msg-item-right .area .area-active {
             background-color: #FAD3B2;
             color: #222; }
