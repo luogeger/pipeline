@@ -149,7 +149,7 @@
     </div>
     <div class="main-wrapper">
         <div :class="{maxWidth: ismaxWidth}" class="data">
-            <div class="subInformation clearfix">
+            <div class="subInformation clearfix" style="line-height: 30px">
                 <button v-if="userLevel == 'xs'"
                         @click="addData"
                         class="btn btn-sm btn-theme modelDomBtn"
@@ -163,7 +163,7 @@
                 预计签约金额(万元):
                 <span class="theme-color" style="margin-right: 15px">{{ expectSignSumTotal }}</span>
                 加权金额总计(万元):<span class="theme-color">{{  weightedSumTotal }}</span>
-                <div class="pull-right">
+                <div class="pull-right" style="margin-right: 50px">
                     <div class="data-page page-css">
                         <div @click="calcDataPage('data' , 'first')"
                              class="page-css-first">
@@ -186,6 +186,10 @@
                         <span>共&nbsp; {{dataPageTotal}} &nbsp;条</span>
                     </div>
                 </div>
+                <a @click="openUpdateCase"
+                   class="pull-right1"
+                   href="javascript:;"
+                   style="font-size:20px;color:#ed6d00;position: absolute;right: 15px;top: 15px;"><i class="fa fa-navicon"></i></a>
             </div>
             <div class="table-wrapper" style="overflow: auto">
                 <div style="width: 3500px">
@@ -232,8 +236,9 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <!--(vm.dataPageNum -1) * 10 + (index)-->
                                 <tr v-for="(item, index) in items"
-                                    @click="showOneChange(item,index)"
+                                    @click="showOneChange(item.soCoreCode, index)"
                                     :class="{ active: isClicked == index } ">
                                     <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
@@ -308,8 +313,8 @@
                      style="text-align: center">{{ updateCaseMsg }}</div>
                 <ul class="block">
                     <li v-for="(changeOneList,index) in changeOneLists">
-                        <h4>{{ changeOneList.opTime }}</h4>
-                        <!--<h4 v-time="changeOneListTime[index]"></h4>-->
+                        <!--<h4>{{ changeOneList.opTime }}</h4>-->
+                        <h4 v-time="new Date(changeOneList.opTime).getTime()"></h4>
                         <p>
                             <span v-html="changeOneList.operName"></span>
                             <span v-html="changeOneList.opDetail"></span>
@@ -958,7 +963,7 @@
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
-                changeOneListTime: [],        // 显示时间
+                // changeOneListTime: [],        // 显示时间
 
                 noUpdateCase: false,          //
                 updateCaseMsg: '',            // 提示语句
@@ -1057,14 +1062,12 @@
             }
         },
         mounted: function(){
-            // this.selectProjectNature();
-            // this.searchCustomer();
             this.getSoSolution4Tree();
             this.searchData();
             this.getFuzzyList();
             this.getSales();
             this.showData();
-            this.showChange();
+            this.openUpdateCase();
         },
         methods: {
             selectNothing: function() {
@@ -1358,26 +1361,18 @@
                 vm.addMsgShow = true;
                 vm.uploadDialogShow = true;
             },
-            // 表格右侧项目更新情况
-            showOneChange: function(item, index) {
+            // 获取表格右侧项目更新情况数据
+            showOneChange: function(soCoreCode, index) {
                 vm.changeOneLists = [] // 先清空项目更新情况列表
-                // 显示项目更新情况
-                this.updateCaseShow = false
-                this.ismaxWidth = false
-
 
                 this.isClicked = index; // tr添加active
-
-                // var codee = item.soCoreCode;
-
-                // console.log(item.soCoreCode,'item.soCoreCode')
 
                 $.ajax({
                     url:  PATH + '/so/queryPipelineChangeHis',
                     type: 'get',
                     dataType: 'json',
                     data: {
-                        'opDataKey': item.soCoreCode
+                        'opDataKey': soCoreCode
                     },
                     success: function(result){
                         if(result.root.length == 0) {
@@ -1391,10 +1386,13 @@
                                 var root = result.root[i];
                                 vm.changeOneLists.push(root);
                                 // 转换时间为时间戳
-                                for(var j = 0;j < vm.changeOneLists.length;j++) {
+                                /*for(var j = 0;j < vm.changeOneLists.length;j++) {
                                     var newDate = new Date(vm.changeOneLists[j].opTime);
-                                }
-                                vm.changeOneListTime.push(newDate.getTime());
+
+                                    console.log(vm.changeOneLists[j].opTime,'vm.changeOneLists[j].opTime')
+
+                                    vm.changeOneListTime.push(newDate.getTime());
+                                }*/
                             }
                         }
 
@@ -1404,12 +1402,20 @@
                     }
                 })
             },
+            // 显示表格右侧项目更新情况
+            openUpdateCase: function() {
+                // 默认第一条tr添加active
+                // this.showOneChange(vm.items[0].soCoreCode, 0);
+
+                // 显示项目更新情况
+                this.updateCaseShow = false
+                this.ismaxWidth = false
+            },
             // 关闭表格右侧项目更新情况
             closeUpdateCase: function() {
-                vm.showOneChange('', -1);
+                this.showOneChange('', -1);
 
-                // this.isClicked = -1;
-
+                // 关闭项目更新情况
                 this.updateCaseShow = true
                 this.ismaxWidth = true
             },
@@ -1430,36 +1436,27 @@
                 console.log('---查询pipeline的请求参数------')
                 console.log(this.tableList)
                 this.items = []
+
                 $.ajax({
                     url:  PATH + '/so/queryPipeline',
                     type: 'get',
                     dataType: 'json',
                     data: this.tableList,
                     success: function(result){
-                        console.log('---查询到的pipeline表哥数据------')
+                        console.log('---查询到的pipeline表格数据------')
                         console.log(result);
                         vm.weightedSumTotal = result.oth.weightedSumTotal;
                         vm.expectSignSumTotal = result.oth.expectSignSumTotal;
-
-                        // this.isClicked = 1;
 
                         // 点击tr，
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
 
                             vm.items.push(root);
-
-                            // 默认第一条tr添加active
-                            // vm.showOneChange(root, 0);
-
-                            // console.log(item.soCoreCode,'before')
-
-
-                            // item.soCoreCode = result.root[0].soCoreCode;
-
-
-                            // console.log(item.soCoreCode,'after')
                         }
+                        // 默认第一条tr添加active
+                        vm.showOneChange(vm.items[0].soCoreCode, 0);
+
                         // 如果表格无数据
                         if(result.root.length === 0) {
                             toastr.warning('没有相关信息 ！');
@@ -1543,7 +1540,7 @@
                         }
                         // 获取解决方案树
                         treeList = basic.soSolution4Tree;
-                        console.log(treeList, 'tree')
+                        // console.log(treeList, 'tree')
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
                                 var pObj = {
@@ -1568,7 +1565,7 @@
                                 }
                             }
                         }
-                        console.log(zNodes,'zNodes');
+                        // console.log(zNodes,'zNodes');
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
                     },
                     error: function(result) {
@@ -1844,6 +1841,8 @@
                             vm.showData();              // 再调用（表格查询）
                         }
                         toastr.success('操作成功');
+
+                        vm.showOneChange();
                     },
                     error: function(){
                         console.log('提交 请求失败');
