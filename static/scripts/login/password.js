@@ -2,17 +2,38 @@ var vm = new Vue({
     el: '#app',
     data: function() {
         return {
-            passwordList: {
+            oldLoginPassWord: '',          // input旧密码
+            newLoginPassWord: '',          // input新密码
+            passwordList: {                // 提交的对象
                 oldLoginPass: '',
                 newLoginPass: ''
             },
-            msg: '',
+            msg: '',                       // 错误提示
             newLoginPassAgain: '',
             keyStr: "ABCDEFGHIJKLMNOP" + "QRSTUVWXYZabcdef" + "ghijklmnopqrstuv"
-            + "wxyz0123456789+/" + "=",
+            + "wxyz0123456789+/" + "=",    // 加密
+            splitData: '',                 // 拼接日期
+            finishOldData: '',             // 拼接完成后旧密码字符串
+            finishNewData: '',             // 拼接完成后新密码字符串
         }
     },
     methods: {
+        // 获取日期
+        split: function() {
+            $.ajax({
+                async: false,
+                url: PATH + '/basic/selectNow',
+                type: 'get',
+                dateType: 'json',
+                success: function(result) {
+                    var date = result.msg.substring(0,10).split('-');
+                    vm.splitData = date.join('');
+                },
+                error: function(result) {
+                    console.log('请求失败');
+                }
+            })
+        },
         // base64加密开始
         encode64: function(input) {
             var output = "";
@@ -40,23 +61,24 @@ var vm = new Vue({
 
             return output;
         },
-        // base64加密结束
         submitHandle: function() {
-            var oldPassword = this.encode64(vm.passwordList.oldLoginPass); // 对数据加密
-            var newPassword = this.encode64(vm.passwordList.newPassword); // 对数据加密
-            /*console.log(oldPassword,'password');
-            console.log(newPassword,'password');*/
-            vm.passwordList.oldLoginPass = oldPassword;
-            vm.passwordList.newPassword = newPassword;
-            if(vm.passwordList.oldLoginPass == 'AA==') {
-                delete vm.passwordList.oldLoginPass;
-            }
-            else if(vm.passwordList.newLoginPass == 'AA==') {
-                delete vm.passwordList.newLoginPass;
-            }
-            else if(vm.passwordList.newLoginPass != vm.newLoginPassAgain){
+            this.split();
+
+            if(vm.newLoginPassWord != vm.newLoginPassAgain){
                 vm.msg = '两次密码不一致';
                 return false;
+            }
+            if(vm.oldLoginPassWord != '') {
+                this.finishOldData = vm.oldLoginPassWord + '#3#3#@3' + this.splitData; // 拼接字符串
+
+                var oldPassword = this.encode64(this.finishOldData); // 对数据加密
+                vm.passwordList.oldLoginPass = oldPassword;
+            }
+            if(vm.newLoginPassWord != '') {
+                this.finishNewData = vm.newLoginPassWord + '#3#3#@3' + this.splitData; // 拼接字符串
+
+                var newPassword = this.encode64(this.finishNewData); // 对数据加密
+                vm.passwordList.newLoginPass = newPassword;
             }
             $.ajax({
                 url: PATH + '/oauth/updateLoginPass',

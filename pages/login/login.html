@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>登录</title>
-    <link rel="stylesheet" href="/iboss-prism/static/css/base.css">
-    <link rel="stylesheet" href="/iboss-prism/static/css/fontawesome/font-awesome.css">
-    <link rel="stylesheet" href="/iboss-prism/static/styles/login/login.css">
+    <link rel="stylesheet" href="../../static/css/base.css">
+    <link rel="stylesheet" href="../../static/css/fontawesome/font-awesome.css">
+    <link rel="stylesheet" href="../../static/styles/login/login.css">
     <style>
         html, body {
             height: 100%;
         }
         body {
-            background: #1d242c url("/iboss-prism/static/images/bg.png") no-repeat;
+            background: #1d242c url("../../static/images/bg.png") no-repeat;
             background-size: cover;
             background-position: top center;
         }
@@ -37,8 +37,10 @@
             <div class="block-wrapper">
                 <div class="input-group">
                     <i class="fa fa-key"></i>
+                    <!--
+                           @keyup="split"-->
                     <input id="passwordLogin"
-                           v-model="loginList.loginPass"
+                           v-model="loginPassWord"
                            onkeydown="vm.keybordEnter()"
                            type="password" class="input-group-form" placeholder="输入您的密码">
                 </div>
@@ -54,9 +56,9 @@
         </div>
     </div>
 </div>
-<script src="/iboss-prism/static/js/vue.min.js"></script>
-<script src="/iboss-prism/static/js/vue-resource.js"></script>
-<script src="/iboss-prism/static/js/jquery-1.12.4.min.js"></script>
-<script src="/iboss-prism/static/scripts/login/login.js"></script>
+<script src="../../static/js/vue.min.js"></script>
+<script src="../../static/js/vue-resource.js"></script>
+<script src="../../static/js/jquery-1.12.4.min.js"></script>
+<script src="../../static/scripts/login/login.js"></script>
 </body>
 </html>

@@ -2,18 +2,41 @@ var vm = new Vue({
     el: '#app',
     data: function(){
         return {
-            loginList: {
+            loginPassWord: '',            // input密码
+            loginList: {                  // 登录提交的对象
                 loginAccount: '',
                 loginPass: ''
             },
-            msg: '',
+            msg: '',                      // 错误提示
             PATH: 'http://172.16.8.130:8080/iboss-prism',
             // PATH: '/iboss-prism',
             keyStr: "ABCDEFGHIJKLMNOP" + "QRSTUVWXYZabcdef" + "ghijklmnopqrstuv"
-            + "wxyz0123456789+/" + "=",
+            + "wxyz0123456789+/" + "=",   // 加密
+            splitData: '',                // 拼接日期
+            finishData: '',               // 拼接完成后字符串
         }
     },
     methods: {
+        // 获取日期
+        split: function() {
+            $.ajax({
+                async: false,
+                url: this.PATH + '/basic/selectNow',
+                type: 'get',
+                dateType: 'json',
+                success: function(result) {
+                    console.log(result.msg);
+
+                    var date = result.msg.substring(0,10).split('-');
+                    vm.splitData = date.join('');
+
+                    console.log(vm.splitData,'date');
+                },
+                error: function(result) {
+                    console.log('请求失败');
+                }
+            })
+        },
         // base64加密开始
         encode64: function(input) {
             var output = "";
@@ -41,15 +64,14 @@ var vm = new Vue({
 
             return output;
         },
-        // base64加密结束
         // 登陆
         submitHandle: function() {
-            var password = this.encode64(vm.loginList.loginPass); // 对数据加密
-            // var password = this.encode64($("#passwordLogin").val()); // 对数据加密
-            console.log(password,'password');
-            vm.loginList.loginPass = password;
-            if(vm.loginList.loginPass == 'AA==') {
-                delete vm.loginList.loginPass;
+            this.split();
+
+            if(vm.loginPassWord != '') {
+                this.finishData = vm.loginPassWord + '#3#3#@3' + this.splitData; // 拼接字符串
+                var password = this.encode64(this.finishData); // 对数据加密
+                vm.loginList.loginPass = password;
             }
             var _this = this;
             $.ajax({
@@ -63,6 +85,7 @@ var vm = new Vue({
                         vm.msg = result.msg
                         return;
                     }
+                    // location.pathname = '../../pipeline/pages/home.html'
                     location.pathname = '/iboss-prism/pages/home.html'
                 },
                 error: function(result){
