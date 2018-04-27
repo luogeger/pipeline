@@ -8,15 +8,21 @@
   padding-bottom: 0;
   margin-bottom: 10px;
   position: relative;
-    /*:checked ~.drowicon {
-      .fa {
-        transform: rotate(180deg);
-      }
-    }
-    :checked ~ .content {
-      max-height: 500px;
-    }
-*/ }
+  /*
+
+  .dropdown-wrap,
+  .input-group {
+    margin-bottom: 15px;
+  }
+  */ }
+  .search-wrapper :checked ~ .drowicon .fa {
+    transform: rotate(180deg); }
+  .search-wrapper :checked ~ .content {
+    max-height: 500px;
+    padding-bottom: 0; }
+    .search-wrapper :checked ~ .content .dropdown-wrap,
+    .search-wrapper :checked ~ .content .input-group {
+      margin-bottom: 15px; }
   .search-wrapper .drowicon {
     z-index: 2;
     display: inline-block;
@@ -31,10 +37,13 @@
       margin-left: 10px;
       transition: all .25s; }
   .search-wrapper .content {
+    max-height: 45px;
+    padding-bottom: 15px;
     transition: max-height .4s; }
-  .search-wrapper .dropdown-wrap,
-  .search-wrapper .input-group {
-    margin-bottom: 15px; }
+    .search-wrapper .content .dropdown-wrap,
+    .search-wrapper .content .input-group {
+      margin-bottom: 30px;
+      transition: all .4s; }
   .search-wrapper .i-date-picker-container .date-input-box > input {
     width: 100px; }
 
@@ -52,6 +61,31 @@
         min-width: 45px;
         padding-top: 12px;
         padding-bottom: 12px; }
+      .main-wrapper .data .table-wrapper thead .desc {
+        display: inline-block;
+        position: relative; }
+        .main-wrapper .data .table-wrapper thead .desc .icon-asc,
+        .main-wrapper .data .table-wrapper thead .desc .icon-desc {
+          display: inline-block;
+          height: 10px;
+          width: 14px;
+          overflow: hidden;
+          position: absolute;
+          top: -16px; }
+          .main-wrapper .data .table-wrapper thead .desc .icon-asc .fa,
+          .main-wrapper .data .table-wrapper thead .desc .icon-desc .fa {
+            font-size: 18px;
+            color: #FAD3B2;
+            margin-top: -5px;
+            cursor: pointer; }
+        .main-wrapper .data .table-wrapper thead .desc .icon-desc {
+          height: 12px;
+          top: -4px; }
+          .main-wrapper .data .table-wrapper thead .desc .icon-desc .fa {
+            position: absolute;
+            left: 2px; }
+        .main-wrapper .data .table-wrapper thead .desc .active .fa {
+          color: #fff; }
       .main-wrapper .data .table-wrapper tbody tr:hover {
         background-color: #fdf0e5 !important; }
       .main-wrapper .data .table-wrapper tbody tr:active, .main-wrapper .data .table-wrapper tbody tr.active {

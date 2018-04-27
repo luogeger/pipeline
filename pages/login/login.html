@@ -29,16 +29,19 @@
             <div class="block-wrapper">
                 <div class="input-group">
                     <i class="fa fa-user-o"></i>
-                    <input onkeydown="vm.keybordEnter()"
-                           v-model="loginList.loginAccount"
+                    <input v-model="loginList.loginAccount"
+                           onkeydown="vm.keybordEnter()"
                            type="text" class="input-group-form" placeholder="请输入登录账号">
                 </div>
             </div>
             <div class="block-wrapper">
                 <div class="input-group">
                     <i class="fa fa-key"></i>
-                    <input onkeydown="vm.keybordEnter()"
-                           v-model="loginList.loginPass"
+                    <!--
+                           @keyup="split"-->
+                    <input id="passwordLogin"
+                           v-model="loginPassWord"
+                           onkeydown="vm.keybordEnter()"
                            type="password" class="input-group-form" placeholder="输入您的密码">
                 </div>
             </div>
@@ -48,7 +51,8 @@
                 <!--@click="remeberMe"-->
             </div>
             <p class="error" v-text="msg"></p>
-            <button @click="submitHandle" class="btn btn-lg btn-theme" type="button">登录</button>
+            <button @click="submitHandle"
+                    class="btn btn-lg btn-theme" type="button">登录</button>
         </div>
     </div>
 </div>

@@ -7,8 +7,8 @@
     </div>
     <!-- 搜索框 -->
     <div class="search-wrapper clearfix">
-        <!--<input id="drow" class="hide" type="checkbox">
-        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>-->
+        <input id="drow" class="hide" type="checkbox">
+        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
         <div class="content" style="width: calc(100% - 100px)">
             <div class="input-group">
                 <span class="input-group-label">客户：</span>
@@ -149,18 +149,21 @@
     </div>
     <div class="main-wrapper">
         <div :class="{maxWidth: ismaxWidth}" class="data">
-            <div class="subInformation clearfix">
+            <div class="subInformation clearfix" style="line-height: 30px">
                 <button v-if="userLevel == 'xs'"
                         @click="addData"
                         class="btn btn-sm btn-theme modelDomBtn"
                         style="margin-right: 10px">新增 Pipeline</button>
                 <div v-if="userLevel == 'xs'"
-                     @click="upload" class="btn btn-theme" style="margin-right: 15px">
+                     @click="upload" class="btn btn-theme"
+                     style="margin-right: 15px;display: none">
                     <i class="fa fa-cloud-upload"></i>
                     <span>导入</span>
                 </div>
-                加权金额总计（万元）：<span class="theme-color">{{  weightedSumTotal }}</span>
-                <div class="pull-right">
+                预计签约金额(万元):
+                <span class="theme-color" style="margin-right: 15px">{{ expectSignSumTotal }}</span>
+                加权金额总计(万元):<span class="theme-color">{{  weightedSumTotal }}</span>
+                <div class="pull-right" style="margin-right: 50px">
                     <div class="data-page page-css">
                         <div @click="calcDataPage('data' , 'first')"
                              class="page-css-first">
@@ -183,6 +186,10 @@
                         <span>共&nbsp; {{dataPageTotal}} &nbsp;条</span>
                     </div>
                 </div>
+                <a @click="openUpdateCase"
+                   class="pull-right1"
+                   href="javascript:;"
+                   style="font-size:20px;color:#ed6d00;position: absolute;right: 15px;top: 15px;"><i class="fa fa-navicon"></i></a>
             </div>
             <div class="table-wrapper" style="overflow: auto">
                 <div style="width: 3500px">
@@ -199,7 +206,18 @@
                                 <th>客服所在省份</th>
                                 <th>客户属性</th>
                                 <th>客户编号</th>
-                                <th>客户名称</th>
+                                <th>客户名称
+                                    <div class="desc">
+                                    <span @click="ascClick" :class="ascActive == true?'active' : ''"
+                                          class="icon-asc">
+                                        <i class="fa fa-caret-up"></i>
+                                    </span>
+                                    <span @click="descClick"
+                                          class="icon-desc" :class="descActive == true?'active' : ''">
+                                        <i class="fa fa-caret-down"></i>
+                                    </span>
+                                    </div>
+                                </th>
                                 <th>解决方案名称</th>
                                 <th>行业线</th>
                                 <th>项目性质</th>
@@ -218,8 +236,9 @@
                             </tr>
                             </thead>
                             <tbody>
+                            <!--(vm.dataPageNum -1) * 10 + (index)-->
                                 <tr v-for="(item, index) in items"
-                                    @click="showOneChange(item,index)"
+                                    @click="showOneChange(item.soCoreCode, index)"
                                     :class="{ active: isClicked == index } ">
                                     <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
@@ -294,8 +313,8 @@
                      style="text-align: center">{{ updateCaseMsg }}</div>
                 <ul class="block">
                     <li v-for="(changeOneList,index) in changeOneLists">
-                        <h4>{{ changeOneList.opTime }}</h4>
-                        <!--<h4 v-time="changeOneListTime[index]"></h4>-->
+                        <!--<h4>{{ changeOneList.opTime }}</h4>-->
+                        <h4 v-time="new Date(changeOneList.opTime).getTime()"></h4>
                         <p>
                             <span v-html="changeOneList.operName"></span>
                             <span v-html="changeOneList.opDetail"></span>
@@ -944,7 +963,7 @@
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
-                changeOneListTime: [],        // 显示时间
+                // changeOneListTime: [],        // 显示时间
 
                 noUpdateCase: false,          //
                 updateCaseMsg: '',            // 提示语句
@@ -963,9 +982,12 @@
                 }],
                 oauthLists: [],               // 初始值权限信息
                 mngSalesGroups: [],
-                weightedSumTotal: '',         // 加权金额
+                weightedSumTotal: '',         // 加权金额总计
+                expectSignSumTotal: '',       // 预计签约金额总计
                 items: [],                    // 表格数据
                 noData: false,               // 搜索不到数据
+                ascActive: false,            // 点击表格客户名称升序
+                descActive: false,           // 点击表格客户名称降序
 
                 // pipeline表格分页
                 data: [],
@@ -1040,14 +1062,12 @@
             }
         },
         mounted: function(){
-            // this.selectProjectNature();
-            // this.searchCustomer();
             this.getSoSolution4Tree();
             this.searchData();
             this.getFuzzyList();
             this.getSales();
             this.showData();
-            this.showChange();
+            this.openUpdateCase();
         },
         methods: {
             selectNothing: function() {
@@ -1056,6 +1076,19 @@
                 vm.showData();
             },
             //// ==========客户名称========
+            // 表格查询客户名称排序
+            ascClick: function() {
+                vm.tableList.direction = 'asc';
+                this.ascActive = true;
+                this.descActive = false;
+                vm.showData();
+            },
+            descClick: function() {
+                vm.tableList.direction = 'desc';
+                this.descActive = true;
+                this.ascActive = false;
+                vm.showData();
+            },
             // 客户名称键盘回车(如果input为空)
             keyEnterCustomer: function() {
                 var ikeyCode = (navigator.appname=="Netscape")?event.which:window.event.keyCode;
@@ -1085,18 +1118,31 @@
                         clientName = vm.hCustomerName;
                         break;
                 }
-                params = {
+                /*params = {
                     customerName: clientName,
-                };
-                axios.get(PATH +'/crm/selectCustomer4PipelineLike', {params: params}).then(function (datas){
-                    var data = datas.data;
-                    var list = 'fuzzyQueryList_' +type;
-                    if (data.code === 201 || data.msg.length === 0) return;
-                    vm[list] = data.msg;
-                    vm.customerNames = data.msg;
+                };*/
+                $.ajax({
+                    url: PATH +'/crm/selectCustomer4PipelineLike',
+                    data: {
+                        customerName: clientName
+                    },
+                    async: false,
+                    type: 'get',
+                    async: false,
+                    dataType: 'json',
+                    success: function(result) {
+                        var list = 'fuzzyQueryList_' +type;
+                        if (result.code === 201 || result.msg.length === 0) return;
+                        vm[list] = result.msg;
+                        vm.customerNames = result.msg;
 
-                    console.log(vm[list], 'mo');
-                });
+                        console.log(vm[list], 'mo');
+                        console.log(vm.customerNames, 'data.msg');
+                    },
+                    error: function(result) {
+                        console.log('请求失败');
+                    }
+                })
             },// 获取数据
             selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
                 console.log(text);
@@ -1315,26 +1361,18 @@
                 vm.addMsgShow = true;
                 vm.uploadDialogShow = true;
             },
-            // 表格右侧项目更新情况
-            showOneChange: function(item, index) {
+            // 获取表格右侧项目更新情况数据
+            showOneChange: function(soCoreCode, index) {
                 vm.changeOneLists = [] // 先清空项目更新情况列表
-                // 显示项目更新情况
-                this.updateCaseShow = false
-                this.ismaxWidth = false
-
 
                 this.isClicked = index; // tr添加active
-
-                // var codee = item.soCoreCode;
-
-                // console.log(item.soCoreCode,'item.soCoreCode')
 
                 $.ajax({
                     url:  PATH + '/so/queryPipelineChangeHis',
                     type: 'get',
                     dataType: 'json',
                     data: {
-                        'opDataKey': item.soCoreCode
+                        'opDataKey': soCoreCode
                     },
                     success: function(result){
                         if(result.root.length == 0) {
@@ -1348,10 +1386,13 @@
                                 var root = result.root[i];
                                 vm.changeOneLists.push(root);
                                 // 转换时间为时间戳
-                                for(var j = 0;j < vm.changeOneLists.length;j++) {
+                                /*for(var j = 0;j < vm.changeOneLists.length;j++) {
                                     var newDate = new Date(vm.changeOneLists[j].opTime);
-                                }
-                                vm.changeOneListTime.push(newDate.getTime());
+
+                                    console.log(vm.changeOneLists[j].opTime,'vm.changeOneLists[j].opTime')
+
+                                    vm.changeOneListTime.push(newDate.getTime());
+                                }*/
                             }
                         }
 
@@ -1361,12 +1402,20 @@
                     }
                 })
             },
+            // 显示表格右侧项目更新情况
+            openUpdateCase: function() {
+                // 默认第一条tr添加active
+                // this.showOneChange(vm.items[0].soCoreCode, 0);
+
+                // 显示项目更新情况
+                this.updateCaseShow = false
+                this.ismaxWidth = false
+            },
             // 关闭表格右侧项目更新情况
             closeUpdateCase: function() {
-                vm.showOneChange('', -1);
+                this.showOneChange('', -1);
 
-                // this.isClicked = -1;
-
+                // 关闭项目更新情况
                 this.updateCaseShow = true
                 this.ismaxWidth = true
             },
@@ -1387,35 +1436,27 @@
                 console.log('---查询pipeline的请求参数------')
                 console.log(this.tableList)
                 this.items = []
+
                 $.ajax({
                     url:  PATH + '/so/queryPipeline',
                     type: 'get',
                     dataType: 'json',
                     data: this.tableList,
                     success: function(result){
-                        console.log('---查询到的pipeline表哥数据------')
+                        console.log('---查询到的pipeline表格数据------')
                         console.log(result);
                         vm.weightedSumTotal = result.oth.weightedSumTotal;
-
-                        // this.isClicked = 1;
+                        vm.expectSignSumTotal = result.oth.expectSignSumTotal;
 
                         // 点击tr，
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
 
                             vm.items.push(root);
-
-                            // 默认第一条tr添加active
-                            // vm.showOneChange(root, 0);
-
-                            // console.log(item.soCoreCode,'before')
-
-
-                            // item.soCoreCode = result.root[0].soCoreCode;
-
-
-                            // console.log(item.soCoreCode,'after')
                         }
+                        // 默认第一条tr添加active
+                        vm.showOneChange(vm.items[0].soCoreCode, 0);
+
                         // 如果表格无数据
                         if(result.root.length === 0) {
                             toastr.warning('没有相关信息 ！');
@@ -1499,7 +1540,7 @@
                         }
                         // 获取解决方案树
                         treeList = basic.soSolution4Tree;
-                        console.log(treeList, 'tree')
+                        // console.log(treeList, 'tree')
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
                                 var pObj = {
@@ -1524,7 +1565,7 @@
                                 }
                             }
                         }
-                        console.log(zNodes,'zNodes');
+                        // console.log(zNodes,'zNodes');
                         $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
                     },
                     error: function(result) {
@@ -1740,6 +1781,8 @@
                     return
                 }
                 else{
+                    this.getFuzzyList(2);
+
                     for(var i = 0;i < vm.customerNames.length;i++) {
                         vm.customerNameArray.push(vm.customerNames[i].name);
                     }
@@ -1748,8 +1791,6 @@
                         return
                     }
                 }
-
-
 
                 vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
                 vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
@@ -1800,6 +1841,8 @@
                             vm.showData();              // 再调用（表格查询）
                         }
                         toastr.success('操作成功');
+
+                        vm.showOneChange();
                     },
                     error: function(){
                         console.log('提交 请求失败');
