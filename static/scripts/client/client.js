@@ -153,7 +153,6 @@ var vm = new Vue({
             axios.get(PATH +'/oauth/queryUserInfo').then(function (datas){
                 var data = datas.data;
                 vm.cSalesGroupList = data.msg.mngSalesGroups;
-                console.log(data.msg)
                 vm.cSalesGroupCode = data.msg.mngSalesGroups[0].code;// 只有一条数据，赋值给所属事业部，同时code 也赋值
                 vm.cGroupText = data.msg.mngSalesGroups[0].text;// 只有一条数据，赋值给所属事业部，同时code 也赋值
             });
@@ -222,7 +221,6 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                console.log(datas.data.root, 12312312)
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -255,7 +253,6 @@ var vm = new Vue({
         getClientMsg: function (code) {
             code = code || this.firstClientCode;
             axios.get(PATH +'/crm/queryCustomerContactList?soCustomerCode='+ code).then(function (datas){
-                console.log(datas.data, 'msg')
                 if (datas.data.root.length === 0) {
                     vm.noDataMsg = true;
                     vm.clientMsg = [];
@@ -606,9 +603,9 @@ var vm = new Vue({
             vm.addClientShow = false;
             this.clearClient();
             axios.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
-                msg =  datas.data.msg;
+                var msg =  datas.data.msg;
 
-                vm.cGroupText           = '金融客户事业部';
+                vm.cGroupText           = msg.salesGroupName;
                 vm.cSalesGroupCode      = msg.salesGroupCode;
                 vm.cCustomerCode        = msg.customerCode;
                 vm.cCustomerName        = msg.customerName;
