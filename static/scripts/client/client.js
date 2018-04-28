@@ -222,7 +222,6 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-                console.log(datas.data.root, 12312312)
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'

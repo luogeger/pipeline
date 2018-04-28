@@ -68,7 +68,7 @@ var vm = new Vue({
 
 
         // 增长额详情
-        growthDetailShow: false,
+        growthDetailShow: true,
         growthDetailTitle: '加权大于50.0万变动的项目信息(单位：万元)',
         growthDetailList: [
             {
@@ -537,6 +537,7 @@ var vm = new Vue({
 
         // 增长额详情
         growthDetail: function (code, type, callback) {
+            //@click="growthDetail(item.unitCode, item.unitType)"
             this.growthDetailShow = false;
             console.log(code, type)
             var params = {
