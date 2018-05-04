@@ -14,6 +14,7 @@ var vm = new Vue({
         selectionDefaultText: currentYear,
         selectionIsShow: false,
 
+
         // 参数
         currentYear: currentYear,// 当前年份
         currentAccYear: 'h'+ currentAccYear,// 上半年， 下半年
@@ -22,9 +23,9 @@ var vm = new Vue({
         unitCode: '',
         unitType: '',
         dateOne: '',
-        dateOneClose: '',
+        dateOneClose: szDate,
         dateTwo: '',
-        dateTwoClose: '',
+        dateTwoClose: sszDate,
 
         // 数据
         chartColor: chartColor,
@@ -40,7 +41,7 @@ var vm = new Vue({
         },
 
         // 半年 - 图表数据
-        yearLegend:  ['日期范围1', '日期范围2', '目标额'],
+        yearLegend:  ['截止日期1', '截止日期2', '目标额'],
         yearXaxis: [],
         yearDataOne: [],
         yearDataTwo: [],
@@ -59,11 +60,58 @@ var vm = new Vue({
 
 
         // 季度 - 图表数据
-        quarterLegend:  ['日期范围1', '日期范围2', '目标额'],
+        quarterLegend:  ['截止日期1', '截止日期2', '目标额'],
         quarterXaxis: [],
         quarterDataOne: [],
         quarterDataTwo: [],
         quarterDataTarget: [],
+
+
+        // 增长额详情
+        growthDetailShow: true,
+        growthDetailTitle: '加权大于50.0万变动的项目信息(单位：万元)',
+        growthDetailList: [
+            {
+                "changeField": [
+                    {
+                        "field": "成功率",
+                        "original": "30%",
+                        "target": "10%"
+                    }
+                ],
+                "customerName": "北京优生国际医院管理有限公司",
+                "industryLineName": "互联网金融",
+                "remark": "-",
+                "salesStaffName": "林冠欣",
+                "weightedSumIncrease": -66.6
+            },
+            {
+                "changeField": [
+                    {
+                        "field": "成功率",
+                        "original": "30%",
+                        "target": "10%"
+                    },
+                    {
+                        "field": "签约额",
+                        "original": "30%",
+                        "target": "10%"
+                    },
+                    {
+                        "field": "项目进度",
+                        "original": "30%",
+                        "target": "10%"
+                    },
+
+                ],
+                "customerName": "北京优生国际医院管理有限公司",
+                "industryLineName": "互联网金融",
+                "remark": "-",
+                "salesStaffName": "林冠欣",
+                "weightedSumIncrease": -66.6
+            },
+
+        ]
 
 
     },
@@ -82,6 +130,7 @@ var vm = new Vue({
 
         getYearData: function (index, parmas, callback) {
             this.yearTabActiveIndex = index = index || 0;// 默认选中第一个 tab
+
             parmas = {
                 aYear: this.currentYear,
                 hq: this.currentAccYear,
@@ -118,16 +167,19 @@ var vm = new Vue({
             this.getYearData()
         },
 
-        getQuarterData: function (index, parmas, callback) {
+        getQuarterData: function (index, params, callback) {
             this.quarterTabActiveIndex = index = index || 0;// 季度的切换都是选中第一个tab
 
-            parmas = {
+            var obj = {
                 aYear: this.currentYear,
                 hq: this.currentQuarter,
-                closingDate1: '',
-                closingDate2: '',
+                closingDate1: this.dateOneClose,
+                closingDate2: this.dateTwoClose,
+                // startDate1: '',
+                // startDate2: '',
             };
-            axios.get(PATH +'/a/weightedCycleComparison', {params: parmas}).then(function (datas){
+            params = Object.assign(obj, params)
+            axios.get(PATH +'/a/weightedCycleComparison', {params: params}).then(function (datas){
                 var data = datas.data,
                     msg  = datas.data.msg;
                 if (data.code === 201) {
@@ -432,6 +484,7 @@ var vm = new Vue({
                 return s;
             };// 数组求和
             function scaleNum(A, B) {
+                if (B === 0) return '-';
                 var div = Math.floor((A/B) *10000) / 10000;
                 div = Number(div*100).toFixed(1);
                 if (div === '0.0') div = '0';
@@ -445,27 +498,82 @@ var vm = new Vue({
         renderDate: function () {
             laydate.render({
                 elem: '#dateOne', //指定元素
-                range: true,
+                //range: true,
+                value: this.dateOneClose,
+                done: function (val) {
+                    vm.getDateRange(val, 1)
+                }
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
-                range: true,
+                //range: true,
+                value: this.dateTwoClose,
+                done: function (val) {
+                    vm.getDateRange(val, 2)
+                }
             });
 
         },
 
         getDateRange: function (val, type) {
-            console.log(val, type)
-            type === 1? dateOne(val) : dateTwo(val);
+            var parmas;
+            if (type === 1) {
+                vm.dateOneClose       = val.substring(0,10);
+                parmas = {
+                    closingDate1: vm.dateOneClose,
+                };
+                this.getQuarterData(null, parmas)
+            } else {
+                vm.dateTwoClose       = val.substring(0,10);
+                parmas = {
+                    closingDate2: vm.dateTwoClose,
+                };
+                this.getQuarterData(null, parmas)
+            }
 
-            function dateOne(val) {
-                vm.dateOne = val;
-            };
 
-            function dateTwo(val) {
-                vm.dateTwo = val;
+
+        },// getDateRange
+
+        // 增长额详情
+        growthDetail: function (code, type, callback) {
+            //@click="growthDetail(item.unitCode, item.unitType)"
+            this.growthDetailShow = false;
+            console.log(code, type)
+            var params = {
+                aYear: this.currentYear,
+                hq: this.currentQuarter,
+                closingDate1: this.dateOneClose,
+                closingDate2: this.dateTwoClose,
+                unitCode: code,
+                unitType: type,
             };
+            console.log(params)
+            axios.get(PATH +'/a/weightedCycleComparisonDifferenceDetail', {params: params}).then(function (datas){
+                var data = datas.data, msg  = datas.data.msg;
+                console.log(data)
+                if (data.code === 201) {
+                    toastr.error('暂无相关数据!')
+                    return;
+                }
+
+                if (callback) callback();
+            });
         },
+
+        // 取消增长额详情弹窗
+        hidePop: function () {
+            this.growthDetailShow = true;
+        },
+
+
+
+
+
+
+
+
+
 
         // 年份选择
         changeSelectionList: function (event) {
@@ -483,9 +591,6 @@ var vm = new Vue({
         },
         mainClick: function (e) {
             this.selectionIsShow = false;
-        },
-
-        layDate: function () {
         },
     },// methods
 

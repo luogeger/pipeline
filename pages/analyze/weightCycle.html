@@ -10,6 +10,7 @@
         <span>加权平均额周期对比</span>
     </div><!-- /.breadcrumb-->
 
+
     <div class="year-contrast">
         <div class="operas clearfix">
             <div class="operas-list pull-left">
@@ -97,7 +98,6 @@
         </div><!-- /.year-table -->
     </div><!-- /.year-contrast -->
 
-
     <div class="quarter-contrast">
         <div class="operas clearfix">
             <div class="operas-list">
@@ -108,20 +108,20 @@
             </div>
 
             <div class="input-group">
-                <span class="input-group-label ">日期范围1</span>
-                <input @click="layDate"
+                <span class="input-group-label ">截止日期1</span>
+                <input
                        id="dateOne"
                        class="input-group-form i-date-form-range"
-                       placeholder="请选择日期范围"
+                       placeholder="请选择截止日期"
                        type="text">
             </div>
 
             <div class="input-group">
-                <span class="input-group-label ">日期范围2</span>
-                <input @click="layDate"
+                <span class="input-group-label ">截止日期2</span>
+                <input
                        id="dateTwo"
                        class="input-group-form i-date-form-range"
-                       placeholder="请选择日期范围"
+                       placeholder="请选择截止日期"
                        type="text">
             </div>
         </div><!-- /.year-opera -->
@@ -154,7 +154,9 @@
                         <td v-text="item.bz"></td>
                         <td v-text="item.sz"></td>
                         <td v-text="item.target"></td>
-                        <td v-text="item.compareSzRise"></td>
+                        <td><span v-text="item.compareSzRise"
+
+                                  style="padding: 10px;"></span></td>
                         <td v-text="item.compareSzRate"></td>
                     </tr>
                     <tr>
@@ -170,6 +172,56 @@
         </div><!-- /.quarter-table -->
 
     </div><!-- /.quarter-contrast -->
+
+
+    <!-- 增长额详情 -->
+    <div :class="{'hide': growthDetailShow}" class="dialog-wrap">
+        <div @click="hidePop" class="dialog-cover"></div><!-- /.dialog-cover -->
+        <div :class="{'hide': growthDetailShow}" class="dialog-content growthDetail-pop">
+            <div class="title clearfix">
+                <p class="pull-left" v-text="growthDetailTitle"></p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="pop-main">
+                <table class="i-table">
+                    <thead>
+                        <tr>
+                            <th>序号</th>
+                            <th>客户名称</th>
+                            <th>销售</th>
+                            <th>行业</th>
+                            <th>变更项目</th>
+                            <th>原数据</th>
+                            <th>调整为</th>
+                            <th>加权额增长(万元)</th>
+                            <th>原因(项目说明)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(item, index) in growthDetailList">
+                            <td v-text="index +1"></td>
+                            <td v-text="item.customerName"></td>
+                            <td v-text="item.salesStaffName"></td>
+                            <td v-text="item.industryLineName"></td>
+                            <td>
+                                <div v-for="(i, n) in item.changeField" v-text="i.field"></div>
+                            </td>
+                            <td>
+                                <div v-for="(i, n) in item.changeField" v-text="i.original"></div>
+                            </td>
+                            <td>
+                                <div v-for="(i, n) in item.changeField" v-text="i.target"></div>
+                            </td>
+                            <td v-text="item.weightedSumIncrease"></td>
+                            <td v-text="item.remark"></td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div><!-- /.growthDetail -->
+    </div><!-- /.dialog-wrap -->
+
 
 </div><!-- /.main -->
 <script src="../static/scripts/analyze/weightCycle.js"></script>
