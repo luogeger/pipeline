@@ -27,7 +27,7 @@ var timeYear,// 2018-04-18
     userGroup,// 用户所在事业部
     navData,// 导航数据
     userLevel,// 用户级别  xs  xsld  dqcyh
-    chartColor = ['#2F4554', '#61A0A8', '#C23531'];
+    chartColor = ['#ED6D00', '#FFC732', '#C23531'];
 $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
     var msg         = datas.msg;
     szDate          = (msg.szDate).substring(0, 10);// 上周
@@ -70,7 +70,7 @@ $.getJSON(PATH +'/oauth/queryUserInfo', function (datas) {
 
 
 
-    console.log(userLevel, szDate, sszDate)
+    console.log(userLevel, currentAccYear)
 });
 
 $.getJSON(PATH +'/oauth/queryMenu4Nav', function (datas) {
@@ -108,6 +108,7 @@ $('.sign-out').click(function () {
 
 loadMainPage('.content-item', 'manage/manage.html');
 // loadMainPage('.content-item', 'analyze/weightCycle.html');
+// loadMainPage('.content-item', 'analyze/four.html');
 
 
 
@@ -178,3 +179,27 @@ function checkSpace(str){
     }
     return 1;// 不为空
 }
+
+function arrSum (arr) {
+    var s=0, i;
+    for (i=arr.length-1; i>=0; i--) {
+        if (typeof arr[i] === 'string') {
+            arr[i] = arr[i].substring(0, arr[i].length -1);
+            s = accAdd(s, arr[i]);
+        } else{
+            s = accAdd(s, arr[i]);
+        }
+    }
+    if (typeof arr[0] === 'string') {
+        return s + '%';
+    }
+    return s;
+};// 数组求和
+function scaleCalc(A, B) {
+    if (B === 0) return '-';
+    var div = Math.floor((A/B) *10000) / 10000;
+    div = Number(div*100).toFixed(1);
+    //if (div === '0.0') div = '0';
+    div += "%";
+    return div;
+};// 增长率的计算

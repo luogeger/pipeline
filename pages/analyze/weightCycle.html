@@ -55,7 +55,10 @@
             </div>
         </div><!-- /.year-opera -->
 
-        <div class="year-chart" id="yearChart" style="width: 99%; height: 400px;"></div><!-- /.year-chart -->
+        <div v-if="userLevel !== 'xs'"
+             class="year-chart"
+             id="yearChart"
+             style="width: 99%; height: 400px;"></div><!-- /.year-chart -->
 
         <div class="year-table">
             <div class="table-tab-list clearfix">
@@ -85,7 +88,7 @@
                         <td v-text="item.compareSzRise"></td>
                         <td v-text="item.compareSzRate"></td>
                     </tr>
-                    <tr>
+                    <tr v-if="userLevel !== 'xs'" class="sum-foot">
                         <td v-text="yearTable.foot.unit"></td>
                         <td v-text="yearTable.foot.bz"></td>
                         <td v-text="yearTable.foot.sz"></td>
@@ -126,7 +129,10 @@
             </div>
         </div><!-- /.year-opera -->
 
-        <div class="quarter-chart" id="quarterChart" style="width: 99%; height: 400px;"></div><!-- /.quarter-chart -->
+        <div  v-if="userLevel !== 'xs'"
+              class="quarter-chart"
+              id="quarterChart"
+              style="width: 99%; height: 400px;"></div><!-- /.quarter-chart -->
 
         <div class="quarter-table">
             <div class="table-tab-list clearfix">
@@ -159,7 +165,7 @@
                                   style="padding: 10px;"></span></td>
                         <td v-text="item.compareSzRate"></td>
                     </tr>
-                    <tr>
+                    <tr v-if="userLevel !== 'xs'" class="sum-foot">
                         <td v-text="quarterTable.foot.unit"></td>
                         <td v-text="quarterTable.foot.bz"></td>
                         <td v-text="quarterTable.foot.sz"></td>

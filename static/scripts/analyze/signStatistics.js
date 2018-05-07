@@ -73,7 +73,8 @@ var vm = new Vue({
                 vm.year.h1.body        = msg.h1.half;
                 vm.year.h2.head        = msg.h2Title;
                 vm.year.h2.body        = msg.h2.half;
-                vm.quarter.quarterTotal          = Object.assign(msg.h1.quarter, msg.h2.quarter);// 所以季度信息
+                vm.quarter.quarterTotal          = Object.assign(msg.h1.quarter, msg.h2.quarter);// 所有季度信息
+                console.log(vm.quarter.quarterTotal)
                 if (callback) callback();
             });
         },

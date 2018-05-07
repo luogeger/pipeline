@@ -39,6 +39,13 @@
     p{
       padding-bottom: 10px;
     }
+    table{
+      tbody tr:not(:last-child) td:nth-child(5),
+      th:nth-child(5){
+        border-left: 2px solid #F0F2F5;
+      }
+
+    }
 
   }
 

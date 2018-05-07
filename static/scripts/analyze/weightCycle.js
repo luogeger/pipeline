@@ -2,6 +2,9 @@
 var vm = new Vue({
     el: '#weightCycle',
     data: {
+        // 当前人的级别
+        userLevel: userLevel,
+
         // 下拉框年份选择
         yearRange: [
             2015,
@@ -28,7 +31,7 @@ var vm = new Vue({
         dateTwoClose: sszDate,
 
         // 数据
-        chartColor: chartColor,
+        chartColor: chartColor,// 图表颜色
 
         // 半年 - 表格数据
         currentHalfYearActive: currentAccYear,// 半年的 active
@@ -41,7 +44,8 @@ var vm = new Vue({
         },
 
         // 半年 - 图表数据
-        yearLegend:  ['截止日期1', '截止日期2', '目标额'],
+        // yearLegend:  ['截止日期1', '截止日期2', '目标额'],
+        yearLegend:  ['本周', '上周', '目标额'],
         yearXaxis: [],
         yearDataOne: [],
         yearDataTwo: [],
@@ -214,10 +218,10 @@ var vm = new Vue({
         yearChart: function () {
             var box = echarts.init(document.getElementById('yearChart'));
 
-            option = {
+            var option = {
                 color: this.chartColor,
                 barMaxWidth: '20%',// 柱子宽度
-                barGap: 0,// 柱子之间没有间隙
+                barGap: 0.1,// 柱子之间没有间隙
                 title : {
                     text: '半年加权平均额周期对比 (加权平均vs目标) (单位：万元)',
                     x:'left',
@@ -253,17 +257,6 @@ var vm = new Vue({
                     {
                         type: 'value',
                     },
-                    // {
-                        // type: 'value',
-                        // name: '目标额',
-                        // min: 0,
-                        // max: 25,
-                        // interval: 5,
-                        // axisLabel: {
-                        //     formatter: '{value} °C'
-                        // }
-                    // }
-                    
                 ],
                 series: [
                     {
@@ -329,10 +322,10 @@ var vm = new Vue({
         quarterChart: function () {
             var box = echarts.init(document.getElementById('quarterChart'));
 
-            option = {
+            var option = {
                 color: this.chartColor,
                 barMaxWidth: '20%',// 柱子宽度
-                barGap: 0,// 柱子之间没有间隙
+                barGap: 0.1,// 柱子之间没有间隙
                 title : {
                     text: '季度加权平均额周期对比 (加权平均vs目标) (单位：万元)',
                     x:'left',
@@ -368,12 +361,12 @@ var vm = new Vue({
                     {
                         type: 'value',
                     },
-
                 ],
                 series: [
                     {
                         name: this.quarterLegend[0],
                         type: 'bar',
+                        //animationDuration: 5000,// 动画持续时间
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
                         },
@@ -386,7 +379,7 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: this.yearDataOne,
+                        data: this.quarterDataOne,
                     },
                     {
                         name: this.quarterLegend[1],
@@ -403,7 +396,7 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: this.yearDataTwo,
+                        data: this.quarterDataTwo,
                     },
                     {
                         name: this.quarterLegend[2],
@@ -423,7 +416,7 @@ var vm = new Vue({
                                 }
                             }
                         },
-                        data: this.yearDataTarget,
+                        data: this.quarterDataTarget,
                     },
                 ]
             };
@@ -449,10 +442,10 @@ var vm = new Vue({
                 vm.yearChart();
             } else{
 
-                vm.yearXaxis = unit;
-                vm.yearDataOne = current;
-                vm.yearDataTwo = prev;
-                vm.yearDataTarget = target;
+                vm.quarterXaxis = unit;
+                vm.quarterDataOne = current;
+                vm.quarterDataTwo = prev;
+                vm.quarterDataTarget = target;
                 vm.quarterChart();
             }
 
