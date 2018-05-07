@@ -1455,7 +1455,11 @@
                             vm.items.push(root);
                         }
                         // 默认第一条tr添加active
-                        vm.showOneChange(vm.items[0].soCoreCode, 0);
+                        if(vm.items.length != 0) {
+                            if(vm.items[0].soCoreCode) {
+                                vm.showOneChange(vm.items[0].soCoreCode, 0);
+                            }
+                        }
 
                         // 如果表格无数据
                         if(result.root.length === 0) {
