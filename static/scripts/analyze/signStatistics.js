@@ -74,7 +74,6 @@ var vm = new Vue({
                 vm.year.h2.head        = msg.h2Title;
                 vm.year.h2.body        = msg.h2.half;
                 vm.quarter.quarterTotal          = Object.assign(msg.h1.quarter, msg.h2.quarter);// 所有季度信息
-                console.log(vm.quarter.quarterTotal)
                 if (callback) callback();
             });
         },
@@ -194,7 +193,7 @@ var vm = new Vue({
                     target:     sum(target),
                     complete:   sum(complete),
                     difference: sum(difference),
-                    scale:      scaleNum(),
+                    scale:      scaleCalc(sum(complete), sum(target)),
                 };
             };
         },// changeHalfYear
@@ -218,7 +217,7 @@ var vm = new Vue({
         // 季度切换
         changeQuarter: function (index) {
             // 更换季度索引
-            if (index === undefined) index = this.currentQuarterIndex;
+            if (index === undefined) index = this.currentQuarterIndex;// 刚开始是当前的季度，
             this.quarterTabActive = index;// 选中当前季度
 
             // 更换表格数据
@@ -226,6 +225,7 @@ var vm = new Vue({
             var head = body +'Title';
             this.quarter.head = this.quarter.quarterTotal[head];
             this.quarter.body = this.quarter.quarterTotal[body];
+            console.log(this.quarter.head)
             total(this.quarter.body);// 计算合计
 
             // 合计
@@ -245,44 +245,18 @@ var vm = new Vue({
                     c3.push(item.m3Complete);
                 });
 
-                function sum (arr) {
-                    var s=0, i;
-                    for (i=arr.length-1; i>=0; i--) {
-                        if (typeof arr[i] === 'string') {
-                            arr[i] = arr[i].substring(0, arr[i].length -1);
-                            s = accAdd(s, arr[i]);
-                        } else{
-                            s = accAdd(s, arr[i]);
-                        }
-                    }
-                    if (typeof arr[0] === 'string') {
-                        return s + '%';
-                    }
-                    return s;
-                }
-
-                console.log(difference)
-                function scaleNum(complete, target) {
-                    var div = Math.floor((sum(complete) / sum(target)) * 10000) / 10000;
-                    div = Number(div*100).toFixed(1);
-                    if (div === '0.0') div = '0';
-                    div += "%";
-                    return div;
-                };
-
-
                 vm.quarter.foot = {
                     saleGroup: '合计',
-                    target:     sum(target),
-                    complete:   sum(complete),
-                    difference: sum(difference),
-                    scale:      scaleNum(complete, target),
-                    m1:         sum(m1),
-                    m2:         sum(m2),
-                    m3:         sum(m3),
-                    c1:         sum(c1),
-                    c2:         sum(c2),
-                    c3:         sum(c3),
+                    target:     arrSum(target),
+                    complete:   arrSum(complete),
+                    difference: arrSum(difference),
+                    scale:      scaleCalc(arrSum(complete), arrSum(target)),
+                    m1:         arrSum(m1),
+                    m2:         arrSum(m2),
+                    m3:         arrSum(m3),
+                    c1:         arrSum(c1),
+                    c2:         arrSum(c2),
+                    c3:         arrSum(c3),
                 };
             };
 
