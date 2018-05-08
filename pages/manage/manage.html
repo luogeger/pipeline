@@ -162,8 +162,9 @@
                 </div>
                 预计签约金额(万元):
                 <span class="theme-color" style="margin-right: 15px">{{ expectSignSumTotal }}</span>
-                加权金额总计(万元):<span class="theme-color">{{  weightedSumTotal }}</span>
-                <div class="pull-right" style="margin-right: 50px">
+                加权金额总计(万元):
+                <span class="theme-color">{{  weightedSumTotal }}</span>
+                <div class="pull-right">
                     <div class="data-page page-css">
                         <div @click="calcDataPage('data' , 'first')"
                              class="page-css-first">
@@ -189,7 +190,7 @@
                 <a @click="openUpdateCase"
                    class="pull-right1"
                    href="javascript:;"
-                   style="font-size:20px;color:#ed6d00;position: absolute;right: 15px;top: 15px;"><i class="fa fa-navicon"></i></a>
+                   style="display: none;font-size:20px;color:#ed6d00;position: absolute;right: 15px;top: 15px;"><i class="fa fa-navicon"></i></a>
             </div>
             <div class="table-wrapper" style="overflow: auto">
                 <div style="width: 3500px">
@@ -222,23 +223,23 @@
                                 <th>行业线</th>
                                 <th>项目性质</th>
                                 <th>合作伙伴名称</th>
-                                <th>预计签约金额（万元）</th>
+                                <th>预计签约金额<br/>（万元）</th>
                                 <th>预计签约时间</th>
                                 <th>项目阶段</th>
                                 <th>成功率</th>
-                                <th>加权金额 （万元）</th>
+                                <th>加权金额<br/>（万元）</th>
                                 <th>项目跟进情况</th>
-                                <th>确切需要其他部门配合的地方</th>
+                                <th>确切需要其他部门<br/>配合的地方</th>
                                 <th>竞争对手</th>
                                 <th>客户来源</th>
-                                <th>备注-项目名称</th>
+                                <th>项目名称</th>
                                 <th>金融银行分类</th>
                             </tr>
                             </thead>
                             <tbody>
                             <!--(vm.dataPageNum -1) * 10 + (index)-->
                                 <tr v-for="(item, index) in items"
-                                    @click="showOneChange(item.soCoreCode, index)"
+                                    @dblclick="showOneChange(item.soCoreCode, index)"
                                     :class="{ active: isClicked == index } ">
                                     <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
                                     <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
@@ -1367,6 +1368,7 @@
 
                 this.isClicked = index; // tr添加active
 
+                this.openUpdateCase();
                 $.ajax({
                     url:  PATH + '/so/queryPipelineChangeHis',
                     type: 'get',
@@ -1381,21 +1383,11 @@
                         }else {
                             vm.noUpdateCase = false;
                             vm.updateCaseMsg = '';
-
                             for(var i = 0;i < result.root.length;i++){
                                 var root = result.root[i];
                                 vm.changeOneLists.push(root);
-                                // 转换时间为时间戳
-                                /*for(var j = 0;j < vm.changeOneLists.length;j++) {
-                                    var newDate = new Date(vm.changeOneLists[j].opTime);
-
-                                    console.log(vm.changeOneLists[j].opTime,'vm.changeOneLists[j].opTime')
-
-                                    vm.changeOneListTime.push(newDate.getTime());
-                                }*/
                             }
                         }
-
                     },
                     error: function(){
                         console.log('查看单人变动历史 请求失败');
@@ -1429,6 +1421,29 @@
                 // console.log(sum);
                 return sum;
             },
+            /*function toThousands(num) {
+                var num = (num || 0).toString(), result = '';
+                while (num.length > 3) {
+                    result = ',' + num.slice(-3) + result; // slice(start, end) 从已有的数组中返回选定的元素(start为必需，规定从何处开始选取，如果为负数，则从数组尾部开始算起；end非必须，规定从何处结束选取)。该方法不会修改原数组，而是返回一个子数组
+                    num = num.slice(0, num.length - 3);
+                }
+                if (num) { result = num + result; }
+                return result;
+            } */
+            // 格式化数字
+            toThousands: function(num) {
+                var num = (num || 0).toString(),   // toString() 转换成字符串
+                    result = "";
+                while(num.length > 3) {
+                    result = "," + num.slice(-3) + result;
+                    num = num.slice(0, num.length - 3);
+                }
+                if(num) {
+                    result = num + result;
+                }
+                return result;
+            },
+
             // 表格查询
             showData: function(page, limit){
                 this.tableList.page = page || 1;
@@ -1445,13 +1460,12 @@
                     success: function(result){
                         console.log('---查询到的pipeline表格数据------')
                         console.log(result);
-                        vm.weightedSumTotal = result.oth.weightedSumTotal;
-                        vm.expectSignSumTotal = result.oth.expectSignSumTotal;
+                        vm.weightedSumTotal = vm.toThousands(Math.round(result.oth.weightedSumTotal));
+                        vm.expectSignSumTotal = vm.toThousands(Math.round(result.oth.expectSignSumTotal));
 
                         // 点击tr，
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
-
                             vm.items.push(root);
                         }
                         // 默认第一条tr添加active

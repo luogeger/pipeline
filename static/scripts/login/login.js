@@ -8,8 +8,8 @@ var vm = new Vue({
                 loginPass: ''
             },
             msg: '',                      // 错误提示
-            // PATH: 'http://172.16.8.130:8080/iboss-prism',
-            PATH: '/iboss-prism',
+            // PATH: 'http://172.16.8.130:8080',
+            PATH: '',
             keyStr: "ABCDEFGHIJKLMNOP" + "QRSTUVWXYZabcdef" + "ghijklmnopqrstuv"
             + "wxyz0123456789+/" + "=",   // 加密
             splitData: '',                // 拼接日期
@@ -86,7 +86,7 @@ var vm = new Vue({
                         return;
                     }
                     // location.pathname = '../../pipeline/pages/home.html'
-                    location.pathname = '/iboss-prism/pages/home.html'
+                    location.pathname = '/pages/home.html'
                 },
                 error: function(result){
                     console.log('登陆 请求失败')
