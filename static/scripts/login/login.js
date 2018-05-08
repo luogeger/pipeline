@@ -86,7 +86,7 @@ var vm = new Vue({
                         return;
                     }
                     // location.pathname = '../../pipeline/pages/home.html'
-                    location.pathname = '/iboss-prism/pages/home.html'
+                    location.pathname = '/pages/home.html'
                 },
                 error: function(result){
                     console.log('登陆 请求失败')
