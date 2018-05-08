@@ -109,6 +109,7 @@ var vm = new Vue({
         clientMsgQueryBtn: true,// 隐藏行业 + 隐藏客户编号 + 状态 + 操作
 
         onlySale: true,// 只有在销售的客户信息层面才能看到添加客户和导入按钮
+        alwaysHide:false,// 导入按钮下架
         msgBtnIsShow: true,// 添加机要信息按钮
         auditHistoryShow: false,// 审核历史记录
         auditHistoryTitle: '',// 审核历史记录 客户姓名
@@ -320,19 +321,19 @@ var vm = new Vue({
                 vm.client = [];// 清空客户信息
                 vm.clientMsg = [];// 清空客户机要信息
 
-                vm.clientMsgQueryBtn = false;// 行业 + 客户编号
-                vm.noData = false;// 客户table的 '没有数据!'
-                vm.noDataMsg = true;// 客户机要信息table的 '没有数据!'
-                vm.clientNameQuery = true;// 客户table的 '请输入客户名称进行查询!'
-                vm.onlySale = false;// (添加客户 + 导入)按钮
-                vm.msgBtnIsShow = false;// 机要信息按钮
+                vm.clientMsgQueryBtn    = false;// 行业 + 客户编号
+                vm.noData               = false;// 客户table的 '没有数据!'
+                vm.noDataMsg            = true;// 客户机要信息table的 '没有数据!'
+                vm.clientNameQuery      = true;// 客户table的 '请输入客户名称进行查询!'
+                vm.onlySale             = false;// (添加客户 + 导入)按钮
+                vm.msgBtnIsShow         = false;// 机要信息按钮
 
                 // 分页数据修改
-                vm.clientPageTotal = 0;// 全部数据
-                vm.clientPageNum = 1;// 当前页
-                vm.clientPageSum = 0;// 共多少页
-                vm.clientPageStart = 0;// 开始
-                vm.clientPageEnd = 0;// 结束
+                vm.clientPageTotal      = 0;// 全部数据
+                vm.clientPageNum        = 1;// 当前页
+                vm.clientPageSum        = 0;// 共多少页
+                vm.clientPageStart      = 0;// 开始
+                vm.clientPageEnd        = 0;// 结束
 
                 this.resetBtn();
                 return;
@@ -759,8 +760,7 @@ var vm = new Vue({
             axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
                 var data = datas.data;
                 var list = 'fuzzyQueryList_' +type;
-                if (data.code
-                    || data.msg.length === 0) return;
+                if (data.code !== 200 || data.msg.length === 0) return;
                 vm[list] = data.msg;
             });
         },// 获取数据

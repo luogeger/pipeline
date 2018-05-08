@@ -58,7 +58,7 @@
                         <td>{{item.scale}}</td>
                     </tr>
 
-                    <tr>
+                    <tr class="sum-foot">
                         <td>{{year.foot.saleGroup}}</td>
                         <td>{{year.foot.target}}</td>
                         <td>{{year.foot.complete}}</td>
@@ -93,7 +93,7 @@
                 <th>{{quarter.head.difference}}</th>
                 <th>{{quarter.head.scale}}</th>
                 <th>{{quarter.head.m1Target}}</th>
-                <th>{{quarter.head.m2Complete}}</th>
+                <th>{{quarter.head.m1Complete}}</th>
                 <th>{{quarter.head.m2Target}}</th>
                 <th>{{quarter.head.m2Complete}}</th>
                 <th>{{quarter.head.m3Target}}</th>
@@ -102,19 +102,19 @@
             </thead>
             <tobdy>
                 <tr v-for="item in quarter.body">
-                    <td>{{item.saleGroup}}</td>
-                    <td>{{item.target}}</td>
-                    <td>{{item.complete}}</td>
-                    <td>{{item.difference}}</td>
-                    <td>{{item.scale}}</td>
-                    <td>{{item.m1Target}}</td>
-                    <td>{{item.m1Complete}}</td>
-                    <td>{{item.m2Target}}</td>
-                    <td>{{item.m2Complete}}</td>
-                    <td>{{item.m3Target}}</td>
-                    <td>{{item.m3Complete}}</td>
+                    <td v-text="item.saleGroup"></td>
+                    <td v-text="item.target"></td>
+                    <td v-text="item.complete"></td>
+                    <td v-text="item.difference"></td>
+                    <td v-text="item.scale"></td>
+                    <td v-text="item.m1Target"></td>
+                    <td v-text="item.m1Complete"></td>
+                    <td v-text="item.m2Target"></td>
+                    <td v-text="item.m2Complete"></td>
+                    <td v-text="item.m3Target"></td>
+                    <td v-text="item.m3Complete"></td>
                 </tr>
-                <tr>
+                <tr class="sum-foot">
                     <td>{{quarter.foot.saleGroup}}</td>
                     <td>{{quarter.foot.target}}</td>
                     <td>{{quarter.foot.complete}}</td>
