@@ -24,9 +24,6 @@
   width: 300px; }
 .main .opera .client-name .input-group-form {
   width: 300px; }
-.main .client .i-table tbody tr td:nth-child(6),
-.main .client .i-table tbody tr td:nth-child(8) {
-  text-align: left; }
 .main .client .i-table tbody tr td:last-child .types-show span {
   line-height: 30px; }
 .main .client .i-table tbody tr td:last-child .types-show .type-pending {

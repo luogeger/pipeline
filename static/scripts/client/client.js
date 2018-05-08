@@ -316,6 +316,7 @@ var vm = new Vue({
 
         // 用户级别信息查询
         changeClientList:function (level) {
+            console.log(level)
             vm.levelActive = level;
             if (level === 'all') {
                 vm.client = [];// 清空客户信息
@@ -340,14 +341,15 @@ var vm = new Vue({
             }
             if (level === 'department') {
                 this.resetBtn();
+                vm.clientMsgQueryBtn    = true;// 行业 + 客户编号
             }
             if (level === 'me') {
-                vm.clientMsgQueryBtn = true;// 行业 + 客户编号
-                vm.noData = true;// 客户table的 '没有数据!'
-                vm.noDataMsg = false;// 客户机要信息table的 '没有数据!'
-                vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
-                vm.onlySale = true;// (添加客户 + 导入)按钮
-                vm.msgBtnIsShow = true;// 机要信息按钮
+                vm.clientMsgQueryBtn    = true;// 行业 + 客户编号
+                vm.noData               = true;// 客户table的 '没有数据!'
+                vm.noDataMsg            = false;// 客户机要信息table的 '没有数据!'
+                vm.clientNameQuery      = false;// 客户table的 '请输入客户名称进行查询!'
+                vm.onlySale             = true;// (添加客户 + 导入)按钮
+                vm.msgBtnIsShow         = true;// 机要信息按钮
 
                 this.resetBtn();
             }
