@@ -760,8 +760,7 @@ var vm = new Vue({
             axios.get(PATH +'/crm/selectCustomer4Like', {params: params}).then(function (datas){
                 var data = datas.data;
                 var list = 'fuzzyQueryList_' +type;
-                if (data.code
-                    || data.msg.length === 0) return;
+                if (data.code !== 200 || data.msg.length === 0) return;
                 vm[list] = data.msg;
             });
         },// 获取数据

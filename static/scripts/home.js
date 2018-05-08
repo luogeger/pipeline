@@ -198,7 +198,7 @@ function arrSum (arr) {
 function scaleCalc(A, B) {
     if (B === 0) return '-';
     var div = Math.floor((A/B) *10000) / 10000;
-    div = Number(div*100).toFixed(1);
+    div = Number(div*100).toFixed(2);
     //if (div === '0.0') div = '0';
     div += "%";
     return div;
