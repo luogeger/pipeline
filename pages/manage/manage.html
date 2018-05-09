@@ -1421,15 +1421,6 @@
                 // console.log(sum);
                 return sum;
             },
-            /*function toThousands(num) {
-                var num = (num || 0).toString(), result = '';
-                while (num.length > 3) {
-                    result = ',' + num.slice(-3) + result; // slice(start, end) 从已有的数组中返回选定的元素(start为必需，规定从何处开始选取，如果为负数，则从数组尾部开始算起；end非必须，规定从何处结束选取)。该方法不会修改原数组，而是返回一个子数组
-                    num = num.slice(0, num.length - 3);
-                }
-                if (num) { result = num + result; }
-                return result;
-            } */
             // 格式化数字
             toThousands: function(num) {
                 var num = (num || 0).toString(),   // toString() 转换成字符串
