@@ -1,5 +1,5 @@
-// var PATH = 'http://172.16.8.130:8080/iboss-prism';
-var PATH = '/iboss-prism';// 131
+var PATH = 'http://172.16.8.130:8080';
+// var PATH = '';// 131
 var timeYear,// 2018-04-18
     currentYear,
     currentMonth,
@@ -118,24 +118,43 @@ setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
 /*
 *   公用方法
 * */
-function accAdd (arg1, arg2) {
+function accAdd (arg1, arg2) {// 加法
     var r1,r2,m;
     try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}
     try{r2=arg2.toString().split(".")[1].length}catch(e){r2=0}
     m=Math.pow(10,Math.max(r1,r2))
     return (arg1*m+arg2*m)/m
+};// 加法
 
-};
+function accSub (arg1, arg2) {
+    var r1, r2, m, n;
+    try {
+        r1 = arg1.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r1 = 0;
+    }
+    try {
+        r2 = arg2.toString().split(".")[1].length;
+    }
+    catch (e) {
+        r2 = 0;
+    }
+    m = Math.pow(10, Math.max(r1, r2));
+    //last modify by deeka
+    //动态控制精度长度
+    n = (r1 >= r2) ? r1 : r2;
+    return ((arg1 * m - arg2 * m) / m).toFixed(n);
+}
 
-function accMul(arg1,arg2) {
+function accMul(arg1,arg2) {// 乘法
     var m=0,s1=arg1.toString(),s2=arg2.toString();
     try{m+=s1.split(".")[1].length}catch(e){}
     try{m+=s2.split(".")[1].length}catch(e){}
     return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
-};
+};// 除法
 
-// 判断内容都为空
-function checkSpace(str){
+function checkSpace(str){// 判断内容都为空
     while(str.lastIndexOf(" ")>=0){
         str = str.replace(" ","");
     }
@@ -143,9 +162,9 @@ function checkSpace(str){
         return 0;// 为空
     }
     return 1;// 不为空
-}
+}// 判断内容都为空
 
-function arrSum (arr) {
+function arrSum (arr) {// 数组求和
     var s=0, i;
     for (i=arr.length-1; i>=0; i--) {
         if (typeof arr[i] === 'string') {
@@ -160,11 +179,12 @@ function arrSum (arr) {
     }
     return s;
 };// 数组求和
-function scaleCalc(A, B) {
+
+function scaleCalc(A, B) {// 增长率的计算
     if (B === 0) return '-';
     var div = Math.floor((A/B) *10000) / 10000;
     div = Number(div*100).toFixed(2);
     //if (div === '0.0') div = '0';
     div += "%";
     return div;
-};// 增长率的计算
+};// 百分比计算

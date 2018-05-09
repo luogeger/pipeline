@@ -25,8 +25,5 @@
   padding: 10px; }
   .bottom .table-content p {
     padding-bottom: 10px; }
-  .bottom .table-content table tbody tr:not(:last-child) td:nth-child(5),
-  .bottom .table-content table th:nth-child(5) {
-    border-left: 2px solid #F0F2F5; }
 
 /*# sourceMappingURL=four.css.map */

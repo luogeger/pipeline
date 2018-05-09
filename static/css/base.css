@@ -3075,4 +3075,7 @@ button.toast-close-button {
     position: relative;
     z-index: 1; }
 
+.table-left-border {
+  border-left: 2px solid #F0F2F5; }
+
 /*# sourceMappingURL=base.css.map */

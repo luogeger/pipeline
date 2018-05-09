@@ -61,6 +61,7 @@ var vm = new Vue({
 
                 vm.totalCalc(data.msg.aYear, 'year');
                 vm.totalCalc(data.msg.h1, 'half');
+                console.log(data.msg)
             });
         },
 
@@ -108,12 +109,20 @@ var vm = new Vue({
                     t2.push(item.q2Target);
                     c2.push(item.q2Complete);
                 });
-                halfArr[0] = arrSum(ht);
-                halfArr[1] = arrSum(hc);
-                halfArr[2] = arrSum(t1);
-                halfArr[3] = arrSum(c1);
-                halfArr[4] = arrSum(t2);
-                halfArr[5] = arrSum(c2);
+
+                var i, tempArr = [
+                    arrSum(ht),
+                    arrSum(hc),
+                    accSub(arrSum(ht), arrSum(hc)),
+                    scaleCalc(arrSum(hc), arrSum(ht)),
+                    arrSum(t1),
+                    arrSum(c1),
+                    arrSum(t2),
+                    arrSum(c2),
+                ];
+                for(i = 0; i < tempArr.length; i++){
+                    halfArr[i] = tempArr[i];
+                }
                 return halfArr;
             }
 
