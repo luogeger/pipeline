@@ -2338,7 +2338,7 @@ html #layuicss-laydate {
           margin-top: 5px; }
   .nav-top-panels .panel ul {
     position: absolute;
-    z-index: 1;
+    z-index: 2;
     background-color: #fff;
     box-shadow: 0 0 2px 2px rgba(255, 138, 65, 0.2);
     border-radius: 4px;
@@ -2963,7 +2963,7 @@ button.toast-close-button {
     line-height: 30px; }
   .selection-wrap .selection-show {
     min-width: 162px;
-    line-height: 32px;
+    line-height: 30px;
     color: #595959;
     padding-left: 10px;
     border: 1px solid #DDDEE1;

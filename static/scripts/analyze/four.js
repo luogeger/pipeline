@@ -4,7 +4,7 @@ var vm = new Vue({
     data: {
         // 当前人的级别
         userLevel: userLevel,
-        currentAccYear: currentAccYear,
+        currentAccYear: currentAccYear,// 精确到上半年还是下半年
 
         // 合计
         yearSum: [ 1, 2, 3, 4],
@@ -36,18 +36,52 @@ var vm = new Vue({
             2019,
             2020,
         ],
-        selectionDefaultText: 2018,
-        selectionIsShow: false,
+        selectionDefaultText_1: 2018,
+        selectionIsShow_1: false,
+
+        // 下拉框部门选择
+        saleGroupList: saleGroupList,
+        selectionDefaultText_2: '全部',
+        selectionIsShow_2: false,
+        sortClass: ['fa fa-sort-amount-desc', 'fa fa-sort-amount-asc', 'fa fa-sort'],
+        amountCounter: 0,
+        rateCounter: 0,
     },// data
 
     created: function () {
-        this.getData()
+        this.getData();
+    },
+
+    computed:{
+        amountClass() {
+            if (this.amountCounter <= 0) {
+                return this.sortClass[2]
+            }
+            let n = (this.amountCounter % 2) | 0;
+            return this.sortClass[n];
+        },
+        rateClass() {
+            let n = (this.rateCounter % 2) | 0;
+
+            if(this.rateCounter <= 0){
+                return this.sortClass[2]
+            }
+            return this.sortClass[n];
+        },
     },
 
     methods: {
-        getData: function (year) {
+        getData: function (year, obj) {
             year = year || currentYear;
-            axios.get(PATH +'/a/contractAmount?aYear='+ year).then(function (datas){
+            var params = {
+                aYear: year,
+                property: '',
+                direction: '',
+                sgc: '',
+            };
+            params = Object.assign(params, obj);
+            console.log(params)
+            axios.get(PATH +'/a/contractAmount', {params: params}).then(function (datas){
                 var data = datas.data;
                 vm.yearTitle    = data.msg.aYearTitle;
                 vm.yearList     = data.msg.aYear;
@@ -61,12 +95,11 @@ var vm = new Vue({
 
                 vm.totalCalc(data.msg.aYear, 'year');
                 vm.totalCalc(data.msg.h1, 'half');
-                console.log(data.msg)
             });
         },
 
         halfToggle: function (flag) {
-          if (flag == 1) {
+          if (flag === 1) {
               vm.half = vm.h1;
               vm.isActive = 1;
           } else{
@@ -128,20 +161,60 @@ var vm = new Vue({
 
         },
 
-        // 日期选择
-        changeSelectionList: function (event) {
-            event.cancelBubble = true;// 阻止冒泡
-            this.selectionIsShow = true;
+        // 日期选择selectionIsShow
+        changeSelectionList: function (type) {
+            if (type === 1){
+                this.selectionIsShow_1 = !this.selectionIsShow_1;
+                this.selectionIsShow_2 = false;
+            }
+            if (type === 2) {
+                this.selectionIsShow_2 = !this.selectionIsShow_2;
+                this.selectionIsShow_1 = false;
+            }
         },
-        clickItem: function (item) {
-            this.selectionDefaultText = item;
-            this.selectionIsShow = false;
-            this.getData(item)
+        clickItem: function (item, type, code) {
+            if (type === 1) {
+                this.selectionDefaultText_1 = item;
+                this.selectionIsShow_1 = false;
+                this.getData(item)
+            }
+            if (type === 2) {
+                this.selectionDefaultText_2 = item;
+                this.selectionIsShow_2 = false;
+            }
+
         },
-        appClick: function (e) {
-            this.selectionIsShow = false;
+
+        // 完成额排序
+        completeAmount: function () {
+            this.amountCounter ++;
+            this.rateCounter = 0;
         },
-    },
+
+        // 完成额占比排序
+        completeRate: function () {
+            this.rateCounter++;
+            this.amountCounter = 0;
+        },
+
+        PUT: function () {
+            axios({
+                method: 'put',
+                url: 'http://172.16.22.31:8080/iboss-prism/cp/so/addOrUpdatePipline',
+            }).then(function (datas) {
+                console.log(datas)
+            });
+
+            $.ajax({
+                url: 'http://172.16.22.31:8080/iboss-prism/cp/so/addOrUpdatePipline',
+                type: 'put',
+                success: function (datas) {
+                    console.log(123, datas)
+
+                }
+            });
+        },
+    },// methods
 
 
 });//

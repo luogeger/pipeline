@@ -13,7 +13,7 @@ var timeYear,// 2018-04-18
     userAvatar,
     userGroup,// 用户所在事业部
     userLevel,// 用户级别  xs  xsld  dqcyh
-    saleGroupList,
+    saleGroupList,// 所有部门
     chartColor = ['#ED6D00', '#FFC732', '#C23531'];
 
 
@@ -31,6 +31,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     userLevel       = msg.level;
     userGroup       = msg.departmentName;
     saleGroupList   = msg.mngSalesGroups;
+    saleGroupList.push({code: '', text: '全部'});
     currentAccYear  = function () {
         var half, arr = [[1,2,3,4,5,6],[7,8,9,10,11,12]];
         arr.forEach(function (p1, p2) {
@@ -61,9 +62,9 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
 
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
-        loadMainPage('.content-item', 'manage/manage.html');
+        // loadMainPage('.content-item', 'manage/manage.html');
         // loadMainPage('.content-item', 'analyze/weightCycle.html');
-        // loadMainPage('.content-item', 'analyze/four.html');
+        loadMainPage('.content-item', 'analyze/four.html');
     })
 });
 
@@ -91,6 +92,8 @@ $('.user-info li').each(function (index, item) {
 
 $(document).click(function () {
     $('.user-info').children('ul').addClass('hide');
+    vm.selectionIsShow_1 = false;// 点击顶部下拉框隐藏
+    vm.selectionIsShow_2 = false;// 点击顶部下拉框隐藏
 });
 
 // 退出登录
@@ -99,9 +102,7 @@ $('.sign-out').click(function () {
         console.log(datas);
         window.location.href = 'login/login.html';
     })
-})
-
-
+});
 /*
  *   content-item 的自适应高度
  * */
@@ -145,7 +146,7 @@ function accSub (arg1, arg2) {
     //动态控制精度长度
     n = (r1 >= r2) ? r1 : r2;
     return ((arg1 * m - arg2 * m) / m).toFixed(n);
-}
+};// 减法
 
 function accMul(arg1,arg2) {// 乘法
     var m=0,s1=arg1.toString(),s2=arg2.toString();

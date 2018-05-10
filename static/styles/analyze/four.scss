@@ -1,52 +1,57 @@
-
-.top, .bottom{
-  background-color: #fff;
-  margin-top: 10px;
-}
-.top{
-  .top-opera{
-    padding: 10px;
-    border-bottom: 1px solid #E9EAEC;
-  }
-
-  .top-table{
-    padding: 10px;
-    p{
-      padding-bottom: 10px;
-    }
-  }
-}// .top
-
-.bottom{
-  .year-half{
-    padding: 10px 0 0 10px;
-    border-bottom: 1px solid #E9EAEC;
-    span{
-      display: inline-block;
-      padding: 0 10px;
-      border-bottom: 2px solid transparent;
-      line-height: 30px;
-      cursor: pointer;
-    }
-
-    .year-half-active{
-      border-color: #FF8A41;
+#four{
+  .i-table{
+    thead>tr>th{
+      div.sort-th-div{
+        display: inline-block;
+        cursor: pointer;
+        &:hover{
+          text-decoration: underline;
+        }
+      }
     }
   }
 
-  .table-content{
-    padding: 10px;
-    p{
-      padding-bottom: 10px;
-    }
-    table{
-      //tbody tr:not(:last-child) td:nth-child(5),
-      //th:nth-child(5){
-      //  border-left: 2px solid #F0F2F5;
-      //}
-
-    }
-
+  .top, .bottom{
+    background-color: #fff;
+    margin-top: 10px;
   }
+  .top{
+    .top-opera{
+      padding: 10px;
+      border-bottom: 1px solid #E9EAEC;
+    }
 
-}// .bottom
+    .top-table{
+      padding: 10px;
+      p{
+        padding-bottom: 10px;
+      }
+    }
+  }// .top
+
+  .bottom{
+    .year-half{
+      padding: 10px 0 0 10px;
+      border-bottom: 1px solid #E9EAEC;
+      span{
+        display: inline-block;
+        padding: 0 10px;
+        border-bottom: 2px solid transparent;
+        line-height: 30px;
+        cursor: pointer;
+      }
+
+      .year-half-active{
+        border-color: #FF8A41;
+      }
+    }
+
+    .table-content{
+      padding: 10px;
+      p{
+        padding-bottom: 10px;
+      }
+    }
+
+  }// .bottom
+}// #four

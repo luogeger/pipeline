@@ -1,6 +1,6 @@
 <link rel="stylesheet" href="../static/styles/analyze/four.css">
 
-<div class="main" id="four" @click="appClick($event)">
+<div class="main" id="four">
     <div class="breadcrumb">
         <span>Pipeline分析</span>
         <span class="line">/</span>
@@ -10,17 +10,32 @@
     <div class="top">
         <div class="top-opera">
 
-            <div class="selection-wrap">
+            <div class="selection-wrap" style="margin-right: 20px;">
                 <div class="selection-label">预计签约年度:</div>
-                <div @click="changeSelectionList($event)"
-                     v-text="selectionDefaultText"
-                     :class="{active: selectionIsShow}"
+                <div @click.stop="changeSelectionList(1)"
+                     v-text="selectionDefaultText_1"
+                     :class="{active: selectionIsShow_1}"
                      class="selection-show fa"></div>
-                <div v-if="selectionIsShow" style="left: 97px;" class="selection-list">
+                <div v-if="selectionIsShow_1" style="left: 97px;" class="selection-list">
                     <ul>
-                        <li @click="clickItem(item, $event)"
+                        <li @click="clickItem(item, 1)"
                             v-for="item in yearRange"
                             v-text="item"></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div v-if="userLevel == 'dqxyh'" class="selection-wrap">
+                <div class="selection-label">部门:</div>
+                <div @click.stop="changeSelectionList(2)"
+                     v-text="selectionDefaultText_2"
+                     :class="{active: selectionIsShow_2}"
+                     class="selection-show fa"></div>
+                <div v-if="selectionIsShow_2" style="left: 45px;" class="selection-list">
+                    <ul>
+                        <li @click="clickItem(item.text, 2, item.code)"
+                            v-for="item in saleGroupList"
+                            v-text="item.text"></li>
                     </ul>
                 </div>
             </div>
@@ -34,9 +49,23 @@
                         <th v-text="yearTitle.saleGroup"></th>
                         <th v-text="yearTitle.saleStaff"></th>
                         <th v-text="yearTitle.target"></th>
-                        <th v-text="yearTitle.complete"></th>
+                        <th>
+                            <div :class="{'sort-th-div': userLevel !== 'xs'}"
+                                 @click="completeAmount">
+                                <span v-text="yearTitle.complete"></span>
+                                <i v-if="userLevel !== 'xs'"
+                                   :class="[amountClass]"></i>
+                            </div>
+                        </th>
                         <th v-text="yearTitle.difference"></th>
-                        <th v-text="yearTitle.rate"></th>
+                        <th>
+                            <div :class="{'sort-th-div': userLevel !== 'xs'}"
+                                 @click="completeRate">
+                                <span v-text="yearTitle.rate"></span>
+                                <i v-if="userLevel !== 'xs'"
+                                   :class="[rateClass]"></i>
+                            </div>
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -46,7 +75,9 @@
                         <td v-text="item.target"></td>
                         <td v-text="item.complete"></td>
                         <td v-text="item.difference"></td>
-                        <td v-text="item.rate"></td>
+                        <td v-text="item.rate">
+
+                        </td>
                     </tr>
                     <tr class="sum-foot"
                         v-if="userLevel !== 'xs'">
@@ -71,9 +102,23 @@
                         <th v-text="half.title.saleGroup"></th>
                         <th v-text="half.title.saleStaff"></th>
                         <th v-text="half.title.hTarget"></th>
-                        <th v-text="half.title.hComplete"></th>
+                        <th>
+                            <div :class="{'sort-th-div': userLevel !== 'xs'}"
+                                 @click="completeAmount">
+                                <span v-text="half.title.hComplete"></span>
+                                <i v-if="userLevel !== 'xs'"
+                                   :class="[amountClass]"></i>
+                            </div>
+                        </th>
                         <th v-text="half.title.hDifference"></th>
-                        <th v-text="half.title.hRate"></th>
+                        <th>
+                            <div :class="{'sort-th-div': userLevel !== 'xs'}"
+                                 @click="completeRate">
+                                <span v-text="half.title.hRate"></span>
+                                <i v-if="userLevel !== 'xs'"
+                                   :class="[rateClass]"></i>
+                            </div>
+                        </th>
                         <th v-text="half.title.q1Target" class="table-left-border"></th>
                         <th v-text="half.title.q1Complete"></th>
                         <th v-text="half.title.q2Target"></th>
