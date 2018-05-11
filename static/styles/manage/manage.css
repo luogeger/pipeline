@@ -53,6 +53,30 @@
   .main-wrapper .data {
     width: calc(100% - 250px);
     transition: width .3s; }
+    .main-wrapper .data .data-page {
+      position: relative; }
+      .main-wrapper .data .data-page .progressBtn {
+        margin-right: 5px;
+        cursor: pointer; }
+        .main-wrapper .data .data-page .progressBtn:hover > .progressTotal {
+          display: block; }
+      .main-wrapper .data .data-page .progressTotal {
+        display: none;
+        position: absolute;
+        right: 0;
+        z-index: 1;
+        background-color: #fff;
+        border: 1px solid #c9c9c9;
+        border-radius: 2px;
+        width: auto;
+        min-height: 190px;
+        overflow: hidden;
+        text-align: left;
+        padding: 0 10px; }
+        .main-wrapper .data .data-page .progressTotal li {
+          border-bottom: 1px solid #eee; }
+          .main-wrapper .data .data-page .progressTotal li:last-child {
+            border-bottom: none; }
     .main-wrapper .data .table-wrapper {
       margin-top: 15px;
       position: relative; }

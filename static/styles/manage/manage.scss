@@ -72,6 +72,40 @@
     width: calc(100% - 250px);
     transition: width .3s;
 
+    .data-page {
+      position: relative;
+
+      .progressBtn {
+        margin-right: 5px;
+        cursor: pointer;
+
+        &:hover > .progressTotal {
+          display: block;
+        }
+      }
+      .progressTotal {
+        display: none;
+        position: absolute;
+        right: 0;
+        z-index: 1;
+        background-color: #fff;
+        border: 1px solid #c9c9c9;
+        border-radius: 2px;
+        width: auto;
+        min-height: 190px;
+        overflow: hidden;
+        text-align: left;
+        padding: 0 10px;
+
+        li {
+          border-bottom: 1px solid #eee;
+          &:last-child {
+            border-bottom: none;
+          }
+        }
+      }
+    }
+
     .table-wrapper {
       margin-top: 15px;
       position: relative;
