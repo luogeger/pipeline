@@ -100,17 +100,42 @@
                     </ul>
                 </div>
             </div>
-            <div class="dropdown-wrap">
+            <!--<div class="dropdown-wrap">
                 <span class="dropdown-label">解决方案：</span>
                 <div class="dropdown-zTree">
                     <span class="dropdown-default">{{ cSoSolutionText }}</span>
                     <i class="fa fa-angle-down"></i>
                     <ul class="selectTree ztree soSolutionTree"
                         style="max-height: 200px;overflow-y: auto;">
-                        <!--<li @click="selectNothing">请选择</li>-->
+                    </ul>
+                </div>
+            </div>-->
+
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">解决方案：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionFirstText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul style="max-width: 500px;">
+                        <li @click="searchSolutionFirst('', '', 1)">请选择</li>
+                        <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 1)"
+                            v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
                     </ul>
                 </div>
             </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">-</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionSecondText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul style="max-width: 500px;">
+                        <li @click="searchSolutionSecond('', '', 1)">请选择</li>
+                        <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 1)"
+                            v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="dropdown-wrap">
                 <span class="dropdown-label">近期变更过：</span>
                 <div class="dropdown">
@@ -459,7 +484,7 @@
                                         <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <!--<div class="block-wrapper col-1">
                                     <div class="dropdown-wrap">
                                         <span class="dropdown-label">解决方案：</span>
                                         <div class="dropdown-zTree">
@@ -467,6 +492,32 @@
                                             <i class="fa fa-angle-down"></i>
                                             <ul class="handleTree ztree soSolutionTree"
                                                 style="max-height: 200px;overflow-y: auto;"></ul>
+                                        </div>
+                                    </div>
+                                </div>-->
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label">解决方案：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default" style="max-width: 500px;">{{ hSoSolutionFirstText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul style="max-width: 500px;">
+                                                <li @click="searchSolutionFirst('', '', 2)">请选择</li>
+                                                <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 2)"
+                                                    v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label" style="width: 26px">-</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default" style="max-width: 500px;">{{ hSoSolutionSecondText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul style="max-width: 500px;">
+                                                <li @click="searchSolutionSecond('', '', 2)">请选择</li>
+                                                <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 2)"
+                                                    v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -849,7 +900,7 @@
     })
 
     //zTree
-    var setting = {
+    /*var setting = {
         data: {
             key: {
                 title: "t"
@@ -879,20 +930,16 @@
             //搜索的时候传解决方案名称code
             vm.tableList.soSolutionCode = treeNode.code;
             vm.showData();
-            // event.stopPropagation();
-            // return
         }
         else{
             vm.hSolutionText = treeNode.name;
             console.log(vm.hSolutionText,'新增/修改vm.hSolutionText ');
-
-
             // 新增/修改的时候传解决方案code
             vm.solutionSub.solutionCode = treeNode.code;
         }
         // console.log("[onClick ]&nbsp;&nbsp;clickFlag = " + clickFlag + " (" + (clickFlag===1 ? "普通选中": (clickFlag===0 ? "<b>取消选中</b>" : "<b>追加选中</b>")) + ")");
         event.stopPropagation();
-    }
+    }*/
 </script>
 <script>
     var Time = {
@@ -985,7 +1032,11 @@
                 cMngSalesGroupText: '',       // 事业部
                 cRegionText: '',              // 区域
                 cCustomerSourText: '',        // 客户来源
-                cSoSolutionText: '',          // 解决方案
+                cSoSolutionText:'',           // 解决方案
+                cSoSolutionFirstText: '',     // 大解决方案
+                cSoSolutionSecondText: '',    // 小解决方案
+                solutionFirstLists: [],       // 存放大解决方案
+                solutionSecondLists: [],      // 存放小解决方案
                 cLatelyChangeText: '',        // 近期变更过
                 cExpectSignDateRange: '',     // 预计签约时间
                 defaultYear: '',              // 默认年份
@@ -1060,6 +1111,10 @@
                 hSalesStaffName: userName,  // 负责销售名字
                 hCustomerName: '',          // 客户名称
                 hSolutionText: '',          // 解决方案名称
+                hSoSolutionFirstText: '',   // 大解决方案
+                hSoSolutionSecondText: '',  // 小解决方案
+               /* solutionFirstLists: [],       // 存放大解决方案
+                solutionSecondLists: [],      // 存放小解决方案*/
                 hIndustryLineText: '',      // 行业线名称
                 hSuccessRateText: '',       // 成功率名称
                 hProgressText: '',          // 项目阶段名称
@@ -1113,16 +1168,6 @@
                         var date = result.msg.currentDate;
                         this.defaultYear = date.slice(0, 4);
                         yearRange = this.defaultYear + '-01 - ' + this.defaultYear + '-12';
-
-                        /*vm.cExpectSignDateRange = yearRange;
-                        /!*var time = this.getYear().split(' - ');
-                        var startTime,
-                            endTime;
-                        startTime = time[0];
-                        endTime = time[1];*!/
-                        vm.tableList.expectSignDateStart = this.defaultYear + '-01';
-                        vm.tableList.expectSignDateEnd = this.defaultYear + '-12';
-                        vm.showData();*/
                     },
                     error: function(result) {
                         console.log('获取年份失败');
@@ -1319,6 +1364,38 @@
                 this.tableList.customerSourceCode = code;
                 vm.cCustomerSourText = text;
                 this.showData();
+            },
+            // 选中大解决方案
+            searchSolutionFirst: function(id, text, type) {
+                switch (type) {
+                    case 1:
+                        vm.cSoSolutionSecondText = '';
+                        this.tableList.soSolutionCode = '';
+
+                        // this.searchSolutionSecond('', '', 1);
+                        vm.cSoSolutionFirstText = text;
+                        this.getSoSolution4Tree(id);
+                        break;
+                    case 2:
+                        this.searchSolutionSecond('', '', 2);
+                        vm.hSoSolutionFirstText = text;
+                        this.getSoSolution4Tree(id);
+                        break;
+                }
+            },
+            // 选中小解决方案
+            searchSolutionSecond: function(code, text, type) {
+                switch (type) {
+                    case 1:
+                        vm.cSoSolutionSecondText = text;
+                        this.tableList.soSolutionCode = code;
+                        this.showData();
+                        break;
+                    case 2:
+                        vm.hSoSolutionSecondText = text;
+                        vm.solutionSub.solutionCode = code;
+                        break;
+                }
             },
             // 选中近期变更过
             searchLatelyChangeCode: function(code, text) {
@@ -1601,13 +1678,15 @@
 
                 }
             },
-            // 获取解决方案下拉树
-            getSoSolution4Tree: function(){
+            // 获取解决方案
+            getSoSolution4Tree: function(id){
                 var basic,
                     oauth;
                 var treeList = [];
                 zNodes = [];
-                // $(".soSolutionTree").empty();
+
+                this.solutionFirstLists = [];
+                this.solutionSecondLists = [];
                 $.ajax({
                     url:  PATH + '/so/queryPipelineInitVal',
                     type: 'get',
@@ -1620,11 +1699,26 @@
 
                                 vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
                                 vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
+
+                                var solutionLists = vm.searchLists.soSolution4Tree;
+                                if(solutionLists !== null) {
+                                    for(var i = 0;i < solutionLists.length;i++) {
+                                        vm.solutionFirstLists.push(solutionLists[i]);
+
+                                        if(solutionLists[i].children != null) {
+                                            for (var j = 0; j < solutionLists[i].children.length; j++) {
+                                                var childrenLists = solutionLists[i].children[j];
+                                                if(id === childrenLists.parentId) {
+                                                    vm.solutionSecondLists.push(childrenLists);
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                         // 获取解决方案树
-                        treeList = basic.soSolution4Tree;
-                        // console.log(treeList, 'tree')
+                        /*treeList = basic.soSolution4Tree;
                         if(treeList != null) {
                             for(var i = 0;i < treeList.length;i++) {
                                 var pObj = {
@@ -1649,8 +1743,7 @@
                                 }
                             }
                         }
-                        // console.log(zNodes,'zNodes');
-                        $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
+                        $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);*/
                     },
                     error: function(result) {
                         console.log('获取解决方案下拉树失败');
@@ -1694,7 +1787,9 @@
                 vm.cMngSalesGroupText = '';       // 事业部
                 vm.cRegionText = '';              // 区域
                 vm.cCustomerSourText = '';        // 客户来源
-                vm.cSoSolutionText = '';          // 解决方案
+                // vm.cSoSolutionText = '';          // 解决方案
+                vm.cSoSolutionFirstText = '';     // 大解决方案
+                vm.cSoSolutionSecondText = '';    // 小解决方案
                 vm.cLatelyChangeText = '';        // 近期变更过
                 vm.cSalesName = '';               // 近期变更过
 
