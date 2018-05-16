@@ -62,8 +62,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
 
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
-        // loadMainPage('.content-item', 'manage/manage.html');
-        loadMainPage('.content-item', 'client/client.html');
+        loadMainPage('.content-item', 'manage/manage.html');
     })
 });
 
