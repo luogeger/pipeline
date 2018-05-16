@@ -1,5 +1,5 @@
-var PATH = 'http://172.16.8.130:8080';
-// var PATH = '';// 131
+// var PATH = 'http://172.16.8.130:8080';
+var PATH = '/iboss-prism';// 131
 var timeYear,// 2018-04-18
     currentYear,
     currentMonth,
@@ -8,10 +8,12 @@ var timeYear,// 2018-04-18
     currentQuarter,// 当前季度
     szDate,// 上周
     sszDate,// 上上周
+    // ====
     userName,
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
+    navData,// 导航数据
     userLevel,// 用户级别  xs  xsld  dqcyh
     saleGroupList,// 所有部门
     chartColor = ['#ED6D00', '#FFC732', '#C23531'];
@@ -63,8 +65,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
         // loadMainPage('.content-item', 'manage/manage.html');
-        // loadMainPage('.content-item', 'analyze/weightCycle.html');
-        loadMainPage('.content-item', 'analyze/four.html');
+        loadMainPage('.content-item', 'client/client.html');
     })
 });
 
@@ -117,8 +118,8 @@ setInterval('getContentSize()',20);//自动刷新（每秒一次执行）
 
 
 /*
-*   公用方法
-* */
+ *   公用方法
+ * */
 function accAdd (arg1, arg2) {// 加法
     var r1,r2,m;
     try{r1=arg1.toString().split(".")[1].length}catch(e){r1=0}

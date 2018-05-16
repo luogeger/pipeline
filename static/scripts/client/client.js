@@ -85,7 +85,8 @@ var vm = new Vue({
 
         // 弹窗
         dialogShow: true,
-        addClientShow: true,
+        addClientShow: true,// 只是编辑信息的弹窗
+        addClientIsShow: true,// 添加客户信息弹窗
         addMsgShow: true,
         uploadShow: true,
         revokeShow: true,// 撤回pop
@@ -116,6 +117,8 @@ var vm = new Vue({
         auditHistoryList: [],// 审核历史记录数据
         //statusIsShow: true,// 客户信息查询的时候，就不显示 状态 和 操作
 
+
+        repeatClick: true,// 防止重复点击按钮发送请求
     },// data
 
     created: function (){
@@ -160,11 +163,13 @@ var vm = new Vue({
         },
 
         // 区域
-        getRegion: function (region) {
+        getRegion: function (region, active) {
+            active = active || 'regionHd';
             region = region || 'region';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
-                vm.regionList = datas.data.msg.region;
-                vm.mRegionCode = datas.data.msg.region[0].code;// 默认区域选中第一个
+                var data = datas.data;
+                vm.regionList = data.msg.region;
+                vm.mRegionCode = active;// 默认区域选中第一个
 
             });
         },// 区域
@@ -358,13 +363,6 @@ var vm = new Vue({
         },
 
 
-        // 添加客户 按钮事件
-        addClient: function () {
-            this.getGroup();
-            this.showPop();// 显示弹框
-            this.addClientShow = false;
-            this.clearClient('c');// 清空弹窗信息
-        },
 
         // 显示弹框
         showPop: function () {
@@ -408,43 +406,85 @@ var vm = new Vue({
 
         },
 
-        // 确认客户添加
-        addClientConfirm: function () {
-            var addObj = {
-                salesGroupCode:     vm.cSalesGroupCode,
-                customerCode:       vm.cCustomerCode,
-                customerName:       vm.cCustomerName,
-                industryLineCode:   vm.cIndustryLineCode,
-                address:            vm.cAddress,
-                remark:             vm.cRemark
-            };
-
-            this.addClientURL(addObj);
-        },// addClientConfirm
-
-        // 提交请求
-        addClientURL: function (obj) {
-            axios.get(PATH +'/crm/addOrUpdateCustomer', {params: obj}).then(function (datas){
-                if (datas.data.code === 201) {
-                    toastr.error(datas.data.msg)
-                    return;
-                }
-                vm.hidePop();
-                vm.getClient();
-                toastr.success('添加客户成功');
-            });
+        // 添加机要信息的非空验证
+        msgCheckSpace: function (obj) {
+            if (checkSpace(obj['regionCode']) === 0) {toastr.warning('区域不能为空'); return 0;}
+            if (checkSpace(obj['provinceCode']) === 0) {toastr.warning('省份不能为空'); return 0;}
+            if (checkSpace(obj['contactName']) === 0) {toastr.warning('客户联系人姓名不能为空'); return 0;}
+            if (checkSpace(obj['departmentName']) === 0) {toastr.warning('所在部门不能为空'); return 0;}
+            if (checkSpace(obj['title']) === 0) {toastr.warning('头衔不能为空'); return 0;}
+            if (checkSpace(obj['telphone']) === 0) {toastr.warning('联系电话不能为空'); return 0;}
+            if (checkSpace(obj['address']) === 0) {toastr.warning('地址不能为空'); return 0;}
         },
 
 
-        // 添加 机要信息 按钮事件
-        // ====================================
-        addMsg: function () {
-            this.clearClientMsg();
-            vm.msgSubmit = false;
-            vm.dialogShow = false;
-            vm.addMsgShow = false;
+        // 添加客户 按钮事件
+        addClient: function () {
             this.getRegion();// 获取区域信息
             this.getProvince();// 获取省份信息
+            this.getGroup();// 所属事业部
+            this.showPop();// 显示弹框
+            this.addClientIsShow = false;// 显示弹窗
+            this.clearClient('c');// 清空弹窗信息
+        },
+
+        // 确认客户添加
+        addClientConfirm: function () {
+
+            var addObj = {
+                salesGroupCode:     vm.cSalesGroupCode,
+                customerName:       vm.cCustomerName,
+                industryLineCode:   vm.cIndustryLineCode,
+                address:            vm.cAddress,
+                remark:             vm.cRemark,
+                // customerCode:       vm.cCustomerCode,
+            };
+            var addMsgObj = {
+                customerCode:      vm.firstClientCode,// 客户编号
+                salesStaffCode:    vm.mSalesStaffCode,
+                salesStaffName:    vm.mSalesStaffName,
+                contactName:       vm.mContactName,
+                regionCode:        vm.mRegionCode,// 区域
+                provinceCode:      vm.mProvinceCode,// 省份
+                departmentName:    vm.mDepartmentName,
+                title:             vm.mTitle,
+                telphone:          vm.mTelPhone,
+                email:             vm.mEmail,
+                address:           vm.mAddress,
+                remark:            vm.mRemark,
+            };
+
+            this.addClientURL(addObj, addMsgObj);// 添加客户的请求
+        },
+
+        // 添加客户的请求
+        addClientURL: function (objC, objM) {
+            if (checkSpace(objC['industryLineCode']) === 0) {toastr.warning('行业线不能为空'); return;}
+            if (checkSpace(objC['customerName']) === 0) {toastr.warning('客户名称不能为空'); return;}
+            if (checkSpace(objC['address']) === 0) {toastr.warning('公司地址不能为空'); return;}
+            this.msgCheckSpace(objM);
+
+
+            if (this.repeatClick) {
+                this.repeatClick = false;
+                axios.get(PATH +'/crm/addOrUpdateCustomer', {params: objC}).then(function (datas){
+                    if (datas.data.code === 201) {
+                        toastr.warming(datas.data.msg)
+                        return;
+                    }
+                    objM.customerCode = datas.data.msg.lastAddCustomerCode;// 拿到客户编号再添加
+
+
+                    vm.addMsgConfirm(objM, () => {
+                        vm.hidePop();
+                        vm.getClient();
+                        vm.repeatClick = true;
+                        toastr.success('添加客户成功');
+                    });
+
+                });
+            }
+
 
         },
 
@@ -462,9 +502,22 @@ var vm = new Vue({
             vm.mRemark =             '';
         },
 
+        // 添加 机要信息 按钮事件
+        addMsg: function () {
+            this.clearClientMsg();
+            vm.msgSubmit = false;
+            vm.dialogShow = false;
+            vm.addMsgShow = false;
+            this.getRegion();// 获取区域信息
+            this.getProvince();// 获取省份信息
+
+        },
 
         // 机要信息添加 收集字段  vm.firstClientCode
-        addMsgConfirm: function () {
+        addMsgConfirmBtn:function () {
+            this.addMsgConfirm();
+        },
+        addMsgConfirm: function (params, callback) {
             var addMsgObj = {
                 customerCode:      vm.firstClientCode,//
                 salesStaffCode:    vm.mSalesStaffCode,
@@ -480,16 +533,24 @@ var vm = new Vue({
                 remark:            vm.mRemark,
             };
 
-            axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: addMsgObj}).then(function (datas){
+            //if (Object.prototype.toString.call(params) === '[object MouseEvent]') params = addMsgObj;// 点击事件参数会有变化
+            params = params || addMsgObj;
+            if (this.msgCheckSpace(params) === 0) return;
+
+            console.log('request')
+            axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: params}).then(function (datas){
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
                     return;
                 }
-                vm.hidePop();
                 vm.getClientMsg(vm.firstClientCode);
+                if (callback) {
+                    callback();
+                    return;
+                }
+                vm.hidePop();
                 toastr.success('添加客户机要信息成功');
             });
-            //this.hidePop();
         },
 
 
@@ -498,8 +559,8 @@ var vm = new Vue({
         // ====================================
         editMsg: function (id) {
             vm.clientMsgID = id;
-            vm.clearClientMsg();
-            vm.getRegion();
+            // vm.clearClientMsg();
+            // vm.getRegion();
             axios.get(PATH +'/crm/queryCustomerContactOne?id=' +id)
                 .then(function (datas){
                     var msg = datas.data.msg;
@@ -510,15 +571,14 @@ var vm = new Vue({
                     }
 
                     if (code === 200) {
-                        new Promise((resolve,reject) =>{
+                        new Promise((resolve,reject) =>{//先执行这里的代码，只有这里代码执行完，才会执行下面的代码
+                            vm.clearClientMsg(msg.regionCode);
                             vm.getProvince(msg.regionCode);
-
-                            //先执行这里的代码，只有这里代码执行完，才会执行下面的代码
                             resolve(msg);
-                        }).then(msg =>{
-                            // 处理成功resolve的数据
+                        }).then(msg =>{// 处理成功resolve的数据
 
                             vm.mRegionCode =         msg.regionCode;
+                            console.log(vm.mRegionCode)
                             vm.mProvinceCode =       msg.provinceCode;
                             vm.mContactName =        msg.contactName;
                             vm.mDepartmentName =     msg.departmentName;
@@ -533,8 +593,7 @@ var vm = new Vue({
                             vm.dialogShow = false;
                             vm.addMsgShow = false;
 
-                        }).catch(err => {
-                            // 处理reject失败的数据
+                        }).catch(err => {// 处理reject失败的数据
                             console.log(err, 'Promise');
                         })
                     }
@@ -626,6 +685,10 @@ var vm = new Vue({
         },
 
         editClientConfirm: function () {
+            console.log(123);
+            console.log(this.repeatClick);
+            if (this.repeatClick === false) return;
+            this.repeatClick = false;
             var editObj = {
                 id:  vm.clientID,
                 salesGroupCode:     vm.cSalesGroupCode,
@@ -646,7 +709,8 @@ var vm = new Vue({
                 vm.cCheckIndex = 0;
                 vm.getClient();
                 vm.hidePop();
-                toastr.success('修改客户成功 ！')
+                toastr.success('修改客户成功 ！');
+                vm.repeatClick = true;
             });
         },
 
@@ -794,6 +858,16 @@ var vm = new Vue({
             });
         },
 
+        // 输入框非空验证
+        formExplain: function (val, attr) {
+            if (checkSpace(val) === 0) {
+                $(this.$refs[attr]).addClass('has-error').parents('.input-group').addClass('form-explain');
+
+            } else{
+                $(this.$refs[attr]).removeClass('has-error').parents('.input-group').removeClass('form-explain');
+            }
+
+        },
 
         // 行业里的点击事件
         hDrop: function (code, text) {

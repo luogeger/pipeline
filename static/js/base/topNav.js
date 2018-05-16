@@ -120,6 +120,7 @@
             this.$title.each(function (index, item) {
                 var _item = $(item);
                 _item.click(function () {
+                    if (_item.siblings('ul').length !== 0) return;
                     $(this).parent('.panel').siblings('.panel').each(function (inx, itm) {
                         $(itm).removeClass('i-border-col').children('.panel-title').removeClass('i-text-col');// 清除一级菜单的样式
 
