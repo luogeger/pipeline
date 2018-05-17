@@ -44,6 +44,8 @@
                        id="startDate"
                        @click=""
                        v-model="cExpectSignDateRange">
+                <!--
+                       -->
             </div>
             <div class="dropdown-wrap">
                 <span class="dropdown-label">成功率：</span>
@@ -184,7 +186,18 @@
                         <span>-</span>
                         <span style="margin-right: 5px;">{{dataPageEnd}}</span>
                         <span>条，</span>
-                        <span>共&nbsp; {{dataPageTotal}} &nbsp;条</span>
+                        <span>共&nbsp;
+                            <span class="progressBtn">{{dataPageTotal}}
+                                <div class="progressTotal">
+                                <ul>
+                                    <li v-for="pscsList in pscsLists">
+                                        <span v-text="pscsList.val"></span>:
+                                        <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>
+                                    </li>
+                                </ul>
+                            </div>
+                            </span>&nbsp;
+                            条</span>
                     </div>
                 </div>
                 <a @click="openUpdateCase"
@@ -269,18 +282,22 @@
                                     <td>{{ item.customerCode }}</td>
                                     <td>{{ item.customerName }}</td>
                                     <td>
-                                        <div v-if="item.solutionSub">
-                                            <div v-for="solutionSub in item.solutionSub">
-                                                <span v-if="solutionSub">
-                                                    {{ solutionSub.solutionName }}
-                                                </span>
+                                        <div class="onetext">
+                                            <div v-if="item.solutionSub">
+                                                <div v-for="solutionSub in item.solutionSub">
+                                                    <span v-if="solutionSub">
+                                                        {{ solutionSub.solutionName }}
+                                                    </span>
+                                                </div>
                                             </div>
+                                            <div v-else>&nbsp;</div>
                                         </div>
-                                        <div v-else>&nbsp;</div>
                                     </td>
                                     <td>{{ item.industryLine }}</td>
                                     <td>{{ item.projectNature }}</td>
-                                    <td>{{ item.cooperativePartner }}</td>
+                                    <td>
+                                        <div class="onetext">{{ item.cooperativePartner }}</div>
+                                    </td>
                                     <td>{{ addSum(item.solutionSub) }}</td>
                                     <td>{{ item.expectSignDate }}</td>
                                     <td>{{ item.progress }}</td>
@@ -289,10 +306,16 @@
                                     <td>
                                         <div class="onetext">{{ item.projectFollowUpRemark }}</div>
                                     </td>
-                                    <td>{{ item.othDescription }}</td>
-                                    <td>{{ item.competitor }}</td>
+                                    <td>
+                                        <div class="onetext">{{ item.othDescription }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="onetext">{{ item.competitor }}</div>
+                                    </td>
                                     <td>{{ item.customerSource }}</td>
-                                    <td>{{ item.projectDescription }}</td>
+                                    <td>
+                                        <div class="onetext">{{ item.projectDescription }}</div>
+                                    </td>
                                     <td>{{ item.classificationOfFinancialIndustry }}</td>
                                 </tr>
                             </tbody>
@@ -792,10 +815,16 @@
             elem: '#startDate' //指定元素
             ,type: 'month'
             ,range: true
+            // yyyy-MM - yyyy-MM
+            ,value: vm.getYear()
+            // ,value: vm.defaultYear + '-01 - ' + vm.defaultYear + '-12'
+            // ,value: '2018-01 - 2018-12'
+            ,isInitValue: true //允许填充初始值
             // 参数可选value, date(起始时间), endDate(结束时间)
             ,done: function(value) {
                 vm.cExpectSignDateRange = value;
                 var time = vm.cExpectSignDateRange.split(' - ');
+                // var time = value.split(' - ');
                 var startTime,
                     endTime;
                 startTime = time[0];
@@ -959,8 +988,7 @@
                 cSoSolutionText: '',          // 解决方案
                 cLatelyChangeText: '',        // 近期变更过
                 cExpectSignDateRange: '',     // 预计签约时间
-                // cExpectSignDateStart: '',  // 预计签约起始时间
-                // cExpectSignDateEnd: '',    // 预计签约结束时间
+                defaultYear: '',              // 默认年份
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
@@ -986,6 +1014,7 @@
                 weightedSumTotal: '',         // 加权金额总计
                 expectSignSumTotal: '',       // 预计签约金额总计
                 items: [],                    // 表格数据
+                pscsLists: [],                // 表格项目阶段数据
                 noData: false,               // 搜索不到数据
                 ascActive: false,            // 点击表格客户名称升序
                 descActive: false,           // 点击表格客户名称降序
@@ -1067,10 +1096,52 @@
             this.searchData();
             this.getFuzzyList();
             this.getSales();
-            this.showData();
+            // this.showData();
             this.openUpdateCase();
+            this.signDate();
         },
         methods: {
+            // 获取年份
+            getYear: function() {
+                var yearRange;
+                $.ajax({
+                    async: false,
+                    url: PATH + '/oauth/queryUserInfo',
+                    type: 'get',
+                    dateType: 'json',
+                    success: function(result) {
+                        var date = result.msg.currentDate;
+                        this.defaultYear = date.slice(0, 4);
+                        yearRange = this.defaultYear + '-01 - ' + this.defaultYear + '-12';
+
+                        /*vm.cExpectSignDateRange = yearRange;
+                        /!*var time = this.getYear().split(' - ');
+                        var startTime,
+                            endTime;
+                        startTime = time[0];
+                        endTime = time[1];*!/
+                        vm.tableList.expectSignDateStart = this.defaultYear + '-01';
+                        vm.tableList.expectSignDateEnd = this.defaultYear + '-12';
+                        vm.showData();*/
+                    },
+                    error: function(result) {
+                        console.log('获取年份失败');
+                    }
+                })
+                return yearRange;
+            },
+            signDate: function() {
+                this.cExpectSignDateRange = this.getYear();
+                var time = this.cExpectSignDateRange.split(' - ');
+                var startTime,
+                    endTime;
+                startTime = time[0];
+                endTime = time[1];
+                this.tableList.expectSignDateStart = startTime;
+                this.tableList.expectSignDateEnd = endTime;
+                this.showData();
+            },
+
             selectNothing: function() {
                 //搜索的时候传解决方案名称code
                 vm.tableList.soSolutionCode = treeNode.code;
@@ -1127,7 +1198,6 @@
                     data: {
                         customerName: clientName
                     },
-                    async: false,
                     type: 'get',
                     async: false,
                     dataType: 'json',
@@ -1421,15 +1491,6 @@
                 // console.log(sum);
                 return sum;
             },
-            /*function toThousands(num) {
-                var num = (num || 0).toString(), result = '';
-                while (num.length > 3) {
-                    result = ',' + num.slice(-3) + result; // slice(start, end) 从已有的数组中返回选定的元素(start为必需，规定从何处开始选取，如果为负数，则从数组尾部开始算起；end非必须，规定从何处结束选取)。该方法不会修改原数组，而是返回一个子数组
-                    num = num.slice(0, num.length - 3);
-                }
-                if (num) { result = num + result; }
-                return result;
-            } */
             // 格式化数字
             toThousands: function(num) {
                 var num = (num || 0).toString(),   // toString() 转换成字符串
@@ -1463,7 +1524,12 @@
                         vm.weightedSumTotal = vm.toThousands(Math.round(result.oth.weightedSumTotal));
                         vm.expectSignSumTotal = vm.toThousands(Math.round(result.oth.expectSignSumTotal));
 
-                        // 点击tr，
+                        // 获取项目阶段数据
+                        for(var i = 0;i < result.pscs.length;i++){
+                            var pscs = result.pscs[i];
+                            vm.pscsLists.push(pscs);
+                        }
+
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
                             vm.items.push(root);
@@ -1624,7 +1690,6 @@
             clearSearchForm: function() {
                 vm.cCustomerName = '';            // 客户
                 vm.cIndustryLineText = '';        // 行业线
-                vm.cExpectSignDateRange = '';     // 预计签约时间
                 vm.cProjectSuccessRateText = '';  // 成功率
                 vm.cMngSalesGroupText = '';       // 事业部
                 vm.cRegionText = '';              // 区域
@@ -1633,10 +1698,9 @@
                 vm.cLatelyChangeText = '';        // 近期变更过
                 vm.cSalesName = '';               // 近期变更过
 
-                $('#autocompleteInput').val('');  // 客户
-
                 this.tableList = {};
-                this.showData();
+                this.signDate();
+                // this.showData();
             },
             // 清空新增/修改表单
             clearHandle: function() {
