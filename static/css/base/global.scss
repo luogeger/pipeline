@@ -412,6 +412,13 @@
   border-left: 2px solid #F0F2F5;
 }
 
-
-
+//
+.input-width-100{
+  .input-group{
+    width: 100%;
+    .input-group-form{
+      width: 100% !important;
+    }
+  }
+}
 

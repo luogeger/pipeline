@@ -19,9 +19,8 @@
 .main .opera > div {
   float: left; }
 .main .opera > div:not(:last-child) {
-  margin-right: 50px; }
-.main .opera .client-num .input-group-form {
-  width: 300px; }
+  margin-right: 20px; }
+.main .opera .client-num .input-group-form,
 .main .opera .client-name .input-group-form {
   width: 300px; }
 .main .client .i-table tbody tr td:last-child .types-show span {

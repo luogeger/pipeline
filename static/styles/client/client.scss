@@ -1,6 +1,5 @@
 .main{
 
-
   .user-level-tabs{
     >div {
       float: left;
@@ -22,33 +21,29 @@
   .client,
   .client-msg{
     padding: 10px;
-    //margin-top: 10px;
     background-color: #fff;
     border: 1px solid #DDDEE1;
   }
-
 
   .opera{
     >div{
       float: left;
     }
     >div:not(:last-child){
-      margin-right: 50px;
+      margin-right: 20px;
     }
     .industry{
       
     }// industry
 
-    .client-num{
+    .client-num,
+    .client-name{
       .input-group-form{
         width: 300px;
       }
     }// client-num
 
     .client-name{
-      .input-group-form{
-        width: 300px;
-      }
     }// client-name
 
     .query-reset{
@@ -59,10 +54,6 @@
     .i-table{
       tbody{
         tr{
-          //td:nth-child(6),
-          //td:nth-child(8){
-          //  text-align: left;
-          //}
           td:last-child{
             .types-show{
               span{
@@ -109,10 +100,6 @@
     }
   }// client
 
-  .client-msg{
-
-  }// client-msg
-
   .table-opera{
     padding-bottom: 10px;
   }
@@ -157,5 +144,6 @@
       padding: 20px;
     }
   }
+
   
 }// main

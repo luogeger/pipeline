@@ -11,7 +11,6 @@
 }
 
 .input-group{
-  width: 100%;
   &.form-explain:before{// 验证
     content: '内容不能为空';
     display: block;
@@ -32,8 +31,6 @@
 
   .input-group-form{
     height: $height-sm;
-    //width: 162px;
-    width: 100%;
     font-size: 14px;
     border-radius: $border-radius-base;
     &.has-error{

@@ -446,38 +446,35 @@ input.disabled {
 .input-group-label + .input-group > .input-group-form {
   border-radius: 4px; }
 
-.input-group {
-  width: 100%; }
-  .input-group.form-explain:before {
-    content: '内容不能为空';
-    display: block;
-    width: 100%;
-    height: 16px;
-    line-height: 16px;
-    font-size: 12px;
-    color: red !important;
-    top: 35px !important;
-    left: 5px; }
-  .input-group:before, .input-group:after {
-    content: " ";
-    display: table; }
-  .input-group:after {
-    clear: both; }
-  .input-group .input-group-label {
-    padding: 0 10px;
-    line-height: 30px; }
-  .input-group .input-group-form {
-    height: 30px;
-    width: 100%;
-    font-size: 14px;
-    border-radius: 4px; }
-    .input-group .input-group-form.has-error {
-      border-color: red !important;
-      box-shadow: rgba(255, 0, 0, 0.1) 0 0 0 2px !important; }
-  .input-group .input-group-btn {
-    float: left; }
-    .input-group .input-group-btn .btn {
-      border-color: #FF8A41; }
+.input-group.form-explain:before {
+  content: '内容不能为空';
+  display: block;
+  width: 100%;
+  height: 16px;
+  line-height: 16px;
+  font-size: 12px;
+  color: red !important;
+  top: 35px !important;
+  left: 5px; }
+.input-group:before, .input-group:after {
+  content: " ";
+  display: table; }
+.input-group:after {
+  clear: both; }
+.input-group .input-group-label {
+  padding: 0 10px;
+  line-height: 30px; }
+.input-group .input-group-form {
+  height: 30px;
+  font-size: 14px;
+  border-radius: 4px; }
+  .input-group .input-group-form.has-error {
+    border-color: red !important;
+    box-shadow: rgba(255, 0, 0, 0.1) 0 0 0 2px !important; }
+.input-group .input-group-btn {
+  float: left; }
+  .input-group .input-group-btn .btn {
+    border-color: #FF8A41; }
 
 .input-group-lg {
   height: 40px; }
@@ -2884,5 +2881,10 @@ button.toast-close-button {
 
 .table-left-border {
   border-left: 2px solid #F0F2F5; }
+
+.input-width-100 .input-group {
+  width: 100%; }
+  .input-width-100 .input-group .input-group-form {
+    width: 100% !important; }
 
 /*# sourceMappingURL=base.css.map */
