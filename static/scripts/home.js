@@ -64,7 +64,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
 
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
-        loadMainPage('.content-item', 'manage/manage.html');
+        loadMainPage('.content-item', 'client/partner.html');
     })
 });
 
@@ -189,3 +189,52 @@ function scaleCalc(A, B) {// 增长率的计算
     div += "%";
     return div;
 };// 百分比计算
+
+
+Vue.component('select-list', {
+    props: {
+        selections: {
+            type: Array,
+            default: [{
+                label: 'test',
+                value: 0
+            }]
+        }
+    },// props
+
+    data () {
+        return {
+            nowIndex: 0,
+            isShow: false,
+        }
+    },// data
+
+    methods:{
+        toggleShow () {
+            this.isShow = !this.isShow;
+        },
+        chooseShow (index) {
+            this.isShow = false;
+            this.nowIndex = index;
+            this.$emit('on-change', this.selections[this.nowIndex]);
+        }
+    },// methods
+
+    mounted () {
+        //this.$emit('on-change', this.selections[this.nowIndex]);
+    },
+    template:
+        `<div class="selection-component">
+            <div class="selection-show" @click="toggleShow">
+                <span>{{selections[nowIndex].label}}</span>
+                <div class="arrow"></div>
+            </div>
+            <div class="selection-list" v-if="isShow">
+                <ul>
+                    <li v-for="(item, index) in selections" @click="chooseShow(index)">{{item.label}}</li>
+                </ul>
+            </div>
+        </div>`,
+
+
+});

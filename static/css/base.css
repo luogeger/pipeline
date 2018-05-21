@@ -12,7 +12,7 @@
 
 html, body {
   background-color: #fff;
-  font-family: "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Times New Roman", sans-serif;
   font-size: 14px;
   line-height: 1.4;
   color: #495060; }
@@ -79,7 +79,7 @@ button, select {
 
 input, select, textarea {
   font-size: 14px;
-  font-family: "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Times New Roman", sans-serif;
   border: 1px solid #DDDEE1;
   color: #595959;
   background: #ffffff;
@@ -205,7 +205,7 @@ samp {
 
 h1, h2, h3, h4, h5, h6,
 .h1, .h2, .h3, .h4, .h5, .h6 {
-  font-family: "Helvetica Neue For Number", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: "Times New Roman", sans-serif;
   font-weight: 500;
   line-height: 1.2;
   color: #000; }
@@ -2563,7 +2563,7 @@ button.toast-close-button {
     color: #f37b1d; }
 
 * {
-  font-family: tahoma, arial, "Hiragino Sans GB", 宋体, sans-serif; }
+  font-family: "Times New Roman", sans-serif; }
 
 .theme-color {
   color: #ed6d00; }
@@ -2886,5 +2886,8 @@ button.toast-close-button {
   width: 100%; }
   .input-width-100 .input-group .input-group-form {
     width: 100% !important; }
+
+.border-normal {
+  border: 1px solid #DDDEE1; }
 
 /*# sourceMappingURL=base.css.map */

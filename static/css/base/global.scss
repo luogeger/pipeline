@@ -1,6 +1,7 @@
 @charset "UTF-8";
 *{
-  font-family: tahoma, arial, "Hiragino Sans GB", 宋体, sans-serif;
+  //font-family: "Times New Roman", arial, "Hiragino Sans GB", 宋体, sans-serif;
+  font-family: "Times New Roman", sans-serif;
 }
 .theme-color {
   color: #ed6d00;
@@ -412,7 +413,7 @@
   border-left: 2px solid #F0F2F5;
 }
 
-//
+// input宽度 %
 .input-width-100{
   .input-group{
     width: 100%;
@@ -422,3 +423,7 @@
   }
 }
 
+// 默认边框
+.border-normal{
+  border: 1px solid #DDDEE1;
+}
