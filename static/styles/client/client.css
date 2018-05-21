@@ -23,6 +23,8 @@
 .main .opera .client-num .input-group-form,
 .main .opera .client-name .input-group-form {
   width: 300px; }
+.main .opera .client-name {
+  position: relative; }
 .main .client .i-table tbody tr td:last-child .types-show span {
   line-height: 30px; }
 .main .client .i-table tbody tr td:last-child .types-show .type-pending {
