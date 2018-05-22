@@ -122,6 +122,8 @@ var vm = new Vue({
     },// data
 
     created: function (){
+        this.skipPage();
+
         if (this.userLevel !== 'xs') this.onlySale = false;// (添加客户 + 导入)按钮
         switch(this.userLevel) {
             case 'xs':
@@ -867,6 +869,18 @@ var vm = new Vue({
                 $(this.$refs[attr]).removeClass('has-error').parents('.input-group').removeClass('form-explain');
             }
 
+        },
+
+        // pipeline 跳转过来只添加或编辑机要信息
+        skipPage: function () {
+            var num = localStorage.getItem('cpComCode');
+            console.log(num);
+            if (num !== '') {
+                this.hClientCode = localStorage.getItem('cpComCode');
+                localStorage.removeItem('cpComCode');
+                this.getClient();
+                return;
+            }
         },
 
         // 行业里的点击事件
