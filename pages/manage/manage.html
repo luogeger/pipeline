@@ -373,15 +373,15 @@
             </div>
         </div>
     </div>
-    <!-- 新增修改pipeline弹窗 -->
-    <div class="dialog-wrap"
-         :class="{'hide': dialogShow}">
-        <div @click="allHide" class="dialog-cover"></div>
-        <div class="dialog-content" style="width: auto">
+    <!-- 弹窗 -->
+    <div class="dialog-wrap" :class="{'hide': dialogShow}">
+        <div @click="hidePop" class="dialog-cover"></div>
+        <!--新增修改pipeline-->
+        <div class="dialog-content" :class="{'hide': handleTemplateShow}" style="width: auto">
             <div class="title clearfix">
                 <p v-if="handleTemplate.soCoreCode != null" class="pull-left">修改 Pipeline</p>
                 <p v-if="handleTemplate.soCoreCode == null" class="pull-left">新增 Pipeline</p>
-                <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
             </div>
             <div class="main">
                 <div id="aboutPipeline" class="data-wrapper">
@@ -471,8 +471,7 @@
                                                 ></li>
                                             </ul>
                                         </div>
-                                        <!--<input v-model="hCustomerName"
-                                               class="input-group-form" type="text">
+                                        <!--
                                         <a @click="selectCustomer"
                                            href="javascript:;"
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px;display: none;">+</a>-->
@@ -721,15 +720,32 @@
                 </div>
             </div><!-- /.main -->
         </div>
-    </div>
-    <!-- 客户信息弹窗 -->
-    <div class="dialog-wrap"
-         :class="{'hide': customerDialogShow}">
-        <div @click="customerDialogHide" class="dialog-cover"></div>
-        <div class="dialog-content" style="width: 1090px">
+
+        <!-- 导入-需修复 -->
+        <div class="dialog-content upload-pop"
+             :class="{'hide': uploadDialogShow}"
+             style="width: 400px;min-width: 400px;overflow: hidden;">
+            <div class="title clearfix">
+                <p class="pull-left">导入文件</p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+                <div class="select-file">
+                    <label for="importpipeline">选择文件</label>
+                    <input id="importpipeline" type="file">
+                </div>
+                <div class="btn-group">
+                    <div @click="uploadConfirm" class="btn btn-theme">确认</div>
+                    <div @click="hidePop" class="btn btn-border">取消</div>
+                </div>
+            </div><!-- /.main -->
+        </div>
+
+        <!-- 客户信息-需修复 -->
+        <div class="dialog-content" :class="{'hide': customerDialogShow}" style="width: 1090px">
             <div class="title clearfix">
                 <p class="pull-left">客户选择</p>
-                <p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
             </div>
             <div class="main">
                 <div class="opera clearfix">
@@ -760,13 +776,13 @@
                             <span class="input-group-label">客户名称:</span>
                             <div style="position: relative;display: inline-block;">
                                 <!--<input v-model="hClientName"-->
-                                       <!--@keyup="getFuzzyList(2)"-->
-                                       <!--type="text" class="input-group-form">-->
+                                <!--@keyup="getFuzzyList(2)"-->
+                                <!--type="text" class="input-group-form">-->
                                 <!--<ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">-->
-                                    <!--<li @click="selectFuzzyText(2, item)"-->
-                                        <!--v-for="item in fuzzyQueryList_2"-->
-                                        <!--v-text="item"-->
-                                    <!--&gt;</li>-->
+                                <!--<li @click="selectFuzzyText(2, item)"-->
+                                <!--v-for="item in fuzzyQueryList_2"-->
+                                <!--v-text="item"-->
+                                <!--&gt;</li>-->
                                 <!--</ul>-->
                             </div>
                             <!--<input v-model="hClientName" type="text" class="input-group-form">-->
@@ -835,27 +851,20 @@
             </div><!-- /.main -->
         </div>
     </div>
-    <!-- 导入 -->
-    <div class="dialog-wrap"
-         :class="{'hide': uploadDialogShow}">
-        <div @click="allHide" class="dialog-cover"></div>
-        <div class="dialog-content upload-pop" style="width: 400px;min-width: 400px;overflow: hidden;">
-            <div class="title clearfix">
-                <p class="pull-left">导入文件</p>
-                <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+
+    <div class="dialog-wrap" :class="{'hide': secondDialogShow}">
+        <div @click="hideSecondPop" class="dialog-cover"></div>
+        <!-- 确认 -->
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hideSecondPop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">机要信息不全，请完善机要信息</div>
+            <div class="foot">
+                <div @click="yesBtn()" class="btn btn-theme">是</div>
+                <div @click="hideSecondPop" class="btn btn-border">否</div>
             </div>
-            <div class="main">
-                <div class="select-file">
-                    <label for="importpipeline">选择文件</label>
-                    <input id="importpipeline" type="file">
-                </div>
-                <div class="btn-group">
-                    <div @click="uploadConfirm" class="btn btn-theme">确认</div>
-                    <div @click="allHide" class="btn btn-border">取消</div>
-                </div>
-            </div><!-- /.main -->
         </div>
     </div>
+
 </div>
 <script src="../static/scripts/manage/manage.js"></script>
 <script>
@@ -1125,12 +1134,18 @@
                 preSaleStaffs: [],          // 点击修改时获取表格的值
                 solutionSub: [],            // 点击修改时获取表格的值
 
-                // 新增修改弹窗
-                dialogShow: true,
-                addMsgShow: true,
+                cpComCode: '',                 // 新增/修改时传给客户管理的客户名称code
+
+                // === 弹窗
+                dialogShow: true,           // 外层弹窗
+                handleTemplateShow: true,   // 新增修改弹窗
+                uploadDialogShow: true,     // 导入弹窗
+                customerDialogShow: true,   // 显示客户选择弹窗
+
+                secondDialogShow: true,     // 二级外层弹窗
+                revokeShow: true,           // 撤销弹窗
 
                 // 导入
-                uploadDialogShow: true,     // 导入弹窗
                 uploadFileName: '',
                 clearShow: true,
 
@@ -1139,7 +1154,6 @@
                 clientID: '',
                 cCheckIndex: -1,
 
-                customerDialogShow: true,  // 显示客户选择弹窗
                 hDropText: '',             // 行业下拉框文字
                 hDropCode: '',             // 行业 code
                 hClientCode: '',           // 客户编号
@@ -1156,6 +1170,27 @@
             this.signDate();
         },
         methods: {
+            // 显示弹框
+            showPop: function () {
+                vm.dialogShow = false;
+            },
+            // 关闭弹窗
+            hidePop: function () {
+                this.dialogShow = true;
+                this.handleTemplateShow = true;
+                // this.customerDialogShow = true;
+                this.uploadDialogShow = true; // 导入pop
+            },
+            // 显示二级弹框
+            showSecondPop: function () {
+                this.secondDialogShow = false;
+            },
+            // 关闭二级弹窗
+            hideSecondPop: function() {
+                this.secondDialogShow = true;
+                this.revokeShow = true;// 确认pop
+            },
+
             // 获取年份
             getYear: function() {
                 var yearRange;
@@ -1251,9 +1286,6 @@
                         if (result.code === 201 || result.msg.length === 0) return;
                         vm[list] = result.msg;
                         vm.customerNames = result.msg;
-
-                        console.log(vm[list], 'mo');
-                        console.log(vm.customerNames, 'data.msg');
                     },
                     error: function(result) {
                         console.log('请求失败');
@@ -1261,10 +1293,7 @@
                 })
             },// 获取数据
             selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
-                console.log(text);
-                console.log(departmentCode);
-                console.log(hasConcat);
-                console.log(whole);
+                console.log(code,'code');
                 switch (type) {
                     case 1:
                         vm.tableList.customerCode = code;
@@ -1290,17 +1319,32 @@
                             // hasConcat=y   名下存在客户机要信息，hasConcat=n 不存在机要
                             if(hasConcat == 'n') {
                                 toastr.warning('该客户名下没有机要信息!');
+
+                                this.cpComCode = code;
+                                this.showSecondPop();
+                                this.revokeShow = false;
                             }
                             // whole=y 机要信息全    whole=n 机要信息不全
                             else if (whole == 'n') {
                                 toastr.warning('该客户名下机要信息不全,请完善客户机要信息!');
+
+                                this.cpComCode = code;
+                                this.showSecondPop();
+                                this.revokeShow = false;
                             }
                         }
-                        vm.hCustomerName = text;
-                        vm.handleTemplate.customerCode = code;
+
+                        // 撤回弹窗
+                        this.showPop();
+                        this.revokeShow = false;
+
                         break;
                 }
             },// 选中文字，隐藏模糊列表
+            yesBtn:function() {
+                loadMainPage('.content-item', 'client/client.html');
+                localStorage.cpComCode =  this.cpComCode;
+            },
             //// ==========销售========
             // 销售键盘回车(如果input为空)
             keybordEnterSales: function() {
@@ -1497,7 +1541,7 @@
 
                 vm.nothing = code;
             },
-            addClient: function () {
+            /*addClient: function () {
                 vm.dialogShow = false;
             },
             addMsg: function () {
@@ -1508,7 +1552,7 @@
                 vm.dialogShow = true;
                 vm.addMsgShow = true;
                 vm.uploadDialogShow = true;
-            },
+            },*/
             // 获取表格右侧项目更新情况数据
             showOneChange: function(soCoreCode, index) {
                 vm.changeOneLists = [] // 先清空项目更新情况列表
@@ -1829,7 +1873,8 @@
                 vm.handleTemplate.salesGroupCode = vm.oauthLists.userInfo.mngSalesGroups[0].code;
                 vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;
 
-                vm.dialogShow = false;       // 调用（弹窗）
+                this.showPop();              // 显示弹框
+                this.handleTemplateShow = false;
             },
             // 修改
             handleData: function(item){
@@ -1843,7 +1888,8 @@
                 vm.handleTemplate.salesGroupCode = vm.oauthLists.userInfo.mngSalesGroups[0].code;
                 vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;
 
-                vm.dialogShow = false;       // 调用（弹窗）
+                this.showPop();              // 显示弹框
+                this.handleTemplateShow = false;
                 // 已获取销售code
                 // console.log(item.soCoreCode)
 
@@ -2204,7 +2250,7 @@
                         toastr.error(datas.data.msg)
                     } else{
                         toastr.success('文件上传成功 ！');
-                        vm.allHide();
+                        vm.hidePop();
                     }
 
                 });
