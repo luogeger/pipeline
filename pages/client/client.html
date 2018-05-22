@@ -40,13 +40,14 @@
         </div>
 
         <div v-if="clientMsgQueryBtn" class="client-num">
+            <div class="input-group-label">客户编号:</div>
             <div class="input-group">
-                <span class="input-group-label">客户编号:</span>
+
                 <input v-model="hClientCode" type="text" class="input-group-form">
             </div>
         </div>
 
-        <div class="client-name" style="position: relative;">
+        <div class="client-name">
             <div class="input-group">
                 <span class="input-group-label">客户名称:</span>
                 <input v-model="hClientName"
@@ -61,7 +62,7 @@
             </ul>
         </div>
 
-        <div class="query-reset pull-right">
+        <div class="query-reset">
             <div @click="queryBtn" class="btn btn-theme" style="margin-right: 20px;">查询</div>
             <div @click="resetBtn" class="btn btn-border pull-right">重置</div>
         </div>
@@ -112,11 +113,11 @@
                     <th>序号</th>
                     <th>报备名称</th>
                     <th>所属事业部</th>
-                    <th>负责销售</th>
+                    <th v-if="clientMsgQueryBtn">负责销售</th>
                     <th>客户编号</th>
                     <th class="text-left">客户名称</th>
-                    <th>行业线</th>
-                    <th class="text-left">地址</th>
+                    <th v-if="clientMsgQueryBtn">行业线</th>
+                    <th v-if="clientMsgQueryBtn" class="text-left">地址</th>
                     <th v-if="clientMsgQueryBtn" class="text-left">审批状态</th>
                 </tr>
             </thead>
@@ -127,11 +128,11 @@
                     <td v-text="index +1"></td>
                     <td v-text="item.reportDate"></td>
                     <td v-text="item.salesGroup"></td>
-                    <td v-text="item.creatorName"></td>
+                    <td v-text="item.creatorName" v-if="clientMsgQueryBtn"></td>
                     <td v-text="item.customerCode"></td>
-                    <td v-text="item.customerName"></td>
-                    <td v-text="item.industryLine"></td>
-                    <td v-text="item.address"></td>
+                    <td v-text="item.customerName"  class="text-left"></td>
+                    <td v-text="item.industryLine" v-if="clientMsgQueryBtn"></td>
+                    <td v-text="item.address" v-if="clientMsgQueryBtn" class="text-left" style="max-width: 300px;"></td>
                     <!--<td @click="editClient(index, item.id)"><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>-->
                     <td v-if="clientMsgQueryBtn" style="padding-right: 10px;">
                         <div class="pull-left types-show">
@@ -218,59 +219,26 @@
             </tbody>
         </table>
         <div  v-if="noDataMsg" style="padding: 10px; text-align: center">暂无相关数据</div>
-    </div><!-- /.client-mag -->
+    </div><!-- /.client-msg -->
 
-    <div :class="{'hide': dialogShow}" class="dialog-wrap">
+    <div :class="{'hide': dialogShow}" class="dialog-wrap"><!--  -->
         <div @click="hidePop" class="dialog-cover"></div><!-- /.dialog-cover -->
-        <!-- 添加客户 -->
-        <div :class="{'hide': addClientShow}" class="dialog-content">
-             <div class="title clearfix">
-                 <p v-if="!clientSubmit" class="pull-left">添加客户信息</p>
-                 <p v-if="clientSubmit"  class="pull-left">编辑客户信息</p>
-                 <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
-             </div>
+        <!-- 添加客户 和 机要信息 -->
+        <div :class="{'hide': addClientIsShow}" class="dialog-content input-width-100">
+            <div class="title clearfix">
+                <p class="pull-left">添加客户信息</p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
             <div class="main">
                 <div class="msg-item">
                     <div class="msg-item-left">报备日期：</div>
                     <div class="msg-item-right" v-text="cReportDate"></div>
-                </div>
+                </div><!-- 报备日期 -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">所属事业部：</div>
-                    <div class="msg-item-right" v-text="cGroupText">
-
-                        <!--<div class="dropdown-wrap">-->
-                            <!--<div class="dropdown">-->
-                                <!--<span v-text="cGroupText"-->
-                                      <!--class="dropdown-default"></span>-->
-                                <!--<i class="fa fa-angle-down"></i>-->
-                                <!--<ul>-->
-                                    <!--<li v-for="item in cSalesGroupList"-->
-                                        <!--v-text="item.text"-->
-                                        <!--@click="selectGroup(item.code, item.text)"></li>-->
-                                <!--</ul>-->
-                            <!--</div>-->
-                        <!--</div>&lt;!&ndash; drop &ndash;&gt;-->
-                    </div>
-
-                </div><!-- item -->
-
-                <div class="msg-item">
-                    <div class="msg-item-left">客户名称：</div>
-                    <div class="msg-item-right">
-                        <div class="input-group" style="position: relative;">
-                            <input v-model="cCustomerName"
-                                   @keyup="getFuzzyList(2)"
-                                   type="text" class="input-group-form">
-                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
-                                <li @click="selectFuzzyText(2, item)"
-                                    v-for="item in fuzzyQueryList_2"
-                                    v-text="item"
-                                ></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
+                    <div class="msg-item-right" v-text="cGroupText"></div>
+                </div><!-- 所属事业部 -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">行业线：</div>
@@ -290,55 +258,55 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div><!-- 行业线 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">客户名称：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="cCustomerName"
+                                   ref="cCustomerNameREF"
+                                   @blur="formExplain(cCustomerName, 'cCustomerNameREF')"
+                                   @keyup="getFuzzyList(2), formExplain(cCustomerName, 'cCustomerNameREF')"
+                                   type="text" class="input-group-form">
+                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                <li @click="selectFuzzyText(2, item)"
+                                    v-for="item in fuzzyQueryList_2"
+                                    v-text="item"
+                                ></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- 客户名称 -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">公司地址：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input v-model="cAddress" type="text" class="input-group-form">
+                            <input v-model="cAddress"
+                                   ref="cAddressREF"
+                                   @blur="formExplain(cAddress, 'cAddressREF')"
+                                   @keyup="formExplain(cAddress, 'cAddressREF')"
+                                   type="text" class="input-group-form">
                         </div>
                     </div>
-                </div>
+                </div><!-- 公司地址 -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">备注：</div>
                     <div class="msg-item-right">
-                        <textarea v-model="cRemark" cols="100" rows="3" style="width: 100%;"></textarea>
+                        <textarea v-model="cRemark"></textarea>
                     </div>
-                </div>
-
-                <div class="msg-item">
-                    <div class="msg-item-left"></div>
-                    <div class="msg-item-right">
-                        <div v-if="!clientSubmit" @click="addClientConfirm" class="btn btn-theme">提交</div>
-                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
-                    </div>
-                </div>
-            </div><!-- /.main -->
-        </div>
-
-        <!-- 添加客户机要信息 -->
-        <div :class="{'hide': addMsgShow}" class="dialog-content" >
-            <div class="title clearfix">
-                <p v-if="!msgSubmit" class="pull-left">添加客户机要信息</p>
-                <p v-if="msgSubmit"  class="pull-left">编辑客户机要信息</p>
-                <p @click="hidePop" class="dialog-close pull-right"><i class="fa fa-close"></i></p>
-            </div>
-            <div class="main">
+                </div><!-- 备注 -->
+            </div><!-- 客户 -->
+            <div class="title"><p>添加客户机要信息</p></div>
+            <div class="main"><!-- 机要 -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">填报人：</div>
                     <div v-text="mSalesStaffName" class="msg-item-right"></div>
-                </div>
-                <div class="msg-item">
-                    <div class="msg-item-left">客户姓名：</div>
-                    <div class="msg-item-right">
-                        <div class="input-group">
-                            <input v-model="mContactName" type="text" class="input-group-form">
-                        </div>
-                    </div>
-                </div>
+                </div><!-- 填报人 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">区域：</div>
                     <div class="msg-item-right">
@@ -350,7 +318,7 @@
                             ></li>
                         </ul>
                     </div>
-                </div>
+                </div><!-- 省份 -->
 
                 <div class="msg-item">
                     <div class="msg-item-left">客户所在省份：</div>
@@ -363,31 +331,73 @@
                             ></li>
                         </ul>
                     </div>
-                </div>
+                </div><!-- 区域 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">客户联系人姓名：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mContactName"
+                                   ref="mContactNameREF"
+                                   @blur="formExplain(mContactName, 'mContactNameREF')"
+                                   @keyup="formExplain(mContactName, 'mContactNameREF')"
+                                   type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 客户联系人姓名 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">所在部门：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input v-model="mDepartmentName" type="text" class="input-group-form">
+                            <input v-model="mDepartmentName"
+                                   ref="mDepartmentNameREF"
+                                   @blur="formExplain(mDepartmentName, 'mDepartmentNameREF')"
+                                   @keyup="formExplain(mDepartmentName, 'mDepartmentNameREF')"
+                                   type="text" class="input-group-form">
                         </div>
                     </div>
-                </div>
+                </div><!-- 所在部门 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">头衔：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input v-model="mTitle" type="text" class="input-group-form">
+                            <input v-model="mTitle"
+                                   ref="mTitleREF"
+                                   @blur="formExplain(mTitle, 'mTitleREF')"
+                                   @keyup="formExplain(mTitle, 'mTitleREF')"
+                                   type="text" class="input-group-form">
                         </div>
                     </div>
-                </div>
+                </div><!-- 头衔 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">联系电话：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input v-model="mTelPhone" type="text" class="input-group-form">
+                            <input v-model="mTelPhone"
+                                   ref="mTelPhoneREF"
+                                   @blur="formExplain(mTelPhone, 'mTelPhoneREF')"
+                                   @keyup="formExplain(mTelPhone, 'mTelPhoneREF')"
+                                   type="text" class="input-group-form">
                         </div>
                     </div>
-                </div>
+                </div><!-- 联系电话 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">地址：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mAddress"
+                                   ref="mAddressREF"
+                                   @blur="formExplain(mAddress, 'mAddressREF')"
+                                   @keyup="formExplain(mAddress, 'mAddressREF')"
+                                   type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 邮件 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">邮件：</div>
                     <div class="msg-item-right">
@@ -395,28 +405,232 @@
                             <input v-model="mEmail" type="text" class="input-group-form">
                         </div>
                     </div>
-                </div>
+                </div><!-- 地址 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">备注：</div>
+                    <div class="msg-item-right">
+                        <textarea v-model="mRemark"></textarea>
+                    </div>
+                </div><!-- 备注 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left"></div>
+                    <div class="msg-item-right">
+                        <div @click="addClientConfirm" class="btn btn-theme">提交</div>
+                    </div>
+                </div><!-- 提交按钮 -->
+            </div><!-- 机要 -->
+        </div>
+
+        <!-- 编辑客户 -->
+        <div :class="{'hide': addClientShow}" class="dialog-content input-width-100">
+             <div class="title clearfix">
+                 <p v-if="!clientSubmit" class="pull-left">添加客户信息</p>
+                 <p v-if="clientSubmit"  class="pull-left">编辑客户信息</p>
+                 <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+             </div>
+            <div class="main">
+                <div class="msg-item">
+                    <div class="msg-item-left">报备日期：</div>
+                    <div class="msg-item-right" v-text="cReportDate"></div>
+                </div><!-- 报备日期 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">所属事业部：</div>
+                    <div class="msg-item-right" v-text="cGroupText"></div>
+                </div><!-- 所属事业部 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">行业线：</div>
+                    <div class="msg-item-right">
+                        <div class="dropdown-wrap">
+                            <div class="dropdown">
+                                <span class="dropdown-default"
+                                      v-text="cIndustryLineText"></span>
+                                <i class="fa fa-angle-down"></i>
+                                <ul>
+                                    <li v-for="item in industry"
+                                        v-text="item.text"
+                                        :class="{'li-checkbox': item.code == cAddIndustryCode}"
+                                        @click="selectIndustry(item.code, item.text)"
+                                    ></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div><!-- 行业线 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">客户名称：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group" style="position: relative;">
+                            <input v-model="cCustomerName"
+                                   @keyup="getFuzzyList(2)"
+                                   type="text" class="input-group-form">
+                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                <li @click="selectFuzzyText(2, item)"
+                                    v-for="item in fuzzyQueryList_2"
+                                    v-text="item"
+                                ></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div><!-- 客户名称 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">公司地址：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="cAddress" type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 公司地址 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">备注：</div>
+                    <div class="msg-item-right">
+                        <textarea v-model="cRemark" cols="100" rows="3" style="width: 100%;"></textarea>
+                    </div>
+                </div><!-- 备注 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left"></div>
+                    <div class="msg-item-right">
+                        <div v-if="clientSubmit" @click="editClientConfirm" class="btn btn-theme">提交</div>
+                    </div>
+                </div><!-- 提交按钮 -->
+            </div><!-- /.main -->
+        </div>
+
+        <!-- 添加客户机要信息 -->
+        <div :class="{'hide': addMsgShow}" class="dialog-content input-width-100" >
+            <div class="title clearfix">
+                <p v-if="!msgSubmit" class="pull-left">添加客户机要信息</p>
+                <p v-if="msgSubmit"  class="pull-left">编辑客户机要信息</p>
+                <p @click="hidePop" class="dialog-close pull-right"><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+
+                <div class="msg-item">
+                    <div class="msg-item-left">填报人：</div>
+                    <div v-text="mSalesStaffName" class="msg-item-right"></div>
+                </div><!-- 填报人 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">区域：</div>
+                    <div class="msg-item-right">
+                        <ul class="area">
+                            <li v-for="(item, index) in regionList"
+                                v-text="item.text"
+                                @click="selectRegion(item.code, index)"
+                                :class="{'area-active': item.code == mRegionCode}"
+                            ></li>
+                        </ul>
+                    </div>
+                </div><!-- 省份 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">客户所在省份：</div>
+                    <div class="msg-item-right">
+                        <ul class="area">
+                            <li v-for="(item, index) in provinceList"
+                                v-text="item.text"
+                                @click="selectProvince(item.code, item)"
+                                :class="{'area-active': item.code == mProvinceCode}"
+                            ></li>
+                        </ul>
+                    </div>
+                </div><!-- 区域 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">客户联系人姓名：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mContactName"
+                                   ref="mContactNameREF"
+                                   @blur="formExplain(mContactName, 'mContactNameREF')"
+                                   @keyup="formExplain(mContactName, 'mContactNameREF')"
+                                   type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 客户联系人姓名 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">所在部门：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mDepartmentName"
+                                   ref="mDepartmentNameREF"
+                                   @blur="formExplain(mDepartmentName, 'mDepartmentNameREF')"
+                                   @keyup="formExplain(mDepartmentName, 'mDepartmentNameREF')"
+                                   type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 所在部门 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">头衔：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mTitle"
+                                   ref="mTitleREF"
+                                   @blur="formExplain(mTitle, 'mTitleREF')"
+                                   @keyup="formExplain(mTitle, 'mTitleREF')"
+                                   type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 头衔 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">联系电话：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mTelPhone"
+                                   ref="mTelPhoneREF"
+                                   @blur="formExplain(mTelPhone, 'mTelPhoneREF')"
+                                   @keyup="formExplain(mTelPhone, 'mTelPhoneREF')"
+                                   type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 联系电话 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">地址：</div>
                     <div class="msg-item-right">
                         <div class="input-group">
-                            <input v-model="mAddress" type="text" class="input-group-form">
+                            <input v-model="mAddress"
+                                   ref="mAddressREF"
+                                   @blur="formExplain(mAddress, 'mAddressREF')"
+                                   @keyup="formExplain(mAddress, 'mAddressREF')"
+                                   type="text" class="input-group-form">
                         </div>
                     </div>
-                </div>
+                </div><!-- 邮件 -->
+
+                <div class="msg-item">
+                    <div class="msg-item-left">邮件：</div>
+                    <div class="msg-item-right">
+                        <div class="input-group">
+                            <input v-model="mEmail" type="text" class="input-group-form">
+                        </div>
+                    </div>
+                </div><!-- 地址 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left">备注：</div>
                     <div class="msg-item-right">
-                        <textarea v-model="mRemark" cols="200" rows="3" style="width: 100%;"></textarea>
+                        <textarea v-model="mRemark"></textarea>
                     </div>
-                </div>
+                </div><!-- 备注 -->
+
                 <div class="msg-item">
                     <div class="msg-item-left"></div>
                     <div class="msg-item-right">
-                        <div v-if="!msgSubmit" @click="addMsgConfirm" class="btn btn-theme">提交</div>
+                        <div v-if="!msgSubmit" @click="addMsgConfirmBtn" class="btn btn-theme">提交</div>
                         <div v-if="msgSubmit" @click="editMsgConfirm" class="btn btn-theme">提交</div>
                     </div>
-                </div>
+                </div><!-- 按钮 -->
             </div>
         </div>
 

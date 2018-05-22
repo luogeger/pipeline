@@ -168,24 +168,28 @@
     .pop-main,
     .main{
       width: 100%;
-      padding: 10px;
+      padding: 10px 50px 10px 0;
       background-color: #fff;
 
       .msg-item{
         margin-bottom: 20px;
+        @include clearfix();
         .msg-item-left{
           display: inline-block;
-          width: 120px;
-
+          width: 19%;
+          line-height: 30px;
+          text-align: right;
         }
         .msg-item-right{
           display: inline-block;
           width: 80%;
+          line-height: 30px;
+          float: right;
           .area{
             li{
               display: inline-block;
               border-radius: 3px;
-              padding: 3px 7px;
+              padding: 0 7px;
               color: #838383;
               cursor: pointer;
             }
@@ -264,7 +268,7 @@
 
   .selection-show{
     min-width: 162px;
-    line-height: $height-sm +2;
+    line-height: $height-sm;
     color: $text-col;
     padding-left: 10px;
     border: 1px solid $border-col;
@@ -403,6 +407,18 @@
 
 }// table-tabs
 
+// table-right-border
+.table-left-border{
+  border-left: 2px solid #F0F2F5;
+}
 
-
+//
+.input-width-100{
+  .input-group{
+    width: 100%;
+    .input-group-form{
+      width: 100% !important;
+    }
+  }
+}
 

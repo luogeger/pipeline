@@ -150,6 +150,10 @@ var vm = new Vue({
                 }
                 vm.yearTableTitle = msg.subTitles;
                 vm.yearTable.head = msg.data[index].rowTitle;
+                msg.data[index].rowData.forEach(function (item) {
+                    item.bz = Number(item.bz.toFixed(0));
+                    item.sz = Number(item.sz.toFixed(0));
+                });// 本周和上周取整
                 vm.yearTable.body = msg.data[index].rowData;
                 vm.yearTable.foot = vm.totalCalc(msg.data[index].rowData, 'year');// 图表的刷新也在这个方法内部
 
@@ -194,6 +198,11 @@ var vm = new Vue({
                 vm.quarterTableTitle = msg.subTitles;
                 vm.quarterTable.head = msg.data[index].rowTitle;
                 vm.quarterTable.body = msg.data[index].rowData;
+
+                msg.data[index].rowData.forEach(function (item) {
+                    item.bz = Number(item.bz.toFixed(0));
+                    item.sz = Number(item.sz.toFixed(0));
+                });// 本周和上周取整
                 vm.quarterTable.foot = vm.totalCalc(msg.data[index].rowData, 'quarter');// 图表的刷新也在这个方法内部
 
 
@@ -303,15 +312,6 @@ var vm = new Vue({
                         lineStyle: {
                             opacity: 0,// 没有线条了
                         },
-                        label: {
-                            normal: {
-                                show: true,
-                                position: 'top',
-                                textStyle: {
-                                    color: this.chartColor[2],
-                                }
-                            }
-                        },
                         data: this.yearDataTarget,
                     },
                 ]
@@ -407,15 +407,15 @@ var vm = new Vue({
                         lineStyle: {
                             opacity: 0,// 没有线条了
                         },
-                        label: {
-                            normal: {
-                                show: true,
-                                position: 'top',
-                                textStyle: {
-                                    color: this.chartColor[2],
-                                }
-                            }
-                        },
+                        // label: {
+                        //     normal: {
+                        //         show: true,
+                        //         position: 'top',
+                        //         textStyle: {
+                        //             color: this.chartColor[2],
+                        //         }
+                        //     }
+                        // },
                         data: this.quarterDataTarget,
                     },
                 ]

@@ -21,5 +21,12 @@
 
   .quarter{
     padding: 10px;
+    table{
+      tbody tr td:nth-child(6),
+      th:nth-child(6){
+        border-left: 2px solid #F0F2F5;
+      }
+
+    }
   }
 }// end
