@@ -383,7 +383,7 @@
                 <p v-if="handleTemplate.soCoreCode == null" class="pull-left">新增 Pipeline</p>
                 <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
             </div>
-            <div class="main">
+            <div class="main" style="padding: 20px;">
                 <div id="aboutPipeline" class="data-wrapper">
                     <div class="wrapper">
                         <div class="main">
@@ -1320,17 +1320,17 @@
                             if(hasConcat == 'n') {
                                 toastr.warning('该客户名下没有机要信息!');
 
-                                this.cpComCode = code;
+                                /*this.cpComCode = code;
                                 this.showSecondPop();
-                                this.revokeShow = false;
+                                this.revokeShow = false;*/
                             }
                             // whole=y 机要信息全    whole=n 机要信息不全
                             else if (whole == 'n') {
                                 toastr.warning('该客户名下机要信息不全,请完善客户机要信息!');
 
-                                this.cpComCode = code;
+                                /*this.cpComCode = code;
                                 this.showSecondPop();
-                                this.revokeShow = false;
+                                this.revokeShow = false;*/
                             }
                         }
 
@@ -2258,7 +2258,3 @@
         }
     })
 </script>
-
-
-
-
