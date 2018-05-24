@@ -1333,8 +1333,10 @@
                                 this.revokeShow = false;*/
                             }
                         }
+                        vm.hCustomerName = text;
+                        vm.handleTemplate.customerCode = code;
 
-                        // 撤回弹窗
+                        // 确认弹窗
                         this.showPop();
                         this.revokeShow = false;
 
@@ -1723,7 +1725,7 @@
                 }
             },
             // 获取解决方案
-            getSoSolution4Tree: function(id){
+            getSoSolution4Tree: function(id,code){
                 var basic,
                     oauth;
                 var treeList = [];
@@ -1734,17 +1736,15 @@
                 $.ajax({
                     url:  PATH + '/so/queryPipelineInitVal',
                     type: 'get',
+//                    async: false,
                     dataType: 'json',
                     success: function(result){
                         basic = result.msg.basic;
                         if(result !== null){
                             if(basic !== null){
-                                vm.searchLists = basic;
+                                this.searchLists = basic;
 
-                                vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
-                                vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
-
-                                var solutionLists = vm.searchLists.soSolution4Tree;
+                                var solutionLists = this.searchLists.soSolution4Tree;
                                 if(solutionLists !== null) {
                                     for(var i = 0;i < solutionLists.length;i++) {
                                         vm.solutionFirstLists.push(solutionLists[i]);
@@ -1755,39 +1755,18 @@
                                                 if(id === childrenLists.parentId) {
                                                     vm.solutionSecondLists.push(childrenLists);
                                                 }
+
+                                                // 如果code == 修改时解决方案传过来的code，则给大解决方案input添加值
+                                                if(solutionLists[i].children[j].data.code === code) {
+                                                    vm.hSoSolutionFirstText = solutionLists[i].text;
+                                                }
+
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-                        // 获取解决方案树
-                        /*treeList = basic.soSolution4Tree;
-                        if(treeList != null) {
-                            for(var i = 0;i < treeList.length;i++) {
-                                var pObj = {
-                                    id: treeList[i].id,
-                                    pId: treeList[i].parentId,
-                                    name: treeList[i].text,
-                                    t: treeList[i].text,
-                                    open:false, click:false
-                                }
-                                zNodes.push(pObj);
-                                if(treeList[i].children != null) {
-                                    for(var j = 0;j < treeList[i].children.length;j++) {
-                                        var cObj = {
-                                            id:treeList[i].children[j].id,
-                                            pId: treeList[i].children[j].parentId,
-                                            name: treeList[i].children[j].text,
-                                            t: treeList[i].children[j].text,
-                                            code: treeList[i].children[j].data.code
-                                        };
-                                        zNodes.push(cObj);
-                                    }
-                                }
-                            }
-                        }
-                        $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);*/
                     },
                     error: function(result) {
                         console.log('获取解决方案下拉树失败');
@@ -1845,7 +1824,9 @@
             clearHandle: function() {
                 vm.hCustomerName = '';        // 客户名称
                 vm.hSalesGroupText = '';      // 事业部
-                vm.hSolutionText = '';        // 解决方案名称
+//                vm.hSolutionText = '';        // 解决方案名称
+                vm.hSoSolutionFirstText = '';   // 大解决方案
+                vm.hSoSolutionSecondText = '';  // 小解决方案
                 vm.hIndustryLineText = '';    // 行业线名称
                 vm.hSuccessRateText = '';     // 成功率名称
                 vm.hProgressText = '';        // 项目阶段名称
@@ -1932,7 +1913,13 @@
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
                                 if(vm.handleTemplate.solutionSub[i]) {
                                     vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
-                                    vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
+
+                                    vm.hSoSolutionSecondText = vm.handleTemplate.solutionSub[i].solutionName;
+
+                                    console.log(vm.solutionSub.solutionCode,'vm.solutionSub.solutionCode')
+                                    vm.getSoSolution4Tree('', vm.solutionSub.solutionCode);
+                                    /*vm.hSoSolutionFirstText = '';   // 大解决方案
+                                    vm.hSoSolutionSecondText = '';  // 小解决方案*/
                                     vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
                                 }
                             }
