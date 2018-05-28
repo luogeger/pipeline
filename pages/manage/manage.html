@@ -215,12 +215,13 @@
                             <span class="progressBtn">
                                 <span style="color: #14a6ef">{{dataPageTotal}}</span>
                                 <div class="progressTotal">
-                                <ul>
-                                    <li v-for="pscsList in pscsLists">
+                                <ul class="clearfix">
+                                    <li class="pull-left" style="margin-right: 20px" v-if="pscsList.code == 'effective' || pscsList.code == 'invalid'" v-for="pscsList in pscsLists">
                                         <span v-text="pscsList.val"></span>:
-                                        <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>
+                                        <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>；
                                     </li>
                                 </ul>
+                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目（长期）</p>
                             </div>
                             </span>&nbsp;
                             条</span>
@@ -864,7 +865,6 @@
             </div>
         </div>
     </div>
-
 </div>
 <script src="../static/scripts/manage/manage.js"></script>
 <script>
@@ -1160,6 +1160,12 @@
                 hClientName: '',           // 客户名称
             }
         },
+        /*computed: {
+            pscsLists: function() {
+                console.log(this.pscsLists,'this.items')
+                return this.pscsLists.slice(0, 2);
+            }
+        },*/
         mounted: function(){
             this.getSoSolution4Tree();
             this.searchData();
