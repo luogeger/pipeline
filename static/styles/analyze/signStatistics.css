@@ -9,5 +9,8 @@
     padding: 10px; }
 .main .quarter {
   padding: 10px; }
+  .main .quarter table tbody tr td:nth-child(6),
+  .main .quarter table th:nth-child(6) {
+    border-left: 2px solid #F0F2F5; }
 
 /*# sourceMappingURL=signStatistics.css.map */

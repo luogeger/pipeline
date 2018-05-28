@@ -1,32 +1,32 @@
-.top, .bottom {
+#four .i-table thead > tr > th div.sort-th-div {
+  display: inline-block;
+  cursor: pointer; }
+  #four .i-table thead > tr > th div.sort-th-div:hover {
+    text-decoration: underline; }
+#four .top, #four .bottom {
   background-color: #fff;
   margin-top: 10px; }
-
-.top .top-opera {
+#four .top .top-opera {
   padding: 10px;
   border-bottom: 1px solid #E9EAEC; }
-.top .top-table {
+#four .top .top-table {
   padding: 10px; }
-  .top .top-table p {
+  #four .top .top-table p {
     padding-bottom: 10px; }
-
-.bottom .year-half {
+#four .bottom .year-half {
   padding: 10px 0 0 10px;
   border-bottom: 1px solid #E9EAEC; }
-  .bottom .year-half span {
+  #four .bottom .year-half span {
     display: inline-block;
     padding: 0 10px;
     border-bottom: 2px solid transparent;
     line-height: 30px;
     cursor: pointer; }
-  .bottom .year-half .year-half-active {
+  #four .bottom .year-half .year-half-active {
     border-color: #FF8A41; }
-.bottom .table-content {
+#four .bottom .table-content {
   padding: 10px; }
-  .bottom .table-content p {
+  #four .bottom .table-content p {
     padding-bottom: 10px; }
-  .bottom .table-content table tbody tr:not(:last-child) td:nth-child(5),
-  .bottom .table-content table th:nth-child(5) {
-    border-left: 2px solid #F0F2F5; }
 
 /*# sourceMappingURL=four.css.map */

@@ -44,6 +44,8 @@
                        id="startDate"
                        @click=""
                        v-model="cExpectSignDateRange">
+                <!--
+                       -->
             </div>
             <div class="dropdown-wrap">
                 <span class="dropdown-label">成功率：</span>
@@ -98,17 +100,42 @@
                     </ul>
                 </div>
             </div>
-            <div class="dropdown-wrap">
+            <!--<div class="dropdown-wrap">
                 <span class="dropdown-label">解决方案：</span>
                 <div class="dropdown-zTree">
                     <span class="dropdown-default">{{ cSoSolutionText }}</span>
                     <i class="fa fa-angle-down"></i>
                     <ul class="selectTree ztree soSolutionTree"
                         style="max-height: 200px;overflow-y: auto;">
-                        <!--<li @click="selectNothing">请选择</li>-->
+                    </ul>
+                </div>
+            </div>-->
+
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">解决方案：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionFirstText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul style="max-width: 500px;">
+                        <li @click="searchSolutionFirst('', '', 1)">请选择</li>
+                        <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 1)"
+                            v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
                     </ul>
                 </div>
             </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">-</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionSecondText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul style="max-width: 500px;">
+                        <li @click="searchSolutionSecond('', '', 1)">请选择</li>
+                        <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 1)"
+                            v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+
             <div class="dropdown-wrap">
                 <span class="dropdown-label">近期变更过：</span>
                 <div class="dropdown">
@@ -184,7 +211,20 @@
                         <span>-</span>
                         <span style="margin-right: 5px;">{{dataPageEnd}}</span>
                         <span>条，</span>
-                        <span>共&nbsp; {{dataPageTotal}} &nbsp;条</span>
+                        <span>共&nbsp;
+                            <span class="progressBtn">
+                                <span style="color: #14a6ef">{{dataPageTotal}}</span>
+                                <div class="progressTotal">
+                                <ul class="clearfix">
+                                    <li class="pull-left" style="margin-right: 20px" v-if="pscsList.code == 'effective' || pscsList.code == 'invalid'" v-for="pscsList in pscsLists">
+                                        <span v-text="pscsList.val"></span>:
+                                        <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>；
+                                    </li>
+                                </ul>
+                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目（长期）</p>
+                            </div>
+                            </span>&nbsp;
+                            条</span>
                     </div>
                 </div>
                 <a @click="openUpdateCase"
@@ -269,18 +309,22 @@
                                     <td>{{ item.customerCode }}</td>
                                     <td>{{ item.customerName }}</td>
                                     <td>
-                                        <div v-if="item.solutionSub">
-                                            <div v-for="solutionSub in item.solutionSub">
-                                                <span v-if="solutionSub">
-                                                    {{ solutionSub.solutionName }}
-                                                </span>
+                                        <div class="onetext">
+                                            <div v-if="item.solutionSub">
+                                                <div v-for="solutionSub in item.solutionSub">
+                                                    <span v-if="solutionSub">
+                                                        {{ solutionSub.solutionName }}
+                                                    </span>
+                                                </div>
                                             </div>
+                                            <div v-else>&nbsp;</div>
                                         </div>
-                                        <div v-else>&nbsp;</div>
                                     </td>
                                     <td>{{ item.industryLine }}</td>
                                     <td>{{ item.projectNature }}</td>
-                                    <td>{{ item.cooperativePartner }}</td>
+                                    <td>
+                                        <div class="onetext">{{ item.cooperativePartner }}</div>
+                                    </td>
                                     <td>{{ addSum(item.solutionSub) }}</td>
                                     <td>{{ item.expectSignDate }}</td>
                                     <td>{{ item.progress }}</td>
@@ -289,10 +333,16 @@
                                     <td>
                                         <div class="onetext">{{ item.projectFollowUpRemark }}</div>
                                     </td>
-                                    <td>{{ item.othDescription }}</td>
-                                    <td>{{ item.competitor }}</td>
+                                    <td>
+                                        <div class="onetext">{{ item.othDescription }}</div>
+                                    </td>
+                                    <td>
+                                        <div class="onetext">{{ item.competitor }}</div>
+                                    </td>
                                     <td>{{ item.customerSource }}</td>
-                                    <td>{{ item.projectDescription }}</td>
+                                    <td>
+                                        <div class="onetext">{{ item.projectDescription }}</div>
+                                    </td>
                                     <td>{{ item.classificationOfFinancialIndustry }}</td>
                                 </tr>
                             </tbody>
@@ -325,17 +375,17 @@
             </div>
         </div>
     </div>
-    <!-- 新增修改pipeline弹窗 -->
-    <div class="dialog-wrap"
-         :class="{'hide': dialogShow}">
-        <div @click="allHide" class="dialog-cover"></div>
-        <div class="dialog-content" style="width: auto">
+    <!-- 弹窗 -->
+    <div class="dialog-wrap" :class="{'hide': dialogShow}">
+        <div @click="hidePop" class="dialog-cover"></div>
+        <!--新增修改pipeline-->
+        <div class="dialog-content" :class="{'hide': handleTemplateShow}" style="width: auto">
             <div class="title clearfix">
                 <p v-if="handleTemplate.soCoreCode != null" class="pull-left">修改 Pipeline</p>
                 <p v-if="handleTemplate.soCoreCode == null" class="pull-left">新增 Pipeline</p>
-                <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
             </div>
-            <div class="main">
+            <div class="main" style="padding: 20px;">
                 <div id="aboutPipeline" class="data-wrapper">
                     <div class="wrapper">
                         <div class="main">
@@ -423,8 +473,7 @@
                                                 ></li>
                                             </ul>
                                         </div>
-                                        <!--<input v-model="hCustomerName"
-                                               class="input-group-form" type="text">
+                                        <!--
                                         <a @click="selectCustomer"
                                            href="javascript:;"
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px;display: none;">+</a>-->
@@ -436,7 +485,7 @@
                                         <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <!--<div class="block-wrapper col-1">
                                     <div class="dropdown-wrap">
                                         <span class="dropdown-label">解决方案：</span>
                                         <div class="dropdown-zTree">
@@ -444,6 +493,32 @@
                                             <i class="fa fa-angle-down"></i>
                                             <ul class="handleTree ztree soSolutionTree"
                                                 style="max-height: 200px;overflow-y: auto;"></ul>
+                                        </div>
+                                    </div>
+                                </div>-->
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label">解决方案：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default" style="max-width: 500px;">{{ hSoSolutionFirstText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul style="max-width: 500px;">
+                                                <li @click="searchSolutionFirst('', '', 2)">请选择</li>
+                                                <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 2)"
+                                                    v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label" style="width: 26px">-</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default" style="max-width: 500px;">{{ hSoSolutionSecondText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul style="max-width: 500px;">
+                                                <li @click="searchSolutionSecond('', '', 2)">请选择</li>
+                                                <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 2)"
+                                                    v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                                            </ul>
                                         </div>
                                     </div>
                                 </div>
@@ -488,7 +563,6 @@
                                         <input v-model="solutionSub.expectSignSum"
                                                class="input-group-form"
                                                type="number"
-                                               ref="expectSignSum"
                                                @keyup="sumKeyup()"
                                                style="text-align: right;padding-right: 10px">
                                     </div>
@@ -647,15 +721,32 @@
                 </div>
             </div><!-- /.main -->
         </div>
-    </div>
-    <!-- 客户信息弹窗 -->
-    <div class="dialog-wrap"
-         :class="{'hide': customerDialogShow}">
-        <div @click="customerDialogHide" class="dialog-cover"></div>
-        <div class="dialog-content" style="width: 1090px">
+
+        <!-- 导入-需修复 -->
+        <div class="dialog-content upload-pop"
+             :class="{'hide': uploadDialogShow}"
+             style="width: 400px;min-width: 400px;overflow: hidden;">
+            <div class="title clearfix">
+                <p class="pull-left">导入文件</p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main">
+                <div class="select-file">
+                    <label for="importpipeline">选择文件</label>
+                    <input id="importpipeline" type="file">
+                </div>
+                <div class="btn-group">
+                    <div @click="uploadConfirm" class="btn btn-theme">确认</div>
+                    <div @click="hidePop" class="btn btn-border">取消</div>
+                </div>
+            </div><!-- /.main -->
+        </div>
+
+        <!-- 客户信息-需修复 -->
+        <div class="dialog-content" :class="{'hide': customerDialogShow}" style="width: 1090px">
             <div class="title clearfix">
                 <p class="pull-left">客户选择</p>
-                <p @click="customerDialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+                <p @click="hidePop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
             </div>
             <div class="main">
                 <div class="opera clearfix">
@@ -686,13 +777,13 @@
                             <span class="input-group-label">客户名称:</span>
                             <div style="position: relative;display: inline-block;">
                                 <!--<input v-model="hClientName"-->
-                                       <!--@keyup="getFuzzyList(2)"-->
-                                       <!--type="text" class="input-group-form">-->
+                                <!--@keyup="getFuzzyList(2)"-->
+                                <!--type="text" class="input-group-form">-->
                                 <!--<ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">-->
-                                    <!--<li @click="selectFuzzyText(2, item)"-->
-                                        <!--v-for="item in fuzzyQueryList_2"-->
-                                        <!--v-text="item"-->
-                                    <!--&gt;</li>-->
+                                <!--<li @click="selectFuzzyText(2, item)"-->
+                                <!--v-for="item in fuzzyQueryList_2"-->
+                                <!--v-text="item"-->
+                                <!--&gt;</li>-->
                                 <!--</ul>-->
                             </div>
                             <!--<input v-model="hClientName" type="text" class="input-group-form">-->
@@ -761,25 +852,17 @@
             </div><!-- /.main -->
         </div>
     </div>
-    <!-- 导入 -->
-    <div class="dialog-wrap"
-         :class="{'hide': uploadDialogShow}">
-        <div @click="allHide" class="dialog-cover"></div>
-        <div class="dialog-content upload-pop" style="width: 400px;min-width: 400px;overflow: hidden;">
-            <div class="title clearfix">
-                <p class="pull-left">导入文件</p>
-                <p @click="allHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+
+    <div class="dialog-wrap" :class="{'hide': secondDialogShow}">
+        <div @click="hideSecondPop" class="dialog-cover"></div>
+        <!-- 确认 -->
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+            <div class="title">提示<i @click="hideSecondPop"  class="fa fa-close pull-right"></i></div>
+            <div class="content">机要信息不全，请完善机要信息</div>
+            <div class="foot">
+                <div @click="yesBtn()" class="btn btn-theme">是</div>
+                <div @click="hideSecondPop" class="btn btn-border">否</div>
             </div>
-            <div class="main">
-                <div class="select-file">
-                    <label for="importpipeline">选择文件</label>
-                    <input id="importpipeline" type="file">
-                </div>
-                <div class="btn-group">
-                    <div @click="uploadConfirm" class="btn btn-theme">确认</div>
-                    <div @click="allHide" class="btn btn-border">取消</div>
-                </div>
-            </div><!-- /.main -->
         </div>
     </div>
 </div>
@@ -792,10 +875,16 @@
             elem: '#startDate' //指定元素
             ,type: 'month'
             ,range: true
+            // yyyy-MM - yyyy-MM
+            ,value: vm.getYear()
+            // ,value: vm.defaultYear + '-01 - ' + vm.defaultYear + '-12'
+            // ,value: '2018-01 - 2018-12'
+            ,isInitValue: true //允许填充初始值
             // 参数可选value, date(起始时间), endDate(结束时间)
             ,done: function(value) {
                 vm.cExpectSignDateRange = value;
                 var time = vm.cExpectSignDateRange.split(' - ');
+                // var time = value.split(' - ');
                 var startTime,
                     endTime;
                 startTime = time[0];
@@ -820,7 +909,7 @@
     })
 
     //zTree
-    var setting = {
+    /*var setting = {
         data: {
             key: {
                 title: "t"
@@ -850,20 +939,16 @@
             //搜索的时候传解决方案名称code
             vm.tableList.soSolutionCode = treeNode.code;
             vm.showData();
-            // event.stopPropagation();
-            // return
         }
         else{
             vm.hSolutionText = treeNode.name;
             console.log(vm.hSolutionText,'新增/修改vm.hSolutionText ');
-
-
             // 新增/修改的时候传解决方案code
             vm.solutionSub.solutionCode = treeNode.code;
         }
         // console.log("[onClick ]&nbsp;&nbsp;clickFlag = " + clickFlag + " (" + (clickFlag===1 ? "普通选中": (clickFlag===0 ? "<b>取消选中</b>" : "<b>追加选中</b>")) + ")");
         event.stopPropagation();
-    }
+    }*/
 </script>
 <script>
     var Time = {
@@ -956,11 +1041,14 @@
                 cMngSalesGroupText: '',       // 事业部
                 cRegionText: '',              // 区域
                 cCustomerSourText: '',        // 客户来源
-                cSoSolutionText: '',          // 解决方案
+                cSoSolutionText:'',           // 解决方案
+                cSoSolutionFirstText: '',     // 大解决方案
+                cSoSolutionSecondText: '',    // 小解决方案
+                solutionFirstLists: [],       // 存放大解决方案
+                solutionSecondLists: [],      // 存放小解决方案
                 cLatelyChangeText: '',        // 近期变更过
                 cExpectSignDateRange: '',     // 预计签约时间
-                // cExpectSignDateStart: '',  // 预计签约起始时间
-                // cExpectSignDateEnd: '',    // 预计签约结束时间
+                defaultYear: '',              // 默认年份
 
                 // 项目更新情况
                 changeOneLists: [],           // 存放项目更新情况
@@ -986,6 +1074,7 @@
                 weightedSumTotal: '',         // 加权金额总计
                 expectSignSumTotal: '',       // 预计签约金额总计
                 items: [],                    // 表格数据
+                pscsLists: [],                // 表格项目阶段数据
                 noData: false,               // 搜索不到数据
                 ascActive: false,            // 点击表格客户名称升序
                 descActive: false,           // 点击表格客户名称降序
@@ -1031,6 +1120,10 @@
                 hSalesStaffName: userName,  // 负责销售名字
                 hCustomerName: '',          // 客户名称
                 hSolutionText: '',          // 解决方案名称
+                hSoSolutionFirstText: '',   // 大解决方案
+                hSoSolutionSecondText: '',  // 小解决方案
+               /* solutionFirstLists: [],       // 存放大解决方案
+                solutionSecondLists: [],      // 存放小解决方案*/
                 hIndustryLineText: '',      // 行业线名称
                 hSuccessRateText: '',       // 成功率名称
                 hProgressText: '',          // 项目阶段名称
@@ -1041,12 +1134,18 @@
                 preSaleStaffs: [],          // 点击修改时获取表格的值
                 solutionSub: [],            // 点击修改时获取表格的值
 
-                // 新增修改弹窗
-                dialogShow: true,
-                addMsgShow: true,
+                cpComCode: '',                 // 新增/修改时传给客户管理的客户名称code
+
+                // === 弹窗
+                dialogShow: true,           // 外层弹窗
+                handleTemplateShow: true,   // 新增修改弹窗
+                uploadDialogShow: true,     // 导入弹窗
+                customerDialogShow: true,   // 显示客户选择弹窗
+
+                secondDialogShow: true,     // 二级外层弹窗
+                revokeShow: true,           // 撤销弹窗
 
                 // 导入
-                uploadDialogShow: true,     // 导入弹窗
                 uploadFileName: '',
                 clearShow: true,
 
@@ -1055,22 +1154,80 @@
                 clientID: '',
                 cCheckIndex: -1,
 
-                customerDialogShow: true,  // 显示客户选择弹窗
                 hDropText: '',             // 行业下拉框文字
                 hDropCode: '',             // 行业 code
                 hClientCode: '',           // 客户编号
                 hClientName: '',           // 客户名称
             }
         },
+        /*computed: {
+            pscsLists: function() {
+                console.log(this.pscsLists,'this.items')
+                return this.pscsLists.slice(0, 2);
+            }
+        },*/
         mounted: function(){
             this.getSoSolution4Tree();
             this.searchData();
             this.getFuzzyList();
             this.getSales();
-            this.showData();
+            // this.showData();
             this.openUpdateCase();
+            this.signDate();
         },
         methods: {
+            // 显示弹框
+            showPop: function () {
+                vm.dialogShow = false;
+            },
+            // 关闭弹窗
+            hidePop: function () {
+                this.dialogShow = true;
+                this.handleTemplateShow = true;
+                // this.customerDialogShow = true;
+                this.uploadDialogShow = true; // 导入pop
+            },
+            // 显示二级弹框
+            showSecondPop: function () {
+                this.secondDialogShow = false;
+            },
+            // 关闭二级弹窗
+            hideSecondPop: function() {
+                this.secondDialogShow = true;
+                this.revokeShow = true;// 确认pop
+            },
+
+            // 获取年份
+            getYear: function() {
+                var yearRange;
+                $.ajax({
+                    async: false,
+                    url: PATH + '/oauth/queryUserInfo',
+                    type: 'get',
+                    dateType: 'json',
+                    success: function(result) {
+                        var date = result.msg.currentDate;
+                        this.defaultYear = date.slice(0, 4);
+                        yearRange = this.defaultYear + '-01 - ' + this.defaultYear + '-12';
+                    },
+                    error: function(result) {
+                        console.log('获取年份失败');
+                    }
+                })
+                return yearRange;
+            },
+            signDate: function() {
+                this.cExpectSignDateRange = this.getYear();
+                var time = this.cExpectSignDateRange.split(' - ');
+                var startTime,
+                    endTime;
+                startTime = time[0];
+                endTime = time[1];
+                this.tableList.expectSignDateStart = startTime;
+                this.tableList.expectSignDateEnd = endTime;
+                this.showData();
+            },
+
             selectNothing: function() {
                 //搜索的时候传解决方案名称code
                 vm.tableList.soSolutionCode = treeNode.code;
@@ -1127,7 +1284,6 @@
                     data: {
                         customerName: clientName
                     },
-                    async: false,
                     type: 'get',
                     async: false,
                     dataType: 'json',
@@ -1136,9 +1292,6 @@
                         if (result.code === 201 || result.msg.length === 0) return;
                         vm[list] = result.msg;
                         vm.customerNames = result.msg;
-
-                        console.log(vm[list], 'mo');
-                        console.log(vm.customerNames, 'data.msg');
                     },
                     error: function(result) {
                         console.log('请求失败');
@@ -1146,10 +1299,7 @@
                 })
             },// 获取数据
             selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
-                console.log(text);
-                console.log(departmentCode);
-                console.log(hasConcat);
-                console.log(whole);
+                console.log(code,'code');
                 switch (type) {
                     case 1:
                         vm.tableList.customerCode = code;
@@ -1175,17 +1325,34 @@
                             // hasConcat=y   名下存在客户机要信息，hasConcat=n 不存在机要
                             if(hasConcat == 'n') {
                                 toastr.warning('该客户名下没有机要信息!');
+
+                                /*this.cpComCode = code;
+                                this.showSecondPop();
+                                this.revokeShow = false;*/
                             }
                             // whole=y 机要信息全    whole=n 机要信息不全
                             else if (whole == 'n') {
                                 toastr.warning('该客户名下机要信息不全,请完善客户机要信息!');
+
+                                /*this.cpComCode = code;
+                                this.showSecondPop();
+                                this.revokeShow = false;*/
                             }
                         }
                         vm.hCustomerName = text;
                         vm.handleTemplate.customerCode = code;
+
+                        // 确认弹窗
+                        this.showPop();
+                        this.revokeShow = false;
+
                         break;
                 }
             },// 选中文字，隐藏模糊列表
+            yesBtn:function() {
+                loadMainPage('.content-item', 'client/client.html');
+                localStorage.cpComCode =  this.cpComCode;
+            },
             //// ==========销售========
             // 销售键盘回车(如果input为空)
             keybordEnterSales: function() {
@@ -1249,6 +1416,38 @@
                 this.tableList.customerSourceCode = code;
                 vm.cCustomerSourText = text;
                 this.showData();
+            },
+            // 选中大解决方案
+            searchSolutionFirst: function(id, text, type) {
+                switch (type) {
+                    case 1:
+                        vm.cSoSolutionSecondText = '';
+                        this.tableList.soSolutionCode = '';
+
+                        // this.searchSolutionSecond('', '', 1);
+                        vm.cSoSolutionFirstText = text;
+                        this.getSoSolution4Tree(id);
+                        break;
+                    case 2:
+                        this.searchSolutionSecond('', '', 2);
+                        vm.hSoSolutionFirstText = text;
+                        this.getSoSolution4Tree(id);
+                        break;
+                }
+            },
+            // 选中小解决方案
+            searchSolutionSecond: function(code, text, type) {
+                switch (type) {
+                    case 1:
+                        vm.cSoSolutionSecondText = text;
+                        this.tableList.soSolutionCode = code;
+                        this.showData();
+                        break;
+                    case 2:
+                        vm.hSoSolutionSecondText = text;
+                        vm.solutionSub.solutionCode = code;
+                        break;
+                }
             },
             // 选中近期变更过
             searchLatelyChangeCode: function(code, text) {
@@ -1350,7 +1549,7 @@
 
                 vm.nothing = code;
             },
-            addClient: function () {
+            /*addClient: function () {
                 vm.dialogShow = false;
             },
             addMsg: function () {
@@ -1361,7 +1560,7 @@
                 vm.dialogShow = true;
                 vm.addMsgShow = true;
                 vm.uploadDialogShow = true;
-            },
+            },*/
             // 获取表格右侧项目更新情况数据
             showOneChange: function(soCoreCode, index) {
                 vm.changeOneLists = [] // 先清空项目更新情况列表
@@ -1421,15 +1620,6 @@
                 // console.log(sum);
                 return sum;
             },
-            /*function toThousands(num) {
-                var num = (num || 0).toString(), result = '';
-                while (num.length > 3) {
-                    result = ',' + num.slice(-3) + result; // slice(start, end) 从已有的数组中返回选定的元素(start为必需，规定从何处开始选取，如果为负数，则从数组尾部开始算起；end非必须，规定从何处结束选取)。该方法不会修改原数组，而是返回一个子数组
-                    num = num.slice(0, num.length - 3);
-                }
-                if (num) { result = num + result; }
-                return result;
-            } */
             // 格式化数字
             toThousands: function(num) {
                 var num = (num || 0).toString(),   // toString() 转换成字符串
@@ -1448,9 +1638,10 @@
             showData: function(page, limit){
                 this.tableList.page = page || 1;
                 this.tableList.limit = limit || this.dataPageMost;
-                console.log('---查询pipeline的请求参数------')
-                console.log(this.tableList)
-                this.items = []
+                console.log('---查询pipeline的请求参数------');
+                console.log(this.tableList);
+                this.items = [];
+                this.pscsLists = [];
 
                 $.ajax({
                     url:  PATH + '/so/queryPipeline',
@@ -1463,7 +1654,13 @@
                         vm.weightedSumTotal = vm.toThousands(Math.round(result.oth.weightedSumTotal));
                         vm.expectSignSumTotal = vm.toThousands(Math.round(result.oth.expectSignSumTotal));
 
-                        // 点击tr，
+                        // 获取项目阶段数据
+                        for(var i = 0;i < result.pscs.length;i++){
+                            var pscs = result.pscs[i];
+                            vm.pscsLists.push(pscs);
+                        }
+                        console.log(vm.pscsLists,'vm.pscsLists');
+
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
                             vm.items.push(root);
@@ -1535,56 +1732,49 @@
 
                 }
             },
-            // 获取解决方案下拉树
-            getSoSolution4Tree: function(){
+            // 获取解决方案
+            getSoSolution4Tree: function(id,code){
                 var basic,
                     oauth;
                 var treeList = [];
                 zNodes = [];
-                // $(".soSolutionTree").empty();
+
+                this.solutionFirstLists = [];
+                this.solutionSecondLists = [];
                 $.ajax({
                     url:  PATH + '/so/queryPipelineInitVal',
                     type: 'get',
+//                    async: false,
                     dataType: 'json',
                     success: function(result){
                         basic = result.msg.basic;
                         if(result !== null){
                             if(basic !== null){
-                                vm.searchLists = basic;
+                                this.searchLists = basic;
 
-                                vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
-                                vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
-                            }
-                        }
-                        // 获取解决方案树
-                        treeList = basic.soSolution4Tree;
-                        // console.log(treeList, 'tree')
-                        if(treeList != null) {
-                            for(var i = 0;i < treeList.length;i++) {
-                                var pObj = {
-                                    id: treeList[i].id,
-                                    pId: treeList[i].parentId,
-                                    name: treeList[i].text,
-                                    t: treeList[i].text,
-                                    open:false, click:false
-                                }
-                                zNodes.push(pObj);
-                                if(treeList[i].children != null) {
-                                    for(var j = 0;j < treeList[i].children.length;j++) {
-                                        var cObj = {
-                                            id:treeList[i].children[j].id,
-                                            pId: treeList[i].children[j].parentId,
-                                            name: treeList[i].children[j].text,
-                                            t: treeList[i].children[j].text,
-                                            code: treeList[i].children[j].data.code
-                                        };
-                                        zNodes.push(cObj);
+                                var solutionLists = this.searchLists.soSolution4Tree;
+                                if(solutionLists !== null) {
+                                    for(var i = 0;i < solutionLists.length;i++) {
+                                        vm.solutionFirstLists.push(solutionLists[i]);
+
+                                        if(solutionLists[i].children != null) {
+                                            for (var j = 0; j < solutionLists[i].children.length; j++) {
+                                                var childrenLists = solutionLists[i].children[j];
+                                                if(id === childrenLists.parentId) {
+                                                    vm.solutionSecondLists.push(childrenLists);
+                                                }
+
+                                                // 如果code == 修改时解决方案传过来的code，则给大解决方案input添加值
+                                                if(solutionLists[i].children[j].data.code === code) {
+                                                    vm.hSoSolutionFirstText = solutionLists[i].text;
+                                                }
+
+                                            }
+                                        }
                                     }
                                 }
                             }
                         }
-                        // console.log(zNodes,'zNodes');
-                        $.fn.zTree.init($(".soSolutionTree"), setting, zNodes);
                     },
                     error: function(result) {
                         console.log('获取解决方案下拉树失败');
@@ -1624,25 +1814,27 @@
             clearSearchForm: function() {
                 vm.cCustomerName = '';            // 客户
                 vm.cIndustryLineText = '';        // 行业线
-                vm.cExpectSignDateRange = '';     // 预计签约时间
                 vm.cProjectSuccessRateText = '';  // 成功率
                 vm.cMngSalesGroupText = '';       // 事业部
                 vm.cRegionText = '';              // 区域
                 vm.cCustomerSourText = '';        // 客户来源
-                vm.cSoSolutionText = '';          // 解决方案
+                // vm.cSoSolutionText = '';          // 解决方案
+                vm.cSoSolutionFirstText = '';     // 大解决方案
+                vm.cSoSolutionSecondText = '';    // 小解决方案
                 vm.cLatelyChangeText = '';        // 近期变更过
                 vm.cSalesName = '';               // 近期变更过
 
-                $('#autocompleteInput').val('');  // 客户
-
                 this.tableList = {};
-                this.showData();
+                this.signDate();
+                // this.showData();
             },
             // 清空新增/修改表单
             clearHandle: function() {
                 vm.hCustomerName = '';        // 客户名称
                 vm.hSalesGroupText = '';      // 事业部
-                vm.hSolutionText = '';        // 解决方案名称
+//                vm.hSolutionText = '';        // 解决方案名称
+                vm.hSoSolutionFirstText = '';   // 大解决方案
+                vm.hSoSolutionSecondText = '';  // 小解决方案
                 vm.hIndustryLineText = '';    // 行业线名称
                 vm.hSuccessRateText = '';     // 成功率名称
                 vm.hProgressText = '';        // 项目阶段名称
@@ -1655,6 +1847,8 @@
             },
             // 新增/修改 填写预计签约金额
             sumKeyup: function() {
+                vm.solutionSub.expectSignSum = (Math.round((parseFloat(vm.solutionSub.expectSignSum)) * 100) / 100).toString();   // 保留两位小数
+                console.log(vm.solutionSub.expectSignSum,'vm.solutionSub.expectSignSum--key')
                 vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
                 vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
             },
@@ -1670,7 +1864,8 @@
                 vm.handleTemplate.salesGroupCode = vm.oauthLists.userInfo.mngSalesGroups[0].code;
                 vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;
 
-                vm.dialogShow = false;       // 调用（弹窗）
+                this.showPop();              // 显示弹框
+                this.handleTemplateShow = false;
             },
             // 修改
             handleData: function(item){
@@ -1684,7 +1879,8 @@
                 vm.handleTemplate.salesGroupCode = vm.oauthLists.userInfo.mngSalesGroups[0].code;
                 vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;
 
-                vm.dialogShow = false;       // 调用（弹窗）
+                this.showPop();              // 显示弹框
+                this.handleTemplateShow = false;
                 // 已获取销售code
                 // console.log(item.soCoreCode)
 
@@ -1727,7 +1923,13 @@
                             for(var i = 0;i< vm.handleTemplate.solutionSub.length;i++){
                                 if(vm.handleTemplate.solutionSub[i]) {
                                     vm.solutionSub.solutionCode = vm.handleTemplate.solutionSub[i].solutionCode;
-                                    vm.hSolutionText = vm.handleTemplate.solutionSub[i].solutionName;
+
+                                    vm.hSoSolutionSecondText = vm.handleTemplate.solutionSub[i].solutionName;
+
+                                    console.log(vm.solutionSub.solutionCode,'vm.solutionSub.solutionCode')
+                                    vm.getSoSolution4Tree('', vm.solutionSub.solutionCode);
+                                    /*vm.hSoSolutionFirstText = '';   // 大解决方案
+                                    vm.hSoSolutionSecondText = '';  // 小解决方案*/
                                     vm.solutionSub.expectSignSum = vm.handleTemplate.solutionSub[i].expectSignSum;
                                 }
                             }
@@ -2045,7 +2247,7 @@
                         toastr.error(datas.data.msg)
                     } else{
                         toastr.success('文件上传成功 ！');
-                        vm.allHide();
+                        vm.hidePop();
                     }
 
                 });
@@ -2053,7 +2255,3 @@
         }
     })
 </script>
-
-
-
-
