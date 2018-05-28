@@ -69,14 +69,18 @@
         border: 1px solid #c9c9c9;
         border-radius: 2px;
         width: auto;
+        max-width: 265px;
         height: auto;
         overflow: hidden;
         text-align: left;
         padding: 0 10px; }
-        .main-wrapper .data .data-page .progressTotal li {
-          border-bottom: 1px solid #eee; }
-          .main-wrapper .data .data-page .progressTotal li:last-child {
-            border-bottom: none; }
+        .main-wrapper .data .data-page .progressTotal ul {
+          border-bottom: 1px solid #ddd; }
+        .main-wrapper .data .data-page .progressTotal .explain {
+          font-size: 12px;
+          color: #888;
+          line-height: 25px;
+          margin-top: 10px; }
     .main-wrapper .data .table-wrapper {
       margin-top: 15px;
       position: relative; }
