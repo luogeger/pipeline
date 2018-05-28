@@ -212,7 +212,8 @@
                         <span style="margin-right: 5px;">{{dataPageEnd}}</span>
                         <span>条，</span>
                         <span>共&nbsp;
-                            <span class="progressBtn">{{dataPageTotal}}
+                            <span class="progressBtn">
+                                <span style="color: #14a6ef">{{dataPageTotal}}</span>
                                 <div class="progressTotal">
                                 <ul>
                                     <li v-for="pscsList in pscsLists">
@@ -561,7 +562,6 @@
                                         <input v-model="solutionSub.expectSignSum"
                                                class="input-group-form"
                                                type="number"
-                                               ref="expectSignSum"
                                                @keyup="sumKeyup()"
                                                style="text-align: right;padding-right: 10px">
                                     </div>
@@ -1632,9 +1632,10 @@
             showData: function(page, limit){
                 this.tableList.page = page || 1;
                 this.tableList.limit = limit || this.dataPageMost;
-                console.log('---查询pipeline的请求参数------')
-                console.log(this.tableList)
-                this.items = []
+                console.log('---查询pipeline的请求参数------');
+                console.log(this.tableList);
+                this.items = [];
+                this.pscsLists = [];
 
                 $.ajax({
                     url:  PATH + '/so/queryPipeline',
@@ -1652,6 +1653,7 @@
                             var pscs = result.pscs[i];
                             vm.pscsLists.push(pscs);
                         }
+                        console.log(vm.pscsLists,'vm.pscsLists');
 
                         for(var i = 0;i < result.root.length;i++){
                             var root = result.root[i];
@@ -1839,6 +1841,8 @@
             },
             // 新增/修改 填写预计签约金额
             sumKeyup: function() {
+                vm.solutionSub.expectSignSum = (Math.round((parseFloat(vm.solutionSub.expectSignSum)) * 100) / 100).toString();   // 保留两位小数
+                console.log(vm.solutionSub.expectSignSum,'vm.solutionSub.expectSignSum--key')
                 vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
                 vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
             },
