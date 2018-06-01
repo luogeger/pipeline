@@ -1,0 +1,23 @@
+@charset "utf-8";
+
+.main{
+  .screening-condition{
+    background-color: #fff;
+  }
+
+  .screening-condition,
+  .partner,
+  .partner-msg{
+    background-color: #fff;
+    padding: 10px;
+    .opera-box{
+      padding-bottom: 10px;
+    }
+  }
+
+  .partner-msg{
+  }
+
+  .confidential-msg{
+  }
+}// end

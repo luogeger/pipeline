@@ -60,7 +60,7 @@ $max-width: 200px;
     }
 
     i{
-      padding: 0px 10px;
+      padding: 0 10px;
       @include transition(all, .2s, ease-in-out);
     }
 
@@ -73,7 +73,7 @@ $max-width: 200px;
       max-width: $max-width;
       position: absolute;
       top: $height-sm + 2;
-      left: 0px;
+      left: 0;
       border-radius: $border-radius-base;
       background-color: $white;
       z-index: 1;
@@ -107,6 +107,74 @@ $max-width: 200px;
     }
   }
 }// .dropdown-wrap
+
+
+
+.selection-component {
+  position: relative;
+  display: inline-block;
+  .selection-show {
+    display: inline-block;
+    position: relative;
+    height: $height-sm;
+    line-height: $height-sm;
+    color: $text-col;
+    padding: 0 30px 0 10px;
+    border: 1px solid $border-col;
+    border-radius: $border-radius-base;
+    cursor: pointer;
+    @include transition();
+    .default-text{
+      display: inline-block;
+      min-width: $min-width;
+      max-width: $max-width;
+    }
+    i,.fa {
+      position: absolute;
+      right: 10px;
+      top: 8px;
+      @include transition();
+    }
+    &:hover{
+      border-color: $theme-hover;
+      i, .fa{
+        color: $theme-hover;
+      }
+    }
+  }
+
+  .selection-list {
+    position: absolute;
+    top: $height-sm + 3;
+    left: 0;
+    ul{
+      overflow: auto;
+      max-height: 300px;
+      padding: 5px 0;
+      min-width: 162px;
+      max-width: $max-width;
+      border-radius: $border-radius-base;
+      background-color: $white;
+      z-index: 1;
+      cursor: pointer;
+      @include ul-shadow();
+      li {
+        padding: 0 10px;
+        line-height: $height-sm;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;/* 文字超出用...*/
+        white-space: nowrap;/* 文字不换行*/
+        @include transition(all, .1s);
+        &:hover {
+          background: $hover-bg;
+        }
+      }
+    }
+
+  }
+
+}// selection-component
 
 
 
