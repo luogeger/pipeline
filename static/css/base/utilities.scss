@@ -27,15 +27,15 @@
 }
 
 .text-left{
-  text-align: left;
+  text-align: left !important;
 }
 
 .text-center{
-  text-align: center;
+  text-align: center !important;
 }
 
 .text-right{
-  text-align: right;
+  text-align: right !important;
 }
 
 .i-back-col{
@@ -44,6 +44,12 @@
 
 .i-text-col{
   color: $theme-normal !important;
+}
+
+.i-icon-col{
+  i, .fa{
+    color: $theme-normal !important;
+  }
 }
 
 .i-border-col{
@@ -69,7 +75,7 @@
 
 
 
-
+.inline-block,
 .ver-mid{
   display: inline-block;
   vertical-align: middle;

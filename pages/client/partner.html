@@ -1,0 +1,382 @@
+<link rel="stylesheet" href="../static/styles/client/partner.css">
+
+<div id="partner" class="main">
+    <div class="breadcrumb">
+        <a href="">客户管理</a>
+        <span class="line">/</span>
+        <span>合作伙伴信息管理</span>
+    </div><!-- /.breadcrumb-->
+
+    <div class="table-tab-list clearfix">
+        <div :class="{'active': tabActive == 0}" @click="tabBtn(0, 'partner-pass')" class="table-tab-item">客户管理</div>
+        <div :class="{'active': tabActive == 4}" @click="tabBtn(4, 'partner-other')" class="table-tab-item">客户信息建立（审批）</div>
+        <div :class="{'active': tabActive == 1}" @click="tabBtn(1, 'partner-msg')" class="table-tab-item">客户信息查询</div>
+        <div :class="{'active': tabActive == 2}" @click="tabBtn(2, 'engineer')" class="table-tab-item">《工程师资质认证》信息</div>
+    </div>
+
+    <div class="screening-condition border-normal">
+        <!--合作伙伴名称   模糊查询
+        客户编号         输入框
+        区域           下拉框
+        省份
+        行业
+        合作产品
+        拥有工程师认证证书-->
+
+        <select-list :selections="selectList" @on-change="select($event)"></select-list>
+        <select-list :selections="selectList2" @on-change="select2($event)"></select-list>
+
+
+    </div><!-- /.screening-condition -->
+
+    <div class="partner border-normal">
+        <div v-if="tabContentShow == 'partner-pass'
+                 ||tabContentShow == 'partner-other'
+                 ||tabContentShow == 'partner-msg'"
+             class="partner-box">
+            <div class="opera-box">
+                <div class="btn btn-theme"
+                     v-if="tabContentShow == 'partner-other'"
+                     @click="addPartnerBtn('addPartnerPop')">
+                    <i class="fa fa-plus"></i> 添加合作伙伴</div>
+            </div>
+            <table class="i-table">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>报备日期</th>
+                    <th>销售小组</th>
+                    <th>负责销售</th>
+                    <th>合作伙伴名称</th>
+                    <th>合作伙伴类型</th>
+                    <th>业务区域</th>
+                    <th>主要合作产品</th>
+                    <th>审批状态</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-for="(item, index) in partnerList"
+                    :class="{'tr-active': trActive == index}"
+                    @click="clickPartner(item.id, index)">
+                    <td v-text="index +1"></td>
+                    <td v-text="item.reportDate"></td>
+                    <td v-text="item.departmentName"></td>
+                    <td v-text="item.salesStaffName"></td>
+                    <td v-text="item.name"></td>
+                    <td v-text="item.type"></td>
+                    <td v-text="item.businessArea.text"></td>
+                    <td v-text="item.solution.text"></td>
+                    <td v-text="item.statusName"></td>
+                </tr>
+                </tbody>
+            </table>
+        </div><!-- /. 合伙人信息 -->
+
+        <div v-if="tabContentShow == 'engineer'" class="engineer-box">
+            <div class="opera-box">
+                <div class="btn btn-theme"><i class="fa fa-plus"></i> 添加合作伙伴《工程师资质认证》</div>
+            </div>
+            <table class="i-table">
+                <thead>
+                <tr>
+                    <th>序号</th>
+                    <th>销售小组</th>
+                    <th>负责销售</th>
+                    <th>合作伙伴名称</th>
+                    <th>合作伙伴类型</th>
+                    <th>初级知识</th>
+                    <th>基础系统</th>
+                    <th>项目实施</th>
+                    <th>应用开发</th>
+                    <th>高级知识</th>
+                    <th>编辑</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                    <th>6</th>
+                    <th>7</th>
+                    <th>8</th>
+                    <th>9</th>
+                    <th>10</th>
+                    <th>11</th>
+                </tr>
+                </tbody>
+            </table>
+        </div><!-- /. 工程师 -->
+    </div><!-- /. 上部分表格 -->
+
+    <div v-if="tabContentShow == 'partner-pass'
+             ||tabContentShow == 'partner-other'
+             ||tabContentShow == 'partner-msg'"
+         class="partner-msg border-normal">
+        <div class="opera-box">
+            <div class="btn btn-theme"
+                 @click="addPartnerBtn('addPartnerMsgPop')"><i class="fa fa-plus"></i> 添加合作伙伴机要信息</div>
+        </div>
+        <table class="i-table">
+            <thead>
+            <tr>
+                <th>序号</th>
+                <th>填报人</th>
+                <th>客户所在省份</th>
+                <th>姓名</th>
+                <th>所在部门</th>
+                <th>头衔</th>
+                <th>联系电话</th>
+                <th>邮件</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-for="(item, index) in partnerMsgList">
+                <td v-text="index +1"></td>
+                <td>填报人</td>
+                <td v-text="item.province"></td>
+                <td v-text="item.contactName"></td>
+                <td v-text="item.department"></td>
+                <td v-text="item.title"></td>
+                <td v-text="item.phone"></td>
+                <td v-text="item.email"></td>
+                <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+            </tr>
+            </tbody>
+        </table>
+    </div><!-- /.下部分表格 /.机要信息 -->
+
+
+    <!-- 添加合作伙伴机要信息 -->
+    <pop-up :is-show="addPartnerPop" @on-close="popUp('addPartnerPop')">
+        <div class="title"><p>添加合作伙伴</p></div>
+        <div class="pop-main">
+            <div class="row-item">
+                <div class="inline-block " style="width: 33%;">
+                    <span class="key">报备时间：</span>
+                    <span class="value" v-text="currentDate"></span></div>
+                <div class="inline-block " style="width: 33%;">
+                    <span class="key">所在部门：</span>
+                    <span class="value" v-text="currentDepartment"></span></div>
+                <div class="inline-block " style="width: 33%;">
+                    <span class="key">负责销售：</span>
+                    <span class="value" v-text="currentUser"></span></div>
+            </div><!-- 基本信息 -->
+
+            <div class="row-item">
+                <div class="row-item-label">合作伙伴客户名称：</div>
+                <div class="row-item-form input-group">
+                    <input type="text" class="input-group-form">
+                </div>
+            </div><!-- 客户名称 -->
+
+            <div class="row-item">
+                <div class="row-item-label">区域：</div>
+                <div class="row-item-form input-group">
+                    <input type="text" class="input-group-form">
+                </div>
+            </div><!-- 区域 -->
+
+            <div class="row-item">
+                <div class="row-item-label">城市：</div>
+                <div class="row-item-form input-group">
+                    <input type="text" class="input-group-form">
+                </div>
+            </div><!-- 城市 -->
+
+            <div class="row-item">
+                <div class="row-item-label">主要业务行业：</div>
+                <div class="row-item-form input-group">
+                    <input type="text" class="input-group-form">
+                </div>
+            </div><!-- 行业 -->
+
+            <div class="row-item">
+                <div class="row-item-label">主要合作产品：</div>
+                <div class="row-item-form input-group">
+                    <input type="text" class="input-group-form">
+                </div>
+            </div><!-- 产品 -->
+
+            <div class="row-item">
+                <div class="inline-block " style="width: 25%;">
+                    <div class="row-item-label" style="width: 52%;">注册资本(万元)：</div>
+                    <div class="row-item-form input-group" style="width: 45%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+                <div class="inline-block pull-right" style="width: 35%;">
+                    <div class="row-item-label" style="width: 35%;">合作伙伴类型：</div>
+                    <div class="row-item-form input-group" style="width: 65%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+                <div class="inline-block pull-right" style="width: 35%; margin-right: 20px;">
+                    <div class="row-item-label" style="width: 55%;">首次签订合作协议年月：</div>
+                    <div class="row-item-form input-group" style="width: 45%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+            </div><!-- 资本，年月，类型 -->
+
+            <div class="row-item">
+                <div class="inline-block" style="width: 23%;">
+                    <span class="key">近3年合同额(万元)：</span>
+                </div>
+                <div class="inline-block" style="width: 25%;">
+                    <div class="row-item-label text-right" style="width: 52%;">2018年</div>
+                    <div class="row-item-form input-group" style="width: 45%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+                <div class="inline-block" style="width: 25%;">
+                    <div class="row-item-label text-right" style="width: 52%;">2017年</div>
+                    <div class="row-item-form input-group" style="width: 45%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+
+                </div>
+                <div class="inline-block pull-right" style="width: 25%;">
+                    <div class="row-item-label text-right" style="width: 52%;">2016年</div>
+                    <div class="row-item-form input-group" style="width: 45%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+
+                </div>
+
+            </div><!-- 近3年 -->
+
+            <div class="row-item">
+                <div class="row-item-label">公司案例：</div>
+                <div class="row-item-form">
+                    <textarea></textarea>
+                </div>
+            </div><!-- 案例 -->
+
+            <div class="row-item">
+                <div class="row-item-label">合作伙伴简介：</div>
+                <div class="row-item-form">
+                    <textarea></textarea>
+                </div>
+            </div><!-- 简介 -->
+
+            <div class="row-item">
+                <div class="row-item-label">备注：</div>
+                <div class="row-item-form">
+                    <textarea></textarea>
+                </div>
+            </div><!-- 备注 -->
+
+        </div><!-- /.pop-main -->
+        <div class="title"><p>添加合作伙伴机要信息</p></div>
+        <div class="pop-main">
+            <div class="row-item">
+                <div class="inline-block" style="width: 49%;">
+                    <div class="row-item-label" style="width: 35%;">联系人姓名：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <!--<input type="text" class="input-group-form">-->
+
+                        <i-input :verify-msg="'联系人不能为空'" @on-blur="inputBlur($event, 'mContact')"></i-input>
+                    </div>
+                </div>
+                <div class="inline-block pull-right" style="width: 50%;">
+                    <div class="row-item-label text-right" style="width: 35%;">头衔：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+            </div><!-- -->
+            <div class="row-item">
+                <div class="inline-block" style="width: 49%;">
+                    <div class="row-item-label" style="width: 35%;">所在部门：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+                <div class="inline-block pull-right" style="width: 50%;">
+                    <div class="row-item-label text-right" style="width: 35%;">邮件：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+            </div><!-- -->
+            <div class="row-item">
+                <div class="inline-block" style="width: 49%;">
+                    <div class="row-item-label" style="width: 35%;">手机号码：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+                <div class="inline-block pull-right" style="width: 50%;">
+                    <div class="row-item-label text-right" style="width: 35%;">座机号码：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <input type="text" class="input-group-form">
+                    </div>
+                </div>
+            </div><!-- -->
+
+            <div class="row-item">
+                <div class="row-item-label">客户区域：</div>
+                <div class="row-item-form input-group">
+                    <ul class="area">
+                        <li v-for="item in regionList"
+                            v-text="item.text"
+                            @click="clickRegionProvinceBtn(item.code, item.text, 'region')"
+                            :class="{'area-active': item.code == currentRegion}"
+                        ></li>
+                    </ul>
+                </div>
+            </div><!-- 客户区域 -->
+            <div class="row-item">
+                <div class="row-item-label">客户省份：</div>
+                <div class="row-item-form input-group">
+                    <ul class="area">
+                        <li v-for="item in provinceList"
+                            v-text="item.text"
+                            @click="clickRegionProvinceBtn(item.code, item.text, 'province')"
+                            :class="{'area-active': item.code == currentProvince}"
+                        ></li>
+                    </ul>
+                </div>
+            </div><!-- 客户省份 -->
+            <div class="row-item">
+                <div class="row-item-label">详细地址：</div>
+                <div class="row-item-form input-group">
+                    <input v-model="mAddress"
+                           @keyup="test"
+                           type="text" class="input-group-form">
+                </div>
+            </div><!-- 详细地址 -->
+
+            <div class="row-item">
+                <div class="row-item-label">备注：</div>
+                <div class="row-item-form">
+                    <textarea></textarea>
+                </div>
+            </div><!-- 备注 -->
+
+            <div class="row-item">
+                <div class="row-item-form">
+                    <div class="btn btn-theme">提交</div>
+                </div>
+            </div>
+        </div><!-- /.pop-main -->
+    </pop-up>
+
+    <!-- 添加合作伙伴 -->
+    <pop-up :is-show="addPartnerMsgPop" @on-close="popUp('addPartnerMsgPop')">
+        <div class="title"><p>添加合作伙伴机要信息</p></div>
+        <div class="pop-main">
+            123
+        </div><!-- /.pop-main -->
+    </pop-up>
+
+
+
+
+
+</div><!-- /.end -->
+<script src="../static/scripts/client/partner.js"></script>

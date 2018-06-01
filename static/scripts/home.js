@@ -1,5 +1,5 @@
-var PATH = 'http://172.16.8.130:8080';
-// var PATH = '';// 测试环境，不需要 /
+// var PATH = 'http://172.16.8.130:8080';
+var PATH = '';// 测试环境，不需要 /
 var timeYear,// 2018-04-18
     currentYear,
     currentMonth,
@@ -9,7 +9,7 @@ var timeYear,// 2018-04-18
     szDate,// 上周
     sszDate,// 上上周
     // ====
-    userName,
+    userName,// 用户名
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
@@ -67,7 +67,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
         loadMainPage('.content-item', 'manage/manage.html');
         // loadMainPage('.content-item', 'manage/partnerPipeline.html');
     })
-});
+})
 
 
 
@@ -190,3 +190,6 @@ function scaleCalc(A, B) {// 增长率的计算
     div += "%";
     return div;
 };// 百分比计算
+
+
+
