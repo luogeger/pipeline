@@ -133,10 +133,9 @@
                     <td v-text="item.customerName"  class="text-left"></td>
                     <td v-text="item.industryLine" v-if="clientMsgQueryBtn"></td>
                     <td v-text="item.address" v-if="clientMsgQueryBtn" class="text-left" style="max-width: 300px;"></td>
-                    <!--<td @click="editClient(index, item.id)"><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>-->
                     <td v-if="clientMsgQueryBtn" style="padding-right: 10px;">
                         <div class="pull-left types-show">
-                            <span v-if="item.status == 'pending' && userLevel == 'xsld' "
+                            <span v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') "
                                   class="type-pending">待审批</span>
                             <span v-if="item.status == 'pending' && userLevel == 'xs'  "
                                   class="type-pending">待审核</span>
@@ -145,7 +144,8 @@
                             <span v-if="item.status == 'revoke' " class="type-revoke">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
-                            <div v-if="item.status == 'pending' && userLevel == 'xsld' && item.power == 'pro' "
+                            <div
+                                    v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') && item.power == 'pro' "
                                  @click="disposeBtn(item.id)"
                                  class="btn btn-xs btn-border">审批</div>
 
@@ -165,7 +165,7 @@
                                  @click="queryClientHistory(item.id)">
                                 <i class="fa fa-clock-o"
                                    :class="{'has-reject': item.hasReject !== 0}"
-                                   v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel == 'xsld' && item.power == 'pro') || item.power == 'pub'"></i>
+                                   v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel !== 'xs' && item.power == 'pro') || item.power == 'pub'"></i>
                             </div>
                         </div>
 
