@@ -473,3 +473,42 @@
   }
 }
 
+.pipelineJoin {
+  background: #fff;
+  padding: 10px;
+
+  .table-wrapper {
+    margin-bottom: 30px;
+    thead {
+      background-color: #FAD3B2;
+      color: #433C38;
+    }
+    tbody {
+      td {
+        .type-pending, .type-unsubmitted {
+          color: #14a6ef;
+        }
+        .type-pass {
+          color: #5eb95e;
+        }
+
+        .type-reject {
+          color: #dd514c;
+        }
+        .type-revoke {
+          color: #222;
+        }
+      }
+    }
+  }
+}
+.disabled {
+  pointer-events: none;
+  cursor: default;
+  opacity: 0.4;
+}
+
+.checkText {
+  color: #14a6ef;
+  line-height: 30px;
+}
