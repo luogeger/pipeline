@@ -4,7 +4,7 @@
   padding: 0 15px;
   border: 1px solid #DDDEE1;
   border-radius: 4px 4px 0 0;
-  border-bottom: none;
+  background-color: #fff;
   cursor: pointer; }
 .main .user-level-tabs .level-active {
   background-color: #ED6D00;

@@ -122,7 +122,7 @@ var vm = new Vue({
     },// data
 
     created: function (){
-        this.skipPage();
+        this.skipPage();// 如果是从pipeline跳转过来
 
         if (this.userLevel !== 'xs') this.onlySale = false;// (添加客户 + 导入)按钮
         switch(this.userLevel) {
@@ -135,7 +135,7 @@ var vm = new Vue({
             case 'dqxyh':
                 this.levelActive = 'all';
                 break;
-        };// 不同客户查看到不同的客户信息
+        }// 不同客户查看到不同的客户信息
 
         this.getIndustry();
         this.getClient();

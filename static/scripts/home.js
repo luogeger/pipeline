@@ -1,5 +1,5 @@
-var PATH = 'http://172.16.8.130:8080';
-// var PATH = '';// 测试环境，不需要 /
+// var PATH = 'http://172.16.8.130:8080';
+var PATH = '';// 测试环境，不需要 /
 var timeYear,// 2018-04-18
     currentYear,
     currentMonth,
@@ -9,7 +9,7 @@ var timeYear,// 2018-04-18
     szDate,// 上周
     sszDate,// 上上周
     // ====
-    userName,
+    userName,// 用户名
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
@@ -66,7 +66,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
         loadMainPage('.content-item', 'client/partner.html');
     })
-});
+})
 
 
 
@@ -191,50 +191,4 @@ function scaleCalc(A, B) {// 增长率的计算
 };// 百分比计算
 
 
-Vue.component('select-list', {
-    props: {
-        selections: {
-            type: Array,
-            default: [{
-                label: 'test',
-                value: 0
-            }]
-        }
-    },// props
 
-    data () {
-        return {
-            nowIndex: 0,
-            isShow: false,
-        }
-    },// data
-
-    methods:{
-        toggleShow () {
-            this.isShow = !this.isShow;
-        },
-        chooseShow (index) {
-            this.isShow = false;
-            this.nowIndex = index;
-            this.$emit('on-change', this.selections[this.nowIndex]);
-        }
-    },// methods
-
-    mounted () {
-        //this.$emit('on-change', this.selections[this.nowIndex]);
-    },
-    template:
-        `<div class="selection-component">
-            <div class="selection-show" @click="toggleShow">
-                <span>{{selections[nowIndex].label}}</span>
-                <div class="arrow"></div>
-            </div>
-            <div class="selection-list" v-if="isShow">
-                <ul>
-                    <li v-for="(item, index) in selections" @click="chooseShow(index)">{{item.label}}</li>
-                </ul>
-            </div>
-        </div>`,
-
-
-});

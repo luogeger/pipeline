@@ -39,8 +39,6 @@
     }
   }
 
-
-
   .input-group-btn{
     float: left;
     .btn{
@@ -48,8 +46,15 @@
     }
   }
 
-
-
+  .input-verify-msg{
+    position: absolute;
+    top: 32px;
+    left: 2px;
+    height: 16px;
+    line-height: 16px;
+    font-size: 12px   ;
+    color: rgb(255, 0, 0) !important;
+  }
 }// input-group
 
 
