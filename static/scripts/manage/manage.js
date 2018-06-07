@@ -60,6 +60,11 @@ var vm = new Vue({
             cSalesName: '',               // 获取销售
             cIndustryLineText: '',        // 行业线
             cProjectSuccessRateText: '',  // 成功率
+            cProjectSuccessMinText: '',   // 最小成功率
+            cProjectSuccessMinCode: '',   // 最小成功率code
+            cProjectSuccessMaxText: '',   // 最大成功率
+            cProjectSuccessMaxCode: '',   // 最大成功率code
+            projectSuccessRates: [],      // 存放成功率
             cMngSalesGroupText: '',       // 事业部
             cRegionText: '',              // 区域
             cCustomerSourText: '',        // 客户来源
@@ -186,6 +191,7 @@ var vm = new Vue({
 
             // ==============pipeline交接
             // ===查询
+            noJoinData: false,          // 搜索不到数据
             pipelineData: [],           // pipeline表格数据
             weightedSumTotal: '',       // 加权金额总计
             expectSignSumTotal: '',     // 预计签约金额总计
@@ -234,15 +240,13 @@ var vm = new Vue({
     mounted: function(){
         this.showPipelineData();
         this.getSoSolution4Tree();
+        this.getSuccessRate();
         this.searchData();
         this.getFuzzyList();
         this.getSales();
         // this.showData();
         this.openUpdateCase();
         this.signDate();
-
-        // ===============pipeline交接
-        this.getPipelineData();    // 查询pipeline数据
     },
     methods: {
         // 默认显示事业部pipeline信息
@@ -254,6 +258,9 @@ var vm = new Vue({
         showPipelineJoin: function() {
             this.pipelineDataShow = true;
             this.pipelineJoinShow = false;
+
+            // ===============pipeline交接
+            this.getPipelineData();    // 查询pipeline数据
         },
         // 显示弹框
         showPop: function () {
@@ -306,12 +313,6 @@ var vm = new Vue({
             this.tableList.expectSignDateEnd = endTime;
             this.showData();
         },
-
-        selectNothing: function() {
-            //搜索的时候传解决方案名称code
-            vm.tableList.soSolutionCode = treeNode.code;
-            vm.showData();
-        },
         //// ==========客户名称========
         // 表格查询客户名称排序
         ascClick: function() {
@@ -332,7 +333,7 @@ var vm = new Vue({
             if (ikeyCode == 13){
                 if(vm.cCustomerName == '') {
                     delete vm.tableList.customerCode;
-                    vm.showData();
+                    // vm.showData();
                 }
             }
         },
@@ -393,7 +394,7 @@ var vm = new Vue({
                      return;
                      }*/
 
-                    this.showData();
+                    // this.showData();
                     break;
                 case 2:
                     // 判断该客户名称是否是该销售所在事业部下的
@@ -439,7 +440,7 @@ var vm = new Vue({
             if (ikeyCode == 13){
                 if(vm.cSalesName == '') {
                     delete vm.tableList.salesStaffCode;
-                    vm.showData();
+                    // vm.showData();
                 }
             }
         },
@@ -461,7 +462,7 @@ var vm = new Vue({
             vm.tableList.salesStaffCode = code;
             vm.cSalesName = text;
 
-            this.showData();
+            // this.showData();
         },// 选中文字，隐藏模糊列表
 
         //// ==========搜索获取下拉code========
@@ -469,31 +470,41 @@ var vm = new Vue({
         searchIndustryLineCode: function(code, text) {
             this.tableList.industryLineCode = code;
             vm.cIndustryLineText = text;
-            this.showData();
+            // this.showData();
         },
-        // 选中成功率
-        searchSuccessRateCode: function(code, text) {
-            this.tableList.projectSuccessRateCode = code;
-            vm.cProjectSuccessRateText = text;
-            this.showData();
+        // 选中最小成功率
+        searchSuccessMinCode: function(code, text) {
+            this.tableList.successRateCodeMin = code;
+            vm.cProjectSuccessMinText = text;
+            vm.cProjectSuccessMinCode = code;
+        },
+        // 选中最大成功率
+        searchSuccessMaxCode: function(code, text) {
+            this.tableList.successRateCodeMax = code;
+            vm.cProjectSuccessMaxText = text;
+            vm.cProjectSuccessMaxCode = code;
+            // this.showData();
+
+            vm.cProjectSuccessMinCode = '';
+            vm.cProjectSuccessMaxCode = '';
         },
         // 选中事业部
         searchSalesGroupCode: function(code, text) {
             this.tableList.salesGroupCode = code;
             vm.cMngSalesGroupText = text;
-            this.showData();
+            // this.showData();
         },
         // 选中区域
         searchRegionCode: function(code, text) {
             this.tableList.regionCode = code;
             vm.cRegionText = text;
-            this.showData();
+            // this.showData();
         },
         // 选中客户来源
         searchCustomerSourceCode: function(code, text) {
             this.tableList.customerSourceCode = code;
             vm.cCustomerSourText = text;
-            this.showData();
+            // this.showData();
         },
         // 选中大解决方案
         searchSolutionFirst: function(id, text, type) {
@@ -519,7 +530,7 @@ var vm = new Vue({
                 case 1:
                     vm.cSoSolutionSecondText = text;
                     this.tableList.soSolutionCode = code;
-                    this.showData();
+                    // this.showData();
                     break;
                 case 2:
                     vm.hSoSolutionSecondText = text;
@@ -531,45 +542,26 @@ var vm = new Vue({
         searchLatelyChangeCode: function(code, text) {
             this.tableList.latelyChangeCode = code;
             vm.cLatelyChangeText = text;
-            this.showData();
+            // this.showData();
         },
         // 新增/修改需要--获取省份
         getProvince: function(province) {
             province = province || 'regionHd';
-            $.ajax({
-                url:  PATH + '/basic/queryDictDataByCategory',
-                type: 'get',
-                dataType: 'json',
-                data: {
-                    'categoryCodes': province
-                },
-                success: function(result){
-                    vm.provinceLists = result.msg[province];
-                    /*if(vm.provinceLists){
-                     vm.handleTemplate.provinceCode = vm.provinceLists[0].code;// 默认选中第一个
-                     }*/
-                },
-                error:function(){
-                    console.log("获取客户所在省份请求失败")
-                }
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function(datas){
+                var data = datas.data;
+                console.log(data,'获取省份');
+                if (data.code === 201 || data.msg.length === 0) return;
+                vm.provinceLists = data.msg[province];
             })
         },
         // 新增/修改需要--获取客户属性
         customerData: function(){
-            $.ajax({
-                url:  PATH + '/basic/queryDictDataByCategory',
-                type: 'get',
-                dataType: 'json',
-                data: {
-                    'categoryCodes': 'customerAttr'
-                },
-                success: function(result){
-                    vm.customerAttr = result.msg.customerAttr;
-                    vm.handleTemplate.customerPropertiesCode = vm.customerAttr[0].code;// 默认选中第一个
-                },
-                error: function(result) {
-                    console.log(' 请求失败');
-                }
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=customerAttr').then(function(datas) {
+                var data = datas.data;
+                console.log(data,'获取客户属性');
+                if (data.code === 201 || data.msg.length === 0) return;
+                vm.customerAttr = data.msg.customerAttr;
+                vm.handleTemplate.customerPropertiesCode = vm.customerAttr[0].code;// 默认选中第一个
             })
         },
         //// ==========添加获取code========
@@ -627,18 +619,10 @@ var vm = new Vue({
 
             vm.nothing = code;
         },
-        /*addClient: function () {
-         vm.dialogShow = false;
-         },
-         addMsg: function () {
-         vm.dialogShow = false;
-         vm.addMsgShow = false;
-         },
-         allHide: function () {
-         vm.dialogShow = true;
-         vm.addMsgShow = true;
-         vm.uploadDialogShow = true;
-         },*/
+        // 点击tr添加active
+        /*clickOne: function(index) {
+            this.isClicked = index;
+        },*/
         // 获取表格右侧项目更新情况数据
         showOneChange: function(soCoreCode, index) {
             vm.changeOneLists = [] // 先清空项目更新情况列表
@@ -714,6 +698,10 @@ var vm = new Vue({
 
         // 表格查询
         showData: function(page, limit){
+            /*this.tableList = {
+                page: page || 1,
+                limit: limit || this.dataPageMost,
+            }*/
             this.tableList.page = page || 1;
             this.tableList.limit = limit || this.dataPageMost;
             console.log('---查询pipeline的请求参数------');
@@ -737,39 +725,38 @@ var vm = new Vue({
                         var pscs = result.pscs[i];
                         vm.pscsLists.push(pscs);
                     }
-                    console.log(vm.pscsLists,'vm.pscsLists');
 
                     for(var i = 0;i < result.root.length;i++){
                         var root = result.root[i];
                         vm.items.push(root);
                     }
-                    // 默认第一条tr添加active
-                    if(vm.items.length != 0) {
+                    if(vm.items.length !== 0) {
                         if(vm.items[0].soCoreCode) {
-                            vm.showOneChange(vm.items[0].soCoreCode, 0);
+                            vm.showOneChange(vm.items[0].soCoreCode, 0); // 默认第一条tr添加active
                         }
-                    }
 
-                    // 如果表格无数据
-                    if(result.root.length === 0) {
+                        vm.noData = false;
+                        vm.data = result;
+
+                        vm.dataPageTotal = result.totalProperty;
+
+                        if(vm.dataPageTotal < 10) {
+                            vm.dataPageNum = 1;
+                        }
+                        vm.dataPageSum = Math.ceil(vm.dataPageTotal / vm.dataPageMost)
+                        vm.dataPageStart = (vm.dataPageNum -1) * vm.dataPageMost + 1;
+                        if (vm.dataPageNum === vm.dataPageSum) {
+                            vm.dataPageEnd = vm.dataPageTotal;
+                            return;
+                        }
+                        vm.dataPageEnd = vm.dataPageStart - 1 + vm.dataPageMost;
+                    }else { // 如果表格无数据
                         toastr.warning('没有相关信息 ！');
                         vm.noData = true;
 
                         vm.closeUpdateCase();  // 关闭右侧项目更新情况
                         return;
                     }
-
-                    vm.noData = false;
-                    vm.data = result;
-                    vm.dataPageTotal = result.totalProperty;
-                    vm.dataPageSum = Math.ceil(vm.dataPageTotal / vm.dataPageMost)
-                    vm.dataPageStart = (vm.dataPageNum -1) * vm.dataPageMost + 1;
-
-                    if (vm.dataPageNum === vm.dataPageSum) {
-                        vm.dataPageEnd = vm.dataPageTotal;
-                        return;
-                    }
-                    vm.dataPageEnd = vm.dataPageStart - 1 + vm.dataPageMost;
                 },
                 error: function(result) {
                     console.log('表格查询请求失败');
@@ -859,6 +846,42 @@ var vm = new Vue({
                 }
             })
         },
+        // 获取成功率
+        getSuccessRate: function(){
+            axios.get(PATH +'/so/queryPipelineInitVal').then(function(datas) {
+                var data = datas.data;
+                console.log(data,'data')
+                if(data.code == 200) {
+                    vm.projectSuccessRates = data.msg.basic.projectSuccessRates;
+                }
+            })
+            /*var basic,
+                oauth;
+            $.ajax({
+                url:  PATH + '/so/queryPipelineInitVal',
+                type: 'get',
+                dataType: 'json',
+                success: function(result){
+                    basic = result.msg.basic;
+                    oauth = result.msg.oauth;
+                    if(result !== null){
+                        if(basic !== null){
+                            vm.searchLists = basic;
+
+                            vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
+                            vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
+                        }
+                        if(oauth !== null){
+                            vm.oauthLists = oauth;
+                            vm.mngSalesGroups = vm.oauthLists.userInfo.mngSalesGroups;
+                        }
+                    }
+                },
+                error: function(result) {
+                    console.log('搜索请求失败');
+                }
+            })*/
+        },
         // 搜索框赋值
         searchData: function(){
             var basic,
@@ -888,11 +911,19 @@ var vm = new Vue({
                 }
             })
         },
+        // 查询搜索框
+        querySearchForm: function() {
+            this.showData();
+        },
         // 清空搜索框
         clearSearchForm: function() {
             vm.cCustomerName = '';            // 客户
             vm.cIndustryLineText = '';        // 行业线
             vm.cProjectSuccessRateText = '';  // 成功率
+            vm.cProjectSuccessMinText = '',   // 最小成功率
+            vm.cProjectSuccessMaxText = '',   // 最大成功率
+            vm.cProjectSuccessMinCode = '';
+            vm.cProjectSuccessMaxCode = '';
             vm.cMngSalesGroupText = '';       // 事业部
             vm.cRegionText = '';              // 区域
             vm.cCustomerSourText = '';        // 客户来源
@@ -1134,11 +1165,12 @@ var vm = new Vue({
                         return;
                     }
                     if(result.success){
+                        toastr.success('操作成功');
+
                         vm.dialogShow = true;       // 调用（弹窗）
                         vm.clearHandle();           // 调用（清空新增/修改表单）
                         vm.showData();              // 再调用（表格查询）
                     }
-                    toastr.success('操作成功');
 
                     vm.showOneChange();
                 },
@@ -1179,7 +1211,6 @@ var vm = new Vue({
         queryBtn: function () {
             vm.getClient()
         },
-
         resetBtn: function () {
             vm.hClientCode = '';
             vm.hClientName = '';
@@ -1347,13 +1378,13 @@ var vm = new Vue({
                 // 如果表格无数据
                 if(vm.pipelineData.root.length === 0) {
                     toastr.warning('没有相关信息 ！');
-                    vm.noData = true;
+                    vm.noJoinData = true;
 
                     vm.closeUpdateCase();  // 关闭右侧项目更新情况
                     return;
                 }
 
-                vm.noData = false;
+                vm.noJoinData = false;
                 vm.joinPageTotal = vm.pipelineData.totalProperty;
                 vm.joinPageSum = Math.ceil(vm.joinPageTotal / vm.joinPageMost)
                 vm.joinPageStart = (vm.joinPageNum -1) * vm.joinPageMost + 1;
