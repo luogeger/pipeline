@@ -1,0 +1,13 @@
+.main .screening-condition {
+  background-color: #fff; }
+.main .screening-condition,
+.main .partner,
+.main .partner-msg {
+  background-color: #fff;
+  padding: 10px; }
+  .main .screening-condition .opera-box,
+  .main .partner .opera-box,
+  .main .partner-msg .opera-box {
+    padding-bottom: 10px; }
+
+/*# sourceMappingURL=partner.css.map */
