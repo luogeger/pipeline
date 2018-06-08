@@ -59,13 +59,32 @@
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">成功率：</span>
                     <div class="dropdown">
-                        <span class="dropdown-default">{{ cProjectSuccessRateText }}</span>
+                        <span class="dropdown-default" style="min-width: 50px">{{ cProjectSuccessMinText }}</span>
+                        <input type="hidden" v-text="cProjectSuccessMinCode" />
                         <i class="fa fa-angle-down"></i>
                         <ul>
-                            <li @click="searchSuccessRateCode('', '')">请选择</li>
-                            <li @click="searchSuccessRateCode(searchList.code, searchList.text)"
-                                v-for="searchList in searchLists.projectSuccessRates"
-                                :value="searchList.code">{{ searchList.text }}</li>
+                            <li @click="searchSuccessMinCode('', '')">请选择</li>
+                            <li @click="searchSuccessMinCode(projectSuccessRate.code, projectSuccessRate.text)"
+                                v-for="projectSuccessRate in projectSuccessRates"
+                                :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
+                            <!-- v-if="cProjectSuccessMaxCode >= projectSuccessRate.code"
+                               -->
+                        </ul>
+                    </div>
+                </div>
+                <div class="dropdown-wrap">
+                    <span class="dropdown-label">-</span>
+                    <div class="dropdown">
+                        <span class="dropdown-default" style="min-width: 50px">{{ cProjectSuccessMaxText }}</span>
+                        <input type="hidden" v-text="cProjectSuccessMaxCode" />
+                        <i class="fa fa-angle-down"></i>
+                        <ul>
+                            <li @click="searchSuccessMaxCode('', '')">请选择</li>
+                            <li @click="searchSuccessMaxCode(projectSuccessRate.code, projectSuccessRate.text)"
+                                v-for="projectSuccessRate in projectSuccessRates"
+                                :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
+                            <!--v-if="cProjectSuccessMinCode <= projectSuccessRate.code"
+                                -->
                         </ul>
                     </div>
                 </div>
@@ -109,17 +128,6 @@
                         </ul>
                     </div>
                 </div>
-                <!--<div class="dropdown-wrap">
-                    <span class="dropdown-label">解决方案：</span>
-                    <div class="dropdown-zTree">
-                        <span class="dropdown-default">{{ cSoSolutionText }}</span>
-                        <i class="fa fa-angle-down"></i>
-                        <ul class="selectTree ztree soSolutionTree"
-                            style="max-height: 200px;overflow-y: auto;">
-                        </ul>
-                    </div>
-                </div>-->
-
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">解决方案：</span>
                     <div class="dropdown">
@@ -144,7 +152,6 @@
                         </ul>
                     </div>
                 </div>
-
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">近期变更过：</span>
                     <div class="dropdown">
@@ -174,12 +181,8 @@
                 </div>
             </div>
             <div style="position: absolute;right: 20px;top: 15px;">
-                <div class="input-group">
-                    <span class="input-group-label"></span>
-                    <button @click="clearSearchForm"
-                            class="btn btn-sm btn-theme"
-                            type="button">重置</button>
-                </div>
+                <button @click="querySearchForm" class="btn btn-sm btn-theme" type="button" style="margin-right: 10px">查询</button>
+                <button @click="clearSearchForm" class="btn btn-sm btn-border" type="button">重置</button>
             </div>
         </div>
         <div class="main-wrapper">
@@ -199,7 +202,7 @@
                     <span class="theme-color" style="margin-right: 15px">{{ expectSignSumTotal }}</span>
                     加权金额总计(万元):
                     <span class="theme-color">{{  weightedSumTotal }}</span>
-                    <div class="pull-right">
+                    <div :class="{'hide': noData}" class="pull-right">
                         <div class="data-page page-css">
                             <div @click="calcDataPage('data' , 'first')"
                                  class="page-css-first">
@@ -221,7 +224,7 @@
                             <span>条，</span>
                             <span>共&nbsp;
                             <span class="progressBtn">
-                                <span style="color: #14a6ef">{{dataPageTotal}}</span>
+                                <span style="color: #14a6ef;vertical-align: top">{{dataPageTotal}}</span>
                                 <div class="progressTotal">
                                 <ul class="clearfix">
                                     <li class="pull-left" style="margin-right: 20px" v-if="pscsList.code == 'effective' || pscsList.code == 'invalid'" v-for="pscsList in pscsLists">
@@ -289,6 +292,7 @@
                             <tr v-for="(item, index) in items"
                                 @dblclick="showOneChange(item.soCoreCode, index)"
                                 :class="{ active: isClicked == index } ">
+                                <!--@click="clickOne(index)"-->
                                 <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
                                 <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                                 <td v-if="userLevel == 'xs'">
@@ -482,8 +486,10 @@
                     </tbody>
                 </table>
             </div>
+            <div v-if="noJoinData"
+                 style="padding: 20px;text-align: center">暂无相关数据</div>
         </div>
-        <div class="pull-right" style="margin-right: 50px">
+        <div :class="{'hide': noJoinData}" class="pull-right" style="margin-right: 50px">
             <div class="data-page page-css">
                 <div @click="calcJoinPage('join' , 'first')"
                      class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
@@ -533,14 +539,6 @@
                                         <i class="star">*</i>
                                         <span class="dropdown-label">所属事业部：</span>
                                         <span style="line-height: 30px;">{{ hSalesGroupText }}</span>
-                                        <!--<div class="dropdown">
-                                            <span class="dropdown-default">{{ hSalesGroupText }}</span>
-                                            <i class="fa fa-angle-down"></i>
-                                            <ul>
-                                                <li @click="selectSalesGroupCode(oauthList.code, oauthList.text)"
-                                                    v-for="oauthList in mngSalesGroups">{{ oauthList.text }}</li>
-                                            </ul>
-                                        </div>-->
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -615,17 +613,6 @@
                                         <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
                                     </div>
                                 </div>
-                                <!--<div class="block-wrapper col-1">
-                                    <div class="dropdown-wrap">
-                                        <span class="dropdown-label">解决方案：</span>
-                                        <div class="dropdown-zTree">
-                                            <span class="dropdown-default">{{ hSolutionText }}</span>
-                                            <i class="fa fa-angle-down"></i>
-                                            <ul class="handleTree ztree soSolutionTree"
-                                                style="max-height: 200px;overflow-y: auto;"></ul>
-                                        </div>
-                                    </div>
-                                </div>-->
                                 <div class="block-wrapper col-1">
                                     <div class="dropdown-wrap" style="display: inline-block">
                                         <span class="dropdown-label">解决方案：</span>
@@ -808,11 +795,6 @@
                             <div class="content" style="text-align: center;padding: 20px">
                                 暂无项目更新情况
                             </div>
-                            <!--<div class="content">-->
-                            <!--<div>区域：<span>华北-北京</span></div>-->
-                            <!--<div>成功率：<span> 100%，90% </span></div>-->
-                            <!--<p class="tips">温馨提示:功率从10%50%。客户所在省份从广东省调整为云南省。 预计签约金额从2018年1月调整到2019年2月。</p>-->
-                            <!--</div>-->
                         </div>
                     </div>
                     <div v-if="handleTemplate.soCoreCode != null" class="historyLog">
