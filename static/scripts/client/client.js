@@ -242,6 +242,7 @@ var vm = new Vue({
                 vm.noData = false;// 客户table的 '没有数据!'
                 vm.clientNameQuery = false;// 请输入客户名称进行查询！ == 是否显示
                 vm.client = datas.data;// 数据list
+                console.log(vm.client.root)
                 vm.msgBtnIsShow = true;// 不能显示添加机要信息按钮
                 // 分页
                 vm.clientPageTotal = datas.data.totalProperty;
@@ -874,7 +875,6 @@ var vm = new Vue({
         // pipeline 跳转过来只添加或编辑机要信息
         skipPage: function () {
             var num = localStorage.getItem('cpComCode');
-            console.log(num);
             if (num !== '') {
                 this.hClientCode = localStorage.getItem('cpComCode');
                 localStorage.removeItem('cpComCode');
