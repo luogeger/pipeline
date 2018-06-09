@@ -14,7 +14,7 @@
         <div :class="{'active': tabActive == 2}" @click="tabBtn(2, 'engineer')" class="table-tab-item">《工程师资质认证》信息</div>
     </div>
 
-    <div class="screening-condition border-normal">
+    <div class="screening-condition border-normal clearfix">
         <!--合作伙伴名称   模糊查询
         客户编号         输入框
         区域           下拉框
@@ -25,18 +25,47 @@
 
         <!--<select-list :selections="selectList" @on-change="select($event)"></select-list>-->
         <!--<select-list :selections="selectList2" @on-change="select2($event)"></select-list>-->
+
     </div><!-- /.screening-condition -->
 
     <div class="partner border-normal">
-        <div v-if="tabContentShow == 'partner-pass'
-                 ||tabContentShow == 'partner-other'
-                 ||tabContentShow == 'partner-msg'"
+        <div v-if="tabContentShow !== 'engineer'"
              class="partner-box">
-            <div class="opera-box">
+            <div class="opera-box clearfix">
                 <div class="btn btn-theme"
                      v-if="tabContentShow == 'partner-other'"
                      @click="addPartnerBtn('addPartnerPop')">
-                    <i class="fa fa-plus"></i> 添加合作伙伴</div>
+                    <i class="fa fa-plus"></i> 添加合作伙伴
+                </div>
+                <div class="pull-right">
+                    <div class="client-page page-css">
+                        <div @click="calcPage('client' , 'first')"
+                             class="page-css-first"><i class="fa fa-angle-double-left"></i>
+                        </div>
+                        <div @click="calcPage('client' , -1)"
+                             class="page-css-prev"
+                             style="margin-right: 10px;"><i class="fa fa-angle-left"></i>
+                        </div>
+                        <span>第</span>
+                        <input @keyup.enter="calcPage('client', 'enter')"
+                               v-model="pPageNum"
+                               type="text" style="margin: 0 5px;">
+                        <span>页，</span>
+                        <span>共 {{pPageSum}} 页，</span>
+                        <div @click="calcPage('client' , 1)"
+                             class="page-css-next"><i class="fa fa-angle-right  "></i>
+                        </div>
+                        <div @click="calcPage('client' , 'last')"
+                             class="page-css-last" style="margin-right: 10px;"><i class="fa fa-angle-double-right"></i>
+                        </div>
+                        <span>显示</span>
+                        <span style="margin-left: 5px;">{{pPageStart}}</span>
+                        <span>-</span>
+                        <span style="margin-right: 5px;">{{pPageEnd}}</span>
+                        <span>条，</span>
+                        <span>共&nbsp; {{pPageTotal}} &nbsp;条</span>
+                    </div>
+                </div>
             </div>
             <table class="i-table">
                 <thead>
@@ -114,11 +143,9 @@
                 </tbody>
             </table>
         </div><!-- /. 工程师 -->
-    </div><!-- /. 上部分表格 -->
+    </div><!-- /.合作伙伴/.上部分表格 -->
 
-    <div v-if="tabContentShow == 'partner-pass'
-             ||tabContentShow == 'partner-other'
-             ||tabContentShow == 'partner-msg'"
+    <div v-if="tabContentShow !== 'engineer'"
          class="partner-msg border-normal">
         <div class="opera-box">
             <div class="btn btn-theme"
@@ -148,14 +175,16 @@
                 <td v-text="item.title"></td>
                 <td v-text="item.phone"></td>
                 <td v-text="item.email"></td>
-                <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                <td><i @click="editBtn('partnerMsg', item.id, item)"
+                       class="fa fa-edit i-text-col"
+                       style="font-size: 14px; cursor: pointer;"></i></td>
             </tr>
             </tbody>
         </table>
-    </div><!-- /.下部分表格 /.机要信息 -->
+    </div><!-- /.机要信息/.下部分表格 -->
 
 
-    <!-- 添加合作伙伴机要信息 -->
+    <!-- /......添加合作伙伴机要信息  -->
     <pop-up :is-show="addPartnerPop" @on-close="popUp('addPartnerPop')">
         <div class="title"><p>添加合作伙伴</p></div>
         <div class="pop-main">

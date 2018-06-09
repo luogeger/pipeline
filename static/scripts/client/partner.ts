@@ -2,6 +2,7 @@ let vm = new Vue({
     el: '#partner',
 
     data: {
+        tempID:             '',// 编辑信息，弹窗的形式出现的ID, 弹窗关闭的时候，一定要清空
         // tab
         engineerTabShow:    false,// 工程师tab显示
         tabActive:          0,
@@ -11,6 +12,13 @@ let vm = new Vue({
         pPage:              1,
         mPage:              1,
         limitPage:          11,
+        // partner 分页
+        pPageNum:           1,
+        pPageSum:           1,
+        pPageStart:         1,
+        pPageEnd:           1,
+        pPageTotal:         1,
+
 
         partnerList:        [],// 伙伴数据
         partnerMsgList:     [],// 伙伴信息数据
@@ -122,6 +130,7 @@ let vm = new Vue({
 
     created () {
         this.tabBtn(0, 'partner-pass');// 显示第一个tab
+
     },
 
     mounted () {
@@ -173,11 +182,11 @@ let vm = new Vue({
             });
         },// 区域
 
-        getProvince: function (province) {
+        getProvince: function (province, activeProvince) {
             province = province || 'regionHd';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then((datas)=>{
                 this.provinceList = datas.data.msg[province];
-                this.mProvinceCode = '';//
+                this.mProvinceCode = activeProvince;//
             });
         },// 省份
 
@@ -248,9 +257,16 @@ let vm = new Vue({
             if (type === 'addPartnerMsg') this.addPartnerMsg();
         },
 
+        // 编辑事件
+        editBtn (type, id, obj) {
+            this.tempID = id;
+            if (type === 'partnerMsg') this.editPartnerMsg(obj);
+        },
+
 
         // 关闭弹窗
         popUp (attr) {
+            this.tempID = '';
             this[attr] = false;// 弹窗显示
             // 清空输入框记录
             // 机要
@@ -265,6 +281,41 @@ let vm = new Vue({
             this.mMark  = '';
             this.mProvinceText  = '';
             this.mAddress = '';
+        },
+
+        editPartnerMsg (obj) {
+            console.log(obj)
+            this.addPartnerMsgPop = true;
+            this.getRegion(obj.regionCode)
+            this.getProvince(obj.regionCode, obj.provinceCode)
+
+            this.mRegionCode    = obj.regionCode;
+            this.mProvinceCode  = obj.provinceCode;
+            this.mContact       = obj.contactName;
+            this.mDepartment    = obj.department;
+            this.mTitle         = obj.title;
+            this.mPhone         = obj.phone;
+            this.mTelphone1     = obj.telphone1;
+            this.mTelphone2     = obj.telphone2;
+            this.mTelphone3     = obj.telphone3;
+            this.mEmail         = obj.email;
+            this.mMark          = obj.remark;
+            this.mAddress       = obj.address;
+
+            console.log(this.mProvinceCode)
+            // axios
+            //     .get(PATH +'/cp/crm/selectCustomerContact',  {params: params} )
+            //     .then((datas)=>{
+            //         let data = datas.data;
+            //         if (data.code === 201) {
+            //             toastr.warning(data.msg)
+            //             return;
+            //         }
+            //
+            //         this.popUp('addPartnerMsgPop')
+            //         this.getPartnerMsgData()
+            //         toastr.warning('机要信息添加成功')
+            //     });
         },
 
         // 机要信息的区域和省份
@@ -283,11 +334,10 @@ let vm = new Vue({
             //this.mAddress = this.mRegionText + this.mProvinceText + this.mAddress;
         },
 
-        // 确认提交机要信息
-        addPartnerMsg (id) {
-            id = id || '';
+        // 确认提交机要信息 有id 就相当于是编辑
+        addPartnerMsg () {
             let params = {
-                // id:             id,
+                id:             this.tempID,
                 customerId:     this.pID,
                 regionCode:     this.mRegionCode,
                 provinceCode:   this.mProvinceCode,
@@ -302,9 +352,8 @@ let vm = new Vue({
                 remark:         this.mMark,
                 address:        this.mAddress,
             };
-
-
-            axios.get(PATH +'/cp/crm/addOrUpdateCustomerContact',  {params: params} )
+            axios
+                .get(PATH +'/cp/crm/addOrUpdateCustomerContact',  {params: params} )
                 .then((datas)=>{
                     let data = datas.data;
                     if (data.code === 201) {
@@ -336,7 +385,10 @@ let vm = new Vue({
 
 
 
+        // 分页
+        calcPage (type, num) {
 
+        },
 
 
 

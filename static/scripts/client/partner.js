@@ -1,6 +1,7 @@
 var vm = new Vue({
     el: '#partner',
     data: {
+        tempID: '',
         // tab
         engineerTabShow: false,
         tabActive: 0,
@@ -9,6 +10,12 @@ var vm = new Vue({
         pPage: 1,
         mPage: 1,
         limitPage: 11,
+        // partner 分页
+        pPageNum: 1,
+        pPageSum: 1,
+        pPageStart: 1,
+        pPageEnd: 1,
+        pPageTotal: 1,
         partnerList: [],
         partnerMsgList: [],
         engineerList: [],
@@ -154,12 +161,12 @@ var vm = new Vue({
                 _this.mRegionCode = activeRegion; // 默认区域选中第一个
             });
         },
-        getProvince: function (province) {
+        getProvince: function (province, activeProvince) {
             var _this = this;
             province = province || 'regionHd';
             axios.get(PATH + '/basic/queryDictDataByCategory?categoryCodes=' + province).then(function (datas) {
                 _this.provinceList = datas.data.msg[province];
-                _this.mProvinceCode = ''; //
+                _this.mProvinceCode = activeProvince; //
             });
         },
         getEngineerData: function () {
@@ -215,8 +222,15 @@ var vm = new Vue({
             if (type === 'addPartnerMsg')
                 this.addPartnerMsg();
         },
+        // 编辑事件
+        editBtn: function (type, id, obj) {
+            this.tempID = id;
+            if (type === 'partnerMsg')
+                this.editPartnerMsg(obj);
+        },
         // 关闭弹窗
         popUp: function (attr) {
+            this.tempID = '';
             this[attr] = false; // 弹窗显示
             // 清空输入框记录
             // 机要
@@ -232,6 +246,38 @@ var vm = new Vue({
             this.mProvinceText = '';
             this.mAddress = '';
         },
+        editPartnerMsg: function (obj) {
+            console.log(obj);
+            this.addPartnerMsgPop = true;
+            this.getRegion(obj.regionCode);
+            this.getProvince(obj.regionCode, obj.provinceCode);
+            this.mRegionCode = obj.regionCode;
+            this.mProvinceCode = obj.provinceCode;
+            this.mContact = obj.contactName;
+            this.mDepartment = obj.department;
+            this.mTitle = obj.title;
+            this.mPhone = obj.phone;
+            this.mTelphone1 = obj.telphone1;
+            this.mTelphone2 = obj.telphone2;
+            this.mTelphone3 = obj.telphone3;
+            this.mEmail = obj.email;
+            this.mMark = obj.remark;
+            this.mAddress = obj.address;
+            console.log(this.mProvinceCode);
+            // axios
+            //     .get(PATH +'/cp/crm/selectCustomerContact',  {params: params} )
+            //     .then((datas)=>{
+            //         let data = datas.data;
+            //         if (data.code === 201) {
+            //             toastr.warning(data.msg)
+            //             return;
+            //         }
+            //
+            //         this.popUp('addPartnerMsgPop')
+            //         this.getPartnerMsgData()
+            //         toastr.warning('机要信息添加成功')
+            //     });
+        },
         // 机要信息的区域和省份
         clickRegionProvinceBtn: function (code, text, type) {
             if (type === 'region') {
@@ -246,12 +292,11 @@ var vm = new Vue({
             }
             //this.mAddress = this.mRegionText + this.mProvinceText + this.mAddress;
         },
-        // 确认提交机要信息
-        addPartnerMsg: function (id) {
+        // 确认提交机要信息 有id 就相当于是编辑
+        addPartnerMsg: function () {
             var _this = this;
-            id = id || '';
             var params = {
-                // id:             id,
+                id: this.tempID,
                 customerId: this.pID,
                 regionCode: this.mRegionCode,
                 provinceCode: this.mProvinceCode,
@@ -266,7 +311,8 @@ var vm = new Vue({
                 remark: this.mMark,
                 address: this.mAddress,
             };
-            axios.get(PATH + '/cp/crm/addOrUpdateCustomerContact', { params: params })
+            axios
+                .get(PATH + '/cp/crm/addOrUpdateCustomerContact', { params: params })
                 .then(function (datas) {
                 var data = datas.data;
                 if (data.code === 201) {
@@ -277,6 +323,9 @@ var vm = new Vue({
                 _this.getPartnerMsgData();
                 toastr.warning('机要信息添加成功');
             });
+        },
+        // 分页
+        calcPage: function (type, num) {
         },
         select: function (event) {
             console.log(event);
