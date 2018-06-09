@@ -42,6 +42,7 @@ Vue.component('pop-up', {
         }
     },
     data: function () {
+        return {};
     },
     mounted: function () {
     },
@@ -54,38 +55,25 @@ Vue.component('pop-up', {
 });
 Vue.component('i-input', {
     props: {
-        verifyMsg: {
-            type: String,
-            default: '验证消息',
-        }
+        verifyMsg: String,
+        value: String
     },
     data: function () {
         return {
-            verifyMsgIsShow: false,
-            inputValue: '',
+            _value: '',
+            empty: false,
         };
     },
-    mounted: function () {
+    created: function () {
+        this._value = this.value;
     },
     methods: {
-        inputBlur: function () {
-            if (this.checkSpace(this.inputValue) === 0) {
-                this.verifyMsgIsShow = true;
-            }
-            else {
-                this.verifyMsgIsShow = false;
-            }
-            this.$emit('on-blur', this.inputValue);
+        input: function () {
+            this.empty = !this._value
+                || this._value.length === 0
+                || this._value.trim().length === 0;
+            this.$emit('input', this._value);
         },
-        checkSpace: function (str) {
-            while (str.lastIndexOf(" ") >= 0) {
-                str = str.replace(" ", "");
-            }
-            if (str.length === 0) {
-                return 0; // 为空
-            }
-            return 1; // 不为空
-        } // 判断内容都为空
     },
-    template: "<div class=\"input-group\">\n            <input @blur=\"inputBlur\"\n                   @keyup=\"inputBlur\"\n                   v-model=\"inputValue\"\n                   :class=\"{'has-error': verifyMsgIsShow}\"\n                   type=\"text\" class=\"input-group-form\">\n            <span v-text=\"verifyMsg\" \n                  v-if=\"verifyMsgIsShow\"\n                  class=\"input-verify-msg\"></span>\n        </div>",
+    template: "<div class=\"input-group\">\n            <input v-model=\"_value\"\n                   @input=\"input\"\n                   @blur=\"input\"\n                   :class=\"{'has-error': empty}\"\n                   type=\"text\" class=\"input-group-form\">\n            <span v-text=\"verifyMsg\" \n                  v-if=\"empty\"\n                  class=\"input-verify-msg\"></span>\n        </div>",
 });

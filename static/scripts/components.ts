@@ -65,7 +65,9 @@ Vue.component('pop-up', {
     },
 
     data () {
+        return {
 
+        }
     },
 
     mounted () {
@@ -92,52 +94,38 @@ Vue.component('pop-up', {
 
 Vue.component('i-input', {
     props: {
-        verifyMsg: {
-            type: String,
-            default: '验证消息',
-        }
+        verifyMsg: String,
+        value: String
     },
     data () {
         return {
-            verifyMsgIsShow: false,
-            inputValue: '',
+            _value: '',
+            empty: false,
         }
     },// data
 
-    mounted () {
+    created() {
+        this._value = this.value;
     },
 
     methods:{
-        inputBlur () {
-            if (this.checkSpace(this.inputValue) === 0){
-                this.verifyMsgIsShow = true;
-            } else {
-                this.verifyMsgIsShow = false;
-            }
-
-            this.$emit('on-blur', this.inputValue);
+        input () {
+            this.empty = !this._value
+                || this._value.length === 0
+                || this._value.trim().length === 0;
+            this.$emit('input', this._value);
         },
-
-        checkSpace (str) {// 判断内容都为空
-            while(str.lastIndexOf(" ")>=0){
-                str = str.replace(" ","");
-            }
-            if(str.length === 0){
-                return 0;// 为空
-            }
-            return 1;// 不为空
-        }// 判断内容都为空
     },// methods
 
     template:
         `<div class="input-group">
-            <input @blur="inputBlur"
-                   @keyup="inputBlur"
-                   v-model="inputValue"
-                   :class="{'has-error': verifyMsgIsShow}"
+            <input v-model="_value"
+                   @input="input"
+                   @blur="input"
+                   :class="{'has-error': empty}"
                    type="text" class="input-group-form">
             <span v-text="verifyMsg" 
-                  v-if="verifyMsgIsShow"
+                  v-if="empty"
                   class="input-verify-msg"></span>
         </div>`,
 

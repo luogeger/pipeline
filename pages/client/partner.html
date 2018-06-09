@@ -23,10 +23,8 @@
         合作产品
         拥有工程师认证证书-->
 
-        <select-list :selections="selectList" @on-change="select($event)"></select-list>
-        <select-list :selections="selectList2" @on-change="select2($event)"></select-list>
-
-
+        <!--<select-list :selections="selectList" @on-change="select($event)"></select-list>-->
+        <!--<select-list :selections="selectList2" @on-change="select2($event)"></select-list>-->
     </div><!-- /.screening-condition -->
 
     <div class="partner border-normal">
@@ -64,8 +62,15 @@
                     <td v-text="item.salesStaffName"></td>
                     <td v-text="item.name"></td>
                     <td v-text="item.type"></td>
-                    <td v-text="item.businessArea.text"></td>
-                    <td v-text="item.solution.text"></td>
+                    <td>
+                        <div v-for="region in item.area.businessAreas"
+                             v-text="region.text"
+                             ></div>
+                    </td>
+                    <td>
+                        <div v-for="product in item.solution"
+                             v-text="product.text"></div>
+                    </td>
                     <td v-text="item.statusName"></td>
                 </tr>
                 </tbody>
@@ -136,7 +141,7 @@
             <tbody>
             <tr v-for="(item, index) in partnerMsgList">
                 <td v-text="index +1"></td>
-                <td>填报人</td>
+                <td v-text="item.salesStaffName"></td>
                 <td v-text="item.province"></td>
                 <td v-text="item.contactName"></td>
                 <td v-text="item.department"></td>
@@ -271,21 +276,25 @@
             </div><!-- 备注 -->
 
         </div><!-- /.pop-main -->
+    </pop-up>
+
+    <!-- 添加合作伙伴 -->
+    <pop-up :is-show="addPartnerMsgPop" @on-close="popUp('addPartnerMsgPop')">
+
         <div class="title"><p>添加合作伙伴机要信息</p></div>
         <div class="pop-main">
             <div class="row-item">
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">联系人姓名：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <!--<input type="text" class="input-group-form">-->
-
-                        <i-input :verify-msg="'联系人不能为空'" @on-blur="inputBlur($event, 'mContact')"></i-input>
+                        <i-input :verify-msg="'联系人不能为空'"
+                                 v-model="mContact"></i-input>
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-right" style="width: 35%;">头衔：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mTitle" type="text" class="input-group-form">
                     </div>
                 </div>
             </div><!-- -->
@@ -293,13 +302,13 @@
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">所在部门：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mDepartment" type="text" class="input-group-form">
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-right" style="width: 35%;">邮件：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mEmail" type="text" class="input-group-form">
                     </div>
                 </div>
             </div><!-- -->
@@ -307,13 +316,18 @@
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">手机号码：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mPhone" type="text" class="input-group-form">
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-right" style="width: 35%;">座机号码：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mTelphone1" type="text" class="input-group-form" style="width: 19% !important;">
+                            <span style="color: rgb(221, 222, 225); margin-right: 3px;">-</span>
+                        <input v-model="mTelphone2" type="text" class="input-group-form" style="width: 44% !important;">
+                            <span style="color: rgb(221, 222, 225); margin-right: 3px;">-</span>
+                        <input v-model="mTelphone3" type="text" class="input-group-form" style="width: 23% !important;">
+
                     </div>
                 </div>
             </div><!-- -->
@@ -325,7 +339,7 @@
                         <li v-for="item in regionList"
                             v-text="item.text"
                             @click="clickRegionProvinceBtn(item.code, item.text, 'region')"
-                            :class="{'area-active': item.code == currentRegion}"
+                            :class="{'area-active': item.code == mRegionCode}"
                         ></li>
                     </ul>
                 </div>
@@ -337,7 +351,7 @@
                         <li v-for="item in provinceList"
                             v-text="item.text"
                             @click="clickRegionProvinceBtn(item.code, item.text, 'province')"
-                            :class="{'area-active': item.code == currentProvince}"
+                            :class="{'area-active': item.code == mProvinceCode}"
                         ></li>
                     </ul>
                 </div>
@@ -346,7 +360,6 @@
                 <div class="row-item-label">详细地址：</div>
                 <div class="row-item-form input-group">
                     <input v-model="mAddress"
-                           @keyup="test"
                            type="text" class="input-group-form">
                 </div>
             </div><!-- 详细地址 -->
@@ -354,23 +367,15 @@
             <div class="row-item">
                 <div class="row-item-label">备注：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="mMark"></textarea>
                 </div>
             </div><!-- 备注 -->
 
             <div class="row-item">
                 <div class="row-item-form">
-                    <div class="btn btn-theme">提交</div>
+                    <div @click="submitBtn('addPartnerMsg')" class="btn btn-theme">提交</div>
                 </div>
             </div>
-        </div><!-- /.pop-main -->
-    </pop-up>
-
-    <!-- 添加合作伙伴 -->
-    <pop-up :is-show="addPartnerMsgPop" @on-close="popUp('addPartnerMsgPop')">
-        <div class="title"><p>添加合作伙伴机要信息</p></div>
-        <div class="pop-main">
-            123
         </div><!-- /.pop-main -->
     </pop-up>
 
