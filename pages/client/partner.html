@@ -38,33 +38,9 @@
                     <i class="fa fa-plus"></i> 添加合作伙伴
                 </div>
                 <div class="pull-right">
-                    <div class="client-page page-css">
-                        <div @click="calcPage('client' , 'first')"
-                             class="page-css-first"><i class="fa fa-angle-double-left"></i>
-                        </div>
-                        <div @click="calcPage('client' , -1)"
-                             class="page-css-prev"
-                             style="margin-right: 10px;"><i class="fa fa-angle-left"></i>
-                        </div>
-                        <span>第</span>
-                        <input @keyup.enter="calcPage('client', 'enter')"
-                               v-model="pPageNum"
-                               type="text" style="margin: 0 5px;">
-                        <span>页，</span>
-                        <span>共 {{pPageSum}} 页，</span>
-                        <div @click="calcPage('client' , 1)"
-                             class="page-css-next"><i class="fa fa-angle-right  "></i>
-                        </div>
-                        <div @click="calcPage('client' , 'last')"
-                             class="page-css-last" style="margin-right: 10px;"><i class="fa fa-angle-double-right"></i>
-                        </div>
-                        <span>显示</span>
-                        <span style="margin-left: 5px;">{{pPageStart}}</span>
-                        <span>-</span>
-                        <span style="margin-right: 5px;">{{pPageEnd}}</span>
-                        <span>条，</span>
-                        <span>共&nbsp; {{pPageTotal}} &nbsp;条</span>
-                    </div>
+                    <i-page :total="pPageTotal"
+                            :limit="pageLimit"
+                            @on-paging="paging('partner', $event)"></i-page>
                 </div>
             </div>
             <table class="i-table">

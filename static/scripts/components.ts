@@ -130,3 +130,97 @@ Vue.component('i-input', {
         </div>`,
 
 });
+
+Vue.component('i-page', {
+    props: {
+        total: {
+            type: Number,
+            default: 0
+        },
+        limit: {
+            type: Number,
+            default: 10
+        },
+    },
+    data () {
+        return {
+            pageNum:    1
+        }
+    },// data
+
+
+    computed:{
+        pageTotal () {
+            return this.total;
+        },
+
+        pageLimit () {
+            return  this.limit;
+        },
+
+        pageSum () {
+            return Math.ceil(this.pageTotal / this.pageLimit);
+        },
+
+        pageStart () {
+            return this.pageNum *10 -9;
+        },
+
+        pageEnd () {
+            return this.pageNum === this.pageSum ? this.pageTotal:this.pageNum * this.pageLimit;
+        }
+    },
+
+    methods:{
+        paging (type) {
+            if(type === 1) this.next()
+            if(type === -1) this.prev()
+            if(type === 'last') this.last()
+            if(type === 'first') this.first()
+
+            this.$emit('on-paging', this.pageNum)
+        },
+
+        first () {
+            this.pageNum = 1;
+        },
+
+        last () {
+            this.pageNum = this.pageSum;
+        },
+
+        prev () {
+            if (this.pageNum === 1) return;
+            this.pageNum--
+        },
+
+        next () {
+            if (this.pageNum === this.pageSum) return;
+            this.pageNum ++
+        },
+    },// methods
+
+    template:
+        `<div class="client-page page-css">
+            <div @click="paging('first')"
+                 class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+            <div @click="paging(-1)" class="page-css-prev" style="margin-right: 10px;"><i
+                 class="fa fa-angle-left"></i></div>
+            <span>第</span>
+            <input @keyup.enter="paging('enter')" 
+                   v-model="pageNum"
+                   type="text" style="margin: 0 5px;"><span>页，</span>
+            <span>共 {{pageSum}} 页，</span>
+            <div @click="paging(1)"
+                 class="page-css-next"><i class="fa fa-angle-right"></i></div>
+            <div @click="paging('last')" 
+                 class="page-css-last" style="margin-right: 10px;">
+                 <i class="fa fa-angle-double-right"></i></div>
+            <span>显示</span>
+            <span style="margin-left: 5px;">{{pageStart}}</span>
+            <span>-</span>
+            <span style="margin-right: 5px;">{{pageEnd}}</span>
+            <span>条，</span>
+            <span>共&nbsp; {{pageTotal}} &nbsp;条</span>
+        </div>`,
+});

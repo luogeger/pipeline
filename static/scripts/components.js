@@ -77,3 +77,67 @@ Vue.component('i-input', {
     },
     template: "<div class=\"input-group\">\n            <input v-model=\"_value\"\n                   @input=\"input\"\n                   @blur=\"input\"\n                   :class=\"{'has-error': empty}\"\n                   type=\"text\" class=\"input-group-form\">\n            <span v-text=\"verifyMsg\" \n                  v-if=\"empty\"\n                  class=\"input-verify-msg\"></span>\n        </div>",
 });
+Vue.component('i-page', {
+    props: {
+        total: {
+            type: Number,
+            default: 0
+        },
+        limit: {
+            type: Number,
+            default: 10
+        },
+    },
+    data: function () {
+        return {
+            pageNum: 1
+        };
+    },
+    computed: {
+        pageTotal: function () {
+            return this.total;
+        },
+        pageLimit: function () {
+            return this.limit;
+        },
+        pageSum: function () {
+            return Math.ceil(this.pageTotal / this.pageLimit);
+        },
+        pageStart: function () {
+            return this.pageNum * 10 - 9;
+        },
+        pageEnd: function () {
+            return this.pageNum === this.pageSum ? this.pageTotal : this.pageNum * this.pageLimit;
+        }
+    },
+    methods: {
+        paging: function (type) {
+            if (type === 1)
+                this.next();
+            if (type === -1)
+                this.prev();
+            if (type === 'last')
+                this.last();
+            if (type === 'first')
+                this.first();
+            this.$emit('on-paging', this.pageNum);
+        },
+        first: function () {
+            this.pageNum = 1;
+        },
+        last: function () {
+            this.pageNum = this.pageSum;
+        },
+        prev: function () {
+            if (this.pageNum === 1)
+                return;
+            this.pageNum--;
+        },
+        next: function () {
+            if (this.pageNum === this.pageSum)
+                return;
+            this.pageNum++;
+        },
+    },
+    template: "<div class=\"client-page page-css\">\n            <div @click=\"paging('first')\"\n                 class=\"page-css-first\"><i class=\"fa fa-angle-double-left\"></i></div>\n            <div @click=\"paging(-1)\" class=\"page-css-prev\" style=\"margin-right: 10px;\"><i\n                 class=\"fa fa-angle-left\"></i></div>\n            <span>\u7B2C</span>\n            <input @keyup.enter=\"paging('enter')\" \n                   v-model=\"pageNum\"\n                   type=\"text\" style=\"margin: 0 5px;\"><span>\u9875\uFF0C</span>\n            <span>\u5171 {{pageSum}} \u9875\uFF0C</span>\n            <div @click=\"paging(1)\"\n                 class=\"page-css-next\"><i class=\"fa fa-angle-right\"></i></div>\n            <div @click=\"paging('last')\" \n                 class=\"page-css-last\" style=\"margin-right: 10px;\">\n                 <i class=\"fa fa-angle-double-right\"></i></div>\n            <span>\u663E\u793A</span>\n            <span style=\"margin-left: 5px;\">{{pageStart}}</span>\n            <span>-</span>\n            <span style=\"margin-right: 5px;\">{{pageEnd}}</span>\n            <span>\u6761\uFF0C</span>\n            <span>\u5171&nbsp; {{pageTotal}} &nbsp;\u6761</span>\n        </div>",
+});
