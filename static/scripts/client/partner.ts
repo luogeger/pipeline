@@ -126,7 +126,6 @@ let vm = new Vue({
 
     created () {
         this.tabBtn(0, 'partner-pass');// 显示第一个tab
-
     },
 
     mounted () {
@@ -197,21 +196,13 @@ let vm = new Vue({
             //type == partner-pass, partner-other, partner-msg, engineer
             this.tabActive = num;// tab的样式
             this.tabContentShow = type;// tab里的内容
-            switch(type)
-            {
-                case 'partner-pass':
-                    this.tabBtnPass()
-                    break;
-                case 'partner-other':
-                    this.tabBtnOther()
-                    break;
-                case 'partner-msg':
-                    this.tabBtnMsg()
-                    break;
-                case 'engineer':
-                    this.tabBtnEngineer()
-                    break;
-            }
+
+            if (type === 'partner-pass') this.tabBtnPass();
+            if (type === 'partner-other') this.tabBtnOther();
+            if (type === 'partner-msg') this.tabBtnMsg();
+            if (type === 'engineer') this.tabBtnEngineer();
+
+
         },
 
         tabBtnPass () {

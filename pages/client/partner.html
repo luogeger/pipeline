@@ -29,13 +29,14 @@
     </div><!-- /.screening-condition -->
 
     <div class="partner border-normal">
-        <div v-if="tabContentShow !== 'engineer'"
+        <div v-if="tabContentShow == 'partner-pass'
+                || tabContentShow == 'partner-other'"
              class="partner-box">
             <div class="opera-box clearfix">
-                <div class="btn btn-theme"
-                     v-if="tabContentShow == 'partner-other'"
-                     @click="addPartnerBtn('addPartnerPop')">
-                    <i class="fa fa-plus"></i> 添加合作伙伴
+                <div v-if="tabContentShow == 'partner-other'"
+                     @click="addPartnerBtn('addPartnerPop')"
+                     class="btn btn-theme">
+                    <i class="fa fa-plus"></i>添加合作伙伴
                 </div>
                 <div class="pull-right">
                     <i-page :total="pPageTotal"
@@ -82,6 +83,10 @@
             </table>
         </div><!-- /. 合伙人信息 -->
 
+        <div v-if="tabContentShow == 'partner-msg'">
+            <h1>tab 3</h1>
+        </div><!-- 第三个tab -->
+
         <div v-if="tabContentShow == 'engineer'" class="engineer-box">
             <div class="opera-box">
                 <div class="btn btn-theme"><i class="fa fa-plus"></i> 添加合作伙伴《工程师资质认证》</div>
@@ -119,9 +124,10 @@
                 </tbody>
             </table>
         </div><!-- /. 工程师 -->
-    </div><!-- /.合作伙伴/.上部分表格 -->
+    </div><!-- .上部分表格 -->
 
-    <div v-if="tabContentShow !== 'engineer'"
+    <div v-if="tabContentShow == 'partner-pass'
+            || tabContentShow == 'partner-other'"
          class="partner-msg border-normal">
         <div class="opera-box">
             <div class="btn btn-theme"
@@ -157,7 +163,7 @@
             </tr>
             </tbody>
         </table>
-    </div><!-- /.机要信息/.下部分表格 -->
+    </div><!-- /.下部分表格 -->
 
 
     <!-- /......添加合作伙伴机要信息  -->
@@ -285,7 +291,6 @@
 
     <!-- 添加合作伙伴 -->
     <pop-up :is-show="addPartnerMsgPop" @on-close="popUp('addPartnerMsgPop')">
-
         <div class="title"><p>添加合作伙伴机要信息</p></div>
         <div class="pop-main">
             <div class="row-item">
@@ -383,10 +388,5 @@
             </div>
         </div><!-- /.pop-main -->
     </pop-up>
-
-
-
-
-
 </div><!-- /.end -->
 <script src="../static/scripts/client/partner.js"></script>
