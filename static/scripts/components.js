@@ -141,3 +141,38 @@ Vue.component('i-page', {
     },
     template: "<div class=\"client-page page-css\">\n            <div @click=\"paging('first')\"\n                 class=\"page-css-first\"><i class=\"fa fa-angle-double-left\"></i></div>\n            <div @click=\"paging(-1)\" class=\"page-css-prev\" style=\"margin-right: 10px;\"><i\n                 class=\"fa fa-angle-left\"></i></div>\n            <span>\u7B2C</span>\n            <input @keyup.enter=\"paging('enter')\" \n                   v-model=\"pageNum\"\n                   type=\"text\" style=\"margin: 0 5px;\"><span>\u9875\uFF0C</span>\n            <span>\u5171 {{pageSum}} \u9875\uFF0C</span>\n            <div @click=\"paging(1)\"\n                 class=\"page-css-next\"><i class=\"fa fa-angle-right\"></i></div>\n            <div @click=\"paging('last')\" \n                 class=\"page-css-last\" style=\"margin-right: 10px;\">\n                 <i class=\"fa fa-angle-double-right\"></i></div>\n            <span>\u663E\u793A</span>\n            <span style=\"margin-left: 5px;\">{{pageStart}}</span>\n            <span>-</span>\n            <span style=\"margin-right: 5px;\">{{pageEnd}}</span>\n            <span>\u6761\uFF0C</span>\n            <span>\u5171&nbsp; {{pageTotal}} &nbsp;\u6761</span>\n        </div>",
 });
+Vue.component('i-checkbox', {
+    props: {
+        checkboxList: {
+            type: Array,
+        }
+    },
+    data: function () {
+        return {
+            isShow: false,
+            tempArr: [],
+        };
+    },
+    watch: {},
+    methods: {
+        checkBtn: function (index) {
+            if (this.tempArr.indexOf(index) === -1) {
+                this.tempArr.push(index);
+            }
+            else {
+                index = this.tempArr.indexOf(index);
+                this.tempArr.splice(index, 1);
+            }
+            var tempArrObj = [];
+            for (var i = 0; i < this.tempArr.length; i++) {
+                tempArrObj.push(this.checkboxList[this.tempArr[i]]);
+            }
+            ;
+            this.$emit('on-check', tempArrObj); // 要传到父组件的是index对应的value,
+        },
+        isShowJudge: function (index) {
+            return this.tempArr.indexOf(index) !== -1;
+        }
+    },
+    template: "<div class=\"i-checkbox-group\">\n            <div v-for=\"(item, index) in checkboxList\"\n                 @click=\"checkBtn(index)\"\n                 class=\"i-checkbox-wrap\">\n                <span class=\"i-checkbox-box\">\n                    <i class=\"fa fa-square-o\"></i> \n                    <transition name=\"fade\">\n                        <i v-if=\"isShowJudge(index)\" class=\"is-show fa fa-check\"></i>\n                    </transition>\n                </span>\n                <span v-text=\"item.text\"></span>        \n            </div>\n            \n        </div>",
+});

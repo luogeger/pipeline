@@ -23,6 +23,7 @@ let vm = new Vue({
 
 
         // 弹窗
+        addAndEdit:         false,// 添加和编辑 合伙人，机要信息的弹窗
         addPartnerPop:      false,// 合作伙伴
         addPartnerMsgPop:   false,// 合作伙伴信息
         currentDate:        timeYear,// 报备时间
@@ -125,7 +126,7 @@ let vm = new Vue({
     },// data
 
     created () {
-        this.tabBtn(0, 'partner-pass');// 显示第一个tab
+        this.tabBtn(4, 'partner-other');// 显示第一个tab
     },
 
     mounted () {
@@ -135,7 +136,7 @@ let vm = new Vue({
     methods :{
         getPartnerData (obj) {
             let params = {
-                inPass:     '',
+                inPass:     'y',
                 name:       '',
                 limit:      this.pageLimit,
                 page:       this.pPage,
@@ -163,7 +164,7 @@ let vm = new Vue({
                 // limit:      this.pageLimit,
                 // page:       this.mPage,
             };
-            console.log(params, 'params, msg');
+            // console.log(params, 'params, msg');
             axios.get(PATH +'/cp/crm/selectCustomerContact', {params: params} )
                 .then((datas)=>{
                     let list = datas.data.root;
@@ -206,11 +207,15 @@ let vm = new Vue({
         },
 
         tabBtnPass () {
+            this.trActive = 0;// 当前行的样式
+            this.pID = '';// 当前行的ID,
             this.getPartnerData()
         },
 
         tabBtnOther () {
-
+            this.trActive = 0;// 当前行的样式
+            this.pID = '';// 当前行的ID,
+            this.getPartnerData({inPass: 'n'})
         },
 
         tabBtnMsg () {
@@ -241,10 +246,21 @@ let vm = new Vue({
 
         // 添加事件
         addPartnerBtn (type) {
+            console.log(type)
             this[type] = true;
-            if (type === 'addPartnerPop' || type === 'addPartnerMsgPop') {
+            if (type === 'addPartnerPop') {
                 this.getRegion()
                 this.getProvince()
+                this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerPop    = true;
+                this.addPartnerMsgPop = true;
+            }
+
+            if (type === 'addPartnerMsgPop') {
+                this.getRegion()
+                this.getProvince()
+                this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerMsgPop = true;
             }
         },
 
@@ -256,7 +272,11 @@ let vm = new Vue({
         // 编辑事件
         editBtn (type, id, obj) {
             this.tempID = id;
-            if (type === 'partnerMsg') this.editPartnerMsg(obj);
+            if (type === 'partnerMsg') {
+                this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerMsgPop = true;
+                this.editPartnerMsg(obj);
+            }
         },
 
 
@@ -339,6 +359,10 @@ let vm = new Vue({
             this.mMark  = '';
             this.mProvinceText  = '';
             this.mAddress = '';
+
+            this.addAndEdit       = false;// 添加和编辑 合伙人，机要信息的弹窗
+            this.addPartnerPop    = false;// 隐藏
+            this.addPartnerMsgPop = false;// 隐藏
         },
 
 

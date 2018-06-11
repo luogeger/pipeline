@@ -17,6 +17,7 @@ var vm = new Vue({
         engineerList: [],
         trActive: 0,
         // 弹窗
+        addAndEdit: false,
         addPartnerPop: false,
         addPartnerMsgPop: false,
         currentDate: timeYear,
@@ -109,7 +110,7 @@ var vm = new Vue({
         ],
     },
     created: function () {
-        this.tabBtn(0, 'partner-pass'); // 显示第一个tab
+        this.tabBtn(4, 'partner-other'); // 显示第一个tab
     },
     mounted: function () {
     },
@@ -117,7 +118,7 @@ var vm = new Vue({
         getPartnerData: function (obj) {
             var _this = this;
             var params = {
-                inPass: '',
+                inPass: 'y',
                 name: '',
                 limit: this.pageLimit,
                 page: this.pPage,
@@ -143,7 +144,7 @@ var vm = new Vue({
                 customerId: customerId,
                 id: '',
             };
-            console.log(params, 'params, msg');
+            // console.log(params, 'params, msg');
             axios.get(PATH + '/cp/crm/selectCustomerContact', { params: params })
                 .then(function (datas) {
                 var list = datas.data.root;
@@ -183,9 +184,14 @@ var vm = new Vue({
                 this.tabBtnEngineer();
         },
         tabBtnPass: function () {
+            this.trActive = 0; // 当前行的样式
+            this.pID = ''; // 当前行的ID,
             this.getPartnerData();
         },
         tabBtnOther: function () {
+            this.trActive = 0; // 当前行的样式
+            this.pID = ''; // 当前行的ID,
+            this.getPartnerData({ inPass: 'n' });
         },
         tabBtnMsg: function () {
         },
@@ -207,10 +213,20 @@ var vm = new Vue({
         },
         // 添加事件
         addPartnerBtn: function (type) {
+            console.log(type);
             this[type] = true;
-            if (type === 'addPartnerPop' || type === 'addPartnerMsgPop') {
+            if (type === 'addPartnerPop') {
                 this.getRegion();
                 this.getProvince();
+                this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerPop = true;
+                this.addPartnerMsgPop = true;
+            }
+            if (type === 'addPartnerMsgPop') {
+                this.getRegion();
+                this.getProvince();
+                this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerMsgPop = true;
             }
         },
         // 提交事件
@@ -221,8 +237,11 @@ var vm = new Vue({
         // 编辑事件
         editBtn: function (type, id, obj) {
             this.tempID = id;
-            if (type === 'partnerMsg')
+            if (type === 'partnerMsg') {
+                this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerMsgPop = true;
                 this.editPartnerMsg(obj);
+            }
         },
         editPartnerMsg: function (obj) {
             console.log(obj);
@@ -296,6 +315,9 @@ var vm = new Vue({
             this.mMark = '';
             this.mProvinceText = '';
             this.mAddress = '';
+            this.addAndEdit = false; // 添加和编辑 合伙人，机要信息的弹窗
+            this.addPartnerPop = false; // 隐藏
+            this.addPartnerMsgPop = false; // 隐藏
         },
         // 机要信息的区域和省份
         clickRegionProvinceBtn: function (code, text, type) {

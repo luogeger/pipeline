@@ -224,3 +224,60 @@ Vue.component('i-page', {
             <span>共&nbsp; {{pageTotal}} &nbsp;条</span>
         </div>`,
 });
+
+Vue.component('i-checkbox', {
+    props: {
+        checkboxList: {
+            type: Array,
+        }
+
+    },
+    data () {
+        return {
+            isShow: false,
+            tempArr: [],
+        }
+    },// data
+
+    watch: {
+
+    },
+
+    methods:{
+        checkBtn (index) {
+            if(this.tempArr.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
+                this.tempArr.push(index);
+            } else{ // 如果在就把这index从临时数组删除
+                index = this.tempArr.indexOf(index);
+                this.tempArr.splice(index, 1);
+            }
+
+            let tempArrObj = [];
+            for(var i = 0; i < this.tempArr.length; i++){
+                tempArrObj.push(this.checkboxList[this.tempArr[i]]);
+            };
+            this.$emit('on-check', tempArrObj); // 要传到父组件的是index对应的value,
+        },
+
+        isShowJudge (index) {
+            return this.tempArr.indexOf(index) !== -1;
+        }
+    },
+
+    template:
+        `<div class="i-checkbox-group">
+            <div v-for="(item, index) in checkboxList"
+                 @click="checkBtn(index)"
+                 class="i-checkbox-wrap">
+                <span class="i-checkbox-box">
+                    <i class="fa fa-square-o"></i> 
+                    <transition name="fade">
+                        <i v-if="isShowJudge(index)" class="is-show fa fa-check"></i>
+                    </transition>
+                </span>
+                <span v-text="item.text"></span>        
+            </div>
+            
+        </div>`,
+
+});
