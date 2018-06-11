@@ -1,5 +1,5 @@
-// var PATH = 'http://172.16.8.130:8080';
-var PATH = '';// 测试环境，不需要 /
+var PATH = 'http://172.16.8.130:8080';
+// var PATH = '';// 测试环境，不需要 /
 var timeYear,// 2018-04-18
     currentYear,
     currentMonth,
@@ -65,6 +65,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
         loadMainPage('.content-item', 'manage/manage.html');
+        // loadMainPage('.content-item', 'manage/partnerPipeline.html');
     })
 })
 
