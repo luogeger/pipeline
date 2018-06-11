@@ -205,6 +205,7 @@ var vm = new Vue({
 
             console.log(vm.uploadFileName);
             console.log(fd);
+
             axios.post('/iboss-prism/crm/importCrm', fd).then(function (datas){
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
