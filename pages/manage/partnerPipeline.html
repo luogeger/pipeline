@@ -7,6 +7,175 @@
         <span class="line">/</span>
         <span>合作伙伴pipeline</span>
     </div>
+    <!-- 搜索框 -->
+    <div class="search-wrapper clearfix">
+        <input id="drow" class="hide" type="checkbox">
+        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
+        <div class="content" style="width: calc(100% - 160px)">
+            <!--<div class="input-group">-->
+                <!--<span class="input-group-label">客户：</span>-->
+                <!--<div class="input-group1" style="position: relative;display: inline-block;">-->
+                    <!--<input v-model="cCustomerName"-->
+                           <!--@keyup="getFuzzyList(1)"-->
+                           <!--onkeydown="vm.keyEnterCustomer()"-->
+                           <!--type="text" class="input-group-form">-->
+                    <!--<ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">-->
+                        <!--<li v-for="item in fuzzyQueryList_1"-->
+                            <!--@click="selectFuzzyText(1, item.name, item.code)"-->
+                            <!--v-text="item.name"-->
+                        <!--&gt;</li>-->
+                    <!--</ul>-->
+                <!--</div>-->
+            <!--</div>-->
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">行业线：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cIndustryLineText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchIndustryLineCode('', '')">请选择</li>
+                        <li @click="searchIndustryLineCode(initialValList.code, initialValList.text)"
+                            v-for="initialValList in initialValLists.industryLines">{{ initialValList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="input-group">
+                <span class="input-group-label">预计签约时间：</span>
+                <input class="input-group-form"
+                       readonly="readonly"
+                       id="startDate"
+                       @click=""
+                       v-model="cExpectSignDateRange">
+            </div>
+            <div style="display: inline-block">
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">成功率：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="min-width: 50px">{{ cProjectSuccessMinText }}</span>
+                    <!--<input type="hidden" v-text="cProjectSuccessMinCode" />-->
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchSuccessMinCode('', '')">请选择</li>
+                        <li @click="searchSuccessMinCode(projectSuccessRate.code, projectSuccessRate.text)"
+                            v-for="projectSuccessRate in projectSuccessRates"
+                            :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">-</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="min-width: 50px">{{ cProjectSuccessMaxText }}</span>
+                    <!--<input type="hidden" v-text="cProjectSuccessMaxCode" />-->
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchSuccessMaxCode('', '')">请选择</li>
+                        <li @click="searchSuccessMaxCode(projectSuccessRate.code, projectSuccessRate.text)"
+                            v-for="projectSuccessRate in projectSuccessRates"
+                            :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+            <!--<div class="dropdown-wrap">
+                <span class="dropdown-label">事业部：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        &lt;!&ndash;TODO 如果当前人是领导的话，就用userInfo.mngSalesGroups下面的code和text；否则就用userInfo.departmentCode和userInfo.departmentName&ndash;&gt;
+                        <li @click="searchSalesGroupCode('', '')">请选择</li>
+                        <li @click="searchSalesGroupCode(oauthList.code, oauthList.text)"
+                            v-for="oauthList in mngSalesGroups"
+                            :value="oauthList.code">{{ oauthList.text }}</li>
+                    </ul>
+                </div>
+            </div>-->
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">区域：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cRegionText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchRegionCode('', '')">请选择</li>
+                        <li @click="searchRegionCode(initialValList.code, initialValList.text)"
+                            v-for="initialValList in initialValLists.regions"
+                            :value="initialValList.code">{{ initialValList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">客户来源：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cCustomerSourText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchCustomerSourceCode('', '')">请选择</li>
+                        <li @click="searchCustomerSourceCode(initialValList.code, initialValList.text)"
+                            v-for="initialValList in initialValLists.customerSours"
+                            :value="initialValList.code">{{ initialValList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="display: inline-block">
+                <div class="dropdown-wrap">
+                    <span class="dropdown-label">解决方案：</span>
+                    <div class="dropdown">
+                        <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionFirstText }}</span>
+                        <i class="fa fa-angle-down"></i>
+                        <ul style="max-width: 500px;">
+                            <li @click="searchSolutionFirst('', '', 1)">请选择</li>
+                            <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 1)"
+                                v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="dropdown-wrap">
+                    <span class="dropdown-label">-</span>
+                    <div class="dropdown">
+                        <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionSecondText }}</span>
+                        <i class="fa fa-angle-down"></i>
+                        <ul style="max-width: 500px;">
+                            <li @click="searchSolutionSecond('', '', 1)">请选择</li>
+                            <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 1)"
+                                v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--   <div class="dropdown-wrap">
+                   <span class="dropdown-label">近期变更过：</span>
+                   <div class="dropdown">
+                       <span class="dropdown-default">{{ cLatelyChangeText }}</span>
+                       <i class="fa fa-angle-down"></i>
+                       <ul>
+                           <li @click="searchLatelyChangeCode('', '')">请选择</li>
+                           <li @click="searchLatelyChangeCode(searchList.code, searchList.text)"
+                               v-for="searchList in searchLists.latelyChanges">{{ searchList.text }}</li>
+                       </ul>
+                   </div>
+               </div>
+               <div v-if="userLevel !== 'xs'"
+                    class="input-group">
+                   <span class="input-group-label">销售：</span>
+                   <div class="input-group1" style="position: relative;display: inline-block;">
+                       <input v-model="cSalesName"
+                              @keyup="getSales"
+                              onkeydown="vm.keybordEnterSales()"
+                              type="text" class="input-group-form">
+                       <ul class="fuzzy-query" style="left: 0px">
+                           <li v-for="item in salesList"
+                               @click="selectSales(item.text, item.code)"
+                               v-text="item.text"></li>
+                       </ul>
+                   </div>
+               </div>-->
+        </div>
+        <div style="position: absolute;right: 20px;top: 15px;">
+            <button @click="querySearchForm" class="btn btn-sm btn-theme" type="button" style="margin-right: 10px">查询</button>
+            <button @click="clearSearchForm" class="btn btn-sm btn-border" type="button">重置</button>
+        </div>
+    </div>
     <div class="main-wrapper">
         <div :class="{maxWidth: ismaxWidth}" class="data">
             <div class="subInformation clearfix">
@@ -15,12 +184,12 @@
                         @click="addData"
                         style="margin-right: 10px">新增 Pipeline</button>
                 预计签约金额(万元):
-                <!--<span class="theme-color"
+                <span class="theme-color"
                       v-text="expectSignSumTotal"
                       style="margin-right: 15px"></span>
                 加权金额总计(万元):
-                <span class="theme-color" v-text="weightedSumTotal"></span>-->
-                <div class="pull-right">
+                <span class="theme-color" v-text="weightedSumTotal"></span>
+                <div :class="{'hide': noData}" class="pull-right">
                     <div class="data-page page-css">
                         <div @click="calcDataPage('data' , 'first')"
                              class="page-css-first">
@@ -30,9 +199,9 @@
                              style="margin-right: 10px;">
                             <i class="fa fa-angle-left"></i></div>
                         <span>第</span><input @keyup.enter="dataEnter" type="text" style="margin: 0 5px;" v-model="dataPageNum"><span>页，</span>
-                        <span>共 {{dataPageSum}} 页，</span>
+                        <span>共 {{dataPageSum}} 页</span>
                         <div @click="calcDataPage('data' , 1)"
-                             class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                             class="page-css-next"><i class="fa fa-angle-right"></i></div>
                         <div @click="calcDataPage('data' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
                                 class="fa fa-angle-double-right"></i></div>
                         <span>显示</span>
@@ -49,19 +218,19 @@
                     <table class="i-table">
                         <thead>
                         <tr>
-                            <!--<th>序号</th>-->
+                            <th>&nbsp;</th>
                             <th><div class="highlight">操作</div></th>
                             <th><div class="highlight">
                                 状态
                             </div></th>
                             <th><div class="highlight">
-                                支持部门
+                                支持事业部
                             </div></th>
                             <th><div class="highlight">
                                 支持销售
                             </div></th>
                             <th>报备日期</th>
-                            <th>销售事业部</th>
+                            <th>合作伙伴部</th>
                             <th>负责销售</th>
                             <th>负责售前</th>
                             <th>区域</th>
@@ -85,27 +254,24 @@
                         </thead>
                         <tbody>
                         <tr v-for="(pipelineList, index) in pipelineData.root"
-                            click="">
-                            <!--@dblclick="showOneChange(pipelineList.cpCustomerCode, index)"-->
+                            @dblclick="openUpdateCase()"
+                            @click="showOneChange(pipelineList.soCoreCode, index)"
+                            :class="{ active: isClicked == index }">
                             <td>
-                                <!-- 针对销售 ,当状态为未提交(至事业部,只保存在合作伙伴部)时，显示编辑按钮-->
-                                <div v-if="userLevel == 'xs' && pipelineList.status == 'unsubmitted'"
+                                <!-- 历史记录 -->
+                                <div @click="getHistoryLog(pipelineList.id)">
+                                    <i class="fa fa-clock-o"></i>
+                                    <!--:class="{'has-reject': item.hasReject !== 0}"
+                                       v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel == 'xsld' && item.power == 'pro') || item.power == 'pub'"-->
+                                </div>
+                            </td>
+                            <td>
+                                <!-- 针对销售 ,当状态为未提交(至事业部,只保存在合作伙伴部)时/驳回时/撤回时，显示编辑按钮-->
+                                <div v-if="userLevel == 'xs' && (pipelineList.status == 'unsubmitted' || pipelineList.status == 'reject' || pipelineList.status == 'revoke')"
                                      @click="editData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border">编辑</div>
-                                <!-- 针对销售，当状态为驳回时，显示编辑按钮 -->
-                                <div v-if="userLevel == 'xs' && pipelineList.status == 'reject'"
-                                     @click="editData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border">编辑</div>
-                                <!-- 针对销售，当状态为撤回时，显示编辑按钮 -->
-                                <div v-if="userLevel == 'xs' && pipelineList.status == 'revoke'"
-                                     @click="editData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border">编辑</div>
-                                <!-- 针对销售 ,当状态为已分配时，显示编辑按钮，但不可点击-->
-                                <div v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesGroup'"
-                                     @click="editData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border disabled">编辑</div>
-                                <!-- 针对销售 ,当状态为已分配时，显示编辑按钮，但不可点击-->
-                                <div v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesGroup'"
+                                <!-- 针对销售 ,当状态为已分配/直销事业部驳回/已签收时，显示编辑按钮，但不可点击-->
+                                <div v-if="userLevel == 'xs' && (pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'signIn')"
                                      @click="editData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border disabled">编辑</div>
                                 <!-- 针对销售 ,当状态为待分配时，显示撤回按钮-->
@@ -113,29 +279,14 @@
                                      @click="revokeData(pipelineList.id)"
                                      class="btn btn-xs btn-border">撤回</div>
 
-                                <!-- 针对销售老大 ,当状态为待分配时，显示分配按钮-->
-                                <div v-if="userLevel == 'xsld' && pipelineList.status == 'pending'"
+                                <!-- 针对销售老大 ,当状态为待分配/直销事业部驳回时，显示分配按钮-->
+                                <div v-if="userLevel == 'xsld' && (pipelineList.status == 'pending' || pipelineList.status == 'rejectSalesGroup')"
                                      @click="allotData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border">分配</div>
-                                <!-- 针对销售老大 ,当状态为已驳回时，显示分配按钮，但不可点击-->
-                                <div v-if="userLevel == 'xsld' && pipelineList.status == 'reject'"
+                                <!-- 针对销售老大 ,当状态为已驳回/已分配/已签收时，显示分配按钮，但不可点击-->
+                                <div v-if="userLevel == 'xsld' && (pipelineList.status == 'reject' || pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'signIn')"
                                      @click="allotData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border disabled">分配</div>
-                                <!-- 针对销售老大 ,当状态为已分配时，显示分配按钮，但不可点击-->
-                                <div v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesGroup'"
-                                     @click="allotData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border disabled">分配</div>
-                                <!-- 针对销售老大 ,当状态为被驳回时，显示分配按钮-->
-                                <div v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'"
-                                     @click="allotData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border">分配</div>
-                                <div v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
-                                     @click="allotData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border disabled">分配</div>
-
-                                <div v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
-                                     @click="allotData(pipelineList.id, index)"
-                                     class="btn btn-xs btn-border disabled">编辑</div>
                             </td>
                             <td>
                                 <!--审批类型:(reject:驳回,revoke:撤回,submit:提交,pass:通过,signIn:签收)-->
@@ -143,23 +294,20 @@
                                 <span v-if="pipelineList.status == 'assignSalesGroup' " class="type-pass">已分配</span>
                                 <span v-if="pipelineList.status == 'pending'" class="type-pending">待分配</span>
                                 <span v-if="pipelineList.status == 'revoke'" class="type-revoke">已撤回</span>
-                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'reject'" class="type-reject">已驳回</span>
+                                <span v-if="pipelineList.status == 'pass' " class="type-pass">通过</span>
                                 <span v-if="userLevel == 'xs' && pipelineList.status == 'reject'" class="type-reject">被驳回</span>
                                 <span v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesGroup'" class="type-pending">待分配</span>
+                                <span v-if="userLevel == 'xs' && pipelineList.status == 'signIn'" class="type-pass">已签收</span>
+                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'reject'" class="type-reject">已驳回</span>
                                 <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'" class="type-reject">被驳回</span>
-                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
-                                      class="type-pass">已签收</span>
-                                <span v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
-                                      class="type-pass">已签收</span>
-
-
-                                <span v-if="pipelineList.status == 'pass' " class="type-pass">通过</span>
-
+                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'" class="type-pass">已签收</span>
                                <!-- <span v-text="pipelineList.status"></span>
                                 <span v-text="pipelineList.statusName" class="type-unsubmitted"></span>-->
                             </td>
-                            <td v-text="pipelineList.departmentName"></td>
-                            <td v-text="pipelineList.salesStaffName"></td>
+                            <td v-if="pipelineList.departmentName === null">-</td>
+                            <td v-if="pipelineList.departmentName !== null" v-text="pipelineList.departmentName"></td>
+                            <td v-if="pipelineList.salesStaffName === null">-</td>
+                            <td v-if="pipelineList.salesStaffName !== null" v-text="pipelineList.salesStaffName"></td>
                             <td v-text="pipelineList.reportDate"></td>
                             <td v-text="pipelineList.cpDepartmentName"></td>
                             <td v-text="pipelineList.cpSalesStaffName"></td>
@@ -167,24 +315,36 @@
                             <td v-text="pipelineList.regionName"></td>
                             <td v-text="pipelineList.provinceName"></td>
                             <td v-text="pipelineList.cpCustomerCode"></td>
-                            <td v-text="pipelineList.cpCustomerName"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.cpCustomerName"></div>
+                            </td>
                             <td v-text="pipelineList.cpCustomerTypeName"></td>
-                            <td v-text="pipelineList.customerName"></td>
-                            <td v-text="pipelineList.projectDescription"></td>
-                            <td v-text="pipelineList.solutionName"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.customerName"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.projectDescription"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.solutionName"></div>
+                            </td>
                             <td v-text="pipelineList.industryLineName"></td>
                             <td v-text="pipelineList.expectSignSum"></td>
                             <td v-text="pipelineList.expectSignDate"></td>
                             <td v-text="pipelineList.progressName"></td>
                             <td v-text="pipelineList.successRateName"></td>
                             <td v-text="pipelineList.weightedSum"></td>
-                            <td v-text="pipelineList.projectFollowUpRemark"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.projectFollowUpRemark"></div>
+                            </td>
                             <td v-text="pipelineList.competitor"></td>
                             <td v-text="pipelineList.customerSourceName"></td>
                         </tr>
                         </tbody>
                     </table>
                 </div>
+                <div v-if="noData"
+                     style="padding: 20px;text-align: center">暂无相关数据</div>
             </div>
         </div>
         <!--项目更新情况-->
@@ -251,16 +411,31 @@
                                 <div class="block-wrapper">
                                     <div class="input-group">
                                         <span class="input-group-label">负责售前:</span>
-                                        <div style="position: relative;display: inline-block;">
-                                            <input v-model="hPreSaleStaffsName"
-                                                   @keyup="getPreSalesStaff"
-                                                   class="input-group-form" type="text">
-                                            <ul v-if="preSalesStaffList.length !== 0" class="fuzzy-query" style="left: 0px">
-                                                <li v-for="item in preSalesStaffList"
-                                                    @click="selectPreSalesStaff(item.name, item.email)"
-                                                    v-text="item.name"></li>
-                                            </ul>
+                                        <div style="display: table-cell">
+                                            <div style="position: relative;display: inline-block;margin-bottom: 5px">
+                                                <input v-model="hPreSaleStaffsName"
+                                                       @keyup="getPreSalesStaff"
+                                                       class="input-group-form" type="text" style="width: 120px">
+                                                <ul v-if="preSalesStaffList.length !== 0" class="fuzzy-query" style="left: 0px">
+                                                    <li v-for="item in preSalesStaffList"
+                                                        @click="selectPreSalesStaff(item.name, item.email)"
+                                                        v-text="item.name"></li>
+                                                </ul>
+                                            </div>
+                                            <!--<i @click="addLlist" class="fa fa-plus" style="color: #666;vertical-align: middle;margin:7px 5px 0"></i>
+                                            <div v-for="(i,index) in listss" style="margin-bottom: 5px;display: inline-block;margin-right: 5px;position: relative;">
+                                                <input v-model="hPreSaleStaffsName[index]"
+                                                       @keyup="getPreSalesStaff"
+                                                       class="input-group-form" type="text" style="width: 120px">
+                                                <i @click="deleteLlist(index)" class="fa fa-plus" style="color: #666;vertical-align: middle;margin:7px 5px 0;transform: rotate(45deg)"></i>
+                                                <ul v-if="preSalesStaffList.length !== 0" class="fuzzy-query" style="left: 0px">
+                                                    <li v-for="item in preSalesStaffList"
+                                                        @click="selectPreSalesStaff(item.name, item.email)"
+                                                        v-text="item.name"></li>
+                                                </ul>
+                                            </div>-->
                                         </div>
+
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -628,16 +803,17 @@
                                         <span class="checkText">{{ handleTemplate.competitor }}</span>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1" style="margin-top: 40px;margin-bottom: 30px">
+                                <div class="block-wrapper col-1" style="margin-top: 40px;margin-bottom: 30px;">
                                     <div class="input-group">
                                         <span class="input-group-label"></span>
                                         <button @click="allotThisData()"
                                                 class="btn btn-sm btn-theme"
                                                 type="button" style="margin-right: 20px">分配</button>
-                                        <button @click="rejectThisData(handleTemplate.id, 'reject')" class="btn btn-sm btn-theme" type="button">驳回</button>
+                                        <button @click="rejectThisData()"
+                                                class="btn btn-sm btn-border" type="button">驳回</button>
                                     </div>
                                 </div>
-                                <div :class="{'hide': isHide}">
+                                <div :class="{'hide': isAllotHide}" class="border-wrapper">
                                     <div class="block-wrapper col-1">
                                         <div class="dropdown-wrap">
                                             <span class="dropdown-label">分配事业部:</span>
@@ -656,7 +832,23 @@
                                             <span class="input-group-label"></span>
                                             <button @click="allotToBU()"
                                                     class="btn btn-sm btn-theme"
-                                                    type="button">分配</button>
+                                                    type="button">确认</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': isRejectHide}" class="border-wrapper">
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label">驳回理由:</span>
+                                            <textarea v-model="hRemark" style="width: 300px;height: 50px"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="rejectToXS(handleTemplate.id, 'reject')"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
                                         </div>
                                     </div>
                                 </div>
@@ -675,6 +867,33 @@
                     </div>
                 </div>
             </div><!-- /.main -->
+        </div>
+        <!-- 查询审核历史记录 -->
+        <div v-if="auditHistoryShow" class="dialog-content audit-history">
+            <div class="title clearfix">
+                <span>审核记录：   </span><span v-text="auditHistoryTitle"></span>
+                <p @click="dialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="table-box" style="padding: 20px">
+                <table class="i-table">
+                    <thead>
+                    <tr>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in auditHistoryList">
+                        <td v-text="item.opTime"></td>
+                        <td v-text="item.operName"></td>
+                        <td v-text="item.auditStatus"></td>
+                        <td v-text="item.remark"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
     <!-- 弹窗 -->
@@ -707,4 +926,5 @@
     </div>
 </div>
 
+<script src="../static/scripts/manage/manageShare.js"></script>
 <script src="../static/scripts/manage/partnerPipeline.js"></script>

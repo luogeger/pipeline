@@ -6,10 +6,10 @@
         <span>pipeline信息管理</span>
     </div>
     <div class="table-tab-list clearfix">
-        <div class="table-tab-item" @click="showPipelineData">
+        <div class="table-tab-item" @click="showPipelineData" :class="{'active' : pipelineJoinShow}">
             事业部pipeline信息
         </div>
-        <div class="table-tab-item" @click="showPipelineJoin">
+        <div class="table-tab-item" @click="showPipelineJoin" :class="{'active' : pipelineDataShow}">
             pipeline交接
         </div>
     </div>
@@ -18,7 +18,7 @@
         <div class="search-wrapper clearfix">
             <input id="drow" class="hide" type="checkbox">
             <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
-            <div class="content" style="width: calc(100% - 100px)">
+            <div class="content" style="width: calc(100% - 160px)">
                 <div class="input-group">
                     <span class="input-group-label">客户：</span>
                     <div class="input-group1" style="position: relative;display: inline-block;">
@@ -53,9 +53,8 @@
                            id="startDate"
                            @click=""
                            v-model="cExpectSignDateRange">
-                    <!--
-                           -->
                 </div>
+                <div style="display: inline-block">
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">成功率：</span>
                     <div class="dropdown">
@@ -67,8 +66,6 @@
                             <li @click="searchSuccessMinCode(projectSuccessRate.code, projectSuccessRate.text)"
                                 v-for="projectSuccessRate in projectSuccessRates"
                                 :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
-                            <!-- v-if="cProjectSuccessMaxCode >= projectSuccessRate.code"
-                               -->
                         </ul>
                     </div>
                 </div>
@@ -87,6 +84,7 @@
                                 -->
                         </ul>
                     </div>
+                </div>
                 </div>
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">事业部：</span>
@@ -128,6 +126,7 @@
                         </ul>
                     </div>
                 </div>
+                <div style="display: inline-block">
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">解决方案：</span>
                     <div class="dropdown">
@@ -151,6 +150,7 @@
                                 v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
                         </ul>
                     </div>
+                </div>
                 </div>
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">近期变更过：</span>
@@ -290,10 +290,9 @@
                             <tbody>
                             <!--(vm.dataPageNum -1) * 10 + (index)-->
                             <tr v-for="(item, index) in items"
-                                @dblclick="showOneChange(item.soCoreCode, index)"
+                                @dblclick="openUpdateCase()"
+                                @click="showOneChange(item.soCoreCode, index)"
                                 :class="{ active: isClicked == index } ">
-                                <!--@click="clickOne(index)"-->
-                                <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
                                 <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                                 <td v-if="userLevel == 'xs'">
                                     <a @click="handleData(item)"
@@ -389,7 +388,27 @@
         </div>
     </div>
     <div :class="{'hide': pipelineJoinShow}" class="pipelineJoin clearfix">
-        <div class="table-wrapper" style="overflow: auto">
+        <div :class="{'hide': noJoinData}" class="pull-right" style="margin-bottom: 10px">
+            <div class="data-page page-css">
+                <div @click="calcJoinPage('join' , 'first')"
+                     class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+                <div @click="calcJoinPage('join' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
+                        class="fa fa-angle-left"></i></div>
+                <span>第</span><input @keyup.enter="joinEnter" type="text" style="margin: 0 5px;" v-model="joinPageNum"><span>页</span>
+                <span>共 {{joinPageSum}} 页，</span>
+                <div @click="calcJoinPage('join' , 1)"
+                     class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                <div @click="calcJoinPage('join' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                        class="fa fa-angle-double-right"></i></div>
+                <span>显示</span>
+                <span style="margin-left: 5px;">{{joinPageStart}}</span>
+                <span>-</span>
+                <span style="margin-right: 5px;">{{joinPageEnd}}</span>
+                <span>条，</span>
+                <span>共&nbsp; {{joinPageTotal}} &nbsp;条</span>
+            </div>
+        </div>
+        <div class="table-wrapper" style="overflow: auto;width: 100%">
             <div style="width: 3500px">
                 <table class="i-table">
                     <thead>
@@ -426,60 +445,73 @@
                     <tr v-for="(pipelineList, index) in pipelineData.root">
                         <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                         <td>
+                            <!-- 针对销售 ,当状态为已分配直销销售时，显示确认按钮 -->
                             <div v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesStaff'"
                                  @click="confirmData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border">确认</div>
-                            <div v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
+                            <!-- 针对销售 ,当状态为已签收/直销销售驳回时，显示确认按钮,但不可点击 -->
+                            <div v-if="userLevel == 'xs' && (pipelineList.status == 'signIn' || pipelineList.status == 'rejectSalesStaff')"
                                  @click="confirmData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border disabled">确认</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesGroup'"
+
+                            <!-- 针对销售老大 ,当状态为已分配直销事业部/直销销售驳回 时，显示分配按钮-->
+                            <div v-if="userLevel == 'xsld' && (pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'rejectSalesStaff')"
                                  @click="allotData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border">分配</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesStaff'"
-                                 @click="allotData(pipelineList.id, index)"
-                                 class="btn btn-xs btn-border disabled">分配</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'"
-                                 @click="allotData(pipelineList.id, index)"
-                                 class="btn btn-xs btn-border disabled">分配</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
+                            <!-- 针对销售老大 ,当状态为已分配直销销售/直销销售驳回至直销事业部/已签收时，显示分配按钮，但不可点击-->
+                            <div v-if="userLevel == 'xsld' && (pipelineList.status == 'assignSalesStaff' || pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'signIn')"
                                  @click="allotData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border disabled">分配</div>
                         </td>
                         <td>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesStaff'"
                                   class="type-pass">待确认</span>
-                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
-                                  class="type-pass">已签收</span>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
                                   class="type-pass">已确认</span>
+                            <span v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesStaff'"
+                                  class="type-pass">已驳回</span>
+                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
+                                  class="type-pass">已签收</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesGroup'"
                                   class="type-pass">待分配</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesStaff'"
                                   class="type-pass">已分配</span>
-                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'"
+                            <span v-if="userLevel == 'xsld' && (pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'rejectSalesStaff')"
                                   class="type-pass">已驳回</span>
-                            <!--<span v-text="pipelineList.status"></span>
+                           <!-- <span v-text="pipelineList.status"></span>
                             <span v-text="pipelineList.statusName" class="type-unsubmitted"></span>-->
                         </td>
                         <td v-text="pipelineList.reportDate"></td>
-                        <td v-text="pipelineList.departmentName"></td>
-                        <td v-text="pipelineList.salesStaffName"></td>
+                        <td v-if="pipelineList.departmentName === null">-</td>
+                        <td v-if="pipelineList.departmentName !== null" v-text="pipelineList.departmentName"></td>
+                        <td v-if="pipelineList.salesStaffName === null">-</td>
+                        <td v-if="pipelineList.salesStaffName !== null" v-text="pipelineList.salesStaffName"></td>
                         <td v-text="pipelineList.preSalesStaff"></td>
                         <td v-text="pipelineList.regionName"></td>
                         <td v-text="pipelineList.provinceName"></td>
-                        <td v-text="pipelineList.cpCustomerCode">s</td>
-                        <td v-text="pipelineList.cpCustomerName"></td>
+                        <td v-text="pipelineList.cpCustomerCode"></td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.cpCustomerName"></div>
+                        </td>
                         <td v-text="pipelineList.cpCustomerTypeName"></td>
-                        <td v-text="pipelineList.customerName"></td>
-                        <td v-text="pipelineList.projectDescription"></td>
-                        <td v-text="pipelineList.solutionName"></td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.customerName"></div>
+                        </td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.projectDescription"></div>
+                        </td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.solutionName"></div>
+                        </td>
                         <td v-text="pipelineList.industryLineName"></td>
                         <td v-text="pipelineList.expectSignSum"></td>
                         <td v-text="pipelineList.expectSignDate"></td>
                         <td v-text="pipelineList.progressName"></td>
                         <td v-text="pipelineList.successRateName"></td>
                         <td v-text="pipelineList.weightedSum"></td>
-                        <td v-text="pipelineList.projectFollowUpRemark"></td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.projectFollowUpRemark"></div>
+                        </td>
                         <td v-text="pipelineList.competitor"></td>
                         <td v-text="pipelineList.customerSourceName"></td>
                     </tr>
@@ -488,26 +520,6 @@
             </div>
             <div v-if="noJoinData"
                  style="padding: 20px;text-align: center">暂无相关数据</div>
-        </div>
-        <div :class="{'hide': noJoinData}" class="pull-right" style="margin-right: 50px">
-            <div class="data-page page-css">
-                <div @click="calcJoinPage('join' , 'first')"
-                     class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
-                <div @click="calcJoinPage('join' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
-                        class="fa fa-angle-left"></i></div>
-                <span>第</span><input @keyup.enter="joinEnter" type="text" style="margin: 0 5px;" v-model="joinPageNum"><span>页</span>
-                <span>共 {{joinPageSum}} 页，</span>
-                <div @click="calcJoinPage('join' , 1)"
-                     class="page-css-next"><i class="fa fa-angle-right  "></i></div>
-                <div @click="calcJoinPage('join' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
-                        class="fa fa-angle-double-right"></i></div>
-                <span>显示</span>
-                <span style="margin-left: 5px;">{{joinPageStart}}</span>
-                <span>-</span>
-                <span style="margin-right: 5px;">{{joinPageEnd}}</span>
-                <span>条，</span>
-                <span>共&nbsp; {{joinPageTotal}} &nbsp;条</span>
-            </div>
         </div>
     </div>
 
@@ -1110,19 +1122,19 @@
                                         <button @click="confirmThisData(handleTemplate.id, 'signIn')"
                                                 class="btn btn-sm btn-theme"
                                                 type="button" style="margin-right: 20px">确认</button>
-                                        <button @click="hidePop" class="btn btn-sm btn-theme" type="button">取消</button>
+                                        <button @click="xsRejectThisData" class="btn btn-sm btn-theme" type="button">驳回</button>
                                     </div>
                                 </div>
                                 <div v-if="userLevel == 'xsld'" class="block-wrapper col-1" style="margin-top: 40px;margin-bottom: 30px">
                                     <div class="input-group">
                                         <span class="input-group-label"></span>
-                                        <button @click="allotThisData()"
+                                        <button @click="allotThisData"
                                                 class="btn btn-sm btn-theme"
                                                 type="button" style="margin-right: 20px">分配</button>
-                                        <button @click="rejectThisData(handleTemplate.id, 'rejectSalesGroup')" class="btn btn-sm btn-theme" type="button">驳回</button>
+                                        <button @click="rejectThisData" class="btn btn-sm btn-theme" type="button">驳回</button>
                                     </div>
                                 </div>
-                                <div :class="{'hide': isHide}">
+                                <div :class="{'hide': isAllotHide}" class="border-wrapper">
                                     <div class="block-wrapper col-1">
                                         <div class="dropdown-wrap">
                                             <span class="dropdown-label">分配销售:</span>
@@ -1142,6 +1154,32 @@
                                             <button @click="allotToBU()"
                                                     class="btn btn-sm btn-theme"
                                                     type="button">分配</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': isRejectHide}" class="border-wrapper">
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label">驳回理由:</span>
+                                            <textarea v-model="hRemark" style="width: 300px;height: 50px"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- 针对销售 ,状态为直销销售驳回 -->
+                                    <div v-if="userLevel == 'xs'" class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="rejectToXSLeader(handleTemplate.id, 'rejectSalesStaff')"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
+                                        </div>
+                                    </div>
+                                    <!-- 针对销售老大 ,状态为直销事业部驳回 -->
+                                    <div v-if="userLevel == 'xsld'" class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="rejectToXS(handleTemplate.id, 'rejectSalesGroup')"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
                                         </div>
                                     </div>
                                 </div>

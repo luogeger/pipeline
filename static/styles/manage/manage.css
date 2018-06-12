@@ -329,7 +329,7 @@
   background: #fff;
   padding: 10px; }
   .pipelineJoin .table-wrapper {
-    margin-bottom: 30px; }
+    margin-bottom: 10px; }
     .pipelineJoin .table-wrapper thead {
       background-color: #FAD3B2;
       color: #433C38; }
@@ -350,5 +350,10 @@
 .checkText {
   color: #14a6ef;
   line-height: 30px; }
+
+.border-wrapper {
+  border: 1px solid #eee;
+  padding: 15px 0;
+  float: left; }
 
 /*# sourceMappingURL=manage.css.map */
