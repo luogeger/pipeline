@@ -53,7 +53,8 @@ var vm = new Vue({
         soDepartmentLists: [],        // 查询直销事业部集和销售集
 
         // 定义搜索值信息
-        searchLists: {},              //存放搜索值
+        searchLists: {},              // 存放搜索值
+        cpCustomerName: '',           // 合作伙伴名称
         cIndustryLineText: '',        // 行业线
         cExpectSignDateRange: '',     // 预计签约时间
         cProjectSuccessMinText: '',   // 最小成功率
@@ -63,6 +64,7 @@ var vm = new Vue({
         projectSuccessRates: [],      // 存放成功率
         cRegionText: '',              // 区域
         cCustomerSourText: '',        // 客户来源
+        cpCustomerTypeText: '',       // 合作伙伴类型
         cSoSolutionFirstText: '',     // 大解决方案
         cSoSolutionSecondText: '',    // 小解决方案
         solutionFirstLists: [],       // 存放大解决方案
@@ -155,14 +157,15 @@ var vm = new Vue({
         ]
     },
     created: function() {
-        this.initialValData();     // 初始值
+        this.initialValData();        // 初始值
         this.getSuccessRate();
-        this.getSoSolution4Tree(); // 初始值-解决方案
+        this.getCpCustomerType();    // 初始值-合作伙伴类型
+        this.getSoSolution4Tree();   // 初始值-解决方案
         this.signDate();
-        /*this.getFuzzyList();       // 模糊查询客户名称
-        this.getPreSalesStaff();   // 模糊查询售前*/
-        this.openUpdateCase();     // 显示表格右侧项目更新情况
-        this.getPipelineData();    // 查询pipeline数据
+        this.getFuzzyList();       // 模糊查询客户名称
+         /* this.getPreSalesStaff();     // 模糊查询售前*/
+        this.openUpdateCase();      // 显示表格右侧项目更新情况
+        this.getPipelineData();     // 查询pipeline数据
     },
     methods: {
         // 关闭一级弹窗
@@ -281,6 +284,8 @@ var vm = new Vue({
         getCpCustomerType: function() {
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=cooperativePartnerType').then(function(datas){
                 vm.cpCustomerTypeLists = datas.data.msg.cooperativePartnerType;
+
+                console.log(vm.cpCustomerTypeLists,'获取合作伙伴类型');
             })
         },
         // 失焦隐藏模糊列表
@@ -300,7 +305,7 @@ var vm = new Vue({
             var clientName;
             switch (type) {
                 case 1:
-                    clientName = vm.cCustomerName;
+                    clientName = vm.cpCustomerName;
                     break;
                 case 2:
                     clientName = vm.hCpCustomerName;
@@ -328,10 +333,8 @@ var vm = new Vue({
         selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
             switch (type) {
                 case 1:
-                    vm.searchLists.customerCode = code;
-                    vm.cCustomerName = text;
-
-                    this.showData();
+                    vm.searchLists.cpCustomerCode = code;
+                    vm.cpCustomerName = text;
                     break;
                 case 2:
                     // 判断该客户名称是否是该销售所在事业部下的
@@ -444,20 +447,21 @@ var vm = new Vue({
         },
         // 搜索框清空
         clearSearchForm: function() {
-            // vm.cCustomerName = '';            // 客户
-            vm.cIndustryLineText = '';        // 行业线
-            // vm.cProjectSuccessRateText = '';  // 成功率
-            vm.cProjectSuccessMinText = '',   // 最小成功率
-            vm.cProjectSuccessMaxText = '',   // 最大成功率
+            vm.cpCustomerName = '';                 // 合作伙伴名称
+            vm.cIndustryLineText = '';              // 行业线
+            // vm.cProjectSuccessRateText = '';     // 成功率
+            vm.cProjectSuccessMinText = '',         // 最小成功率
+            vm.cProjectSuccessMaxText = '',         // 最大成功率
             //     vm.cProjectSuccessMinCode = '';
             // vm.cProjectSuccessMaxCode = '';
-            // vm.cMngSalesGroupText = '';       // 事业部
-            vm.cRegionText = '';              // 区域
-            vm.cCustomerSourText = '';        // 客户来源
-            vm.cSoSolutionFirstText = '';     // 大解决方案
-            vm.cSoSolutionSecondText = '';    // 小解决方案
-            // vm.cLatelyChangeText = '';        // 近期变更过
-            // vm.cSalesName = '';               // 近期变更过
+            // vm.cMngSalesGroupText = '';          // 事业部
+            vm.cRegionText = '';                    // 区域
+            vm.cCustomerSourText = '';              // 客户来源
+            vm.cpCustomerTypeText = '';             // 客户来源
+            vm.cSoSolutionFirstText = '';           // 大解决方案
+            vm.cSoSolutionSecondText = '';          // 小解决方案
+            // vm.cLatelyChangeText = '';           // 近期变更过
+            // vm.cSalesName = '';                  // 近期变更过
 
             this.searchLists = {};
             this.signDate();
@@ -493,6 +497,11 @@ var vm = new Vue({
         searchCustomerSourceCode: function(code, text) {
             this.searchLists.customerSourceCode = code;
             vm.cCustomerSourText = text;
+        },
+        // 选中合作伙伴类型
+        searchCpCustomerTypeCode: function(code, text) {
+            this.searchLists.cooperativePartnerType = code;
+            vm.cpCustomerTypeText = text;
         },
         // 选中大解决方案
         searchSolutionFirst: function(id, text, type) {
