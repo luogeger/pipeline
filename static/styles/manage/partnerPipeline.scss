@@ -3,7 +3,63 @@
   background-color: #fff;
   border-radius: 2px;
 }
+.search-wrapper {
+  padding: 15px 20px;
+  padding-bottom: 0;
+  margin-bottom: 10px;
+  position: relative;
 
+  :checked ~.drowicon {
+    .fa {
+      transform: rotate(180deg);
+    }
+  }
+  :checked ~ .content {
+    max-height: 500px;
+    padding-bottom: 0;
+
+    .dropdown-wrap,
+    .input-group {
+      margin-bottom: 15px;
+    }
+  }
+  .drowicon {
+    z-index: 2;
+    display: inline-block;
+    text-align: center;
+    color: #8c8c8c;
+    cursor: pointer;
+    position: absolute;right: 150px;top: 20px;
+    .fa {
+      color: #8c8c8c;
+      margin-left: 10px;
+      transition: all .25s;
+    }
+  }
+  .content {
+    max-height: 45px;
+    padding-bottom: 15px;
+    //overflow: hidden;
+    transition: max-height .4s;
+
+    .dropdown-wrap,
+    .input-group {
+      margin-bottom: 30px;
+      transition: all .4s;
+    }
+  }
+  /*
+
+  .dropdown-wrap,
+  .input-group {
+    margin-bottom: 15px;
+  }
+  */
+
+  .i-date-picker-container .date-input-box > input{
+    width: 100px;
+  }
+}
 .main-wrapper {
   padding: 15px;
   position: relative;
@@ -28,7 +84,7 @@
           }
           &:active,
           &.active {
-            background-color: #fad3b2 !important;
+            background-color: #FBE5D0 !important;
           }
 
           td {
@@ -104,6 +160,10 @@
       .block {
         li {
           padding: 15px 5px;
+          border-bottom: 1px solid #eee;
+          &:last-child {
+            border-bottom: none;
+          }
           h4 {
             font-size: 14px;
             margin-bottom: 10px;
@@ -148,11 +208,7 @@
         display: table-cell;
         vertical-align: top;
       }
-      //.dropdown-wrap .dropdown .dropdown-default, .dropdown-wrap .dropdown-zTree .dropdown-default {
-      //  width: 180px;
-      //}
       .input-group {
-        //line-height: 30px;
 
         .item-list {
           li {
@@ -247,6 +303,12 @@
             &:active {
               background: #FBE5D0 !important;
             }
+            .fa-clock-o{
+              font-size: 16px !important;
+            }
+            .has-reject{
+              color: #ff0000 !important;
+            }
           }
         }
       }
@@ -285,4 +347,9 @@
 .checkText {
   color: #14a6ef;
   line-height: 30px;
+}
+.border-wrapper {
+  border: 1px solid #eee;
+  padding: 15px 0;
+  float: left
 }
