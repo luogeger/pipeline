@@ -12,6 +12,7 @@ var vm = new Vue({
         pPage: 1,
         mPageTotal: 0,
         mPage: 1,
+        // dataList
         partnerList: [],
         partnerMsgList: [],
         engineerList: [],
@@ -25,8 +26,31 @@ var vm = new Vue({
         currentUser: userName,
         regionList: [],
         provinceList: [],
+        allProvinceList: [],
+        regionProvinceItem: {},
+        regionProvinceList: [],
+        regionProvinceText: '',
+        regionProvinceIsShow: false,
+        partnerTypeList: [],
         // 合作伙伴的字段
         pID: '',
+        pName: '',
+        pBusinessProvince: '',
+        pBusinessIndustry: '',
+        pSolution: '',
+        pRegisteredCapital: '',
+        pType: '',
+        pLastContractAmount: '',
+        pRemark: '',
+        pIsSignedCp: '',
+        pFirstSignDate: '',
+        pLimit: '',
+        //pPage:               '',	//当前页码	string
+        pDirection: '',
+        pProperty: '',
+        pBusinessAreaOth: '',
+        pBusinessProvinceOth: '',
+        pBusinessIndustryOth: '',
         // 合作伙伴机要信息字段
         mID: '',
         mContact: '',
@@ -157,17 +181,38 @@ var vm = new Vue({
             axios.get(PATH + '/basic/queryDictDataByCategory?categoryCodes=region').then(function (datas) {
                 _this.regionList = datas.data.msg.region;
                 _this.mRegionCode = activeRegion; // 默认区域选中第一个
+                //this.getAllProvince(this.regionList)
             });
         },
         getProvince: function (province, activeProvince) {
             var _this = this;
             province = province || 'regionHd';
-            axios.get(PATH + '/basic/queryDictDataByCategory?categoryCodes=' + province).then(function (datas) {
+            axios
+                .get(PATH + '/basic/queryDictDataByCategory?categoryCodes=' + province)
+                .then(function (datas) {
                 _this.provinceList = datas.data.msg[province];
                 _this.mProvinceCode = activeProvince; //
             });
         },
         getEngineerData: function () {
+        },
+        // 所有省份
+        getAllProvince: function (arr) {
+            var _this = this;
+            axios
+                .get(PATH + '/basic/queryRegions')
+                .then(function (datas) {
+                _this.allProvinceList = datas.data.msg;
+            });
+        },
+        // 合伙人类型
+        getPartnerType: function () {
+            var _this = this;
+            axios
+                .get(PATH + '/basic/queryDictDataByCategory?categoryCodes=cooperativePartnerType')
+                .then(function (datas) {
+                _this.partnerTypeList = datas.data.msg.cooperativePartnerType;
+            });
         },
         // tab切换
         tabBtn: function (num, type) {
@@ -218,6 +263,8 @@ var vm = new Vue({
             if (type === 'addPartnerPop') {
                 this.getRegion();
                 this.getProvince();
+                this.getAllProvince(); // 所有省份
+                this.getPartnerType(); // 合伙人类型
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerPop = true;
                 this.addPartnerMsgPop = true;
@@ -332,6 +379,41 @@ var vm = new Vue({
                 this.mProvinceText = text;
             }
             //this.mAddress = this.mRegionText + this.mProvinceText + this.mAddress;
+        },
+        // 合作伙伴的区域和省份
+        regionProvinceBtn: function () {
+            var _this = this;
+            this.regionProvinceIsShow = !this.regionProvinceIsShow;
+            console.log(this.regionProvinceItem);
+            for (key in this.regionProvinceItem) {
+                this.regionProvinceItem[key].forEach(function (item) {
+                    _this.regionProvinceList.push(item);
+                });
+            }
+        },
+        // 多选框
+        checkboxBtn: function (attr, type) {
+            //console.log(type, attr)
+            var list = [];
+            this.regionProvinceItem[type] = attr;
+            for (key in this.regionProvinceItem) {
+                this.regionProvinceItem[key].forEach(function (item) {
+                    list.push(item.text);
+                });
+            }
+            this.regionProvinceText = list.join('，');
+            // attr.forEach(item => {
+            //     if (this.regionProvinceList.indexOf(item) === -1) {
+            //         this.regionProvinceList.push(item)
+            //     }
+            // });
+            // console.log(this.regionProvinceList)
+        },
+        // 下拉框
+        onChange: function (attr, type) {
+            console.log(type, attr);
+            if (type === 'partnerType')
+                this.pType = attr.code;
         },
         // 分页
         calcPage: function (type, num) {

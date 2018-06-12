@@ -166,7 +166,7 @@
     </div><!-- /.下部分表格 -->
 
 
-    <!-- /......添加合作伙伴机要信息  -->
+    <!-- /.(添加、编辑) (合作伙伴、机要信息)  -->
     <pop-up :is-show="addAndEdit" @on-close="popUp('addPartnerPop')">
         <div v-if="addPartnerPop" class="title"><p>添加合作伙伴</p></div>
         <div v-if="addPartnerPop" class="pop-main">
@@ -185,23 +185,46 @@
             <div class="row-item">
                 <div class="row-item-label">合作伙伴客户名称：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <!--<input type="text" class="input-group-form">-->
+                    <i-input :verify-msg="'客户名称不能为空'"
+                             v-model="pName"></i-input>
                 </div>
             </div><!-- 客户名称 -->
 
             <div class="row-item">
-                <div class="row-item-label">区域：</div>
+                <div class="row-item-label">区域、省份：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <input v-model="regionProvinceText"
+                           @click.stop="regionProvinceBtn"
+                           type="text" class="input-group-form" readonly="true">
+                    <div v-if="regionProvinceIsShow"
+                         @click.stop=""
+                         class="regionProvince clearfix">
+                        <table>
+                            <tbody>
+                                <tr v-for="item in allProvinceList">
+                                    <td v-text="item.region.text"
+                                        class="text-left"
+                                        style="min-width: 100px;padding: 5px;"></td>
+                                    <td>
+                                        <i-checkbox :data-list="item.province"
+                                                    @on-check="checkboxBtn($event, item.region.code)"></i-checkbox>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--<i-checkbox :checkbox-list="regionList"
+                                @on-check="checkboxBtn($event, 'region')"></i-checkbox>-->
                 </div>
             </div><!-- 区域 -->
 
-            <div class="row-item">
+            <!--<div class="row-item">
                 <div class="row-item-label">城市：</div>
                 <div class="row-item-form input-group">
                     <input type="text" class="input-group-form">
                 </div>
-            </div><!-- 城市 -->
+            </div> 城市 -->
 
             <div class="row-item">
                 <div class="row-item-label">主要业务行业：</div>
@@ -227,7 +250,8 @@
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-center" style="width: 35%;">合作伙伴类型：</div>
                     <div class="row-item-form input-group" style="width: 65%;">
-                        <input type="text" class="input-group-form">
+                        <select-list :data-list="partnerTypeList"
+                                     @on-change="onChange($event, 'partnerType')"></select-list>
                     </div>
                 </div>
                 <!--<div class="inline-block pull-right" style="width: 35%; margin-right: 20px;">

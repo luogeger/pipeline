@@ -395,32 +395,88 @@ button,
   .i-radio-group .i-radio-checked .i-radio-wrap .i-radio-check {
     transform: scale(0.6); }
 
-.i-checkbox-group {
-  display: inline-block; }
-  .i-checkbox-group .i-checkbox-item {
+/*
+.i-checkbox-group{
+  display: inline-block;
+
+
+  .i-checkbox-item{
     margin-right: 10px;
     cursor: pointer;
-    display: inline-block; }
-    .i-checkbox-group .i-checkbox-item .i-checkbox-wrap {
+    display: inline-block;
+
+
+    .i-checkbox-wrap{
       display: inline-block;
       vertical-align: text-bottom;
       width: 16px;
       height: 16px;
-      position: relative; }
-      .i-checkbox-group .i-checkbox-item .i-checkbox-wrap .i-checkbox-inner,
-      .i-checkbox-group .i-checkbox-item .i-checkbox-wrap .i-checkbox-check {
+      position: relative;
+
+      .i-checkbox-inner,
+      .i-checkbox-check{
         transition: .2s;
         font-size: 16px;
         position: absolute;
-        left: 0; }
-      .i-checkbox-group .i-checkbox-item .i-checkbox-wrap .i-checkbox-check {
+        left: 0;
+      }
+
+      .i-checkbox-inner{
+      }
+
+      .i-checkbox-check{
         transform-origin: 50% 50%;
-        transform: scale(0); }
-    .i-checkbox-group .i-checkbox-item:hover .i-checkbox-inner {
-      color: #ED6C1C !important; }
-  .i-checkbox-group .i-checkbox-checked .i-checkbox-wrap .i-checkbox-check {
-    color: #ED6C1C !important;
-    transform: scale(1); }
+        transform: scale(0);
+      }
+    }//
+
+    .i-checkbox-label{
+
+    }//
+
+    &:hover{
+      .i-checkbox-inner{
+        color: $theme-click !important;
+      }
+    }
+  }// .i-checkbox-item
+
+  .i-checkbox-checked{
+    .i-checkbox-wrap{
+      .i-checkbox-check{
+        color: $theme-click !important;
+        transform: scale(1);
+      }
+    }
+
+  }// item被选中
+
+}// .i-checkbox-group  这是之前jquery用的组件
+*/
+.i-checkbox-group:before, .i-checkbox-group:after {
+  content: " ";
+  display: table; }
+.i-checkbox-group:after {
+  clear: both; }
+.i-checkbox-group .i-checkbox-wrap {
+  float: left;
+  margin-right: 15px;
+  cursor: pointer;
+  position: relative; }
+  .i-checkbox-group .i-checkbox-wrap > span {
+    color: #878787; }
+  .i-checkbox-group .i-checkbox-wrap .i-checkbox-box {
+    position: relative;
+    top: 2px; }
+    .i-checkbox-group .i-checkbox-wrap .i-checkbox-box i {
+      font-size: 18px;
+      color: #878787; }
+    .i-checkbox-group .i-checkbox-wrap .i-checkbox-box .is-show {
+      font-size: 10px;
+      position: absolute;
+      top: 4px;
+      left: 2px;
+      color: #FF8A41; }
 
 input, textarea {
   transition: 0.2s all ease-in-out; }
@@ -587,8 +643,10 @@ input.disabled {
 
 .selection-component {
   position: relative;
-  display: inline-block; }
+  display: inline-block;
+  width: 100%; }
   .selection-component .selection-show {
+    width: 100%;
     display: inline-block;
     position: relative;
     height: 30px;
@@ -615,13 +673,15 @@ input.disabled {
   .selection-component .selection-list {
     position: absolute;
     top: 33px;
-    left: 0; }
+    left: 0;
+    z-index: 1;
+    width: 100%; }
     .selection-component .selection-list ul {
       overflow: auto;
       max-height: 300px;
       padding: 5px 0;
       min-width: 162px;
-      max-width: 200px;
+      max-width: 100%;
       border-radius: 4px;
       background-color: #ffffff;
       z-index: 1;

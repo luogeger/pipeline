@@ -94,6 +94,8 @@ $(document).click(function () {
     $('.user-info').children('ul').addClass('hide');
     vm.selectionIsShow_1 = false;// 点击顶部下拉框隐藏
     vm.selectionIsShow_2 = false;// 点击顶部下拉框隐藏
+    vm.regionProvinceIsShow = false;// 合作伙伴的区域和省份
+
 });
 
 // 退出登录

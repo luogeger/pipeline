@@ -9,5 +9,17 @@
   .main .partner .opera-box,
   .main .partner-msg .opera-box {
     padding-bottom: 10px; }
+.main .regionProvince {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  padding: 5px;
+  box-shadow: rgba(255, 138, 65, 0.3) 0 0 0 2px;
+  border-radius: 4px;
+  background: #ffffff; }
+  .main .regionProvince li {
+    line-height: 30px; }
 
 /*# sourceMappingURL=partner.css.map */

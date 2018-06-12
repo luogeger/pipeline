@@ -2,7 +2,7 @@ let vm = new Vue({
     el: '#partner',
 
     data: {
-        tempID:             '',// 编辑信息，弹窗的形式出现的ID, 弹窗关闭的时候，一定要清空
+        tempID:             '',// 用于区分(编辑、添加),(合作伙伴、机要信息) 弹窗关闭的时候，一定要清空
         // tab
         engineerTabShow:    false,// 工程师tab显示
         tabActive:          0,
@@ -15,11 +15,12 @@ let vm = new Vue({
         mPageTotal:         0,
         mPage:              1,// 机要信息当前页
 
-
+        // dataList
         partnerList:        [],// 伙伴数据
         partnerMsgList:     [],// 伙伴信息数据
         engineerList:       [],// 工程师认证数据
         trActive:           0,// 选中合作伙伴当前行
+
 
 
         // 弹窗
@@ -31,12 +32,35 @@ let vm = new Vue({
         currentUser:        userName,// 负责销售
         regionList:         [],// 区域
         provinceList:       [],// 省份
-
+        allProvinceList:    [],// 所有省份
+        regionProvinceItem: {},// 选中的省份item
+        regionProvinceList: [],// 选中的省份list
+        regionProvinceText: '',// 选中的省分text
+        regionProvinceIsShow: false,// 合作伙伴的区域和省份
+        partnerTypeList:    [],// 合伙人类型 下拉框
 
         // 合作伙伴的字段
         pID:                '',// 合作伙伴的ID, 也是第一个ID,
+        pName:               '',	//合作伙伴名称	String	字符串
+        pBusinessProvince:   '',	//业务省份(城市)（协议内容）	array(object)	取字典分类,例如：[{“code”:”2323”}]
+        pBusinessIndustry:   '',	//主要业务行业(协议内容)	array(object)	取字典分类：industryLine,例如：[{“code”:”2323”}]
+        pSolution:           '',	//主要合作产品	array(object)	取解决方案大类,例如：[{“code”:”2322323}]
+        pRegisteredCapital:  '',	//注册资本	number	数字金额类型
+        pType:               '',	//合作伙伴类型	String	取字典分类：cooperativePartnerType
+        pLastContractAmount: '',	//近期销售合同额	array(object)
+        pRemark:             '',	//合作伙伴简介	String	合作伙伴简介
+        pIsSignedCp:         '',	//是否是直签合作伙伴客户	String	取字典分类：yn
+        pFirstSignDate:      '',	//首次签订合作协议年月	String	2018-05
+        pLimit:              '',	//每页数量	string
+        //pPage:               '',	//当前页码	string
+        pDirection:          '',	//排序类型(asc,desc)	string
+        pProperty:           '',	//排序字段	String	type:合作伙伴类型,firstSignDate:首次签订合作协议年月
+        pBusinessAreaOth:    '',	//业务区域（协议内容）–>其它	String
+        pBusinessProvinceOth:'',	//业务省份(城市)（协议内容）–>其它	String
+        pBusinessIndustryOth:'',	//主要业务行业(协议内容)–>其它	String
 
-        // 合作伙伴机要信息字段
+
+// 合作伙伴机要信息字段
         mID:                '',// 机要信息的ID
         mContact:           '',// 机要联系人
         mTitle:             '',
@@ -123,6 +147,7 @@ let vm = new Vue({
             },
 
         ],
+
     },// data
 
     created () {
@@ -177,20 +202,43 @@ let vm = new Vue({
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=region').then((datas)=>{
                 this.regionList = datas.data.msg.region;
                 this.mRegionCode = activeRegion;// 默认区域选中第一个
+                //this.getAllProvince(this.regionList)
             });
         },// 区域
 
         getProvince: function (province, activeProvince) {
             province = province || 'regionHd';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then((datas)=>{
+            axios
+                .get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province)
+                .then((datas)=>{
                 this.provinceList = datas.data.msg[province];
                 this.mProvinceCode = activeProvince;//
             });
         },// 省份
 
+
+
         getEngineerData () {
 
         },// 工程师认证数据
+
+        // 所有省份
+        getAllProvince (arr) {
+            axios
+                .get(PATH +'/basic/queryRegions')
+                .then((datas)=>{
+                    this.allProvinceList = datas.data.msg;
+                });
+        },
+
+        // 合伙人类型
+        getPartnerType () {
+            axios
+                .get(PATH +'/basic/queryDictDataByCategory?categoryCodes=cooperativePartnerType')
+                .then((datas)=>{
+                    this.partnerTypeList = datas.data.msg.cooperativePartnerType;
+                });
+        },
 
         // tab切换
         tabBtn (num, type) {
@@ -251,6 +299,9 @@ let vm = new Vue({
             if (type === 'addPartnerPop') {
                 this.getRegion()
                 this.getProvince()
+                this.getAllProvince()// 所有省份
+                this.getPartnerType()// 合伙人类型
+
                 this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerPop    = true;
                 this.addPartnerMsgPop = true;
@@ -382,6 +433,43 @@ let vm = new Vue({
             //this.mAddress = this.mRegionText + this.mProvinceText + this.mAddress;
         },
 
+        // 合作伙伴的区域和省份
+        regionProvinceBtn () {
+            this.regionProvinceIsShow = !this.regionProvinceIsShow;
+            console.log(this.regionProvinceItem)
+            for (key in this.regionProvinceItem) {
+                this.regionProvinceItem[key].forEach(item => {
+                    this.regionProvinceList.push(item)
+                })
+            }
+
+        },
+        // 多选框
+        checkboxBtn (attr, type) {
+            //console.log(type, attr)
+
+            let list = []
+            this.regionProvinceItem[type] = attr;
+            for (key in this.regionProvinceItem){
+                this.regionProvinceItem[key].forEach(item => {
+                    list.push(item.text)
+                })
+            }
+            this.regionProvinceText = list.join('，');
+
+            // attr.forEach(item => {
+            //     if (this.regionProvinceList.indexOf(item) === -1) {
+            //         this.regionProvinceList.push(item)
+            //     }
+            // });
+            // console.log(this.regionProvinceList)
+        },
+
+        // 下拉框
+        onChange (attr, type) {
+            console.log(type, attr)
+            if (type === 'partnerType') this.pType = attr.code;
+        },
 
 
 

@@ -113,7 +113,9 @@ $max-width: 200px;
 .selection-component {
   position: relative;
   display: inline-block;
+  width: 100%;
   .selection-show {
+    width: 100%;
     display: inline-block;
     position: relative;
     height: $height-sm;
@@ -147,12 +149,15 @@ $max-width: 200px;
     position: absolute;
     top: $height-sm + 3;
     left: 0;
+    z-index: 1;
+	  width: 100%;
+
     ul{
       overflow: auto;
       max-height: 300px;
       padding: 5px 0;
       min-width: 162px;
-      max-width: $max-width;
+      max-width: 100%;
       border-radius: $border-radius-base;
       background-color: $white;
       z-index: 1;

@@ -1,9 +1,9 @@
 Vue.component('select-list', {
     props: {
-        selections: {
+        dataList: {
             type: Array,
             default: [{
-                    label: 'test',
+                    text: '',
                     value: 0
                 }]
         }
@@ -29,10 +29,10 @@ Vue.component('select-list', {
         chooseShow: function (index) {
             this.isShow = false;
             this.nowIndex = index;
-            this.$emit('on-change', this.selections[this.nowIndex]);
+            this.$emit('on-change', this.dataList[this.nowIndex]);
         }
     },
-    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span class=\"default-text\">{{selections[nowIndex].label}}</span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in selections\" \n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\">\n                        {{item.label}}</li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
+    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"(dataList && dataList.length) ? dataList[nowIndex].text:''\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            v-text=\"item.text\"\n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\"></li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
 }); // select-list
 Vue.component('pop-up', {
     props: {
@@ -143,36 +143,54 @@ Vue.component('i-page', {
 });
 Vue.component('i-checkbox', {
     props: {
-        checkboxList: {
+        dataList: {
+            type: Array,
+        },
+        defaultList: {
             type: Array,
         }
     },
     data: function () {
         return {
             isShow: false,
-            tempArr: [],
+            checkedList: [],
         };
     },
-    watch: {},
+    created: function () {
+        //if (this.defaultList) this.checkedList = this.defaultList;
+        console.log(this.defaultList);
+    },
     methods: {
         checkBtn: function (index) {
-            if (this.tempArr.indexOf(index) === -1) {
-                this.tempArr.push(index);
+            if (this.checkedList.indexOf(index) === -1) {
+                this.checkedList.push(index);
             }
             else {
-                index = this.tempArr.indexOf(index);
-                this.tempArr.splice(index, 1);
+                index = this.checkedList.indexOf(index);
+                this.checkedList.splice(index, 1);
             }
-            var tempArrObj = [];
-            for (var i = 0; i < this.tempArr.length; i++) {
-                tempArrObj.push(this.checkboxList[this.tempArr[i]]);
+            var emitList = [];
+            for (var i = 0; i < this.checkedList.length; i++) {
+                emitList.push(this.dataList[this.checkedList[i]]);
             }
-            ;
-            this.$emit('on-check', tempArrObj); // 要传到父组件的是index对应的value,
+            this.$emit('on-check', emitList); // 要传到父组件的是index对应的value,
         },
         isShowJudge: function (index) {
-            return this.tempArr.indexOf(index) !== -1;
+            return this.checkedList.indexOf(index) !== -1;
         }
     },
-    template: "<div class=\"i-checkbox-group\">\n            <div v-for=\"(item, index) in checkboxList\"\n                 @click=\"checkBtn(index)\"\n                 class=\"i-checkbox-wrap\">\n                <span class=\"i-checkbox-box\">\n                    <i class=\"fa fa-square-o\"></i> \n                    <transition name=\"fade\">\n                        <i v-if=\"isShowJudge(index)\" class=\"is-show fa fa-check\"></i>\n                    </transition>\n                </span>\n                <span v-text=\"item.text\"></span>        \n            </div>\n            \n        </div>",
+    template: "<div class=\"i-checkbox-group\">\n            <div v-for=\"(item, index) in dataList\"\n                 @click=\"checkBtn(index)\"\n                 :key=\"item.code\"\n                 class=\"i-checkbox-wrap\">\n                <span class=\"i-checkbox-box\">\n                    <i class=\"fa fa-square-o\"></i> \n                    <transition name=\"fade\">\n                        <i v-if=\"isShowJudge(index)\" class=\"is-show fa fa-check\"></i>\n                    </transition>\n                </span>\n                <span v-text=\"item.text\"></span>        \n            </div>\n            \n        </div>",
+});
+Vue.component('i-checkbox-list', {
+    props: {},
+    data: function () {
+        return {
+            isShow: false,
+            checkedList: [],
+        };
+    },
+    created: function () {
+    },
+    methods: {},
+    template: "",
 });

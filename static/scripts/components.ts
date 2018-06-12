@@ -1,9 +1,9 @@
 Vue.component('select-list', {
     props: {
-        selections: {
+        dataList: {
             type: Array,
             default: [{
-                label: 'test',
+                text: '',
                 value: 0
             }]
         }
@@ -22,6 +22,8 @@ Vue.component('select-list', {
         })
     },
 
+
+
     methods:{
         toggleShow () {
             this.isShow = !this.isShow;
@@ -30,7 +32,7 @@ Vue.component('select-list', {
         chooseShow (index) {
             this.isShow = false;
             this.nowIndex = index;
-            this.$emit('on-change', this.selections[this.nowIndex]);
+            this.$emit('on-change', this.dataList[this.nowIndex]);
         }
     },// methods
 
@@ -39,17 +41,18 @@ Vue.component('select-list', {
             <div class="selection-show" 
                  :class="{'i-border-col i-border-shadow i-icon-col': isShow}"
                  @click="toggleShow">
-                <span class="default-text">{{selections[nowIndex].label}}</span>
+                <span v-text="(dataList && dataList.length) ? dataList[nowIndex].text:''"
+                      class="default-text"></span>
                 <i class="fa fa-angle-down"
                    :class="{'rotate-180': isShow}"></i>
             </div>
             <transition name="fade">
                 <div class="selection-list" v-if="isShow">
                     <ul>
-                        <li v-for="(item, index) in selections" 
+                        <li v-for="(item, index) in dataList" 
+                            v-text="item.text"
                             :class="{'i-active': index == nowIndex}"
-                            @click="chooseShow(index)">
-                        {{item.label}}</li>
+                            @click="chooseShow(index)"></li>
                     </ul>
                 </div>
             </transition>    
@@ -227,7 +230,10 @@ Vue.component('i-page', {
 
 Vue.component('i-checkbox', {
     props: {
-        checkboxList: {
+        dataList: {
+            type: Array,
+        },
+        defaultList: {
             type: Array,
         }
 
@@ -235,39 +241,41 @@ Vue.component('i-checkbox', {
     data () {
         return {
             isShow: false,
-            tempArr: [],
+            checkedList: [],
         }
     },// data
 
-    watch: {
+    created () {
+        //if (this.defaultList) this.checkedList = this.defaultList;
+        console.log(this.defaultList)
 
     },
-
     methods:{
         checkBtn (index) {
-            if(this.tempArr.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
-                this.tempArr.push(index);
+            if(this.checkedList.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
+                this.checkedList.push(index);
             } else{ // 如果在就把这index从临时数组删除
-                index = this.tempArr.indexOf(index);
-                this.tempArr.splice(index, 1);
+                index = this.checkedList.indexOf(index);
+                this.checkedList.splice(index, 1);
             }
 
-            let tempArrObj = [];
-            for(var i = 0; i < this.tempArr.length; i++){
-                tempArrObj.push(this.checkboxList[this.tempArr[i]]);
-            };
-            this.$emit('on-check', tempArrObj); // 要传到父组件的是index对应的value,
+            let emitList = [];
+            for(let i = 0; i < this.checkedList.length; i++){
+                emitList.push(this.dataList[this.checkedList[i]]);
+            }
+            this.$emit('on-check', emitList); // 要传到父组件的是index对应的value,
         },
 
         isShowJudge (index) {
-            return this.tempArr.indexOf(index) !== -1;
+            return this.checkedList.indexOf(index) !== -1;
         }
     },
 
     template:
         `<div class="i-checkbox-group">
-            <div v-for="(item, index) in checkboxList"
+            <div v-for="(item, index) in dataList"
                  @click="checkBtn(index)"
+                 :key="item.code"
                  class="i-checkbox-wrap">
                 <span class="i-checkbox-box">
                     <i class="fa fa-square-o"></i> 
@@ -279,5 +287,33 @@ Vue.component('i-checkbox', {
             </div>
             
         </div>`,
+
+});
+
+Vue.component('i-checkbox-list', {
+    props: {
+
+
+    },
+    data () {
+        return {
+            isShow: false,
+            checkedList: [],
+        }
+    },// data
+
+    created () {
+
+
+    },
+    methods:{
+
+    },
+
+    template:
+        ``,
+
+
+
 
 });
