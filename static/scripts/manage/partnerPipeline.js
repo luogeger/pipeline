@@ -326,7 +326,6 @@ var vm = new Vue({
             })
         },// 获取数据
         selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
-            console.log(code);
             switch (type) {
                 case 1:
                     vm.searchLists.customerCode = code;
@@ -336,7 +335,7 @@ var vm = new Vue({
                     break;
                 case 2:
                     // 判断该客户名称是否是该销售所在事业部下的
-                    if(departmentCode !== vm.handleTemplate.salesGroupCode) {
+                    if(departmentCode !== vm.oauthLists.userInfo.departmentCode) {
                         toastr.warning('不可建立此客户信息!');
                     }else {
                         // hasConcat=y   名下存在客户机要信息，hasConcat=n 不存在机要
@@ -585,13 +584,15 @@ var vm = new Vue({
                         vm.showOneChange(vm.pipelineData.root[0].soCoreCode, 0);
                     }
                 }
-                //vm.weightedSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.weightedSumTotal));      // 预计签约金额(万元)总计
-                //vm.expectSignSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.expectSignSumTotal));  // 加权金额总计(万元)总计
+                if(vm.pipelineData.oth) {
+                    if(vm.pipelineData.oth.weightedSumTotal) {
+                        vm.weightedSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.weightedSumTotal));      // 预计签约金额(万元)总计
+                    }
+                    if(vm.pipelineData.oth.expectSignSumTotal) {
+                        vm.expectSignSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.expectSignSumTotal));  // 加权金额总计(万元)总计
+                    }
+                }
 
-                /*for(var i = 0;i < vm.pipelineData.length;i++){
-                    var root = result.root[i];
-                    vm.items.push(root);
-                }*/
                 vm.noData = false;
                 vm.dataPageTotal = vm.pipelineData.totalProperty;
                 if(vm.dataPageTotal < 10) {
@@ -666,10 +667,6 @@ var vm = new Vue({
             this.getProvince();          // 调用（获取省份信息）
             this.getCpCustomerType();    // 调用（获取合作伙伴类型）
 
-            // 默认填写所属事业部
-            /*vm.handleTemplate.cpDepartmentKey = vm.oauthLists.userInfo.mngSalesGroups[0].code;
-            vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;*/
-
             this.dialogShow = false;           // 显示弹窗
             this.handleDataShow = false;       // 显示新增修改pipeline弹窗
             this.auditHistoryShow = false;      // 隐藏审核记录
@@ -679,15 +676,13 @@ var vm = new Vue({
             var params = {
                 id: id
             };
+            console.log(params,'获取单条数据的请求参数')
             axios.get(PATH +'/cp/so/selectPipeline', {params: params}).then(function(datas) {
                 var data = datas.data;
-                console.log(data,'data');
+                console.log(data,'获取单条数据的结果');
                 if(data.code === 201) return;
-                vm.handleTemplate = data.root[0];
-                console.log('-----本条数据------');
-                console.log(data.root,'data.root');
-
                 if(data.root.length != 0) {
+                    vm.handleTemplate = data.root[0];
                     vm.getProvince(vm.handleTemplate.region);                       // 省份信息
                     vm.getSoSolution4Tree('', vm.handleTemplate.solutionCode);
 

@@ -462,50 +462,6 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
-                                    <div class="input-group">
-                                        <i class="star">*</i>
-                                        <span class="input-group-label">合作伙伴名称:</span>
-                                        <div style="position: relative;display: inline-block;">
-                                            <input v-model="hCpCustomerName"
-                                                   @keyup="getFuzzyList(2)"
-                                                   type="text" class="input-group-form">
-                                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
-                                                <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
-                                                    v-for="item in fuzzyQueryList_2"
-                                                    v-text="item.name"
-                                                ></li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
-                                    <div class="dropdown-wrap">
-                                        <i class="star">*</i>
-                                        <span class="dropdown-label">合作伙伴类型：</span>
-                                         <div class="dropdown">
-                                             <span class="dropdown-default">{{ hCpCustomerTypeText }}</span>
-                                             <i class="fa fa-angle-down"></i>
-                                             <ul>
-                                                 <li @click="selectCpCustomerTypeCode(cpCustomerTypeList.code, cpCustomerTypeList.text)"
-                                                     v-for="cpCustomerTypeList in cpCustomerTypeLists"
-                                                     :value="cpCustomerTypeList.code">{{ cpCustomerTypeList.text }}</li>
-                                             </ul>
-                                         </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
-                                    <div class="input-group">
-                                        <span class="input-group-label">最终客户名称:</span>
-                                        <input v-model="handleTemplate.cpCustomerName" class="input-group-form" type="text">
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
-                                    <div class="input-group">
-                                        <span class="input-group-label">项目名称:</span>
-                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
-                                    </div>
-                                </div>
                                 <div class="block-wrapper col-1">
                                     <div class="dropdown-wrap" style="display: inline-block">
                                         <span class="dropdown-label">解决方案：</span>
@@ -528,6 +484,94 @@
                                                 <li @click="searchSolutionSecond('', '', 2)">请选择</li>
                                                 <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 2)"
                                                     v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">项目名称:</span>
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text" style="width: 300px">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">合作伙伴名称:</span>
+                                        <div style="position: relative;display: inline-block;">
+                                            <input v-model="hCpCustomerName"
+                                                   @keyup="getFuzzyList(2)"
+                                                   type="text" class="input-group-form" style="width: 300px">
+                                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                                <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
+                                                    v-for="item in fuzzyQueryList_2"
+                                                    v-text="item.name"
+                                                ></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">最终客户名称:</span>
+                                        <input v-model="handleTemplate.cpCustomerName" class="input-group-form" type="text" style="width: 300px">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">合作伙伴类型：</span>
+                                         <div class="dropdown">
+                                             <span class="dropdown-default">{{ hCpCustomerTypeText }}</span>
+                                             <i class="fa fa-angle-down"></i>
+                                             <ul>
+                                                 <li @click="selectCpCustomerTypeCode(cpCustomerTypeList.code, cpCustomerTypeList.text)"
+                                                     v-for="cpCustomerTypeList in cpCustomerTypeLists"
+                                                     :value="cpCustomerTypeList.code">{{ cpCustomerTypeList.text }}</li>
+                                             </ul>
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">预计签约时间：</span>
+                                        <div class="i-date-picker-container">
+                                            <div class="date-input-box  icon iconfont icon-cale-a">
+                                                <input v-model="handleTemplate.expectSignDate"
+                                                       readonly="readonly"
+                                                       type="text"
+                                                       id="signDate"
+                                                       class="i-date-picker" style="width: 163px"
+                                                       data-calendar="true" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">客户来源：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectCustomerSourceCode(initialValList.code, initialValList.text)"
+                                                    v-for="initialValList in initialValLists.customerSours">{{ initialValList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">项目阶段：</span>
+                                        <div class="dropdown noNull">
+                                            <span class="dropdown-default">{{ hProgressText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectProgressCode(initialValList.code, initialValList.text)"
+                                                    v-for="initialValList in initialValLists.progresss">{{ initialValList.text }}</li>
                                             </ul>
                                         </div>
                                     </div>
@@ -574,50 +618,6 @@
                                     <div class="input-group">
                                         <span class="input-group-label" style="width: auto">加权金额总计（万元）:</span>
                                         <span style="line-height: 30px;">{{ hWeightedSum }}</span>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
-                                    <div class="dropdown-wrap">
-                                        <i class="star">*</i>
-                                        <span class="dropdown-label">客户来源：</span>
-                                        <div class="dropdown">
-                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
-                                            <i class="fa fa-angle-down"></i>
-                                            <ul>
-                                                <li @click="selectCustomerSourceCode(initialValList.code, initialValList.text)"
-                                                    v-for="initialValList in initialValLists.customerSours">{{ initialValList.text }}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
-                                    <div class="dropdown-wrap">
-                                        <i class="star">*</i>
-                                        <span class="dropdown-label">项目阶段：</span>
-                                        <div class="dropdown noNull">
-                                            <span class="dropdown-default">{{ hProgressText }}</span>
-                                            <i class="fa fa-angle-down"></i>
-                                            <ul>
-                                                <li @click="selectProgressCode(initialValList.code, initialValList.text)"
-                                                    v-for="initialValList in initialValLists.progresss">{{ initialValList.text }}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
-                                    <div class="input-group">
-                                        <i class="star">*</i>
-                                        <span class="input-group-label">预计签约时间：</span>
-                                        <div class="i-date-picker-container">
-                                            <div class="date-input-box  icon iconfont icon-cale-a">
-                                                <input v-model="handleTemplate.expectSignDate"
-                                                       readonly="readonly"
-                                                       type="text"
-                                                       id="signDate"
-                                                       class="i-date-picker"
-                                                       data-calendar="true" >
-                                            </div>
-                                        </div>
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -871,7 +871,7 @@
         <!-- 查询审核历史记录 -->
         <div v-if="auditHistoryShow" class="dialog-content audit-history">
             <div class="title clearfix">
-                <span>审核记录：   </span><span v-text="auditHistoryTitle"></span>
+                <span>审核记录：</span><span v-text="auditHistoryTitle"></span>
                 <p @click="dialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
             </div>
             <div class="table-box" style="padding: 20px">
