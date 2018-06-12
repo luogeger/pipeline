@@ -12,21 +12,33 @@
         <input id="drow" class="hide" type="checkbox">
         <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
         <div class="content" style="width: calc(100% - 160px)">
-            <!--<div class="input-group">-->
-                <!--<span class="input-group-label">客户：</span>-->
-                <!--<div class="input-group1" style="position: relative;display: inline-block;">-->
-                    <!--<input v-model="cCustomerName"-->
-                           <!--@keyup="getFuzzyList(1)"-->
-                           <!--onkeydown="vm.keyEnterCustomer()"-->
-                           <!--type="text" class="input-group-form">-->
-                    <!--<ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">-->
-                        <!--<li v-for="item in fuzzyQueryList_1"-->
-                            <!--@click="selectFuzzyText(1, item.name, item.code)"-->
-                            <!--v-text="item.name"-->
-                        <!--&gt;</li>-->
-                    <!--</ul>-->
-                <!--</div>-->
-            <!--</div>-->
+            <div class="input-group">
+                <span class="input-group-label">合作伙伴名称：</span>
+                <div style="position: relative;display: inline-block;">
+                    <input v-model="cpCustomerName"
+                           @keyup="getFuzzyList(1)"
+                           type="text" class="input-group-form">
+                    <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
+                        <li v-for="item in fuzzyQueryList_1"
+                            @click="selectFuzzyText(1, item.name, item.code)"
+                            v-text="item.name"
+                        ></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">合作伙伴类型：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cpCustomerTypeText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchCpCustomerTypeCode('', '')">请选择</li>
+                        <li @click="searchCpCustomerTypeCode(cpCustomerTypeList.code, cpCustomerTypeList.text)"
+                            v-for="cpCustomerTypeList in cpCustomerTypeLists"
+                            :value="cpCustomerTypeList.code">{{ cpCustomerTypeList.text }}</li>
+                    </ul>
+                </div>
+            </div>
             <div class="dropdown-wrap">
                 <span class="dropdown-label">行业线：</span>
                 <div class="dropdown">
