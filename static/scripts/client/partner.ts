@@ -38,12 +38,14 @@ let vm = new Vue({
         regionProvinceText: '',// 选中的省分text
         regionProvinceIsShow: false,// 合作伙伴的区域和省份
         partnerTypeList:    [],// 合伙人类型 下拉框
+        industryList:       [],// 业务行业
+        solutionList:       [],// 合作产品
 
         // 合作伙伴的字段
         pID:                '',// 合作伙伴的ID, 也是第一个ID,
         pName:               '',	//合作伙伴名称	String	字符串
         pBusinessProvince:   '',	//业务省份(城市)（协议内容）	array(object)	取字典分类,例如：[{“code”:”2323”}]
-        pBusinessIndustry:   '',	//主要业务行业(协议内容)	array(object)	取字典分类：industryLine,例如：[{“code”:”2323”}]
+        pBusinessIndustry:   [],	//主要业务行业(协议内容)	array(object)	取字典分类：industryLine,例如：[{“code”:”2323”}]
         pSolution:           '',	//主要合作产品	array(object)	取解决方案大类,例如：[{“code”:”2322323}]
         pRegisteredCapital:  '',	//注册资本	number	数字金额类型
         pType:               '',	//合作伙伴类型	String	取字典分类：cooperativePartnerType
@@ -60,7 +62,7 @@ let vm = new Vue({
         pBusinessIndustryOth:'',	//主要业务行业(协议内容)–>其它	String
 
 
-// 合作伙伴机要信息字段
+        // 合作伙伴机要信息字段
         mID:                '',// 机要信息的ID
         mContact:           '',// 机要联系人
         mTitle:             '',
@@ -152,6 +154,7 @@ let vm = new Vue({
 
     created () {
         this.tabBtn(4, 'partner-other');// 显示第一个tab
+        this.getIndustry()
     },
 
     mounted () {
@@ -240,6 +243,26 @@ let vm = new Vue({
                 });
         },
 
+        // 行业
+        getIndustry (){
+            axios
+                .get(PATH +'/basic/queryDictDataByCategory?categoryCodes=industryLine')
+                .then(datas => {
+                    this.industryList = datas.data.msg.industryLine;
+                });
+        },
+
+        // 合作产品
+        getSolution (){
+            axios
+                .get(PATH +'/basic/selectSoSolutionLargeClass')
+                .then(datas => {
+                    this.solutionList = datas.data.msg;
+                });
+        },
+
+
+
         // tab切换
         tabBtn (num, type) {
             //type == partner-pass, partner-other, partner-msg, engineer
@@ -301,6 +324,9 @@ let vm = new Vue({
                 this.getProvince()
                 this.getAllProvince()// 所有省份
                 this.getPartnerType()// 合伙人类型
+                this.getIndustry()// 行业
+                this.getSolution()// 合作产品
+
 
                 this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerPop    = true;
@@ -466,10 +492,7 @@ let vm = new Vue({
         },
 
         // 下拉框
-        onChange (attr, type) {
-            console.log(type, attr)
-            if (type === 'partnerType') this.pType = attr.code;
-        },
+
 
 
 

@@ -6,7 +6,8 @@ Vue.component('select-list', {
                 text: '',
                 value: 0
             }]
-        }
+        },
+        value: ''
     },// props
 
     data () {
@@ -22,6 +23,11 @@ Vue.component('select-list', {
         })
     },
 
+    watch: {
+        dataList () {
+            this.$emit('input', this.dataList[this.nowIndex].code);
+        }
+    },
 
 
     methods:{
@@ -32,7 +38,7 @@ Vue.component('select-list', {
         chooseShow (index) {
             this.isShow = false;
             this.nowIndex = index;
-            this.$emit('on-change', this.dataList[this.nowIndex]);
+            this.$emit('input', this.dataList[this.nowIndex].code);
         }
     },// methods
 
@@ -290,30 +296,100 @@ Vue.component('i-checkbox', {
 
 });
 
-Vue.component('i-checkbox-list', {
+Vue.component('multiple-list', {
     props: {
+        dataList: {
+            type: Array,
+            default: [{
+                text: '',
+                value: 0
+            }]
+        },
+        value: '',
+    },// props
 
-
-    },
     data () {
         return {
+            nowIndex: 0,
             isShow: false,
+            activeIsShow: false,
+            checkedIndex: [],
+            checkedText:  '',
             checkedList: [],
         }
     },// data
 
+    mounted () {
+        document.addEventListener('click', e => {
+            if (!this.$el.contains(e.target)) this.isShow = false;
+        })
+    },
+
     created () {
 
-
     },
+
+    watch: {
+        dataList () {
+
+        }
+    },
+
+
     methods:{
+        toggleShow () {
+            this.isShow = !this.isShow;
+        },
+        chooseShow (index) {
+            if(this.checkedIndex.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
+                this.checkedIndex.push(index);
+                this.checkedList.push(this.dataList[index])// 删除
+            } else{ // 如果在就把这index从临时数组删除
+                index = this.checkedIndex.indexOf(index);
+                this.checkedIndex.splice(index, 1);
 
-    },
+                let _index = this.checkedList.indexOf(this.dataList[index]);
+                this.checkedList.splice(_index, 1)
+            }
+
+
+
+            let text = [];
+            this.checkedList.forEach(item => {
+                text.push(item.text);
+            });
+            this.checkedText = text.join('，');
+
+            this.$emit('input', this.checkedList);
+            this.isShow = false;
+        },
+
+
+    },// methods
 
     template:
-        ``,
-
-
-
-
+        `<div class="selection-component">
+            <div class="selection-show" 
+                 :class="{'i-border-col i-border-shadow i-icon-col': isShow}"
+                 @click="toggleShow">
+                <span v-text="checkedText"
+                      class="default-text"></span>
+                <i class="fa fa-angle-down"
+                   :class="{'rotate-180': isShow}"></i>
+            </div>
+            <transition name="fade">
+                <div class="selection-list" v-if="isShow">
+                    <ul>
+                        <li v-for="(item, index) in dataList" 
+                            :class="{'i-text-col': checkedIndex.indexOf(index) !== -1}"
+                            @click="chooseShow(index)">
+                            <span v-text="item.text"></span>
+                            <transition name="fade">
+                                <i v-if="checkedIndex.indexOf(index) !== -1" class="fa fa-check"></i>
+                            </transition>   
+                        </li>
+                    </ul>
+                </div>
+            </transition>    
+        </div>`,
 });

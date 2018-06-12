@@ -32,11 +32,13 @@ var vm = new Vue({
         regionProvinceText: '',
         regionProvinceIsShow: false,
         partnerTypeList: [],
+        industryList: [],
+        solutionList: [],
         // 合作伙伴的字段
         pID: '',
         pName: '',
         pBusinessProvince: '',
-        pBusinessIndustry: '',
+        pBusinessIndustry: [],
         pSolution: '',
         pRegisteredCapital: '',
         pType: '',
@@ -135,6 +137,7 @@ var vm = new Vue({
     },
     created: function () {
         this.tabBtn(4, 'partner-other'); // 显示第一个tab
+        this.getIndustry();
     },
     mounted: function () {
     },
@@ -214,6 +217,24 @@ var vm = new Vue({
                 _this.partnerTypeList = datas.data.msg.cooperativePartnerType;
             });
         },
+        // 行业
+        getIndustry: function () {
+            var _this = this;
+            axios
+                .get(PATH + '/basic/queryDictDataByCategory?categoryCodes=industryLine')
+                .then(function (datas) {
+                _this.industryList = datas.data.msg.industryLine;
+            });
+        },
+        // 合作产品
+        getSolution: function () {
+            var _this = this;
+            axios
+                .get(PATH + '/basic/selectSoSolutionLargeClass')
+                .then(function (datas) {
+                _this.solutionList = datas.data.msg;
+            });
+        },
         // tab切换
         tabBtn: function (num, type) {
             //type == partner-pass, partner-other, partner-msg, engineer
@@ -265,6 +286,8 @@ var vm = new Vue({
                 this.getProvince();
                 this.getAllProvince(); // 所有省份
                 this.getPartnerType(); // 合伙人类型
+                this.getIndustry(); // 行业
+                this.getSolution(); // 合作产品
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerPop = true;
                 this.addPartnerMsgPop = true;
@@ -410,11 +433,6 @@ var vm = new Vue({
             // console.log(this.regionProvinceList)
         },
         // 下拉框
-        onChange: function (attr, type) {
-            console.log(type, attr);
-            if (type === 'partnerType')
-                this.pType = attr.code;
-        },
         // 分页
         calcPage: function (type, num) {
         },

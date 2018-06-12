@@ -229,14 +229,18 @@
             <div class="row-item">
                 <div class="row-item-label">主要业务行业：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <multiple-list :data-list="industryList"
+                                   v-model="pBusinessIndustry"
+                    ></multiple-list>
                 </div>
             </div><!-- 行业 -->
 
             <div class="row-item">
                 <div class="row-item-label">主要合作产品：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <multiple-list :data-list="solutionList"
+                                   v-model="pSolution"
+                    ></multiple-list>
                 </div>
             </div><!-- 产品 -->
 
@@ -251,7 +255,7 @@
                     <div class="row-item-label text-center" style="width: 35%;">合作伙伴类型：</div>
                     <div class="row-item-form input-group" style="width: 65%;">
                         <select-list :data-list="partnerTypeList"
-                                     @on-change="onChange($event, 'partnerType')"></select-list>
+                                     v-model="pType"></select-list>
                     </div>
                 </div>
                 <!--<div class="inline-block pull-right" style="width: 35%; margin-right: 20px;">

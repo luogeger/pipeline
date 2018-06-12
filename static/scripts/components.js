@@ -6,7 +6,8 @@ Vue.component('select-list', {
                     text: '',
                     value: 0
                 }]
-        }
+        },
+        value: ''
     },
     data: function () {
         return {
@@ -21,6 +22,11 @@ Vue.component('select-list', {
                 _this.isShow = false;
         });
     },
+    watch: {
+        dataList: function () {
+            this.$emit('input', this.dataList[this.nowIndex].code);
+        }
+    },
     methods: {
         toggleShow: function () {
             this.isShow = !this.isShow;
@@ -29,7 +35,7 @@ Vue.component('select-list', {
         chooseShow: function (index) {
             this.isShow = false;
             this.nowIndex = index;
-            this.$emit('on-change', this.dataList[this.nowIndex]);
+            this.$emit('input', this.dataList[this.nowIndex].code);
         }
     },
     template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"(dataList && dataList.length) ? dataList[nowIndex].text:''\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            v-text=\"item.text\"\n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\"></li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
@@ -181,16 +187,63 @@ Vue.component('i-checkbox', {
     },
     template: "<div class=\"i-checkbox-group\">\n            <div v-for=\"(item, index) in dataList\"\n                 @click=\"checkBtn(index)\"\n                 :key=\"item.code\"\n                 class=\"i-checkbox-wrap\">\n                <span class=\"i-checkbox-box\">\n                    <i class=\"fa fa-square-o\"></i> \n                    <transition name=\"fade\">\n                        <i v-if=\"isShowJudge(index)\" class=\"is-show fa fa-check\"></i>\n                    </transition>\n                </span>\n                <span v-text=\"item.text\"></span>        \n            </div>\n            \n        </div>",
 });
-Vue.component('i-checkbox-list', {
-    props: {},
+Vue.component('multiple-list', {
+    props: {
+        dataList: {
+            type: Array,
+            default: [{
+                    text: '',
+                    value: 0
+                }]
+        },
+        value: '',
+    },
     data: function () {
         return {
+            nowIndex: 0,
             isShow: false,
+            activeIsShow: false,
+            checkedIndex: [],
+            checkedText: '',
             checkedList: [],
         };
     },
+    mounted: function () {
+        var _this = this;
+        document.addEventListener('click', function (e) {
+            if (!_this.$el.contains(e.target))
+                _this.isShow = false;
+        });
+    },
     created: function () {
     },
-    methods: {},
-    template: "",
+    watch: {
+        dataList: function () {
+        }
+    },
+    methods: {
+        toggleShow: function () {
+            this.isShow = !this.isShow;
+        },
+        chooseShow: function (index) {
+            if (this.checkedIndex.indexOf(index) === -1) {
+                this.checkedIndex.push(index);
+                this.checkedList.push(this.dataList[index]); // 删除
+            }
+            else {
+                index = this.checkedIndex.indexOf(index);
+                this.checkedIndex.splice(index, 1);
+                var _index = this.checkedList.indexOf(this.dataList[index]);
+                this.checkedList.splice(_index, 1);
+            }
+            var text = [];
+            this.checkedList.forEach(function (item) {
+                text.push(item.text);
+            });
+            this.checkedText = text.join('，');
+            this.$emit('input', this.checkedList);
+            this.isShow = false;
+        },
+    },
+    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"checkedText\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            :class=\"{'i-text-col': checkedIndex.indexOf(index) !== -1}\"\n                            @click=\"chooseShow(index)\">\n                            <span v-text=\"item.text\"></span>\n                            <transition name=\"fade\">\n                                <i v-if=\"checkedIndex.indexOf(index) !== -1\" class=\"fa fa-check\"></i>\n                            </transition>   \n                        </li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
 });

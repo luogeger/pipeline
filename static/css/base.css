@@ -660,7 +660,9 @@ input.disabled {
     .selection-component .selection-show .default-text {
       display: inline-block;
       min-width: 122px;
-      max-width: 200px; }
+      max-width: 100%;
+      text-overflow: ellipsis;
+      /* 文字超出用...*/ }
     .selection-component .selection-show i, .selection-component .selection-show .fa {
       position: absolute;
       right: 10px;
@@ -688,7 +690,8 @@ input.disabled {
       cursor: pointer;
       box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
       .selection-component .selection-list ul li {
-        padding: 0 10px;
+        padding: 0 30px 0 10px;
+        position: relative;
         line-height: 30px;
         text-align: left;
         overflow: hidden;
@@ -699,6 +702,11 @@ input.disabled {
         transition: all 0.1s ease-in-out; }
         .selection-component .selection-list ul li:hover {
           background: #f3f3f3; }
+        .selection-component .selection-list ul li i, .selection-component .selection-list ul li .fa {
+          position: absolute;
+          right: 10px;
+          top: 8px;
+          color: #FF8A41; }
 
 .i-table {
   width: 100%; }

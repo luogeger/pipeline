@@ -129,7 +129,8 @@ $max-width: 200px;
     .default-text{
       display: inline-block;
       min-width: $min-width;
-      max-width: $max-width;
+      max-width: 100%;
+	    text-overflow: ellipsis;/* 文字超出用...*/
     }
     i,.fa {
       position: absolute;
@@ -164,7 +165,8 @@ $max-width: 200px;
       cursor: pointer;
       @include ul-shadow();
       li {
-        padding: 0 10px;
+	      padding: 0 30px 0 10px;
+	      position: relative;
         line-height: $height-sm;
         text-align: left;
         overflow: hidden;
@@ -174,6 +176,13 @@ $max-width: 200px;
         &:hover {
           background: $hover-bg;
         }
+	      i, .fa{
+		      position: absolute;
+		      right: 10px;
+		      top: 8px;
+		      color: $theme-normal;
+	      }
+
       }
     }
 
