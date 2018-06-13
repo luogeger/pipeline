@@ -144,8 +144,7 @@
                             <span v-if="item.status == 'revoke' " class="type-revoke">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
-                            <div
-                                    v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') && item.power == 'pro' "
+                            <div v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') && item.power == 'pro' "
                                  @click="disposeBtn(item.id)"
                                  class="btn btn-xs btn-border">审批</div>
 

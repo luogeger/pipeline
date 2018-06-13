@@ -38,11 +38,20 @@
                      class="btn btn-theme">
                     <i class="fa fa-plus"></i>添加合作伙伴
                 </div>
-                <div class="pull-right">
+                <div v-if="tabContentShow == 'partner-pass'"  class="pull-right">
                     <i-page :total="pPageTotal"
                             :limit="pageLimit"
-                            @on-paging="paging('partner', $event)"></i-page>
+                            @on-paging="paging('partner-pass', $event)"></i-page>
                 </div>
+
+                <div v-if="tabContentShow == 'partner-other'" class="pull-right">
+                    <i-page :total="pPageTotal"
+                            :limit="pageLimit"
+                            @on-paging="paging('partner-other', $event)"></i-page>
+                </div>
+
+
+
             </div>
             <table class="i-table">
                 <thead>
@@ -55,7 +64,7 @@
                     <th>合作伙伴类型</th>
                     <th>业务区域</th>
                     <th>主要合作产品</th>
-                    <th>审批状态</th>
+                    <th class="text-left" style="min-width: 200px;">审批状态</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -70,14 +79,52 @@
                     <td v-text="item.type"></td>
                     <td>
                         <div v-for="region in item.area.businessAreas"
-                             v-text="region.text"
-                             ></div>
+                             v-text="region.text"></div>
                     </td>
                     <td>
                         <div v-for="product in item.solution"
                              v-text="product.text"></div>
                     </td>
-                    <td v-text="item.statusName"></td>
+                    <td>
+                        <div class="pull-left types-show">
+                            <span v-text="item.statusName"
+                                  :class="{
+                                      'type-pass': item.status == 'pass',
+                                      'type-revoke': item.status == 'revoke',
+                                      'type-reject': item.status == 'reject',
+                                      'type-pending': item.status == 'pending'
+                                  }"
+                                  ></span>
+                        </div>
+                        <div class="pull-right operas-btn">
+                            <div v-if="item.status == 'pending' && userLevel == 'xsld'"
+                                 @click="operateBtn(index, item.id, 'audit')"
+                                 class="btn btn-xs btn-border">审批</div>
+
+                            <div v-if="item.status !== 'pending'"
+                                 @click="operateBtn(index, item.id, 'edit')"
+                                 class="btn btn-xs btn-border">编辑</div>
+
+                            <div v-if="item.status == 'pending' && userLevel == 'xs'"
+                                 @click="operateBtn(index, item.id, 'recall')"
+                                 class="btn btn-xs btn-border">撤回</div>
+
+                            <div v-if="item.status == 'reject' || item.status == 'revoke'"
+                                 @click="operateBtn(index, item.id, 'ignore')"
+                                 class="btn btn-xs btn-border">忽略</div>
+
+
+
+
+
+
+
+                            <!-- 历史记录 -->
+                            <div class="btn btn-xs">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
@@ -299,21 +346,21 @@
             <div class="row-item">
                 <div class="row-item-label">公司案例：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="pCompanyCase"></textarea>
                 </div>
             </div><!-- 案例 -->
 
             <div class="row-item">
                 <div class="row-item-label">合作伙伴简介：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="pSynopsisOfPartners"></textarea>
                 </div>
             </div><!-- 简介 -->
 
             <div class="row-item">
                 <div class="row-item-label">备注：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="pRemark"></textarea>
                 </div>
             </div><!-- 备注 -->
         </div><!-- /.pop-main -->

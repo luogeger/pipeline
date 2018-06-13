@@ -25,6 +25,7 @@ var vm = new Vue({
         currentDate: timeYear,
         currentDepartment: userGroup,
         currentUser: userName,
+        userLevel: userLevel,
         regionList: [],
         provinceList: [],
         allProvinceList: [],
@@ -57,16 +58,10 @@ var vm = new Vue({
                 contractAmount: '',
             },
         ],
+        pCompanyCase: '',
+        pSynopsisOfPartners: '',
         pRemark: '',
         pIsSignedCp: '',
-        pFirstSignDate: '',
-        pLimit: '',
-        //pPage:               '',	//当前页码	string
-        pDirection: '',
-        pProperty: '',
-        pBusinessAreaOth: '',
-        pBusinessProvinceOth: '',
-        pBusinessIndustryOth: '',
         // 合作伙伴机要信息字段
         mID: '',
         mContact: '',
@@ -280,10 +275,18 @@ var vm = new Vue({
         // 分页
         paging: function (type, attr) {
             console.log(type, attr);
-            this.trActive = 0; // 当前行的样式
-            this.pID = ''; // 当前行的ID,
-            this.pPage = attr; // 合伙人当前页
-            this.getPartnerData();
+            if (type === 'partner-pass') {
+                this.trActive = 0; // 当前行的样式
+                this.pID = ''; // 当前行的ID,
+                this.pPage = attr; // 合伙人当前页
+                this.getPartnerData();
+            }
+            if (type === 'partner-other') {
+                this.trActive = 0; // 当前行的样式
+                this.pID = ''; // 当前行的ID,
+                this.pPage = attr; // 合伙人当前页
+                this.getPartnerData({ inPass: 'n' });
+            }
         },
         // 选中合作伙伴当前行
         clickPartner: function (id, index) {
@@ -337,16 +340,19 @@ var vm = new Vue({
         addPartner: function () {
             var params = {
                 id: this.tempID,
-                name: '',
-                businessProvince: '',
-                businessIndustry: '',
-                solution: '',
-                registeredCapital: '',
-                type: '',
-                lastContractAmount: '',
-                remark: '',
-                isSignedCp: '',
+                name: this.pName,
+                businessProvince: this.pBusinessProvince,
+                businessIndustry: this.pBusinessIndustry,
+                solution: this.pSolution,
+                registeredCapital: this.pRegisteredCapital,
+                type: this.pType,
+                lastContractAmount: this.pLastContractAmount,
+                companyCase: this.pCompanyCase,
+                synopsisOfPartners: this.pSynopsisOfPartners,
+                remark: this.pRemark,
+                isSignedCp: this.pIsSignedCp,
             };
+            console.log(params);
         },
         // 编辑按钮只是渲染数据，只是编辑的提交有id
         editPartnerMsg: function (obj) {
@@ -468,16 +474,21 @@ var vm = new Vue({
             // });
             // console.log(this.regionProvinceList)
         },
-        // 下拉框
+        // 审批按钮事件
+        operateBtn: function (index, id, type) {
+            console.log(index, id, type);
+            axios
+                .get(PATH + '/cp/crm/addOrUpdateCustomer', { id: id })
+                .then(function (datas) {
+                console.log(datas.data);
+            });
+        },
         // 最近三年的年份设置
         setRecentYears: function () {
             var year = Number(this.currentDate.substring(0, 4));
             this.pLastContractAmount[0].year = year + '年';
             this.pLastContractAmount[1].year = year - 1 + '年';
             this.pLastContractAmount[2].year = year - 2 + '年';
-        },
-        // 分页
-        calcPage: function (type, num) {
         },
         select: function (event) {
             console.log(event);

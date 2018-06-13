@@ -31,6 +31,7 @@ let vm = new Vue({
         currentDate:        timeYear,// 报备时间
         currentDepartment:  userGroup,// 所属部门
         currentUser:        userName,// 负责销售
+        userLevel:          userLevel,// xs, xsld, dqxyh
         regionList:         [],// 区域
         provinceList:       [],// 省份
         allProvinceList:    [],// 所有省份
@@ -43,13 +44,13 @@ let vm = new Vue({
         solutionList:       [],// 合作产品
 
         // 合作伙伴的字段
-        pID:                '',// 合作伙伴的ID, 也是第一个ID,
-        pName:               '',	//合作伙伴名称	String	字符串
-        pBusinessProvince:   '',	//业务省份(城市)（协议内容）	array(object)	取字典分类,例如：[{“code”:”2323”}]
-        pBusinessIndustry:   [],	//主要业务行业(协议内容)	array(object)	取字典分类：industryLine,例如：[{“code”:”2323”}]
-        pSolution:           '',	//主要合作产品	array(object)	取解决方案大类,例如：[{“code”:”2322323}]
-        pRegisteredCapital:  '',	//注册资本	number	数字金额类型
-        pType:               '',	//合作伙伴类型	String	取字典分类：cooperativePartnerType
+        pID:                '',     // 合作伙伴的ID, 也是第一个ID,
+        pName:               '',	//合作伙伴名称
+        pBusinessProvince:   '',	//业务省份(城市)（协议内容）
+        pBusinessIndustry:   [],	//主要业务行业(协议内容)
+        pSolution:           '',	//主要合作产品
+        pRegisteredCapital:  '',	//注册资本
+        pType:               '',	//合作伙伴类型
         pLastContractAmount: [
             {
                 year: 0,
@@ -64,17 +65,11 @@ let vm = new Vue({
                 contractAmount: '',
             },
 
-        ],	//近期销售合同额	array(object)
-        pRemark:             '',	//合作伙伴简介	String	合作伙伴简介
-        pIsSignedCp:         '',	//是否是直签合作伙伴客户	String	取字典分类：yn
-        pFirstSignDate:      '',	//首次签订合作协议年月	String	2018-05
-        pLimit:              '',	//每页数量	string
-        //pPage:               '',	//当前页码	string
-        pDirection:          '',	//排序类型(asc,desc)	string
-        pProperty:           '',	//排序字段	String	type:合作伙伴类型,firstSignDate:首次签订合作协议年月
-        pBusinessAreaOth:    '',	//业务区域（协议内容）–>其它	String
-        pBusinessProvinceOth:'',	//业务省份(城市)（协议内容）–>其它	String
-        pBusinessIndustryOth:'',	//主要业务行业(协议内容)–>其它	String
+        ],	//近期销售合同额
+        pCompanyCase:        '',    //公司案例
+        pSynopsisOfPartners: '',    //合作伙伴简介
+        pRemark:             '',	//备注
+        pIsSignedCp:         '',	//是否是直签合作伙伴客户
 
 
         // 合作伙伴机要信息字段
@@ -315,10 +310,20 @@ let vm = new Vue({
         // 分页
         paging (type, attr) {
             console.log(type, attr)
-            this.trActive = 0;// 当前行的样式
-            this.pID = '';// 当前行的ID,
-            this.pPage = attr;// 合伙人当前页
-            this.getPartnerData()
+            if (type === 'partner-pass') {
+                this.trActive = 0;// 当前行的样式
+                this.pID = '';// 当前行的ID,
+                this.pPage = attr;// 合伙人当前页
+                this.getPartnerData()
+            }
+
+            if (type === 'partner-other') {
+                this.trActive = 0;// 当前行的样式
+                this.pID = '';// 当前行的ID,
+                this.pPage = attr;// 合伙人当前页
+                this.getPartnerData({inPass: 'n'})
+
+            }
         },
 
 
@@ -381,17 +386,20 @@ let vm = new Vue({
         addPartner () {
             let params = {
                 id:                 this.tempID,
-                name:               '',//合作伙伴名称
-                businessProvince:   '',//业务区域、省份
-                businessIndustry:   '',//主要业务行业
-                solution:           '',//主要合作产品
-                registeredCapital:  '',//注册资本
-                type:               '',//合作伙伴类型
-                lastContractAmount: '',//近期销售合同额
-                remark:             '',//备注
-                isSignedCp:         '',//是否是直签合作伙伴客户
-            }
+                name:               this.pName,//合作伙伴名称
+                businessProvince:   this.pBusinessProvince,//业务区域、省份
+                businessIndustry:   this.pBusinessIndustry,//主要业务行业
+                solution:           this.pSolution,//主要合作产品
+                registeredCapital:  this.pRegisteredCapital,//注册资本
+                type:               this.pType,//合作伙伴类型
+                lastContractAmount: this.pLastContractAmount,//近期销售合同额
+                companyCase:        this.pCompanyCase,    //公司案例
+                synopsisOfPartners: this.pSynopsisOfPartners,    //合作伙伴简介
+                remark:             this.pRemark,//备注
+                isSignedCp:         this.pIsSignedCp,//是否是直签合作伙伴客户
+            };
 
+            console.log(params)
         },
 
 
@@ -529,7 +537,15 @@ let vm = new Vue({
             // console.log(this.regionProvinceList)
         },
 
-        // 下拉框
+        // 审批按钮事件
+        operateBtn (index, id, type) {
+            console.log(index, id, type)
+            axios
+                .get(PATH +'/cp/crm/addOrUpdateCustomer',  {id: id} )
+                .then(datas =>{
+                    console.log(datas.data)
+                });
+        },
 
 
 
@@ -551,11 +567,6 @@ let vm = new Vue({
             this.pLastContractAmount[0].year = year +'年';
             this.pLastContractAmount[1].year = year-1 +'年';
             this.pLastContractAmount[2].year = year-2 +'年';
-
-        },
-
-        // 分页
-        calcPage (type, num) {
 
         },
 
