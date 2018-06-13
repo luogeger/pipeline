@@ -11,6 +11,7 @@
         </div>
         <div class="table-tab-item" @click="showPipelineJoin" :class="{'active' : pipelineDataShow}">
             pipeline交接
+            <span class="badge" v-text="needOperateNumber"></span>
         </div>
     </div>
     <div :class="{'hide': pipelineDataShow}">
@@ -465,19 +466,21 @@
                         </td>
                         <td>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesStaff'"
-                                  class="type-pass">待确认</span>
+                                  class="type-pending">待确认</span>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
                                   class="type-pass">已确认</span>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesStaff'"
-                                  class="type-pass">已驳回</span>
+                                  class="type-reject">已驳回</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
                                   class="type-pass">已签收</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesGroup'"
-                                  class="type-pass">待分配</span>
+                                  class="type-pending">待分配</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesStaff'"
                                   class="type-pass">已分配</span>
-                            <span v-if="userLevel == 'xsld' && (pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'rejectSalesStaff')"
-                                  class="type-pass">已驳回</span>
+                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'"
+                                  class="type-reject">已驳回</span>
+                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesStaff'"
+                                  class="type-reject">被退回</span>
                            <!-- <span v-text="pipelineList.status"></span>
                             <span v-text="pipelineList.statusName" class="type-unsubmitted"></span>-->
                         </td>

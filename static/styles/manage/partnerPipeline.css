@@ -134,7 +134,8 @@
         margin-bottom: 15px; }
       .data-wrapper .wrapper .main .dropdown-wrap,
       .data-wrapper .wrapper .main .input-group {
-        display: table; }
+        display: table;
+        line-height: 28px; }
       .data-wrapper .wrapper .main .input-group-label,
       .data-wrapper .wrapper .main .dropdown-label {
         width: 120px; }
@@ -229,7 +230,7 @@
 .star {
   color: #ff0000;
   position: absolute;
-  margin-top: 6px; }
+  margin-top: 3px; }
 
 .disabled {
   pointer-events: none;

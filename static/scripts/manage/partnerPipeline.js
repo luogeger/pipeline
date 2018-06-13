@@ -94,7 +94,7 @@ var vm = new Vue({
         noData: false,               // 搜索不到数据
 
         // ===查询审核历史记录
-        auditHistoryShow: false,   // 审核历史记录
+        auditHistoryShow: true,   // 审核历史记录
         auditHistoryTitle: '',     // 审核历史记录 客户姓名
         auditHistoryList: [],      // 审核历史记录数据
 
@@ -165,7 +165,7 @@ var vm = new Vue({
         this.getFuzzyList();       // 模糊查询客户名称
          /* this.getPreSalesStaff();     // 模糊查询售前*/
         this.openUpdateCase();      // 显示表格右侧项目更新情况
-        this.getPipelineData();     // 查询pipeline数据
+        // this.getPipelineData();     // 查询pipeline数据
     },
     methods: {
         // 关闭一级弹窗
@@ -331,7 +331,6 @@ var vm = new Vue({
             })
         },// 获取数据
         selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
-            console.log(code);
             switch (type) {
                 case 1:
                     vm.searchLists.cpCustomerCode = code;
@@ -339,7 +338,7 @@ var vm = new Vue({
                     break;
                 case 2:
                     // 判断该客户名称是否是该销售所在事业部下的
-                    if(departmentCode !== vm.handleTemplate.salesGroupCode) {
+                    if(departmentCode !== vm.oauthLists.userInfo.departmentCode) {
                         toastr.warning('不可建立此客户信息!');
                     }else {
                         // hasConcat=y   名下存在客户机要信息，hasConcat=n 不存在机要
@@ -572,6 +571,7 @@ var vm = new Vue({
 
         // 获取pipeline表格数据
         getPipelineData:  function(page, limit) {
+            console.log(userLevel,'权限。。。。。。。。。。。。。。。。。');
             this.searchLists.page = page || 1;
             this.searchLists.limit = limit || this.dataPageMost;
             console.log(this.searchLists,'获取pipeline表格数据请求参数')
@@ -594,13 +594,15 @@ var vm = new Vue({
                         vm.showOneChange(vm.pipelineData.root[0].soCoreCode, 0);
                     }
                 }
-                //vm.weightedSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.weightedSumTotal));      // 预计签约金额(万元)总计
-                //vm.expectSignSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.expectSignSumTotal));  // 加权金额总计(万元)总计
+                if(vm.pipelineData.oth) {
+                    if(vm.pipelineData.oth.weightedSumTotal) {
+                        vm.weightedSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.weightedSumTotal));      // 预计签约金额(万元)总计
+                    }
+                    if(vm.pipelineData.oth.expectSignSumTotal) {
+                        vm.expectSignSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.expectSignSumTotal));  // 加权金额总计(万元)总计
+                    }
+                }
 
-                /*for(var i = 0;i < vm.pipelineData.length;i++){
-                    var root = result.root[i];
-                    vm.items.push(root);
-                }*/
                 vm.noData = false;
                 vm.dataPageTotal = vm.pipelineData.totalProperty;
                 if(vm.dataPageTotal < 10) {
@@ -675,28 +677,21 @@ var vm = new Vue({
             this.getProvince();          // 调用（获取省份信息）
             this.getCpCustomerType();    // 调用（获取合作伙伴类型）
 
-            // 默认填写所属事业部
-            /*vm.handleTemplate.cpDepartmentKey = vm.oauthLists.userInfo.mngSalesGroups[0].code;
-            vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;*/
-
             this.dialogShow = false;           // 显示弹窗
             this.handleDataShow = false;       // 显示新增修改pipeline弹窗
-            this.auditHistoryShow = false;      // 隐藏审核记录
         },
         // 获取单条数据
         getOneData: function(id, index) {
             var params = {
                 id: id
             };
+            console.log(params,'获取单条数据的请求参数')
             axios.get(PATH +'/cp/so/selectPipeline', {params: params}).then(function(datas) {
                 var data = datas.data;
-                console.log(data,'data');
+                console.log(data,'获取单条数据的结果');
                 if(data.code === 201) return;
-                vm.handleTemplate = data.root[0];
-                console.log('-----本条数据------');
-                console.log(data.root,'data.root');
-
                 if(data.root.length != 0) {
+                    vm.handleTemplate = data.root[0];
                     vm.getProvince(vm.handleTemplate.region);                       // 省份信息
                     vm.getSoSolution4Tree('', vm.handleTemplate.solutionCode);
 
@@ -726,10 +721,11 @@ var vm = new Vue({
         },
         // 查询审核历史记录
         getHistoryLog:function(id) {
-            this.getOneData(id);               // 调用（查询一条数据接口）
-            this.dialogShow = false;          // 显示弹窗
-            this.handleDataShow = true;       // 隐藏新增修改pipeline弹窗
-            this.auditHistoryShow = true;     // 显示审核记录
+            this.getOneData(id);                // 调用（查询一条数据接口）
+            this.dialogShow = false;           // 显示弹窗
+            this.handleDataShow = true;        // 隐藏新增修改pipeline弹窗
+            this.checkDataShow = true;         // 隐藏查看pipeline弹窗
+            this.auditHistoryShow = false;     // 显示审核记录
         },
         // 点击新增按钮
         addData: function() {
@@ -737,10 +733,10 @@ var vm = new Vue({
         },
         // 点击编辑按钮
         editData: function(id, index) {
-            this.commonData();               // 调用（新增/修改共同代码）
-            this.isCheck = false;
             this.getOneData(id, index);      // 调用（查询一条数据接口）
             console.log(id,'id');
+            this.commonData();               // 调用（新增/修改共同代码）
+            this.isCheck = false;
             },
         // 选中合作伙伴类型
         selectCpCustomerTypeCode: function(code, text) {
@@ -921,10 +917,11 @@ var vm = new Vue({
         },
         // 点击分配按钮
         allotData: function(id, index) {
+            this.getOneData(id, index);      // 调用（查询一条数据接口）
             this.dialogShow = false;         // 调用（弹窗）
+            this.auditHistoryShow = true;     // 隐藏审核记录弹窗
             this.checkDataShow = false;      // 显示查看pipeline弹窗
             this.isCheck = true;
-            this.getOneData(id, index);      // 调用（查询一条数据接口）
         },
         // 1、销售老大准备分配这条数据
         allotThisData: function() {
