@@ -187,6 +187,7 @@ var vm = new Vue({
 
             // ==============pipeline交接
             // ===查询
+            needOperateNumber: 0,      // 需要交接的数字量
             noJoinData: false,          // 搜索不到数据
             pipelineData: [],           // pipeline表格数据
             weightedSumTotal: '',       // 加权金额总计
@@ -246,6 +247,7 @@ var vm = new Vue({
         // this.showData();
         this.openUpdateCase();
         this.signDate();
+        this.getPipelineData();
     },
     methods: {
         // 默认显示事业部pipeline信息
@@ -1281,6 +1283,7 @@ var vm = new Vue({
         // ================pipeline交接
         // 获取pipeline表格数据
         getPipelineData:  function(page, limit) {
+            this.needOperateNumber = 0;
             var params = {
                 page:         page || 1,
                 limit:        limit || this.joinPageMost,
@@ -1289,17 +1292,22 @@ var vm = new Vue({
             axios.get(PATH + '/cp/so/selectPipeline', {params: params}).then(function(datas) {
                 var data = datas.data;
                 vm.pipelineData = data;
-                console.log(vm.pipelineData,'vm.pipelineData');
+                console.log(vm.pipelineData,'获取pipeline表格数据');
 
                 // 如果表格无数据
                 if(vm.pipelineData.root.length === 0) {
-                    toastr.warning('没有相关信息 ！');
+                    // toastr.warning('没有相关信息 ！');
                     vm.noJoinData = true;
 
                     vm.closeUpdateCase();  // 关闭右侧项目更新情况
                     return;
                 }
-
+                for(var i = 0;i < vm.pipelineData.root.length;i++) {
+                    if(vm.pipelineData.root[i].status === 'assignSalesGroup' || vm.pipelineData.root[i].status === 'rejectSalesStaff' || vm.pipelineData.root[i].status === 'assignSalesStaff') {
+                        console.log('11');
+                        vm.needOperateNumber++;
+                    }
+                }
                 vm.noJoinData = false;
                 vm.joinPageTotal = vm.pipelineData.totalProperty;
                 vm.joinPageSum = Math.ceil(vm.joinPageTotal / vm.joinPageMost)

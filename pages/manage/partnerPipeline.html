@@ -231,7 +231,8 @@
                         <thead>
                         <tr>
                             <th>&nbsp;</th>
-                            <th><div class="highlight">操作</div></th>
+                            <th :class="{'hide': userLevel === 'dqxyh'}">
+                                <div class="highlight">操作</div></th>
                             <th><div class="highlight">
                                 状态
                             </div></th>
@@ -277,13 +278,13 @@
                                        v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel == 'xsld' && item.power == 'pro') || item.power == 'pub'"-->
                                 </div>
                             </td>
-                            <td>
+                            <td :class="{'hide': userLevel === 'dqxyh'}">
                                 <!-- 针对销售 ,当状态为未提交(至事业部,只保存在合作伙伴部)时/驳回时/撤回时，显示编辑按钮-->
                                 <div v-if="userLevel == 'xs' && (pipelineList.status == 'unsubmitted' || pipelineList.status == 'reject' || pipelineList.status == 'revoke')"
                                      @click="editData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border">编辑</div>
-                                <!-- 针对销售 ,当状态为已分配/直销事业部驳回/已签收时，显示编辑按钮，但不可点击-->
-                                <div v-if="userLevel == 'xs' && (pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'signIn')"
+                                <!-- 针对销售 ,当状态为已分配/直销事业部驳回/已签收/待签收时，显示编辑按钮，但不可点击-->
+                                <div v-if="userLevel == 'xs' && (pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'signIn' || pipelineList.status == 'assignSalesStaff')"
                                      @click="editData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border disabled">编辑</div>
                                 <!-- 针对销售 ,当状态为待分配时，显示撤回按钮-->
@@ -295,26 +296,26 @@
                                 <div v-if="userLevel == 'xsld' && (pipelineList.status == 'pending' || pipelineList.status == 'rejectSalesGroup')"
                                      @click="allotData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border">分配</div>
-                                <!-- 针对销售老大 ,当状态为已驳回/已分配/已签收时，显示分配按钮，但不可点击-->
-                                <div v-if="userLevel == 'xsld' && (pipelineList.status == 'reject' || pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'signIn')"
+                                <!-- 针对销售老大 ,当状态为已驳回/已分配/已签收/待签收时，显示分配按钮，但不可点击-->
+                                <div v-if="userLevel == 'xsld' && (pipelineList.status == 'reject' || pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'signIn' || pipelineList.status == 'assignSalesStaff')"
                                      @click="allotData(pipelineList.id, index)"
                                      class="btn btn-xs btn-border disabled">分配</div>
                             </td>
                             <td>
-                                <!--审批类型:(reject:驳回,revoke:撤回,submit:提交,pass:通过,signIn:签收)-->
                                 <span v-if="pipelineList.status == 'unsubmitted'" class="type-unsubmitted">未提交</span>
-                                <span v-if="pipelineList.status == 'assignSalesGroup' " class="type-pass">已分配</span>
                                 <span v-if="pipelineList.status == 'pending'" class="type-pending">待分配</span>
                                 <span v-if="pipelineList.status == 'revoke'" class="type-revoke">已撤回</span>
-                                <span v-if="pipelineList.status == 'pass' " class="type-pass">通过</span>
+                                <span v-if="pipelineList.status == 'assignSalesGroup'" class="type-pass">已分配</span>
+                                <span v-if="pipelineList.status == 'signIn'" class="type-pass">已签收</span>
+                                <span v-if="pipelineList.status == 'assignSalesStaff'" class="type-pending">待签收</span>
+
                                 <span v-if="userLevel == 'xs' && pipelineList.status == 'reject'" class="type-reject">被驳回</span>
                                 <span v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesGroup'" class="type-pending">待分配</span>
-                                <span v-if="userLevel == 'xs' && pipelineList.status == 'signIn'" class="type-pass">已签收</span>
+
                                 <span v-if="userLevel == 'xsld' && pipelineList.status == 'reject'" class="type-reject">已驳回</span>
                                 <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'" class="type-reject">被驳回</span>
-                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'" class="type-pass">已签收</span>
-                               <!-- <span v-text="pipelineList.status"></span>
-                                <span v-text="pipelineList.statusName" class="type-unsubmitted"></span>-->
+
+                                <!--<span v-text="pipelineList.status"></span>-->
                             </td>
                             <td v-if="pipelineList.departmentName === null">-</td>
                             <td v-if="pipelineList.departmentName !== null" v-text="pipelineList.departmentName"></td>
@@ -330,7 +331,9 @@
                             <td>
                                 <div class="onetext" v-text="pipelineList.cpCustomerName"></div>
                             </td>
-                            <td v-text="pipelineList.cpCustomerTypeName"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.cpCustomerTypeName"></div>
+                            </td>
                             <td>
                                 <div class="onetext" v-text="pipelineList.customerName"></div>
                             </td>
@@ -349,7 +352,9 @@
                             <td>
                                 <div class="onetext" v-text="pipelineList.projectFollowUpRemark"></div>
                             </td>
-                            <td v-text="pipelineList.competitor"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.competitor"></div>
+                            </td>
                             <td v-text="pipelineList.customerSourceName"></td>
                         </tr>
                         </tbody>
@@ -881,7 +886,7 @@
             </div><!-- /.main -->
         </div>
         <!-- 查询审核历史记录 -->
-        <div v-if="auditHistoryShow" class="dialog-content audit-history">
+        <div :class="{'hide': auditHistoryShow}" class="dialog-content audit-history">
             <div class="title clearfix">
                 <span>审核记录：</span><span v-text="auditHistoryTitle"></span>
                 <p @click="dialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>

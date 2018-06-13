@@ -195,6 +195,7 @@
       .dropdown-wrap,
       .input-group {
         display: table;
+        line-height: 28px;
       }
       .input-group-label,
       .dropdown-label {
@@ -336,7 +337,7 @@
 .star {
   color: #ff0000;
   position: absolute;
-  margin-top: 6px;
+  margin-top: 3px;
 }
 .disabled {
   pointer-events: none;
