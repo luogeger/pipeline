@@ -24,6 +24,7 @@ let vm = new Vue({
 
 
         // 弹窗
+        submitBtnIsShow:    false,// 添加和编辑 合伙人，机要信息的按钮
         addAndEdit:         false,// 添加和编辑 合伙人，机要信息的弹窗
         addPartnerPop:      false,// 合作伙伴
         addPartnerMsgPop:   false,// 合作伙伴信息
@@ -49,7 +50,21 @@ let vm = new Vue({
         pSolution:           '',	//主要合作产品	array(object)	取解决方案大类,例如：[{“code”:”2322323}]
         pRegisteredCapital:  '',	//注册资本	number	数字金额类型
         pType:               '',	//合作伙伴类型	String	取字典分类：cooperativePartnerType
-        pLastContractAmount: '',	//近期销售合同额	array(object)
+        pLastContractAmount: [
+            {
+                year: 0,
+                contractAmount: '',
+            },
+            {
+                year: 0,
+                contractAmount: '',
+            },
+            {
+                year: 0,
+                contractAmount: '',
+            },
+
+        ],	//近期销售合同额	array(object)
         pRemark:             '',	//合作伙伴简介	String	合作伙伴简介
         pIsSignedCp:         '',	//是否是直签合作伙伴客户	String	取字典分类：yn
         pFirstSignDate:      '',	//首次签订合作协议年月	String	2018-05
@@ -76,7 +91,7 @@ let vm = new Vue({
         mMark:              '',
         mRegionCode:        '',// 机要区域code
         mProvinceCode:      '',// 机要省份code
-        mRegionText:        '华东区',// 机要区域文本
+        mRegionText:        '',// 机要区域文本
         mProvinceText:      '',//机要城市文本
 
 
@@ -320,29 +335,34 @@ let vm = new Vue({
             console.log(type)
             this[type] = true;
             if (type === 'addPartnerPop') {
+                this.submitBtnIsShow  = true;// 添加和编辑 合伙人，机要信息的按钮
+                this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerPop    = true;
+                this.addPartnerMsgPop = true;
+
                 this.getRegion()
                 this.getProvince()
                 this.getAllProvince()// 所有省份
                 this.getPartnerType()// 合伙人类型
                 this.getIndustry()// 行业
                 this.getSolution()// 合作产品
-
-
-                this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
-                this.addPartnerPop    = true;
-                this.addPartnerMsgPop = true;
+                this.setRecentYears()// 最近三年年份设置
             }
 
             if (type === 'addPartnerMsgPop') {
-                this.getRegion()
-                this.getProvince()
+                this.submitBtnIsShow  = false;// 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerMsgPop = true;
+
+
+                this.getRegion()
+                this.getProvince()
             }
         },
 
         // 提交事件
         submitBtn (type) {
+            if (type === 'addPartner') this.addPartner();
             if (type === 'addPartnerMsg') this.addPartnerMsg();
         },
 
@@ -350,14 +370,32 @@ let vm = new Vue({
         editBtn (type, id, obj) {
             this.tempID = id;
             if (type === 'partnerMsg') {
+                this.submitBtnIsShow  = false;// 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerMsgPop = true;
                 this.editPartnerMsg(obj);
             }
         },
 
+        // 确认提交合作伙伴 有id 就相当于是编辑
+        addPartner () {
+            let params = {
+                id:                 this.tempID,
+                name:               '',//合作伙伴名称
+                businessProvince:   '',//业务区域、省份
+                businessIndustry:   '',//主要业务行业
+                solution:           '',//主要合作产品
+                registeredCapital:  '',//注册资本
+                type:               '',//合作伙伴类型
+                lastContractAmount: '',//近期销售合同额
+                remark:             '',//备注
+                isSignedCp:         '',//是否是直签合作伙伴客户
+            }
+
+        },
 
 
+        // 编辑按钮只是渲染数据，只是编辑的提交有id
         editPartnerMsg (obj) {
             console.log(obj)
             this.addPartnerMsgPop = true;
@@ -507,8 +545,14 @@ let vm = new Vue({
 
 
 
+        // 最近三年的年份设置
+        setRecentYears () {
+            let year = Number(this.currentDate.substring(0,4));
+            this.pLastContractAmount[0].year = year +'年';
+            this.pLastContractAmount[1].year = year-1 +'年';
+            this.pLastContractAmount[2].year = year-2 +'年';
 
-
+        },
 
         // 分页
         calcPage (type, num) {

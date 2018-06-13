@@ -18,6 +18,7 @@ var vm = new Vue({
         engineerList: [],
         trActive: 0,
         // 弹窗
+        submitBtnIsShow: false,
         addAndEdit: false,
         addPartnerPop: false,
         addPartnerMsgPop: false,
@@ -42,7 +43,20 @@ var vm = new Vue({
         pSolution: '',
         pRegisteredCapital: '',
         pType: '',
-        pLastContractAmount: '',
+        pLastContractAmount: [
+            {
+                year: 0,
+                contractAmount: '',
+            },
+            {
+                year: 0,
+                contractAmount: '',
+            },
+            {
+                year: 0,
+                contractAmount: '',
+            },
+        ],
         pRemark: '',
         pIsSignedCp: '',
         pFirstSignDate: '',
@@ -67,7 +81,7 @@ var vm = new Vue({
         mMark: '',
         mRegionCode: '',
         mProvinceCode: '',
-        mRegionText: '华东区',
+        mRegionText: '',
         mProvinceText: '',
         // 筛选数据
         selectList: [
@@ -282,25 +296,30 @@ var vm = new Vue({
             console.log(type);
             this[type] = true;
             if (type === 'addPartnerPop') {
+                this.submitBtnIsShow = true; // 添加和编辑 合伙人，机要信息的按钮
+                this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
+                this.addPartnerPop = true;
+                this.addPartnerMsgPop = true;
                 this.getRegion();
                 this.getProvince();
                 this.getAllProvince(); // 所有省份
                 this.getPartnerType(); // 合伙人类型
                 this.getIndustry(); // 行业
                 this.getSolution(); // 合作产品
-                this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
-                this.addPartnerPop = true;
-                this.addPartnerMsgPop = true;
+                this.setRecentYears(); // 最近三年年份设置
             }
             if (type === 'addPartnerMsgPop') {
-                this.getRegion();
-                this.getProvince();
+                this.submitBtnIsShow = false; // 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerMsgPop = true;
+                this.getRegion();
+                this.getProvince();
             }
         },
         // 提交事件
         submitBtn: function (type) {
+            if (type === 'addPartner')
+                this.addPartner();
             if (type === 'addPartnerMsg')
                 this.addPartnerMsg();
         },
@@ -308,11 +327,28 @@ var vm = new Vue({
         editBtn: function (type, id, obj) {
             this.tempID = id;
             if (type === 'partnerMsg') {
+                this.submitBtnIsShow = false; // 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerMsgPop = true;
                 this.editPartnerMsg(obj);
             }
         },
+        // 确认提交合作伙伴 有id 就相当于是编辑
+        addPartner: function () {
+            var params = {
+                id: this.tempID,
+                name: '',
+                businessProvince: '',
+                businessIndustry: '',
+                solution: '',
+                registeredCapital: '',
+                type: '',
+                lastContractAmount: '',
+                remark: '',
+                isSignedCp: '',
+            };
+        },
+        // 编辑按钮只是渲染数据，只是编辑的提交有id
         editPartnerMsg: function (obj) {
             console.log(obj);
             this.addPartnerMsgPop = true;
@@ -433,6 +469,13 @@ var vm = new Vue({
             // console.log(this.regionProvinceList)
         },
         // 下拉框
+        // 最近三年的年份设置
+        setRecentYears: function () {
+            var year = Number(this.currentDate.substring(0, 4));
+            this.pLastContractAmount[0].year = year + '年';
+            this.pLastContractAmount[1].year = year - 1 + '年';
+            this.pLastContractAmount[2].year = year - 2 + '年';
+        },
         // 分页
         calcPage: function (type, num) {
         },

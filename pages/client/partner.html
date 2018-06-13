@@ -248,7 +248,7 @@
                 <div class="inline-block " style="width: 49%;">
                     <div class="row-item-label" style="width: 30%;">注册资本(万元)：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pRegisteredCapital" type="text" class="input-group-form">
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
@@ -271,22 +271,25 @@
                     <span class="key">近3年合同额(万元)：</span>
                 </div>
                 <div class="inline-block" style="width: 25%;">
-                    <div class="row-item-label text-right" style="width: 52%;">2018年</div>
+                    <div v-text="pLastContractAmount[0].year"
+                         class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pLastContractAmount[0].contractAmount" type="text" class="input-group-form">
                     </div>
                 </div>
                 <div class="inline-block" style="width: 25%;">
-                    <div class="row-item-label text-right" style="width: 52%;">2017年</div>
+                    <div v-text="pLastContractAmount[1].year"
+                         class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pLastContractAmount[1].contractAmount" type="text" class="input-group-form">
                     </div>
 
                 </div>
                 <div class="inline-block pull-right" style="width: 25%;">
-                    <div class="row-item-label text-right" style="width: 52%;">2016年</div>
+                    <div v-text="pLastContractAmount[2].year"
+                         class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pLastContractAmount[2].contractAmount" type="text" class="input-group-form">
                     </div>
 
                 </div>
@@ -313,7 +316,6 @@
                     <textarea></textarea>
                 </div>
             </div><!-- 备注 -->
-
         </div><!-- /.pop-main -->
 
 
@@ -352,7 +354,8 @@
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">手机号码：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input v-model="mPhone" type="text" class="input-group-form">
+                        <i-input :verify-msg="'手机号码不能为空'"
+                                 v-model="mPhone"></i-input>
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
@@ -407,12 +410,16 @@
                 </div>
             </div><!-- 备注 -->
 
+        </div><!-- /.pop-main -->
+
+        <div class="pop-main">
             <div class="row-item">
                 <div class="row-item-form">
-                    <div @click="submitBtn('addPartnerMsg')" class="btn btn-theme">提交</div>
+                    <div v-if="submitBtnIsShow" @click="submitBtn('addPartner')" class="btn btn-theme">首次提交</div>
+                    <div v-if="!submitBtnIsShow"  @click="submitBtn('addPartnerMsg')" class="btn btn-theme">提交</div>
                 </div>
             </div>
-        </div><!-- /.pop-main -->
+        </div><!-- /.提交按钮 -->
     </pop-up>
 
 
