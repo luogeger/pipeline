@@ -571,7 +571,6 @@ var vm = new Vue({
 
         // 获取pipeline表格数据
         getPipelineData:  function(page, limit) {
-            console.log(userLevel,'权限。。。。。。。。。。。。。。。。。');
             this.searchLists.page = page || 1;
             this.searchLists.limit = limit || this.dataPageMost;
             console.log(this.searchLists,'获取pipeline表格数据请求参数')

@@ -4,6 +4,7 @@
   background-color: #fff;
   margin-top: 30px;
   position: absolute;
+  overflow: hidden;
 }
 .welcome-wrapper {
   padding: 2%;
@@ -19,17 +20,17 @@
       margin: 50px 0;
     }
     ul {
-      margin-top: 70px;
+      margin-top: 50px;
       li {
         float: left;
         width: 33.33%;
-        padding: 0 20px;
+        padding: 0 25px;
 
         .text-style {
           position: relative;
           color: #ed6d00;
           font-size: 28px;
-          padding: 15px 25px;
+          padding: 15px;
           border-radius: 5px;
           border: 1px solid #a8b6c3;
         }
