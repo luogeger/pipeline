@@ -33,8 +33,7 @@ Vue.component('select-list', {
     watch: {
         dataList () {
             //this.$emit('input', this.dataList[this.nowIndex].code);
-            console.log(this.dataList)
-            if (this.checkedList.length) {
+            if (this.checkedList && this.checkedList.length) {
                 this.dataList.forEach((item, index) => {
                     if (item.text === this.checkedList[0].text ) {
                         this.nowIndex = index;
@@ -325,12 +324,15 @@ Vue.component('multiple-list', {
                 value: 0
             }]
         },
+        defaultList: {
+            type: Array,
+        },
         value: '',
     },// props
 
     data () {
         return {
-            nowIndex: 0,
+            // nowIndex: 0,
             isShow: false,
             activeIsShow: false,
             checkedIndex: [],
@@ -346,11 +348,27 @@ Vue.component('multiple-list', {
     },
 
     created () {
-
     },
 
     watch: {
         dataList () {
+            // console.log('data,', this.dataList)
+            // console.log('default', this.defaultList)
+            if (this.defaultList && this.defaultList.length) {
+                this.defaultList.forEach(item => {
+                    this.dataList.forEach((_item, index) => {
+                        if (item.code === _item.code) {
+                            this.checkedIndex.push(index);
+                            this.checkedList.push(this.dataList[index]);
+                            this.styleShow(index)
+                        }
+                    })
+                });
+                this.textShow()
+                this.$emit('input', this.checkedList);
+                // console.log('checkedIndex,', this.checkedIndex)
+                // console.log('checkedList,', this.checkedList)
+            }
 
         }
     },
@@ -361,30 +379,37 @@ Vue.component('multiple-list', {
             this.isShow = !this.isShow;
         },
         chooseShow (index) {
+            // console.log('index,', index)
+            // console.log('checkedIndex,', this.checkedIndex)
+            // console.log('checkedList,', this.checkedList)
+            this.isShow = false;
+
             if(this.checkedIndex.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
                 this.checkedIndex.push(index);
-                this.checkedList.push(this.dataList[index])// 删除
+                this.checkedList.push(this.dataList[index])//
             } else{ // 如果在就把这index从临时数组删除
-                index = this.checkedIndex.indexOf(index);
-                this.checkedIndex.splice(index, 1);
-
+                this.checkedIndex.splice(this.checkedIndex.indexOf(index), 1);//
                 let _index = this.checkedList.indexOf(this.dataList[index]);
                 this.checkedList.splice(_index, 1)
             }
+            console.log('checkedList,', this.checkedList)
+            this.$emit('input', this.checkedList);
+            this.textShow()
 
+            console.log('checkedList,', this.checkedList)
+        },
 
-
+        textShow () {
             let text = [];
             this.checkedList.forEach(item => {
                 text.push(item.text);
             });
             this.checkedText = text.join('，');
-
-            this.$emit('input', this.checkedList);
-            this.isShow = false;
         },
 
-
+        styleShow (index) {
+            return this.checkedIndex.indexOf(index) !== -1
+        },
     },// methods
 
     template:
@@ -401,11 +426,12 @@ Vue.component('multiple-list', {
                 <div class="selection-list" v-if="isShow">
                     <ul>
                         <li v-for="(item, index) in dataList" 
-                            :class="{'i-text-col': checkedIndex.indexOf(index) !== -1}"
+                            :class="{'i-text-col': styleShow(index)}"
+                            :key="item.code"
                             @click="chooseShow(index)">
                             <span v-text="item.text"></span>
                             <transition name="fade">
-                                <i v-if="checkedIndex.indexOf(index) !== -1" class="fa fa-check"></i>
+                                <i v-if="styleShow(index)" class="fa fa-check"></i>
                             </transition>   
                         </li>
                     </ul>

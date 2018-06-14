@@ -45,7 +45,9 @@ let vm = new Vue({
         partnerTypeList:    [],// 合伙人类型 下拉框
         partnerTypeCheckedList: [],//默认选中，编辑的时候用到
         industryList:       [],// 业务行业
+        checkedIndustryList:       [],// 编辑的选中
         solutionList:       [],// 合作产品
+        checkedSolutionList:[],// 编辑的选中
         radioIsShow:        false,// 是否直签
 
 
@@ -54,7 +56,7 @@ let vm = new Vue({
         pName:               '',	//合作伙伴名称
         pBusinessProvince:   [],	//业务省份(城市)（协议内容）
         pBusinessIndustry:   [],	//主要业务行业(协议内容)
-        pSolution:           '',	//主要合作产品
+        pSolution:           [],	//主要合作产品
         pRegisteredCapital:  '',	//注册资本
         pType:               '',	//合作伙伴类型
         pLastContractAmount: [
@@ -295,7 +297,8 @@ let vm = new Vue({
             this.mAddress = '';
 
             // 合伙人
-            this.partnerTypeCheckedList = [];
+            this.partnerTypeCheckedList = [];// 合作伙伴类型
+            this.checkedIndustryList    = [];// 业务行业清空
 
             //
             this.addAndEdit       = false;// 添加和编辑 合伙人，机要信息的弹窗
@@ -597,11 +600,12 @@ let vm = new Vue({
             this.getSolution()// 合作产品
 
 
-            let partnerTypeCheckedItem = {
+            let typeItem = {
                 code: item.typeCode,
                 text: item.type,
             };
-            this.partnerTypeCheckedList.push(partnerTypeCheckedItem);
+            this.partnerTypeCheckedList.push(typeItem);
+            this.checkedIndustryList = item.businessIndustry
 
         },
 

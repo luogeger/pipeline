@@ -32,8 +32,7 @@ Vue.component('select-list', {
         dataList: function () {
             var _this = this;
             //this.$emit('input', this.dataList[this.nowIndex].code);
-            console.log(this.dataList);
-            if (this.checkedList.length) {
+            if (this.checkedList && this.checkedList.length) {
                 this.dataList.forEach(function (item, index) {
                     if (item.text === _this.checkedList[0].text) {
                         _this.nowIndex = index;
@@ -215,11 +214,14 @@ Vue.component('multiple-list', {
                     value: 0
                 }]
         },
+        defaultList: {
+            type: Array,
+        },
         value: '',
     },
     data: function () {
         return {
-            nowIndex: 0,
+            // nowIndex: 0,
             isShow: false,
             activeIsShow: false,
             checkedIndex: [],
@@ -238,6 +240,24 @@ Vue.component('multiple-list', {
     },
     watch: {
         dataList: function () {
+            var _this = this;
+            // console.log('data,', this.dataList)
+            // console.log('default', this.defaultList)
+            if (this.defaultList && this.defaultList.length) {
+                this.defaultList.forEach(function (item) {
+                    _this.dataList.forEach(function (_item, index) {
+                        if (item.code === _item.code) {
+                            _this.checkedIndex.push(index);
+                            _this.checkedList.push(_this.dataList[index]);
+                            _this.styleShow(index);
+                        }
+                    });
+                });
+                this.textShow();
+                this.$emit('input', this.checkedList);
+                // console.log('checkedIndex,', this.checkedIndex)
+                // console.log('checkedList,', this.checkedList)
+            }
         }
     },
     methods: {
@@ -245,24 +265,34 @@ Vue.component('multiple-list', {
             this.isShow = !this.isShow;
         },
         chooseShow: function (index) {
+            // console.log('index,', index)
+            // console.log('checkedIndex,', this.checkedIndex)
+            // console.log('checkedList,', this.checkedList)
+            this.isShow = false;
             if (this.checkedIndex.indexOf(index) === -1) {
                 this.checkedIndex.push(index);
-                this.checkedList.push(this.dataList[index]); // 删除
+                this.checkedList.push(this.dataList[index]); //
             }
             else {
-                index = this.checkedIndex.indexOf(index);
-                this.checkedIndex.splice(index, 1);
+                this.checkedIndex.splice(this.checkedIndex.indexOf(index), 1); //
                 var _index = this.checkedList.indexOf(this.dataList[index]);
                 this.checkedList.splice(_index, 1);
             }
+            console.log('checkedList,', this.checkedList);
+            this.$emit('input', this.checkedList);
+            this.textShow();
+            console.log('checkedList,', this.checkedList);
+        },
+        textShow: function () {
             var text = [];
             this.checkedList.forEach(function (item) {
                 text.push(item.text);
             });
             this.checkedText = text.join('，');
-            this.$emit('input', this.checkedList);
-            this.isShow = false;
+        },
+        styleShow: function (index) {
+            return this.checkedIndex.indexOf(index) !== -1;
         },
     },
-    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"checkedText\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            :class=\"{'i-text-col': checkedIndex.indexOf(index) !== -1}\"\n                            @click=\"chooseShow(index)\">\n                            <span v-text=\"item.text\"></span>\n                            <transition name=\"fade\">\n                                <i v-if=\"checkedIndex.indexOf(index) !== -1\" class=\"fa fa-check\"></i>\n                            </transition>   \n                        </li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
+    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"checkedText\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            :class=\"{'i-text-col': styleShow(index)}\"\n                            :key=\"item.code\"\n                            @click=\"chooseShow(index)\">\n                            <span v-text=\"item.text\"></span>\n                            <transition name=\"fade\">\n                                <i v-if=\"styleShow(index)\" class=\"fa fa-check\"></i>\n                            </transition>   \n                        </li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
 });

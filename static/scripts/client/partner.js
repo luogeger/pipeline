@@ -39,14 +39,16 @@ var vm = new Vue({
         partnerTypeList: [],
         partnerTypeCheckedList: [],
         industryList: [],
+        checkedIndustryList: [],
         solutionList: [],
+        checkedSolutionList: [],
         radioIsShow: false,
         // 合作伙伴的字段
         pID: '',
         pName: '',
         pBusinessProvince: [],
         pBusinessIndustry: [],
-        pSolution: '',
+        pSolution: [],
         pRegisteredCapital: '',
         pType: '',
         pLastContractAmount: [
@@ -268,7 +270,8 @@ var vm = new Vue({
             this.mProvinceText = '';
             this.mAddress = '';
             // 合伙人
-            this.partnerTypeCheckedList = [];
+            this.partnerTypeCheckedList = []; // 合作伙伴类型
+            this.checkedIndustryList = []; // 业务行业清空
             //
             this.addAndEdit = false; // 添加和编辑 合伙人，机要信息的弹窗
             this.addPartnerPop = false; // 隐藏
@@ -529,11 +532,12 @@ var vm = new Vue({
             this.getPartnerType(); // 合伙人类型
             this.getIndustry(); // 行业
             this.getSolution(); // 合作产品
-            var partnerTypeCheckedItem = {
+            var typeItem = {
                 code: item.typeCode,
                 text: item.type,
             };
-            this.partnerTypeCheckedList.push(partnerTypeCheckedItem);
+            this.partnerTypeCheckedList.push(typeItem);
+            this.checkedIndustryList = item.businessIndustry;
         },
         // 直签
         isSignedCp: function (flag) {

@@ -284,8 +284,10 @@
                 <div class="row-item-label">主要业务行业：</div>
                 <div class="row-item-form input-group">
                     <multiple-list :data-list="industryList"
+                                   :default-list="checkedIndustryList"
                                    v-model="pBusinessIndustry"
                     ></multiple-list>
+
                 </div>
             </div><!-- 行业 -->
 
