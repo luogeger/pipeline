@@ -4,8 +4,10 @@ Vue.component('select-list', {
             type: Array,
             default: [{
                 text: '',
-                value: 0
             }]
+        },
+        checkedList: {
+            type: Array
         },
         value: ''
     },// props
@@ -14,6 +16,7 @@ Vue.component('select-list', {
         return {
             nowIndex: 0,
             isShow: false,
+            defaultText: '请选择 --'
         }
     },// data
 
@@ -23,10 +26,25 @@ Vue.component('select-list', {
         })
     },
 
+    created () {
+        // 在watch
+    },
+
     watch: {
         dataList () {
-            this.$emit('input', this.dataList[this.nowIndex].code);
-        }
+            //this.$emit('input', this.dataList[this.nowIndex].code);
+            console.log(this.dataList)
+            if (this.checkedList.length) {
+                this.dataList.forEach((item, index) => {
+                    if (item.text === this.checkedList[0].text ) {
+                        this.nowIndex = index;
+                        this.defaultText = this.dataList[this.nowIndex].text;
+                        this.$emit('input', this.dataList[this.nowIndex].code);
+                        return;
+                    }
+                })
+            }
+        },
     },
 
 
@@ -38,8 +56,10 @@ Vue.component('select-list', {
         chooseShow (index) {
             this.isShow = false;
             this.nowIndex = index;
+            this.defaultText = this.dataList[this.nowIndex].text;
             this.$emit('input', this.dataList[this.nowIndex].code);
-        }
+        },
+
     },// methods
 
     template:
@@ -47,7 +67,7 @@ Vue.component('select-list', {
             <div class="selection-show" 
                  :class="{'i-border-col i-border-shadow i-icon-col': isShow}"
                  @click="toggleShow">
-                <span v-text="(dataList && dataList.length) ? dataList[nowIndex].text:''"
+                <span v-text="defaultText"
                       class="default-text"></span>
                 <i class="fa fa-angle-down"
                    :class="{'rotate-180': isShow}"></i>

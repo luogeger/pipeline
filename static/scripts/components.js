@@ -4,8 +4,10 @@ Vue.component('select-list', {
             type: Array,
             default: [{
                     text: '',
-                    value: 0
                 }]
+        },
+        checkedList: {
+            type: Array
         },
         value: ''
     },
@@ -13,6 +15,7 @@ Vue.component('select-list', {
         return {
             nowIndex: 0,
             isShow: false,
+            defaultText: '请选择 --'
         };
     },
     mounted: function () {
@@ -22,10 +25,25 @@ Vue.component('select-list', {
                 _this.isShow = false;
         });
     },
+    created: function () {
+        // 在watch
+    },
     watch: {
         dataList: function () {
-            this.$emit('input', this.dataList[this.nowIndex].code);
-        }
+            var _this = this;
+            //this.$emit('input', this.dataList[this.nowIndex].code);
+            console.log(this.dataList);
+            if (this.checkedList.length) {
+                this.dataList.forEach(function (item, index) {
+                    if (item.text === _this.checkedList[0].text) {
+                        _this.nowIndex = index;
+                        _this.defaultText = _this.dataList[_this.nowIndex].text;
+                        _this.$emit('input', _this.dataList[_this.nowIndex].code);
+                        return;
+                    }
+                });
+            }
+        },
     },
     methods: {
         toggleShow: function () {
@@ -35,10 +53,11 @@ Vue.component('select-list', {
         chooseShow: function (index) {
             this.isShow = false;
             this.nowIndex = index;
+            this.defaultText = this.dataList[this.nowIndex].text;
             this.$emit('input', this.dataList[this.nowIndex].code);
-        }
+        },
     },
-    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"(dataList && dataList.length) ? dataList[nowIndex].text:''\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            v-text=\"item.text\"\n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\"></li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
+    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"defaultText\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            v-text=\"item.text\"\n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\"></li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
 }); // select-list
 Vue.component('pop-up', {
     props: {

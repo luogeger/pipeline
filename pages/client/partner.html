@@ -102,7 +102,7 @@
                                  class="btn btn-xs btn-border">审批</div>
 
                             <div v-if="item.status !== 'pending'"
-                                 @click="operateBtn(index, item.id, 'edit')"
+                                 @click="operateBtn(index, item.id, 'edit', item)"
                                  class="btn btn-xs btn-border">编辑</div>
 
                             <div v-if="item.status == 'pending' && userLevel == 'xs'"
@@ -112,13 +112,6 @@
                             <div v-if="item.status == 'reject' || item.status == 'revoke'"
                                  @click="operateBtn(index, item.id, 'ignore')"
                                  class="btn btn-xs btn-border">忽略</div>
-
-
-
-
-
-
-
                             <!-- 历史记录 -->
                             <div class="btn btn-xs">
                                 <i class="fa fa-clock-o"></i>
@@ -215,18 +208,32 @@
 
     <!-- /.(添加、编辑) (合作伙伴、机要信息)  -->
     <pop-up :is-show="addAndEdit" @on-close="popUp('addPartnerPop')">
-        <div v-if="addPartnerPop" class="title"><p>添加合作伙伴</p></div>
+        <div v-if="titleAddPartner" class="title"><p>添加合作伙伴</p></div>
+        <div v-if="titleEditPartner" class="title"><p>编辑合作伙伴</p></div>
         <div v-if="addPartnerPop" class="pop-main">
             <div class="row-item">
-                <div class="inline-block " style="width: 33%;">
+                <div class="inline-block " style="width: 25%;">
                     <span class="key">报备时间：</span>
                     <span class="value" v-text="currentDate"></span></div>
-                <div class="inline-block " style="width: 33%;">
+                <div class="inline-block " style="width: 25%;">
                     <span class="key">所在部门：</span>
                     <span class="value" v-text="currentDepartment"></span></div>
-                <div class="inline-block " style="width: 33%;">
+                <div class="inline-block " style="width: 24%;">
                     <span class="key">负责销售：</span>
                     <span class="value" v-text="currentUser"></span></div>
+                <div class="inline-block" style="width: 24%;">
+                    <span class="key">签约合作伙伴：</span>
+                    <span @click="isSignedCp('y')" class="value" style="margin-left: 10px; cursor: pointer;">
+                        是&nbsp;
+                        <i v-if="!(pIsSignedCp == 'y')" class="fa fa-circle-o"></i>
+                        <i v-if="pIsSignedCp == 'y'" class="fa fa-dot-circle-o i-text-col"></i>
+                    </span>
+                    <span @click="isSignedCp('n')" class="value" style="margin-left: 10px; cursor: pointer;">
+                        否&nbsp;
+                        <i v-if="!(pIsSignedCp == 'n')" class="fa fa-circle-o"></i>
+                        <i v-if="pIsSignedCp == 'n'" class="fa fa-dot-circle-o i-text-col" ></i>
+                    </span>
+                </div>
             </div><!-- 基本信息 -->
 
             <div class="row-item">
@@ -302,6 +309,7 @@
                     <div class="row-item-label text-center" style="width: 35%;">合作伙伴类型：</div>
                     <div class="row-item-form input-group" style="width: 65%;">
                         <select-list :data-list="partnerTypeList"
+                                     :checked-list="partnerTypeCheckedList"
                                      v-model="pType"></select-list>
                     </div>
                 </div>
@@ -366,7 +374,8 @@
         </div><!-- /.pop-main -->
 
 
-        <div v-if="addPartnerMsgPop" class="title"><p>添加合作伙伴机要信息</p></div>
+        <div v-if="titleAddMsg" class="title"><p>添加合作伙伴机要信息</p></div>
+        <div v-if="titleEditMsg" class="title"><p>编辑合作伙伴机要信息</p></div>
         <div v-if="addPartnerMsgPop" class="pop-main">
             <div class="row-item">
                 <div class="inline-block" style="width: 49%;">

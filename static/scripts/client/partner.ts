@@ -28,6 +28,10 @@ let vm = new Vue({
         addAndEdit:         false,// 添加和编辑 合伙人，机要信息的弹窗
         addPartnerPop:      false,// 合作伙伴
         addPartnerMsgPop:   false,// 合作伙伴信息
+        titleAddPartner: false,
+        titleEditPartner: false,
+        titleAddMsg: false,
+        titleEditMsg: false,
         currentDate:        timeYear,// 报备时间
         currentDepartment:  userGroup,// 所属部门
         currentUser:        userName,// 负责销售
@@ -36,17 +40,19 @@ let vm = new Vue({
         provinceList:       [],// 省份
         allProvinceList:    [],// 所有省份
         regionProvinceItem: {},// 选中的省份item
-        regionProvinceList: [],// 选中的省份list
         regionProvinceText: '',// 选中的省分text
         regionProvinceIsShow: false,// 合作伙伴的区域和省份
         partnerTypeList:    [],// 合伙人类型 下拉框
+        partnerTypeCheckedList: [],//默认选中，编辑的时候用到
         industryList:       [],// 业务行业
         solutionList:       [],// 合作产品
+        radioIsShow:        false,// 是否直签
+
 
         // 合作伙伴的字段
         pID:                '',     // 合作伙伴的ID, 也是第一个ID,
         pName:               '',	//合作伙伴名称
-        pBusinessProvince:   '',	//业务省份(城市)（协议内容）
+        pBusinessProvince:   [],	//业务省份(城市)（协议内容）
         pBusinessIndustry:   [],	//主要业务行业(协议内容)
         pSolution:           '',	//主要合作产品
         pRegisteredCapital:  '',	//注册资本
@@ -163,7 +169,7 @@ let vm = new Vue({
     },// data
 
     created () {
-        this.tabBtn(4, 'partner-other');// 显示第一个tab
+        this.tabBtn(0, 'partner-pass');// 显示第一个tab
         this.getIndustry()
     },
 
@@ -174,6 +180,7 @@ let vm = new Vue({
     methods :{
         getPartnerData (obj) {
             let params = {
+                id:         '',
                 inPass:     'y',
                 name:       '',
                 limit:      this.pageLimit,
@@ -182,7 +189,6 @@ let vm = new Vue({
                 direction:  '',
             };
             params = Object.assign(params, obj);
-            console.log(params, 'params, partner')
             axios.get(PATH +'/cp/crm/selectCustomer',  {params: params} )
                 .then((datas)=>{
                     let data = datas.data;
@@ -229,8 +235,6 @@ let vm = new Vue({
             });
         },// 省份
 
-
-
         getEngineerData () {
 
         },// 工程师认证数据
@@ -271,7 +275,33 @@ let vm = new Vue({
                 });
         },
 
+        // 关闭弹窗
+        popUp (attr) {
+            this.tempID = '';
+            this.pIsSignedCp = '';// 是否签约客户
+            this[attr] = false;// 弹窗显示
+            // 清空输入框记录
+            // 机要
+            this.mContact   = '';
+            this.mDepartment    = '';
+            this.mTitle = '';
+            this.mPhone = '';
+            this.mTelphone1 = '';
+            this.mTelphone2 = '';
+            this.mTelphone3 = '';
+            this.mEmail = '';
+            this.mMark  = '';
+            this.mProvinceText  = '';
+            this.mAddress = '';
 
+            // 合伙人
+            this.partnerTypeCheckedList = [];
+
+            //
+            this.addAndEdit       = false;// 添加和编辑 合伙人，机要信息的弹窗
+            this.addPartnerPop    = false;// 隐藏
+            this.addPartnerMsgPop = false;// 隐藏
+        },
 
         // tab切换
         tabBtn (num, type) {
@@ -327,7 +357,6 @@ let vm = new Vue({
         },
 
 
-
         // 选中合作伙伴当前行
         clickPartner (id, index) {
             this.trActive = index;// 当前行的样式
@@ -345,6 +374,11 @@ let vm = new Vue({
                 this.addPartnerPop    = true;
                 this.addPartnerMsgPop = true;
 
+                this.titleAddPartner  = true;// title
+                this.titleAddMsg      = true;// title
+                this.titleEditPartner = false;//title
+                this.titleEditMsg     = false;//title
+
                 this.getRegion()
                 this.getProvince()
                 this.getAllProvince()// 所有省份
@@ -358,6 +392,10 @@ let vm = new Vue({
                 this.submitBtnIsShow  = false;// 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerMsgPop = true;
+                this.titleAddPartner  = false;// title
+                this.titleAddMsg      = true;// title
+                this.titleEditPartner = false;//title
+                this.titleEditMsg     = false;//title
 
 
                 this.getRegion()
@@ -375,10 +413,20 @@ let vm = new Vue({
         editBtn (type, id, obj) {
             this.tempID = id;
             if (type === 'partnerMsg') {
-                this.submitBtnIsShow  = false;// 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
-                this.addPartnerMsgPop = true;
+                this.submitBtnIsShow  = false;// 添加和编辑 合伙人，机要信息的按钮
+                this.addPartnerMsgPop = true;// 机要信息 pop
+
+
+                this.titleAddPartner  = false;// title
+                this.titleAddMsg      = false;// title
+                this.titleEditPartner = false;//title
+                this.titleEditMsg     = true;//title
                 this.editPartnerMsg(obj);
+            }
+
+            if (type === 'edit') {
+                // 编辑合伙人在 operatedBtnEdit()
             }
         },
 
@@ -400,28 +448,6 @@ let vm = new Vue({
             };
 
             console.log(params)
-        },
-
-
-        // 编辑按钮只是渲染数据，只是编辑的提交有id
-        editPartnerMsg (obj) {
-            console.log(obj)
-            this.addPartnerMsgPop = true;
-            this.getRegion(obj.regionCode)
-            this.getProvince(obj.regionCode, obj.provinceCode)
-
-            this.mRegionCode    = obj.regionCode;
-            this.mProvinceCode  = obj.provinceCode;
-            this.mContact       = obj.contactName;
-            this.mDepartment    = obj.department;
-            this.mTitle         = obj.title;
-            this.mPhone         = obj.phone;
-            this.mTelphone1     = obj.telphone1;
-            this.mTelphone2     = obj.telphone2;
-            this.mTelphone3     = obj.telphone3;
-            this.mEmail         = obj.email;
-            this.mMark          = obj.remark;
-            this.mAddress       = obj.address;
         },
 
         // 确认提交机要信息 有id 就相当于是编辑
@@ -463,29 +489,25 @@ let vm = new Vue({
 
         },
 
+        // 编辑按钮只是渲染数据，只是编辑的提交有id
+        editPartnerMsg (obj) {
+            console.log(obj)
+            this.addPartnerMsgPop = true;
+            this.getRegion(obj.regionCode)
+            this.getProvince(obj.regionCode, obj.provinceCode)
 
-
-        // 关闭弹窗
-        popUp (attr) {
-            this.tempID = '';
-            this[attr] = false;// 弹窗显示
-            // 清空输入框记录
-            // 机要
-            this.mContact   = '';
-            this.mDepartment    = '';
-            this.mTitle = '';
-            this.mPhone = '';
-            this.mTelphone1 = '';
-            this.mTelphone2 = '';
-            this.mTelphone3 = '';
-            this.mEmail = '';
-            this.mMark  = '';
-            this.mProvinceText  = '';
-            this.mAddress = '';
-
-            this.addAndEdit       = false;// 添加和编辑 合伙人，机要信息的弹窗
-            this.addPartnerPop    = false;// 隐藏
-            this.addPartnerMsgPop = false;// 隐藏
+            this.mRegionCode    = obj.regionCode;
+            this.mProvinceCode  = obj.provinceCode;
+            this.mContact       = obj.contactName;
+            this.mDepartment    = obj.department;
+            this.mTitle         = obj.title;
+            this.mPhone         = obj.phone;
+            this.mTelphone1     = obj.telphone1;
+            this.mTelphone2     = obj.telphone2;
+            this.mTelphone3     = obj.telphone3;
+            this.mEmail         = obj.email;
+            this.mMark          = obj.remark;
+            this.mAddress       = obj.address;
         },
 
 
@@ -508,43 +530,84 @@ let vm = new Vue({
         // 合作伙伴的区域和省份
         regionProvinceBtn () {
             this.regionProvinceIsShow = !this.regionProvinceIsShow;
-            console.log(this.regionProvinceItem)
             for (key in this.regionProvinceItem) {
                 this.regionProvinceItem[key].forEach(item => {
-                    this.regionProvinceList.push(item)
+                    if (this.pBusinessProvince.indexOf(item) === -1) {
+                        this.pBusinessProvince.push(item)
+                    }
+
                 })
             }
+            console.log(this.pBusinessProvince)
 
         },
+        
         // 多选框
         checkboxBtn (attr, type) {
             //console.log(type, attr)
 
-            let list = []
+            let list = [];
             this.regionProvinceItem[type] = attr;
-            for (key in this.regionProvinceItem){
+            for (key in this.regionProvinceItem) {
                 this.regionProvinceItem[key].forEach(item => {
-                    list.push(item.text)
+                    if (this.pBusinessProvince.indexOf(item) === -1) {
+                        this.pBusinessProvince.push(item)
+                    }else{
+                        let index = this.pBusinessProvince.indexOf(item);
+                        this.pBusinessProvince.splice(index, 1);
+                    }
                 })
-            }
-            this.regionProvinceText = list.join('，');
+            }// 整理item, 放进list
 
-            // attr.forEach(item => {
-            //     if (this.regionProvinceList.indexOf(item) === -1) {
-            //         this.regionProvinceList.push(item)
-            //     }
-            // });
-            // console.log(this.regionProvinceList)
+
+            this.pBusinessProvince.forEach(item => {
+                list.push(item.text)
+            });
+
+            this.regionProvinceText = list.join('，');
+            // for (key in this.regionProvinceItem){
+            //     this.regionProvinceItem[key].forEach(item => {
+            //         list.push(item.text)
+            //     })
+            // }
+            // this.regionProvinceText = list.join('，');
+
+
         },
 
         // 审批按钮事件
-        operateBtn (index, id, type) {
-            console.log(index, id, type)
-            axios
-                .get(PATH +'/cp/crm/addOrUpdateCustomer',  {id: id} )
-                .then(datas =>{
-                    console.log(datas.data)
-                });
+        operateBtn (index, id, type, item) {
+            console.log(index, id, type, item)
+            if (type === 'edit') this.operateBtnEdit(id, item);// 编辑合伙人
+
+        },
+
+        // 编辑合伙人
+        operateBtnEdit (id, item) {
+            this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
+            this.addPartnerPop    = true;
+            this.submitBtnIsShow  = true;// 添加和编辑 合伙人，机要信息的按钮
+            this.addPartnerMsgPop = false;// 机要信息 pop
+            this.titleAddPartner  = false;// title
+            this.titleAddMsg      = false;// title
+            this.titleEditPartner = true;//title
+            this.titleEditMsg     = false;//title
+            this.getPartnerType()// 合伙人类型
+            this.getIndustry()// 行业
+            this.getSolution()// 合作产品
+
+
+            let partnerTypeCheckedItem = {
+                code: item.typeCode,
+                text: item.type,
+            };
+            this.partnerTypeCheckedList.push(partnerTypeCheckedItem);
+
+        },
+
+        // 直签
+        isSignedCp (flag) {
+            this.pIsSignedCp = flag;
         },
 
 

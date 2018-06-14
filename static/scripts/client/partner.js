@@ -22,6 +22,10 @@ var vm = new Vue({
         addAndEdit: false,
         addPartnerPop: false,
         addPartnerMsgPop: false,
+        titleAddPartner: false,
+        titleEditPartner: false,
+        titleAddMsg: false,
+        titleEditMsg: false,
         currentDate: timeYear,
         currentDepartment: userGroup,
         currentUser: userName,
@@ -30,16 +34,17 @@ var vm = new Vue({
         provinceList: [],
         allProvinceList: [],
         regionProvinceItem: {},
-        regionProvinceList: [],
         regionProvinceText: '',
         regionProvinceIsShow: false,
         partnerTypeList: [],
+        partnerTypeCheckedList: [],
         industryList: [],
         solutionList: [],
+        radioIsShow: false,
         // 合作伙伴的字段
         pID: '',
         pName: '',
-        pBusinessProvince: '',
+        pBusinessProvince: [],
         pBusinessIndustry: [],
         pSolution: '',
         pRegisteredCapital: '',
@@ -145,7 +150,7 @@ var vm = new Vue({
         ],
     },
     created: function () {
-        this.tabBtn(4, 'partner-other'); // 显示第一个tab
+        this.tabBtn(0, 'partner-pass'); // 显示第一个tab
         this.getIndustry();
     },
     mounted: function () {
@@ -154,6 +159,7 @@ var vm = new Vue({
         getPartnerData: function (obj) {
             var _this = this;
             var params = {
+                id: '',
                 inPass: 'y',
                 name: '',
                 limit: this.pageLimit,
@@ -162,7 +168,6 @@ var vm = new Vue({
                 direction: '',
             };
             params = Object.assign(params, obj);
-            console.log(params, 'params, partner');
             axios.get(PATH + '/cp/crm/selectCustomer', { params: params })
                 .then(function (datas) {
                 var data = datas.data;
@@ -244,6 +249,31 @@ var vm = new Vue({
                 _this.solutionList = datas.data.msg;
             });
         },
+        // 关闭弹窗
+        popUp: function (attr) {
+            this.tempID = '';
+            this.pIsSignedCp = ''; // 是否签约客户
+            this[attr] = false; // 弹窗显示
+            // 清空输入框记录
+            // 机要
+            this.mContact = '';
+            this.mDepartment = '';
+            this.mTitle = '';
+            this.mPhone = '';
+            this.mTelphone1 = '';
+            this.mTelphone2 = '';
+            this.mTelphone3 = '';
+            this.mEmail = '';
+            this.mMark = '';
+            this.mProvinceText = '';
+            this.mAddress = '';
+            // 合伙人
+            this.partnerTypeCheckedList = [];
+            //
+            this.addAndEdit = false; // 添加和编辑 合伙人，机要信息的弹窗
+            this.addPartnerPop = false; // 隐藏
+            this.addPartnerMsgPop = false; // 隐藏
+        },
         // tab切换
         tabBtn: function (num, type) {
             //type == partner-pass, partner-other, partner-msg, engineer
@@ -303,6 +333,10 @@ var vm = new Vue({
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerPop = true;
                 this.addPartnerMsgPop = true;
+                this.titleAddPartner = true; // title
+                this.titleAddMsg = true; // title
+                this.titleEditPartner = false; //title
+                this.titleEditMsg = false; //title
                 this.getRegion();
                 this.getProvince();
                 this.getAllProvince(); // 所有省份
@@ -315,6 +349,10 @@ var vm = new Vue({
                 this.submitBtnIsShow = false; // 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
                 this.addPartnerMsgPop = true;
+                this.titleAddPartner = false; // title
+                this.titleAddMsg = true; // title
+                this.titleEditPartner = false; //title
+                this.titleEditMsg = false; //title
                 this.getRegion();
                 this.getProvince();
             }
@@ -330,10 +368,17 @@ var vm = new Vue({
         editBtn: function (type, id, obj) {
             this.tempID = id;
             if (type === 'partnerMsg') {
-                this.submitBtnIsShow = false; // 添加和编辑 合伙人，机要信息的按钮
                 this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
-                this.addPartnerMsgPop = true;
+                this.submitBtnIsShow = false; // 添加和编辑 合伙人，机要信息的按钮
+                this.addPartnerMsgPop = true; // 机要信息 pop
+                this.titleAddPartner = false; // title
+                this.titleAddMsg = false; // title
+                this.titleEditPartner = false; //title
+                this.titleEditMsg = true; //title
                 this.editPartnerMsg(obj);
+            }
+            if (type === 'edit') {
+                // 编辑合伙人在 operatedBtnEdit()
             }
         },
         // 确认提交合作伙伴 有id 就相当于是编辑
@@ -353,25 +398,6 @@ var vm = new Vue({
                 isSignedCp: this.pIsSignedCp,
             };
             console.log(params);
-        },
-        // 编辑按钮只是渲染数据，只是编辑的提交有id
-        editPartnerMsg: function (obj) {
-            console.log(obj);
-            this.addPartnerMsgPop = true;
-            this.getRegion(obj.regionCode);
-            this.getProvince(obj.regionCode, obj.provinceCode);
-            this.mRegionCode = obj.regionCode;
-            this.mProvinceCode = obj.provinceCode;
-            this.mContact = obj.contactName;
-            this.mDepartment = obj.department;
-            this.mTitle = obj.title;
-            this.mPhone = obj.phone;
-            this.mTelphone1 = obj.telphone1;
-            this.mTelphone2 = obj.telphone2;
-            this.mTelphone3 = obj.telphone3;
-            this.mEmail = obj.email;
-            this.mMark = obj.remark;
-            this.mAddress = obj.address;
         },
         // 确认提交机要信息 有id 就相当于是编辑
         addPartnerMsg: function () {
@@ -410,26 +436,24 @@ var vm = new Vue({
                 }
             });
         },
-        // 关闭弹窗
-        popUp: function (attr) {
-            this.tempID = '';
-            this[attr] = false; // 弹窗显示
-            // 清空输入框记录
-            // 机要
-            this.mContact = '';
-            this.mDepartment = '';
-            this.mTitle = '';
-            this.mPhone = '';
-            this.mTelphone1 = '';
-            this.mTelphone2 = '';
-            this.mTelphone3 = '';
-            this.mEmail = '';
-            this.mMark = '';
-            this.mProvinceText = '';
-            this.mAddress = '';
-            this.addAndEdit = false; // 添加和编辑 合伙人，机要信息的弹窗
-            this.addPartnerPop = false; // 隐藏
-            this.addPartnerMsgPop = false; // 隐藏
+        // 编辑按钮只是渲染数据，只是编辑的提交有id
+        editPartnerMsg: function (obj) {
+            console.log(obj);
+            this.addPartnerMsgPop = true;
+            this.getRegion(obj.regionCode);
+            this.getProvince(obj.regionCode, obj.provinceCode);
+            this.mRegionCode = obj.regionCode;
+            this.mProvinceCode = obj.provinceCode;
+            this.mContact = obj.contactName;
+            this.mDepartment = obj.department;
+            this.mTitle = obj.title;
+            this.mPhone = obj.phone;
+            this.mTelphone1 = obj.telphone1;
+            this.mTelphone2 = obj.telphone2;
+            this.mTelphone3 = obj.telphone3;
+            this.mEmail = obj.email;
+            this.mMark = obj.remark;
+            this.mAddress = obj.address;
         },
         // 机要信息的区域和省份
         clickRegionProvinceBtn: function (code, text, type) {
@@ -449,39 +473,71 @@ var vm = new Vue({
         regionProvinceBtn: function () {
             var _this = this;
             this.regionProvinceIsShow = !this.regionProvinceIsShow;
-            console.log(this.regionProvinceItem);
             for (key in this.regionProvinceItem) {
                 this.regionProvinceItem[key].forEach(function (item) {
-                    _this.regionProvinceList.push(item);
+                    if (_this.pBusinessProvince.indexOf(item) === -1) {
+                        _this.pBusinessProvince.push(item);
+                    }
                 });
             }
+            console.log(this.pBusinessProvince);
         },
         // 多选框
         checkboxBtn: function (attr, type) {
             //console.log(type, attr)
+            var _this = this;
             var list = [];
             this.regionProvinceItem[type] = attr;
             for (key in this.regionProvinceItem) {
                 this.regionProvinceItem[key].forEach(function (item) {
-                    list.push(item.text);
+                    if (_this.pBusinessProvince.indexOf(item) === -1) {
+                        _this.pBusinessProvince.push(item);
+                    }
+                    else {
+                        var index = _this.pBusinessProvince.indexOf(item);
+                        _this.pBusinessProvince.splice(index, 1);
+                    }
                 });
-            }
+            } // 整理item, 放进list
+            this.pBusinessProvince.forEach(function (item) {
+                list.push(item.text);
+            });
             this.regionProvinceText = list.join('，');
-            // attr.forEach(item => {
-            //     if (this.regionProvinceList.indexOf(item) === -1) {
-            //         this.regionProvinceList.push(item)
-            //     }
-            // });
-            // console.log(this.regionProvinceList)
+            // for (key in this.regionProvinceItem){
+            //     this.regionProvinceItem[key].forEach(item => {
+            //         list.push(item.text)
+            //     })
+            // }
+            // this.regionProvinceText = list.join('，');
         },
         // 审批按钮事件
-        operateBtn: function (index, id, type) {
-            console.log(index, id, type);
-            axios
-                .get(PATH + '/cp/crm/addOrUpdateCustomer', { id: id })
-                .then(function (datas) {
-                console.log(datas.data);
-            });
+        operateBtn: function (index, id, type, item) {
+            console.log(index, id, type, item);
+            if (type === 'edit')
+                this.operateBtnEdit(id, item); // 编辑合伙人
+        },
+        // 编辑合伙人
+        operateBtnEdit: function (id, item) {
+            this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
+            this.addPartnerPop = true;
+            this.submitBtnIsShow = true; // 添加和编辑 合伙人，机要信息的按钮
+            this.addPartnerMsgPop = false; // 机要信息 pop
+            this.titleAddPartner = false; // title
+            this.titleAddMsg = false; // title
+            this.titleEditPartner = true; //title
+            this.titleEditMsg = false; //title
+            this.getPartnerType(); // 合伙人类型
+            this.getIndustry(); // 行业
+            this.getSolution(); // 合作产品
+            var partnerTypeCheckedItem = {
+                code: item.typeCode,
+                text: item.type,
+            };
+            this.partnerTypeCheckedList.push(partnerTypeCheckedItem);
+        },
+        // 直签
+        isSignedCp: function (flag) {
+            this.pIsSignedCp = flag;
         },
         // 最近三年的年份设置
         setRecentYears: function () {
