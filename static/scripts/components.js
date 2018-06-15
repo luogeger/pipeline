@@ -203,7 +203,7 @@ Vue.component('i-checkbox', {
             return this.checkedList.indexOf(index) !== -1;
         }
     },
-    template: "<div class=\"i-checkbox-group\">\n            <div v-for=\"(item, index) in dataList\"\n                 @click=\"checkBtn(index)\"\n                 :key=\"item.code\"\n                 class=\"i-checkbox-wrap\">\n                <span class=\"i-checkbox-box\">\n                    <i class=\"fa fa-square-o\"></i> \n                    <transition name=\"fade\">\n                        <i v-if=\"isShowJudge(index)\" class=\"is-show fa fa-check\"></i>\n                    </transition>\n                </span>\n                <span v-text=\"item.text\"></span>        \n            </div>\n            \n        </div>",
+    template: "<div class=\"i-checkbox-group\">\n            <div v-for=\"(item, index) in dataList\"\n                 @click=\"checkBtn(index)\"\n                 :key=\"item.code\"\n                 class=\"i-checkbox-wrap\">\n                <span class=\"i-checkbox-box\">\n                    <i class=\"fa fa-square-o\"></i> \n                    <transition name=\"fade\">\n                        <i v-if=\"isShowJudge(index)\" class=\"is-show fa fa-check\"></i>\n                    </transition>\n                </span>\n                <span v-text=\"item.text\"></span>        \n            </div>\n        </div>",
 });
 Vue.component('multiple-list', {
     props: {

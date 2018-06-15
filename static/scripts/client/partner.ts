@@ -39,8 +39,10 @@ let vm = new Vue({
         regionList:         [],// 区域
         provinceList:       [],// 省份
         allProvinceList:    [],// 所有省份
-        regionProvinceItem: {},// 选中的省份item
-        regionProvinceText: '',// 选中的省分text
+        // regionProvinceItem: {},// 选中的省份item
+        defaultCheckedCode: [],// 默认选中的省份code
+        // defaultCheckedList: [],// 默认选中的省份list
+        defaultCheckedText: '',// 默认选中的省份text
         regionProvinceIsShow: false,// 合作伙伴的区域和省份
         partnerTypeList:    [],// 合伙人类型 下拉框
         partnerTypeCheckedList: [],//默认选中，编辑的时候用到
@@ -54,8 +56,8 @@ let vm = new Vue({
         // 合作伙伴的字段
         pID:                '',     // 合作伙伴的ID, 也是第一个ID,
         pName:               '',	//合作伙伴名称
-        pBusinessProvince:   [],	//业务省份(城市)（协议内容）
-        pBusinessIndustry:   [],	//主要业务行业(协议内容)
+        pBusinessProvince:   [],	//业务省份 计算属性
+        pBusinessIndustry:   [],	//主要业务行业
         pSolution:           [],	//主要合作产品
         pRegisteredCapital:  '',	//注册资本
         pType:               '',	//合作伙伴类型
@@ -80,7 +82,7 @@ let vm = new Vue({
         pIsSignedCp:         '',	//是否是直签合作伙伴客户
 
 
-        // 合作伙伴机要信息字段
+        // 机要信息字段
         mID:                '',// 机要信息的ID
         mContact:           '',// 机要联系人
         mTitle:             '',
@@ -96,6 +98,10 @@ let vm = new Vue({
         mProvinceCode:      '',// 机要省份code
         mRegionText:        '',// 机要区域文本
         mProvinceText:      '',//机要城市文本
+
+        // 区域、省份
+
+
 
 
 
@@ -177,6 +183,12 @@ let vm = new Vue({
 
     mounted () {
 
+    },
+
+    computed: {
+        // pBusinessProvince () {
+        //
+        // }
     },
 
     methods :{
@@ -299,6 +311,10 @@ let vm = new Vue({
             // 合伙人
             this.partnerTypeCheckedList = [];// 合作伙伴类型
             this.checkedIndustryList    = [];// 业务行业清空
+            this.checkedSolutionList    = [];// 合作产品清空
+            this.pBusinessProvince      = [];// 区域，省份清空
+            this.defaultCheckedCode     = [];// 区域，省份清空
+            this.defaultCheckedText     = '';// 区域，省份文字清空
 
             //
             this.addAndEdit       = false;// 添加和编辑 合伙人，机要信息的弹窗
@@ -513,71 +529,6 @@ let vm = new Vue({
             this.mAddress       = obj.address;
         },
 
-
-        // 机要信息的区域和省份
-        clickRegionProvinceBtn (code, text, type) {
-            if (type === 'region') {
-                this.mProvinceText = '';
-                this.mRegionCode = code;
-                this.mRegionText = text;
-                this.getProvince(code);
-            }
-
-            if (type === 'province') {
-                this.mProvinceCode = code;
-                this.mProvinceText = text;
-            }
-            //this.mAddress = this.mRegionText + this.mProvinceText + this.mAddress;
-        },
-
-        // 合作伙伴的区域和省份
-        regionProvinceBtn () {
-            this.regionProvinceIsShow = !this.regionProvinceIsShow;
-            for (key in this.regionProvinceItem) {
-                this.regionProvinceItem[key].forEach(item => {
-                    if (this.pBusinessProvince.indexOf(item) === -1) {
-                        this.pBusinessProvince.push(item)
-                    }
-
-                })
-            }
-            console.log(this.pBusinessProvince)
-
-        },
-        
-        // 多选框
-        checkboxBtn (attr, type) {
-            //console.log(type, attr)
-
-            let list = [];
-            this.regionProvinceItem[type] = attr;
-            for (key in this.regionProvinceItem) {
-                this.regionProvinceItem[key].forEach(item => {
-                    if (this.pBusinessProvince.indexOf(item) === -1) {
-                        this.pBusinessProvince.push(item)
-                    }else{
-                        let index = this.pBusinessProvince.indexOf(item);
-                        this.pBusinessProvince.splice(index, 1);
-                    }
-                })
-            }// 整理item, 放进list
-
-
-            this.pBusinessProvince.forEach(item => {
-                list.push(item.text)
-            });
-
-            this.regionProvinceText = list.join('，');
-            // for (key in this.regionProvinceItem){
-            //     this.regionProvinceItem[key].forEach(item => {
-            //         list.push(item.text)
-            //     })
-            // }
-            // this.regionProvinceText = list.join('，');
-
-
-        },
-
         // 审批按钮事件
         operateBtn (index, id, type, item) {
             console.log(index, id, type, item)
@@ -598,17 +549,94 @@ let vm = new Vue({
             this.getPartnerType()// 合伙人类型
             this.getIndustry()// 行业
             this.getSolution()// 合作产品
-
+            this.getAllProvince()// 所有省份
 
             let typeItem = {
                 code: item.typeCode,
                 text: item.type,
             };
             this.partnerTypeCheckedList.push(typeItem);
-            this.checkedIndustryList = item.businessIndustry
+            this.checkedIndustryList = item.businessIndustry;// 行业线
+            this.checkedSolutionList = item.solution;// 合作产品
+            this.defaultRender(item.area)// 区域省份
 
         },
 
+        // 机要信息 的区域和省份
+        clickRegionProvinceBtn (code, text, type) {
+            if (type === 'region') {
+                this.mProvinceText = '';
+                this.mRegionCode = code;
+                this.mRegionText = text;
+                this.getProvince(code);
+            }
+
+            if (type === 'province') {
+                this.mProvinceCode = code;
+                this.mProvinceText = text;
+            }
+            //this.mAddress = this.mRegionText + this.mProvinceText + this.mAddress;
+        },
+
+        // 合作伙伴 的区域和省份
+        partnerRegionProvinceBtn () {
+            this.regionProvinceIsShow = !this.regionProvinceIsShow;
+
+        },
+
+        // 区域、省份的多选框
+        checkboxBtn (item, type) {
+            let flag = this.ifInclude(item.code);
+            if (typeof flag === 'number') {
+                this.pBusinessProvince.splice(flag, 1)
+            } else{
+                this.pBusinessProvince.push(item)
+            }
+            this.defaultCheckedCode = [];
+            this.defaultCheckedText = '';
+            this.textShow()
+            this.styleShow(item.code)
+        },
+
+        // 点击的省份是否已经被选中
+        ifInclude (code) {
+            let i, len = this.pBusinessProvince.length;
+            for (i = 0; i < len; i++){
+                if (this.pBusinessProvince[i].code === code) {
+                    return i;
+                }
+            }
+            return false;
+        },
+
+        // 编辑的时候默认选中的区域，省份的渲染
+        defaultRender (data) {
+            for(key in data){
+                if (key !== 'businessAreas') {
+                    this.pBusinessProvince = this.pBusinessProvince.concat(data[key])
+                }
+            }
+            this.textShow()
+        },
+
+
+        // 区域、省份的样式勾选
+        styleShow (code) {
+            return this.defaultCheckedCode.indexOf(code) !== -1;
+        },
+
+        // 区域、省份选中的 text, code
+        textShow () {
+            let text = [];
+            this.pBusinessProvince.forEach(item => {
+                this.defaultCheckedCode.push(item.code)
+                text.push(item.text)
+            });
+            this.defaultCheckedText = text.join('，');
+        },
+
+        // defaultCheckedCode: [],// 默认选中的省份code
+        // defaultCheckedText: '',// 默认选中的省份text
         // 直签
         isSignedCp (flag) {
             this.pIsSignedCp = flag;

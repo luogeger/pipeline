@@ -310,7 +310,6 @@ Vue.component('i-checkbox', {
                 </span>
                 <span v-text="item.text"></span>        
             </div>
-            
         </div>`,
 
 });
