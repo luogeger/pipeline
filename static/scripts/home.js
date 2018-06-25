@@ -64,7 +64,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
 
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
-        loadMainPage('.content-item', 'welcome.html');
+        loadMainPage('.content-item', 'analyze/bigIndustryRegion.html');
     })
 })
 
