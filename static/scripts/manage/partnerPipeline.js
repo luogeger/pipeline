@@ -1,5 +1,28 @@
 $.ajaxSettings.async = true;
 $(document).ready(function() {
+    // 搜索-预计签约时间
+    laydate.render({
+        elem: '#startDate' //指定元素
+        ,type: 'month'
+        ,range: true
+        // yyyy-MM - yyyy-MM
+        ,value: vm.getYear()
+        // ,value: vm.defaultYear + '-01 - ' + vm.defaultYear + '-12'
+        // ,value: '2018-01 - 2018-12'
+        ,isInitValue: true //允许填充初始值
+        // 参数可选value, date(起始时间), endDate(结束时间)
+        ,done: function(value) {
+            vm.cExpectSignDateRange = value;
+            var time = vm.cExpectSignDateRange.split(' - ');
+            // var time = value.split(' - ');
+            var startTime,
+                endTime;
+            startTime = time[0];
+            endTime = time[1];
+            vm.searchLists.expectSignDateStart = startTime;
+            vm.searchLists.expectSignDateEnd = endTime;
+        }
+    });
     // 新增/修改-预计签约时间
     laydate.render({
         elem: '#signDate' //指定元素
@@ -29,6 +52,24 @@ var vm = new Vue({
 
         soDepartmentLists: [],        // 查询直销事业部集和销售集
 
+        // 定义搜索值信息
+        searchLists: {},              // 存放搜索值
+        cpCustomerName: '',           // 合作伙伴名称
+        cIndustryLineText: '',        // 行业线
+        cExpectSignDateRange: '',     // 预计签约时间
+        cProjectSuccessMinText: '',   // 最小成功率
+        cProjectSuccessMinCode: '',   // 最小成功率code
+        cProjectSuccessMaxText: '',   // 最大成功率
+        cProjectSuccessMaxCode: '',   // 最大成功率code
+        projectSuccessRates: [],      // 存放成功率
+        cRegionText: '',              // 区域
+        cCustomerSourText: '',        // 客户来源
+        cpCustomerTypeText: '',       // 合作伙伴类型
+        cSoSolutionFirstText: '',     // 大解决方案
+        cSoSolutionSecondText: '',    // 小解决方案
+        solutionFirstLists: [],       // 存放大解决方案
+        solutionSecondLists: [],      // 存放小解决方案
+
         // ===模糊查询
         // 客户名称
         fuzzyQueryList_1: [],
@@ -50,6 +91,12 @@ var vm = new Vue({
         dataPageMost: 10,           // 页容量
         dataPageStart: 0,
         dataPageEnd: 0,
+        noData: false,               // 搜索不到数据
+
+        // ===查询审核历史记录
+        auditHistoryShow: true,   // 审核历史记录
+        auditHistoryTitle: '',     // 审核历史记录 客户姓名
+        auditHistoryList: [],      // 审核历史记录数据
 
         // ===项目更新情况
         changeOneLists: [],           // 存放项目更新情况
@@ -68,7 +115,7 @@ var vm = new Vue({
         hSalesGroupText: userGroup, // 销售小组
         hSalesStaffName: userName,  // 负责销售
         hPreSaleStaffsName: '',     // 负责售前
-        hCpCustomerName: 'CPA201805000013',        // 合作伙伴名称
+        hCpCustomerName: '',        // 合作伙伴名称  CPA201805000013
         hCpCustomerTypeText: '',    // 合作伙伴类型
         hSoSolutionFirstText: '',   // 大解决方案
         hSoSolutionSecondText: '',  // 小解决方案
@@ -86,10 +133,13 @@ var vm = new Vue({
         hSoDepartmentCode: '',      // 分配时的事业部code
         hSoDepartmentName: '',      // 分配时的事业部name
 
+        hRemark: '',                // 驳回备注
+
         solutionSub: [],            // 点击修改时获取表格的值
 
         isCheck: true,              // 是否是销售老大查看
-        isHide: true,               // 是否隐藏
+        isAllotHide: true,          // 是否隐藏分配模块
+        isRejectHide: true,         // 是否隐藏驳回模块
 
         oneDataId: '',              // 再次确认用到的id
 
@@ -101,14 +151,21 @@ var vm = new Vue({
         secondDialogShow: true,     // 二级外层弹窗
         revokeShow: true,           // 确认撤回弹窗
         allotShow: true,            // 确认分配弹窗
+
+        listss: [
+            {hPreSaleStaffsName: ''}
+        ]
     },
     created: function() {
-        this.initialValData();     // 初始值
-        this.getSoSolution4Tree(); // 初始值-解决方案
-        /*this.getFuzzyList();       // 模糊查询客户名称
-        this.getPreSalesStaff();   // 模糊查询售前*/
-        this.openUpdateCase();     // 显示表格右侧项目更新情况
-        this.getPipelineData();    // 查询pipeline数据
+        this.initialValData();        // 初始值
+        this.getSuccessRate();
+        this.getCpCustomerType();    // 初始值-合作伙伴类型
+        this.getSoSolution4Tree();   // 初始值-解决方案
+        this.signDate();
+        this.getFuzzyList();       // 模糊查询客户名称
+         /* this.getPreSalesStaff();     // 模糊查询售前*/
+        this.openUpdateCase();      // 显示表格右侧项目更新情况
+        // this.getPipelineData();     // 查询pipeline数据
     },
     methods: {
         // 关闭一级弹窗
@@ -166,6 +223,15 @@ var vm = new Vue({
                 }
             })
         },
+        // 获取成功率
+        getSuccessRate: function(){
+            axios.get(PATH +'/so/queryPipelineInitVal').then(function(datas) {
+                var data = datas.data;
+                if(data.code == 200) {
+                    vm.projectSuccessRates = data.msg.basic.projectSuccessRates;
+                }
+            })
+        },
         // 初始值--获取解决方案
         getSoSolution4Tree: function(id, code){
             var basic,
@@ -218,13 +284,15 @@ var vm = new Vue({
         getCpCustomerType: function() {
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=cooperativePartnerType').then(function(datas){
                 vm.cpCustomerTypeLists = datas.data.msg.cooperativePartnerType;
+
+                console.log(vm.cpCustomerTypeLists,'获取合作伙伴类型');
             })
         },
         // 失焦隐藏模糊列表
         hideFuzzyQuery: function (type) {
             // var list = 'fuzzyQueryList_' +type;
             // vm[list] = [];
-            // === 隐藏客户名称
+            // === 隐藏合作伙伴客户名称
             vm.fuzzyQueryList_1 = [];
             vm.fuzzyQueryList_2 = [];
             // === 隐藏销售
@@ -232,21 +300,21 @@ var vm = new Vue({
             // === 隐藏售前
             vm.preSalesStaffList = [];
         },
-        // 初始值--模糊查询客户名称
+        // 初始值--模糊查询合作伙伴客户名称
         getFuzzyList: function (type) {
             var clientName;
             switch (type) {
                 case 1:
-                    clientName = vm.cCustomerName;
+                    clientName = vm.cpCustomerName;
                     break;
                 case 2:
                     clientName = vm.hCpCustomerName;
                     break;
             }
             $.ajax({
-                url: PATH +'/crm/selectCustomer4PipelineLike',
+                url: PATH +'/cp/crm/selectCustomer4Like',
                 data: {
-                    customerName: clientName
+                    name: clientName
                 },
                 type: 'get',
                 async: false,
@@ -263,26 +331,14 @@ var vm = new Vue({
             })
         },// 获取数据
         selectFuzzyText: function (type, text, code, departmentCode, hasConcat, whole) {
-            console.log(code);
             switch (type) {
                 case 1:
-                    vm.tableList.customerCode = code;
-                    vm.cCustomerName = text;
-
-                    // 判断该客户名称是否是该销售所在事业部下的
-                    /*if(departmentCode !== vm.tableList.salesGroupCode) {
-                     toastr.warning('没有相关信息 ！');
-                     vm.noData = true;
-
-                     vm.closeUpdateCase();  // 关闭右侧项目更新情况
-                     return;
-                     }*/
-
-                    this.showData();
+                    vm.searchLists.cpCustomerCode = code;
+                    vm.cpCustomerName = text;
                     break;
                 case 2:
                     // 判断该客户名称是否是该销售所在事业部下的
-                    if(departmentCode !== vm.handleTemplate.salesGroupCode) {
+                    if(departmentCode !== vm.oauthLists.userInfo.departmentCode) {
                         toastr.warning('不可建立此客户信息!');
                     }else {
                         // hasConcat=y   名下存在客户机要信息，hasConcat=n 不存在机要
@@ -321,8 +377,15 @@ var vm = new Vue({
             })
         },
         selectPreSalesStaff: function(name,email) {
-            vm.hPreSaleStaffsName = name + '，';
+            vm.hPreSaleStaffsName = name;
+            // vm.hPreSaleStaffsName = name + '，';
             vm.handleTemplate.preSalesStaff = email;
+        },
+        addLlist: function() {
+            this.listss.push({hPreSaleStaffsName: ''})
+        },
+        deleteLlist: function(index) {
+            this.listss.splice(index,1);
         },
         // 查询直销事业部集和销售集
         getSoDepartment: function() {
@@ -348,13 +411,104 @@ var vm = new Vue({
                 }
             })
         },
+        // 获取年份
+        getYear: function() {
+            var yearRange;
+            $.ajax({
+                async: false,
+                url: PATH + '/oauth/queryUserInfo',
+                type: 'get',
+                dateType: 'json',
+                success: function(result) {
+                    var date = result.msg.currentDate;
+                    this.defaultYear = date.slice(0, 4);
+                    yearRange = this.defaultYear + '-01 - ' + this.defaultYear + '-12';
+                },
+                error: function(result) {
+                    console.log('获取年份失败');
+                }
+            })
+            return yearRange;
+        },
+        signDate: function() {
+            this.cExpectSignDateRange = this.getYear();
+            var time = this.cExpectSignDateRange.split(' - ');
+            var startTime,
+                endTime;
+            startTime = time[0];
+            endTime = time[1];
+            this.searchLists.expectSignDateStart = startTime;
+            this.searchLists.expectSignDateEnd = endTime;
+            this.getPipelineData();
+        },
+        // 搜索框查询
+        querySearchForm: function() {
+            this.getPipelineData();
+        },
+        // 搜索框清空
+        clearSearchForm: function() {
+            vm.cpCustomerName = '';                 // 合作伙伴名称
+            vm.cIndustryLineText = '';              // 行业线
+            // vm.cProjectSuccessRateText = '';     // 成功率
+            vm.cProjectSuccessMinText = '',         // 最小成功率
+            vm.cProjectSuccessMaxText = '',         // 最大成功率
+            //     vm.cProjectSuccessMinCode = '';
+            // vm.cProjectSuccessMaxCode = '';
+            // vm.cMngSalesGroupText = '';          // 事业部
+            vm.cRegionText = '';                    // 区域
+            vm.cCustomerSourText = '';              // 客户来源
+            vm.cpCustomerTypeText = '';             // 客户来源
+            vm.cSoSolutionFirstText = '';           // 大解决方案
+            vm.cSoSolutionSecondText = '';          // 小解决方案
+            // vm.cLatelyChangeText = '';           // 近期变更过
+            // vm.cSalesName = '';                  // 近期变更过
 
+            this.searchLists = {};
+            this.signDate();
+            this.getPipelineData();
+        },
+        //// ==========搜索获取下拉code========
+        // 选中行业线
+        searchIndustryLineCode: function(code, text) {
+            this.searchLists.industryLine = code;
+            vm.cIndustryLineText = text;
+        },
+        // 选中最小成功率
+        searchSuccessMinCode: function(code, text) {
+            this.searchLists.successRateCodeMin = code;
+            vm.cProjectSuccessMinText = text;
+            vm.cProjectSuccessMinCode = code;
+        },
+        // 选中最大成功率
+        searchSuccessMaxCode: function(code, text) {
+            this.searchLists.successRateCodeMax = code;
+            vm.cProjectSuccessMaxText = text;
+            vm.cProjectSuccessMaxCode = code;
+
+            vm.cProjectSuccessMinCode = '';
+            vm.cProjectSuccessMaxCode = '';
+        },
+        // 选中区域
+        searchRegionCode: function(code, text) {
+            this.searchLists.regionCode = code;
+            vm.cRegionText = text;
+        },
+        // 选中客户来源
+        searchCustomerSourceCode: function(code, text) {
+            this.searchLists.customerSourceCode = code;
+            vm.cCustomerSourText = text;
+        },
+        // 选中合作伙伴类型
+        searchCpCustomerTypeCode: function(code, text) {
+            this.searchLists.cooperativePartnerType = code;
+            vm.cpCustomerTypeText = text;
+        },
         // 选中大解决方案
         searchSolutionFirst: function(id, text, type) {
             switch (type) {
                 case 1:
                     vm.cSoSolutionSecondText = '';
-                    this.tableList.soSolutionCode = '';
+                    this.searchLists.soSolutionCode = '';
 
                     vm.cSoSolutionFirstText = text;
                     this.getSoSolution4Tree(id);
@@ -371,13 +525,11 @@ var vm = new Vue({
             switch (type) {
                 case 1:
                     vm.cSoSolutionSecondText = text;
-                    this.tableList.soSolutionCode = code;
-                    this.showData();
+                    this.searchLists.soSolutionCode = code;
                     break;
                 case 2:
                     vm.hSoSolutionSecondText = text;
                     vm.handleTemplate.solutionCode = code;
-                    // vm.solutionSub.solutionCode = code;
                     break;
             }
         },
@@ -385,85 +537,50 @@ var vm = new Vue({
 
         // ====查询
         // 获取表格右侧项目更新情况数据
-        showOneChange: function(cpCustomerCode, index) {
+        showOneChange: function(soCoreCode, index) {
             vm.changeOneLists = [] // 先清空项目更新情况列表
-
             this.isClicked = index; // tr添加active
-
-            this.openUpdateCase();
             var params = {
-                opDataKey: cpCustomerCode
+                opDataKey: soCoreCode
             };
-            /*axios.get(PATH + '/cp/so/queryPipelineChangeHis', {params:params}).then(function(datas) {
-
-            })*/
-            $.ajax({
-                url:  PATH + '/cp/so/queryPipelineChangeHis',
-                type: 'get',
-                dataType: 'json',
-                data: {
-                    'opDataKey': cpCustomerCode
-                },
-                success: function(result){
-                    if(result.root.length == 0) {
-                        vm.noUpdateCase = true;
-                        vm.updateCaseMsg = '暂无项目更新情况';
-                    }else {
-                        vm.noUpdateCase = false;
-                        vm.updateCaseMsg = '';
-                        for(var i = 0;i < result.root.length;i++){
-                            var root = result.root[i];
-                            vm.changeOneLists.push(root);
-                        }
+            axios.get(PATH + '/so/queryPipelineChangeHis', {params:params}).then(function(datas) {
+                var data = datas.data;
+                if(data.root.length == 0) {
+                    vm.noUpdateCase = true;
+                    vm.updateCaseMsg = '暂无项目更新情况';
+                }else {
+                    vm.noUpdateCase = false;
+                    vm.updateCaseMsg = '';
+                    for(var i = 0;i < data.root.length;i++){
+                        var root = data.root[i];
+                        vm.changeOneLists.push(root);
                     }
-                },
-                error: function(){
-                    console.log('查看单人变动历史 请求失败');
                 }
             })
         },
         // 显示表格右侧项目更新情况
         openUpdateCase: function() {
-            // 默认第一条tr添加active
-            // this.showOneChange(vm.items[0].soCoreCode, 0);
-
-            // 显示项目更新情况
             this.updateCaseShow = false
             this.ismaxWidth = false
         },
         // 关闭表格右侧项目更新情况
         closeUpdateCase: function() {
-            this.showOneChange('', -1);
-
-            // 关闭项目更新情况
             this.updateCaseShow = true
             this.ismaxWidth = true
         },
 
         // 获取pipeline表格数据
         getPipelineData:  function(page, limit) {
-            var params = {
-                page:         page || 1,
-                limit:        limit || this.dataPageMost,
-            };
-            axios.get(PATH + '/cp/so/selectPipeline', {params: params}).then(function(datas) {
+            this.searchLists.page = page || 1;
+            this.searchLists.limit = limit || this.dataPageMost;
+            console.log(this.searchLists,'获取pipeline表格数据请求参数')
+
+            axios.get(PATH + '/cp/so/selectPipeline', {params: this.searchLists}).then(function(datas) {
                 var data = datas.data;
-                if(data.root.length == 0) {
-                    toastr.warning('没有相关信息！');
-                }
                 vm.pipelineData = data;
-                console.log(vm.pipelineData,'vm.pipelineData');
-
-                //vm.weightedSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.weightedSumTotal));      // 预计签约金额(万元)总计
-                //vm.expectSignSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.expectSignSumTotal));  // 加权金额总计(万元)总计
-
-                /*for(var i = 0;i < vm.pipelineData.length;i++){
-                    var root = result.root[i];
-                    vm.items.push(root);
-                }*/
-
+                console.log(vm.pipelineData,'获取pipeline表格数据');
                 // 如果表格无数据
-                if(vm.pipelineData.length === 0) {
+                if(data.root.length === 0) {
                     toastr.warning('没有相关信息 ！');
                     vm.noData = true;
 
@@ -472,13 +589,24 @@ var vm = new Vue({
                 }
                 else {
                     // 默认第一条tr添加active
-                    /*if(vm.pipelineData[0].soCoreCode) {
-                        vm.showOneChange(vm.pipelineData[0].soCoreCode, 0);
-                    }*/
+                    if(vm.pipelineData.root[0].soCoreCode) {
+                        vm.showOneChange(vm.pipelineData.root[0].soCoreCode, 0);
+                    }
+                }
+                if(vm.pipelineData.oth) {
+                    if(vm.pipelineData.oth.weightedSumTotal) {
+                        vm.weightedSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.weightedSumTotal));      // 预计签约金额(万元)总计
+                    }
+                    if(vm.pipelineData.oth.expectSignSumTotal) {
+                        vm.expectSignSumTotal = vm.toThousands(Math.round(vm.pipelineData.oth.expectSignSumTotal));  // 加权金额总计(万元)总计
+                    }
                 }
 
                 vm.noData = false;
                 vm.dataPageTotal = vm.pipelineData.totalProperty;
+                if(vm.dataPageTotal < 10) {
+                    vm.dataPageNum = 1;
+                }
                 vm.dataPageSum = Math.ceil(vm.dataPageTotal / vm.dataPageMost)
                 vm.dataPageStart = (vm.dataPageNum -1) * vm.dataPageMost + 1;
 
@@ -529,7 +657,7 @@ var vm = new Vue({
             this.hReportDate = timeYear;    // 报备日期
             vm.hSalesStaffName = userName;  // 销售
             vm.hPreSaleStaffsName = '';     // 售前
-            vm.hCpCustomerName = 'CPA201805000013';        // 合作伙伴名称
+            vm.hCpCustomerName = '';        // 合作伙伴名称
             vm.hCpCustomerTypeText = '';    // 合作伙伴类型
             vm.hSalesGroupText = userGroup; // 事业部
             vm.hSolutionText = '';          // 解决方案名称
@@ -548,27 +676,21 @@ var vm = new Vue({
             this.getProvince();          // 调用（获取省份信息）
             this.getCpCustomerType();    // 调用（获取合作伙伴类型）
 
-            // 默认填写所属事业部
-            /*vm.handleTemplate.cpDepartmentKey = vm.oauthLists.userInfo.mngSalesGroups[0].code;
-            vm.hSalesGroupText = vm.oauthLists.userInfo.mngSalesGroups[0].text;*/
-
-            this.dialogShow = false;        // 显示弹窗
-            this.handleDataShow = false;  // 显示新增修改pipeline弹窗
+            this.dialogShow = false;           // 显示弹窗
+            this.handleDataShow = false;       // 显示新增修改pipeline弹窗
         },
         // 获取单条数据
         getOneData: function(id, index) {
             var params = {
                 id: id
             };
+            console.log(params,'获取单条数据的请求参数')
             axios.get(PATH +'/cp/so/selectPipeline', {params: params}).then(function(datas) {
                 var data = datas.data;
-                console.log(data,'data');
+                console.log(data,'获取单条数据的结果');
                 if(data.code === 201) return;
-                vm.handleTemplate = data.root[0];
-                console.log('-----本条数据------');
-                console.log(data.root,'data.root');
-
                 if(data.root.length != 0) {
+                    vm.handleTemplate = data.root[0];
                     vm.getProvince(vm.handleTemplate.region);                       // 省份信息
                     vm.getSoSolution4Tree('', vm.handleTemplate.solutionCode);
 
@@ -588,10 +710,21 @@ var vm = new Vue({
                     // ===查看pipeline数据
                     vm.hRegionName = vm.handleTemplate.regionName;                  // 区域
                     vm.hProvinceName = vm.handleTemplate.provinceName;              // 省份
-
                     vm.oneDataId = vm.handleTemplate.id;                            // 获取id
+
+                    // ===查看审核历史记录
+                    vm.auditHistoryList = vm.handleTemplate.auditLogs;
+                    vm.auditHistoryTitle = vm.handleTemplate.customerName
                 }
             })
+        },
+        // 查询审核历史记录
+        getHistoryLog:function(id) {
+            this.getOneData(id);                // 调用（查询一条数据接口）
+            this.dialogShow = false;           // 显示弹窗
+            this.handleDataShow = true;        // 隐藏新增修改pipeline弹窗
+            this.checkDataShow = true;         // 隐藏查看pipeline弹窗
+            this.auditHistoryShow = false;     // 显示审核记录
         },
         // 点击新增按钮
         addData: function() {
@@ -599,10 +732,10 @@ var vm = new Vue({
         },
         // 点击编辑按钮
         editData: function(id, index) {
-            this.commonData();               // 调用（新增/修改共同代码）
-            this.isCheck = false;
             this.getOneData(id, index);      // 调用（查询一条数据接口）
             console.log(id,'id');
+            this.commonData();               // 调用（新增/修改共同代码）
+            this.isCheck = false;
             },
         // 选中合作伙伴类型
         selectCpCustomerTypeCode: function(code, text) {
@@ -628,25 +761,21 @@ var vm = new Vue({
         // 选中项目阶段
         selectProgressCode: function(code, text) {
             this.handleTemplate.progress = code;
-            // this.handleTemplate.progressCode = code;
             vm.hProgressText = text;
         },
         // 选中客户来源
         selectCustomerSourceCode: function(code, text) {
             this.handleTemplate.customerSource = code;
-            // this.handleTemplate.customerSourceCode = code;
             vm.hCustomerSourceText = text;
         },
         // 选中区域
         selectRegion: function(code) {
-            vm.handleTemplate.region = code;
-            // vm.handleTemplate.regionCode = code;
+            this.handleTemplate.region = code;
             this.isActiveProvince = -1;
             this.getProvince(code);
         },
         // 选中省份
         selectProvince: function(code){
-            // vm.handleTemplate.provinceCode = code;
             vm.handleTemplate.province = code;
 
             vm.nothing = code;
@@ -659,16 +788,12 @@ var vm = new Vue({
         // 新增/修改 填写预计签约金额
         sumKeyup: function() {
             vm.hWeightedSum = accMul(vm.handleTemplate.expectSignSum, vm.handleTemplate.successRate);
-            // vm.hWeightedSum = accMul(vm.handleTemplate.expectSignSum, vm.handleTemplate.successRateCode);
             vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
         },
         // 新增/修改准备提交的数据
         collectData: function() {
             vm.handleTemplate.salesStaffCode = userCode;      // 销售代码
             vm.handleTemplate.weightedSum = vm.hWeightedSum;  // 加权金额(万元)
-
-            // 合作伙伴模糊查询还没做，先用写死的值。
-            vm.handleTemplate.cpCustomerCode = 'CPA201805000013';
 
             console.log('-----新增/修改完成后准备提交的数据------');
             console.log(vm.handleTemplate);
@@ -679,16 +804,43 @@ var vm = new Vue({
         submitToPD: function() {
             var params = this.collectData();
 
-            axios.get(PATH +'/cp/so/addOrUpdatePipline', {params: params}).then(function(datas) {
+            $.ajax({
+                async: false,
+                url: PATH + '/cp/so/addOrUpdatePipline',
+                type: 'get',
+                data: params,
+                dateType: 'json',
+                success: function(result) {
+                    // var data = datas.data;
+                    console.log(result,'保存');
+                    if (result.code === 201) {
+                        toastr.error(result.msg)
+                        console.log(result.msg,'error')
+                        return;
+                    }else {
+                        vm.oneDataId = result.msg.cpSoId;
+                        vm.dialogShow = true;         // 调用（弹窗）
+                        vm.handleDataShow = true;
+                        vm.clearHandle();                // 调用（清空新增/修改表单）
+                        vm.getPipelineData();            // 再调用（表格查询）
+                    }
+                    toastr.success('操作成功');
+                },
+                error: function(result) {
+                    console.log('保存失败');
+                }
+            })
+           /* axios.get(PATH +'/cp/so/addOrUpdatePipline', {params: params}).then(function(datas) {
             // axios.get('http://172.16.20.34:8080/iboss-prism/cp/so/addOrUpdatePipline', {params: params}).then(function(datas) {
                 var data = datas.data;
-                console.log(data);
+                console.log(data,'保存');
                 if (data.code === 201) {
                     toastr.error(data.msg)
                     console.log(data.msg,'error')
                     return;
                 }
                 if(data.success){
+                    vm.oneDataId = data.msg.cpSoId;
                     vm.dialogShow = true;         // 调用（弹窗）
                     vm.handleDataShow = true;
                     vm.clearHandle();                // 调用（清空新增/修改表单）
@@ -697,10 +849,11 @@ var vm = new Vue({
                 toastr.success('操作成功');
 
                 // vm.showOneChange();
-            })
+            })*/
         },
         // 提交至事业部
         submitToBU: function() {
+            this.submitToPD();
             // var params = this.collectData();
             var params = {
                 auditType: 'submit',
@@ -763,22 +916,24 @@ var vm = new Vue({
         },
         // 点击分配按钮
         allotData: function(id, index) {
+            this.getOneData(id, index);      // 调用（查询一条数据接口）
             this.dialogShow = false;         // 调用（弹窗）
+            this.auditHistoryShow = true;     // 隐藏审核记录弹窗
             this.checkDataShow = false;      // 显示查看pipeline弹窗
             this.isCheck = true;
-            this.getOneData(id, index);      // 调用（查询一条数据接口）
         },
-        // 销售老大准备分配这条数据
+        // 1、销售老大准备分配这条数据
         allotThisData: function() {
             this.getSoDepartment();
-            this.isHide = false;            // 显示要分配的事业部
+            this.isAllotHide = false;            // 显示要分配的事业部
+            this.isRejectHide = true;
         },
-        // 点击分配按钮
+        // 2、销售老大点击确认分配按钮
         allotToBU: function(id) {
             this.showSecondPop();           // 调用（弹窗）
             this.allotShow = false;        // 确认分配pop
         },
-        // 确认分配弹窗点击是
+        // 3、二次确认分配弹窗点击是
         allotBtn: function(id, type) {
             var params = {
                 auditType: type,
@@ -792,25 +947,33 @@ var vm = new Vue({
                 var data = datas.data;
                 console.log(data,'data');
                 if(data.code == 200) {
+                    toastr.success('分配成功 !');
                     vm.dialogShow = true;         // 调用（弹窗）
                     vm.checkDataShow = true;      // 显示查看pipeline弹窗
                     vm.secondDialogShow = true;
                     vm.allotShow = true;
                     vm.getPipelineData();            // 再调用（表格查询）
 
-                    toastr.success('分配成功 !');
+                    // 清空相关信息
+                    vm.isAllotHide = true;
+                    vm.hSoDepartmentName = '';
                     return;
                 }else {
                     toastr.error(data.msg);
                 }
             })
         },
-        // 销售老大驳回这条数据
-        rejectThisData: function(id, type) {
+        // 1、销售老大准备驳回这条数据
+        rejectThisData: function() {
+            this.isRejectHide = false;
+            this.isAllotHide = true;
+        },
+        // 2、销售老大点击确认驳回按钮
+        rejectToXS: function(id, type) {
             var params = {
                 auditType: type,
                 id: id,
-                remark: '无'
+                remark: vm.hRemark
             };
             console.log(params,'params--销售老大驳回这条数据')
             axios.get(PATH +'/cp/so/auditPipeline', {params: params}).then(function(datas) {
@@ -820,8 +983,11 @@ var vm = new Vue({
                     toastr.success('驳回成功 !');
                     vm.dialogShow = true;         // 调用（弹窗）
                     vm.handleDataShow = true;
-
                     vm.getPipelineData();         // 再调用（表格查询）
+
+                    // 清空相关信息
+                    vm.hRemark = '';
+                    vm.isRejectHide = true;
                     return;
                 }else {
                     toastr.error(data.msg)

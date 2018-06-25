@@ -1,3 +1,21 @@
+.table-tab-item {
+  position: relative; }
+
+.badge {
+  position: absolute;
+  right: -10px;
+  top: -10px;
+  min-width: 20px;
+  line-height: 20px;
+  text-align: center;
+  padding: 0 6px;
+  font-size: 12px;
+  font-weight: 400;
+  white-space: nowrap;
+  border-radius: 10px;
+  background: #f5222d;
+  color: #fff; }
+
 .search-wrapper,
 .main-wrapper {
   background-color: #fff;
@@ -7,14 +25,7 @@
   padding: 15px 20px;
   padding-bottom: 0;
   margin-bottom: 10px;
-  position: relative;
-  /*
-
-  .dropdown-wrap,
-  .input-group {
-    margin-bottom: 15px;
-  }
-  */ }
+  position: relative; }
   .search-wrapper :checked ~ .drowicon .fa {
     transform: rotate(180deg); }
   .search-wrapper :checked ~ .content {
@@ -169,7 +180,8 @@
         margin-bottom: 15px; }
       .data-wrapper .wrapper .main .dropdown-wrap,
       .data-wrapper .wrapper .main .input-group {
-        display: table; }
+        display: table;
+        line-height: 28px; }
       .data-wrapper .wrapper .main .input-group-label,
       .data-wrapper .wrapper .main .dropdown-label {
         width: 120px; }
@@ -298,7 +310,7 @@
 .star {
   color: #ff0000;
   position: absolute;
-  margin-top: 6px; }
+  margin-top: 3px; }
 
 .i-table thead {
   background-color: #ed6d00;
@@ -329,7 +341,7 @@
   background: #fff;
   padding: 10px; }
   .pipelineJoin .table-wrapper {
-    margin-bottom: 30px; }
+    margin-bottom: 10px; }
     .pipelineJoin .table-wrapper thead {
       background-color: #FAD3B2;
       color: #433C38; }
@@ -350,5 +362,10 @@
 .checkText {
   color: #14a6ef;
   line-height: 30px; }
+
+.border-wrapper {
+  border: 1px solid #eee;
+  padding: 15px 0;
+  float: left; }
 
 /*# sourceMappingURL=manage.css.map */
