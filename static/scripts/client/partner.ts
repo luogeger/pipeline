@@ -177,7 +177,7 @@ let vm = new Vue({
     },// data
 
     created () {
-        this.tabBtn(0, 'partner-pass');// 显示第一个tab
+        this.tabBtn(4, 'partner-other');// 显示第一个tab
         this.getIndustry()
     },
 
@@ -385,7 +385,6 @@ let vm = new Vue({
 
         // 添加事件
         addPartnerBtn (type) {
-            console.log(type)
             this[type] = true;
             if (type === 'addPartnerPop') {
                 this.submitBtnIsShow  = true;// 添加和编辑 合伙人，机要信息的按钮
@@ -451,7 +450,7 @@ let vm = new Vue({
 
         // 确认提交合作伙伴 有id 就相当于是编辑
         addPartner () {
-            let params = {
+            let paramsPartner = {
                 id:                 this.tempID,
                 name:               this.pName,//合作伙伴名称
                 businessProvince:   this.pBusinessProvince,//业务区域、省份
@@ -466,7 +465,26 @@ let vm = new Vue({
                 isSignedCp:         this.pIsSignedCp,//是否是直签合作伙伴客户
             };
 
-            console.log(params)
+            console.log(paramsPartner)
+            axios
+                .get(PATH +'/cp/crm/addOrUpdateCustomer',  {params: paramsPartner} )
+                .then((datas)=>{
+                    let data = datas.data;
+                    if (data.code === 201) {
+                        toastr.warning(data.msg)
+                        return;
+                    }
+
+                    this.popUp('addPartnerPop')
+                    this.getPartnerData()
+                    // if (this.tempID) {
+                    //     toastr.success('机要信息添加成功')
+                    // }else{
+                    //     toastr.success('机要信息编辑成功')
+                    // }
+
+                });
+
         },
 
         // 确认提交机要信息 有id 就相当于是编辑
@@ -596,6 +614,7 @@ let vm = new Vue({
             this.defaultCheckedText = '';
             this.textShow()
             this.styleShow(item.code)
+            this.regionProvinceIsShow = false;
         },
 
         // 点击的省份是否已经被选中
@@ -619,7 +638,6 @@ let vm = new Vue({
             this.textShow()
         },
 
-
         // 区域、省份的样式勾选
         styleShow (code) {
             return this.defaultCheckedCode.indexOf(code) !== -1;
@@ -635,8 +653,6 @@ let vm = new Vue({
             this.defaultCheckedText = text.join('，');
         },
 
-        // defaultCheckedCode: [],// 默认选中的省份code
-        // defaultCheckedText: '',// 默认选中的省份text
         // 直签
         isSignedCp (flag) {
             this.pIsSignedCp = flag;

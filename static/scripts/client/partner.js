@@ -155,7 +155,7 @@ var vm = new Vue({
         ],
     },
     created: function () {
-        this.tabBtn(0, 'partner-pass'); // 显示第一个tab
+        this.tabBtn(4, 'partner-other'); // 显示第一个tab
         this.getIndustry();
     },
     mounted: function () {
@@ -337,7 +337,6 @@ var vm = new Vue({
         },
         // 添加事件
         addPartnerBtn: function (type) {
-            console.log(type);
             this[type] = true;
             if (type === 'addPartnerPop') {
                 this.submitBtnIsShow = true; // 添加和编辑 合伙人，机要信息的按钮
@@ -394,7 +393,8 @@ var vm = new Vue({
         },
         // 确认提交合作伙伴 有id 就相当于是编辑
         addPartner: function () {
-            var params = {
+            var _this = this;
+            var paramsPartner = {
                 id: this.tempID,
                 name: this.pName,
                 businessProvince: this.pBusinessProvince,
@@ -408,7 +408,23 @@ var vm = new Vue({
                 remark: this.pRemark,
                 isSignedCp: this.pIsSignedCp,
             };
-            console.log(params);
+            console.log(paramsPartner);
+            axios
+                .get(PATH + '/cp/crm/addOrUpdateCustomer', { params: paramsPartner })
+                .then(function (datas) {
+                var data = datas.data;
+                if (data.code === 201) {
+                    toastr.warning(data.msg);
+                    return;
+                }
+                _this.popUp('addPartnerPop');
+                _this.getPartnerData();
+                // if (this.tempID) {
+                //     toastr.success('机要信息添加成功')
+                // }else{
+                //     toastr.success('机要信息编辑成功')
+                // }
+            });
         },
         // 确认提交机要信息 有id 就相当于是编辑
         addPartnerMsg: function () {
@@ -526,6 +542,7 @@ var vm = new Vue({
             this.defaultCheckedText = '';
             this.textShow();
             this.styleShow(item.code);
+            this.regionProvinceIsShow = false;
         },
         // 点击的省份是否已经被选中
         ifInclude: function (code) {
@@ -560,8 +577,6 @@ var vm = new Vue({
             });
             this.defaultCheckedText = text.join('，');
         },
-        // defaultCheckedCode: [],// 默认选中的省份code
-        // defaultCheckedText: '',// 默认选中的省份text
         // 直签
         isSignedCp: function (flag) {
             this.pIsSignedCp = flag;
