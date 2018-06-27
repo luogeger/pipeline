@@ -1,59 +1,68 @@
 var vm = new Vue({
     el: '#app',
-    data: function () {
+
+    data () {
         return {
-            colorValue: ['#ED6D00', '#FFC732', '#8786FE', '#F29EC2', '#26C5C8', '#CBE198'],
+            colorValue:     ['#ED6D00', '#FFC732','#8786FE', '#F29EC2', '#26C5C8', '#CBE198'],
             chartOneLegend: [],
-            chartOneX: [],
-            chartOneSum: [],
-            chartOneRate: [],
-            chartOnePie: [],
-        };
+            chartOneX:      [],
+            chartOneSum:    [],
+            chartOneRate:   [],
+            chartOnePie:    [],
+        }
     },
-    created: function () {
+
+    created () {
+
     },
-    mounted: function () {
-        this.chartOneData();
+
+    mounted () {
+        this.chartOneData()
     },
+
     methods: {
-        chartOneData: function (region) {
-            var _this = this;
+        chartOneData (region) {
             axios
-                .get(PATH + '/currency/midYear?type=rb')
-                .then(function (datas) {
-                _this.chartOneDataDispose(datas.data, region);
-                console.log(_this.chartOneSum);
-                console.log(_this.chartOneRate);
-                _this.chartOne();
-                _this.chartTwo();
-            });
+                .get(PATH +'/currency/midYear?type=rb')
+                .then(datas => {
+                    this.chartOneDataDispose(datas.data, region)
+                    console.log(this.chartOneSum)
+                    console.log(this.chartOneRate)
+                    this.chartOne()
+                    this.chartTwo()
+                });
+
         },
-        chartOneDataDispose: function (data, region) {
-            var _this = this;
-            console.log(data.msg);
+
+        chartOneDataDispose (data, region) {
+            console.log(data.msg)
             region = region || '全国';
-            data.msg.rbList.forEach(function (item, index) {
+            data.msg.rbList.forEach((item, index) => {
                 if (index !== 0) {
-                    _this.chartOnePie.push({
+                    this.chartOnePie.push({
                         value: item.rate,
                         name: item.text,
-                    });
+                    })
                 }
+
                 if (item.text == region) {
-                    item.children.forEach(function (_item) {
-                        _this.chartOneX.push(_item.text);
-                        _this.chartOneSum.push(_item.sum);
-                        _this.chartOneRate.push(_item.rate);
-                    });
+                    item.children.forEach(_item => {
+                        this.chartOneX.push(_item.text)
+                        this.chartOneSum.push(_item.sum)
+                        this.chartOneRate.push(_item.rate)
+                    })
+
                 }
-            });
+            })
         },
-        chartOne: function () {
-            var box = echarts.init(document.getElementById('chartOne'));
-            var option = {
-                title: {
+
+        chartOne () {
+            let box = echarts.init(document.getElementById('chartOne'));
+
+            let option = {
+                title : {
                     text: '区域内各大行业的金额、占比',
-                    x: 'left',
+                    x:'left',
                     textStyle: {
                         fontSize: 14,
                     }
@@ -67,12 +76,14 @@ var vm = new Vue({
                         }
                     }
                 },
+
                 grid: {
                     left: '1%',
                     right: '3%',
                     bottom: '1%',
                     containLabel: true
                 },
+
                 xAxis: [
                     {
                         type: 'category',
@@ -100,11 +111,11 @@ var vm = new Vue({
                 ],
                 series: [
                     {
-                        name: '金额',
-                        type: 'bar',
+                        name:'金额',
+                        type:'bar',
                         barWidth: '40%',
-                        itemStyle: {
-                            barBorderRadius: [5, 5, 0, 0],
+                        itemStyle:{
+                            barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
                         },
                         label: {
                             normal: {
@@ -115,8 +126,8 @@ var vm = new Vue({
                         data: this.chartOneSum,
                     },
                     {
-                        name: '占比',
-                        type: 'line',
+                        name:'占比',
+                        type:'line',
                         yAxisIndex: 1,
                         lineStyle: {
                             type: 'dashed',
@@ -137,20 +148,32 @@ var vm = new Vue({
                             },
                         },
                         data: this.chartOnePie,
+
                     },
                 ]
             };
-            box.on('click', function (params) {
-                console.log(params);
+
+            box.on('click', params => {
+                console.log(params)
                 if (params.componentSubType === 'pie') {
+
                 }
             });
+
             box.setOption(option);
+
+
+
+        },// chartOne
+
+        chartTwo () {
+
         },
-        chartTwo: function () {
-        },
-        test: function () {
-            console.log(234);
+
+        test () {
+            console.log(234)
         }
+
     },
+
 });

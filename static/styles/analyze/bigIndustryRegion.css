@@ -1,4 +1,8 @@
-.main {
-  color: red; }
+.main .card {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #ffffff; }
+  .main .card:first-child {
+    margin-top: 0; }
 
 /*# sourceMappingURL=bigIndustryRegion.css.map */

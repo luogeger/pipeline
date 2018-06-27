@@ -1,3 +1,11 @@
 .main{
-	color: red;
+	.card{
+		margin-top: 10px;
+		padding: 10px;
+		background-color: #ffffff;
+		&:first-child{
+			margin-top: 0;
+		}
+	}
+
 }
