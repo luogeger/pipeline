@@ -199,8 +199,9 @@ samp {
   color: #FF8A41 !important; }
 
 .i-active {
+  color: #FFFFFF !important;
   background: #FF8A41 !important;
-  color: #FFFFFF !important; }
+  border-color: #FF8A41 !important; }
 
 .inline-block,
 .ver-mid {

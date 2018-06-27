@@ -1,8 +1,25 @@
 .main .card {
+  position: relative;
   margin-top: 10px;
   padding: 10px;
   background-color: #ffffff; }
   .main .card:first-child {
     margin-top: 0; }
+  .main .card .industry,
+  .main .card .region {
+    position: absolute;
+    right: 50px;
+    font-size: 12px;
+    z-index: 1; }
+    .main .card .industry span,
+    .main .card .region span {
+      cursor: pointer;
+      display: inline-block;
+      padding: 1px 5px;
+      border: 1px solid #222222;
+      border-radius: 3px; }
+      .main .card .industry span:not(:last-child),
+      .main .card .region span:not(:last-child) {
+        margin-right: 5px; }
 
 /*# sourceMappingURL=bigIndustryRegion.css.map */

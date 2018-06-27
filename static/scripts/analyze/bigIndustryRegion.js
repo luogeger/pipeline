@@ -5,14 +5,16 @@ var vm = new Vue({
             data: {},
             allRegion: [],
             allIndustry: [],
-            colorValue: ['#ED6D00', '#FFC732', '#8786FE', '#F29EC2', '#26C5C8', '#CBE198'],
+            colorValue: chartColorValue,
             chartOneX: [],
             chartOneSum: [],
             chartOneRate: [],
             chartOnePie: [],
+            chartOneActive: '全国',
             chartTwoX: [],
             chartTwoSum: [],
             chartTwoRate: [],
+            chartTwoActive: '全行业',
             tHead: [],
             tBody: []
         };
@@ -43,6 +45,11 @@ var vm = new Vue({
         chartOneData: function (region) {
             var _this = this;
             region = region || '全国';
+            this.allRegion = []; // 全部清空
+            this.chartOneX = []; // 全部清空
+            this.chartOneSum = []; // 全部清空
+            this.chartOneRate = []; // 全部清空
+            this.chartOnePie = []; // 全部清空
             this.data.msg.rbList.forEach(function (item, index) {
                 _this.allRegion.push(item.text);
                 if (index !== 0) {
@@ -50,7 +57,7 @@ var vm = new Vue({
                         value: item.rate,
                         name: item.text,
                         itemStyle: {
-                            color: _this.colorValue[index],
+                            color: _this.colorValue[index + 1],
                         }
                     });
                 } // 饼图数据
@@ -98,7 +105,10 @@ var vm = new Vue({
                         },
                         axisLine: {
                             show: false,
-                        }
+                        },
+                        axisLabel: {
+                            show: false,
+                        },
                     }
                 ],
                 yAxis: [
@@ -122,6 +132,7 @@ var vm = new Vue({
                     {
                         name: '金额',
                         type: 'bar',
+                        color: chartColor[3],
                         barWidth: '40%',
                         itemStyle: {
                             barBorderRadius: [5, 5, 0, 0],
@@ -149,7 +160,7 @@ var vm = new Vue({
                         center: ['80%', '40%'],
                         silent: true,
                         itemStyle: {
-                            opacity: 0.5,
+                            opacity: 0.7,
                         },
                         label: {
                             normal: {
@@ -169,6 +180,10 @@ var vm = new Vue({
         },
         chartTwoData: function (industry) {
             var _this = this;
+            this.allIndustry = [];
+            this.chartTwoX = [];
+            this.chartTwoSum = [];
+            this.chartTwoRate = [];
             industry = industry || '全行业';
             this.data.msg.brList.forEach(function (item) {
                 _this.allIndustry.push(item.text);
@@ -239,6 +254,7 @@ var vm = new Vue({
                     {
                         name: '金额',
                         type: 'bar',
+                        color: chartColor[3],
                         barWidth: '40%',
                         itemStyle: {
                             barBorderRadius: [5, 5, 0, 0],
@@ -263,6 +279,16 @@ var vm = new Vue({
                 ]
             };
             box.setOption(option);
+        },
+        chartActive: function (type, value) {
+            if (type === 1) {
+                this.chartOneActive = value;
+                this.chartOne(value);
+            }
+            if (type === 2) {
+                this.chartTwoActive = value;
+                this.chartTwo(value);
+            }
         },
     },
 });
