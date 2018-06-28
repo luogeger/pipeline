@@ -1,0 +1,27 @@
+<link rel="stylesheet" href="../static/styles/analyze/bigSmallIndustry.css">
+
+<div class="main" id="app">
+    <div class="card">
+        <div class="search">
+            <span>事业部：</span>
+            <select-list
+                :selections="allGroup"
+                v-model="department"
+            ></select-list>
+        </div>
+        <div class="search input-group">
+            <span class="input-group-label ">签约年月：</span>
+            <input class="input-group-form i-date-form-range"
+                   id="dateOne"
+                   type="text">
+        </div>
+        <div class="btn btn-theme"
+             @click="query"
+             style="vertical-align: middle">查询</div>
+    </div>
+    <div class="card"></div>
+    <div class="card"></div>
+    <div class="card"></div>
+</div><!-- /.main -->
+
+<script src="../static/scripts/analyze/bigSmallIndustry.js"></script>

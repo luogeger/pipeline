@@ -3,18 +3,24 @@ Vue.component('select-list', {
         selections: {
             type: Array,
             default: [{
-                label: 'test',
-                value: 0
+                text: '',
+                code: ''
             }]
-        }
+        },
+        value: {},
     },// props
 
     data () {
         return {
+            _value: {},
             nowIndex: 0,
             isShow: false,
         }
     },// data
+
+    created () {
+        this._value = this.value;
+    },
 
     mounted () {
         document.addEventListener('click', (e) => {
@@ -27,10 +33,10 @@ Vue.component('select-list', {
             this.isShow = !this.isShow;
             this.iconRotate = true;// 输入法
         },
-        chooseShow (index) {
+        chooseShow (item) {
             this.isShow = false;
-            this.nowIndex = index;
-            this.$emit('on-change', this.selections[this.nowIndex]);
+            this._value = item;
+            this.$emit('input', this._value);
         }
     },// methods
 
@@ -39,7 +45,7 @@ Vue.component('select-list', {
             <div class="selection-show" 
                  :class="{'i-border-col i-border-shadow i-icon-col': isShow}"
                  @click="toggleShow">
-                <span class="default-text">{{selections[nowIndex].label}}</span>
+                <span class="default-text" v-text="_value.text"></span>
                 <i class="fa fa-angle-down"
                    :class="{'rotate-180': isShow}"></i>
             </div>
@@ -48,8 +54,8 @@ Vue.component('select-list', {
                     <ul>
                         <li v-for="(item, index) in selections" 
                             :class="{'i-active': index == nowIndex}"
-                            @click="chooseShow(index)">
-                        {{item.label}}</li>
+                            @click="chooseShow(item)"
+                            v-text="item.text"></li>
                     </ul>
                 </div>
             </transition>    

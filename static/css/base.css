@@ -588,7 +588,8 @@ input.disabled {
 
 .selection-component {
   position: relative;
-  display: inline-block; }
+  display: inline-block;
+  z-index: 1; }
   .selection-component .selection-show {
     display: inline-block;
     position: relative;

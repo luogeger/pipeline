@@ -1,0 +1,12 @@
+.main .card {
+  position: relative;
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #ffffff; }
+  .main .card:first-child {
+    margin-top: 0; }
+  .main .card .search {
+    display: inline-block;
+    vertical-align: middle; }
+
+/*# sourceMappingURL=bigSmallIndustry.css.map */

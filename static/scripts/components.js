@@ -3,16 +3,21 @@ Vue.component('select-list', {
         selections: {
             type: Array,
             default: [{
-                    label: 'test',
-                    value: 0
+                    text: '',
+                    code: ''
                 }]
-        }
+        },
+        value: {},
     },
     data: function () {
         return {
+            _value: {},
             nowIndex: 0,
             isShow: false,
         };
+    },
+    created: function () {
+        this._value = this.value;
     },
     mounted: function () {
         var _this = this;
@@ -26,13 +31,13 @@ Vue.component('select-list', {
             this.isShow = !this.isShow;
             this.iconRotate = true; // 输入法
         },
-        chooseShow: function (index) {
+        chooseShow: function (item) {
             this.isShow = false;
-            this.nowIndex = index;
-            this.$emit('on-change', this.selections[this.nowIndex]);
+            this._value = item;
+            this.$emit('input', this._value);
         }
     },
-    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span class=\"default-text\">{{selections[nowIndex].label}}</span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in selections\" \n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\">\n                        {{item.label}}</li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
+    template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span class=\"default-text\" v-text=\"_value.text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in selections\" \n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(item)\"\n                            v-text=\"item.text\"></li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
 }); // select-list
 Vue.component('pop-up', {
     props: {

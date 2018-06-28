@@ -113,6 +113,7 @@ $max-width: 200px;
 .selection-component {
   position: relative;
   display: inline-block;
+  z-index: 1;
   .selection-show {
     display: inline-block;
     position: relative;
