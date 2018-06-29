@@ -23,7 +23,18 @@
         <div id="chartPie" style="height: 400px;width: 40%;" class="pull-left"></div>
         <div id="chartLine" style="height: 400px;width: 60%;" class="pull-left"></div>
     </div>
-    <div class="card"></div>
+    <div class="card">
+        <div class="chartBar">
+            <span @click="chartActiveBtn(1, '全部')"
+                  :class="{'i-active': '全部' === chartActiveBar}"
+                  >全部</span>
+            <span v-for="item in barLegend"
+                  v-text="item"
+                  :class="{'i-active': item === chartActiveBar}"
+                  @click="chartActiveBtn(1, item)"></span>
+        </div>
+        <div id="chartBar" style="height: 400px;width: 100%;"></div>
+    </div>
     <div class="card"></div>
 </div><!-- /.main -->
 

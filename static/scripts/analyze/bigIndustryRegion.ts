@@ -93,7 +93,6 @@ var vm = new Vue({
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: {
-                        // type: 'cross',// hover之后横向虚线
                         crossStyle: {
                             color: '#999'
                         }
@@ -117,10 +116,6 @@ var vm = new Vue({
                         axisLine: {
                             show: false,
                         },
-                        axisLabel: {
-                            show: false,
-                        },
-
                     }
                 ],
                 yAxis: [
@@ -169,7 +164,7 @@ var vm = new Vue({
                     {
                         type: 'pie',
                         radius: '50%',
-                        center: ['80%', '50%'],
+                        center: ['80%', '55%'],
                         silent: true,
                         itemStyle: {
                             opacity: 0.7,

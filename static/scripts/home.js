@@ -23,7 +23,7 @@ var timeYear,// 2018-04-18
                        '#F29EC2',
                        '#0094FF',
                        '#26C5C8',
-                       '#CBE198',
+                       '#FF0000',
                        '#0094ff',
                        '#EA69A2'];
 
@@ -74,6 +74,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
         loadMainPage('.content-item', 'analyze/bigSmallIndustry.html');
+        // loadMainPage('.content-item', 'analyze/bigIndustryRegion.html');
     })
 })
 

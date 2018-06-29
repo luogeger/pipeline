@@ -14,6 +14,12 @@ var vm = new Vue({
             pieLegend: [],
             lineData: [],
             lineDataX: [],
+            chartActiveBar: '全部',
+            barLegend: [],
+            barX: [],
+            barSum: [],
+            barRate: [],
+            barBsRate: [],
         };
     },
     created: function () {
@@ -23,6 +29,7 @@ var vm = new Vue({
         this.getData(function () {
             _this.chartPie();
             _this.chartLine();
+            _this.chartBar();
         });
         this.renderDate();
     },
@@ -48,10 +55,19 @@ var vm = new Vue({
             });
         },
         query: function () {
-            this.getData();
+            var _this = this;
+            this.getData(function () {
+                _this.chartPie();
+                _this.chartLine();
+                _this.chartBar();
+            });
         },
         chartPieLineData: function () {
             var _this = this;
+            this.pieLegend = [];
+            this.pieData = [];
+            this.lineData = [];
+            this.lineDataX = [];
             this.data.msg.bsList.forEach(function (item, index) {
                 _this.pieLegend.push(item.text);
                 _this.pieData.push({
@@ -62,6 +78,39 @@ var vm = new Vue({
                 _this.lineData.push(item.sum);
                 _this.lineDataX.push(item.text);
             });
+        },
+        chartBarData: function (industry) {
+            var _this = this;
+            industry = industry || '全部';
+            this.barLegend = [];
+            this.barX = [];
+            this.barSum = [];
+            this.barRate = [];
+            this.barBsRate = [];
+            if (industry === '全部') {
+                this.data.msg.bsList.forEach(function (item) {
+                    _this.barLegend.push(item.text);
+                    item.children.forEach(function (_item) {
+                        _this.barX.push(_item.text);
+                        _this.barSum.push(_item.sum);
+                        _this.barRate.push(_item.rate);
+                        _this.barBsRate.push(_item.bsRate);
+                    });
+                });
+            }
+            else {
+                this.data.msg.bsList.forEach(function (item) {
+                    _this.barLegend.push(item.text);
+                    if (industry === item.text) {
+                        item.children.forEach(function (_item) {
+                            _this.barX.push(_item.text);
+                            _this.barSum.push(_item.sum);
+                            _this.barRate.push(_item.rate);
+                            _this.barBsRate.push(_item.bsRate);
+                        });
+                    }
+                });
+            }
         },
         chartPie: function () {
             var box = echarts.init(document.getElementById('chartPie'));
@@ -75,15 +124,15 @@ var vm = new Vue({
                         fontSize: 14,
                     }
                 },
-                legend: {
-                    bottom: 0,
-                    data: this.pieLegend,
-                },
+                // legend: {
+                //     bottom: 0,
+                //     data: this.pieLegend,
+                // },
                 series: [
                     {
                         type: 'pie',
-                        radius: '50%',
-                        center: ['50%', '50%'],
+                        radius: '60%',
+                        center: ['50%', '60%'],
                         label: {
                             normal: {
                                 formatter: '{b}\n {c}%',
@@ -162,8 +211,11 @@ var vm = new Vue({
                 ],
                 yAxis: [
                     {
-                        name: '(万元)',
+                        name: '金额(元)',
                         type: 'value',
+                        axisLabel: {
+                            formatter: '{value} 元'
+                        }
                     }
                 ],
                 series: [
@@ -203,7 +255,86 @@ var vm = new Vue({
             };
             box.setOption(option);
         },
-        chartBar: function () {
+        chartBar: function (industry) {
+            this.chartBarData(industry);
+            var box = echarts.init(document.getElementById('chartBar'));
+            var option = {
+                title: {
+                    text: '小行业签约情况 - 金额 - 占比',
+                    top: '10px',
+                    x: 'left',
+                    textStyle: {
+                        fontSize: 14,
+                    }
+                },
+                tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                        type: 'line' // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '5%',
+                    right: '5%',
+                    bottom: '1%',
+                    containLabel: true
+                },
+                xAxis: [
+                    {
+                        data: this.barX,
+                        type: 'category',
+                        axisLabel: {
+                            rotate: 45,
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '金额(元)',
+                        axisLabel: {
+                            formatter: '{value} 元'
+                        }
+                    },
+                    {
+                        type: 'value',
+                        name: '占比(%)',
+                        max: 100,
+                        axisLabel: {
+                            formatter: '{value} %'
+                        },
+                    }
+                ],
+                series: [
+                    {
+                        data: this.barSum,
+                        name: '金额',
+                        type: 'bar',
+                        color: 'rgba(255,138,65,1)',
+                        itemStyle: {
+                            barBorderRadius: [5, 5, 0, 0],
+                        },
+                    },
+                    {
+                        data: this.barRate,
+                        type: 'line',
+                        name: '大行业占比'
+                    },
+                    {
+                        data: this.barBsRate,
+                        type: 'line',
+                        name: '整体占比',
+                    }
+                ]
+            };
+            box.setOption(option);
+        },
+        chartActiveBtn: function (type, industry) {
+            console.log(industry);
+            if (type === 1) {
+                this.chartActiveBar = industry;
+                this.chartBar(industry);
+            }
         },
         // 绑定日期插件事件
         renderDate: function () {
