@@ -17,7 +17,15 @@ var timeYear,// 2018-04-18
     userLevel,// 用户级别  xs  xsld  dqcyh
     saleGroupList,// 所有部门
     chartColor = ['#ED6D00', '#FFC732', '#C23531', '#F78937'],// F78937主题色
-    chartColorValue = ['#BA332D','#ED6D00', '#FFC732','#8786FE', '#F29EC2', '#26C5C8', '#CBE198', '#0094ff', '#4D97CC'];
+    chartColorValue = ['#ED6D00',
+                       '#FFC732',
+                       '#8786FE',
+                       '#F29EC2',
+                       '#0094FF',
+                       '#26C5C8',
+                       '#CBE198',
+                       '#0094ff',
+                       '#EA69A2'];
 
 
 axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {

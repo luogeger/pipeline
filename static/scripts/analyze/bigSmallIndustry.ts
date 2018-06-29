@@ -6,9 +6,17 @@ var vm = new Vue({
             data:           {},
             allGroup:       saleGroupList,
 
+            // 查询条件
             department:     {code: '', text: '全部'},
             signedStartDate:'',
             signedEndDate:  '',
+
+            // 数据
+            chartColor:     chartColorValue,
+            pieData:        [],
+            pieLegend:      [],
+            lineData:       [],
+            lineDataX:      [],
 
         }
     },
@@ -18,7 +26,11 @@ var vm = new Vue({
     },
 
     mounted () {
-        this.getData()
+        this.getData(() => {
+            this.chartPie()
+            this.chartLine()
+
+        })
         this.renderDate()
     },
 
@@ -26,15 +38,19 @@ var vm = new Vue({
         getData (callback, obj) {
             let params = {
                 type: 'bs',
-                department: this.department.text,
+                department:      this.department.code,
                 signedStartDate: this.signedStartDate,
-                signedEndDat: this.signedEndDat,
+                signedEndDate:   this.signedEndDate,
             };
             params = Object.assign(params, obj);
+            console.log(params)
             axios
                 .get(PATH +'/currency/midYear', {params: params})
                 .then(datas => {
                     this.data = datas.data;
+                    this.chartPieLineData()
+
+
                     console.log(this.data.msg)
                     if (callback) callback();
                 });
@@ -42,6 +58,171 @@ var vm = new Vue({
 
         query () {
             this.getData()
+        },
+
+        chartPieLineData () {
+            this.data.msg.bsList.forEach((item, index) => {
+                this.pieLegend.push(item.text)
+                this.pieData.push({
+                    value: item.sum,
+                    name:  item.text,
+                    itemStyle: {color: this.chartColor[index]}
+                })
+
+                this.lineData.push(item.sum)
+                this.lineDataX.push(item.text)
+
+            })
+        },
+
+        chartPie () {
+            let box = echarts.init(document.getElementById('chartPie'));
+
+            let option = {
+                silent: true,
+                title : {
+                    text: '大行业签约情况 - 占比',
+                    top: '10px',
+                    x:'left',
+                    textStyle: {
+                        fontSize: 14,
+                    }
+                },
+                legend: {
+                    bottom: 0,
+                    data: this.pieLegend,
+
+                },
+                series : [
+                    {
+                        type: 'pie',
+                        radius: '50%',
+                        center: ['50%', '50%'],
+                        label: {
+                            normal: {
+                                formatter: '{b}\n {c}%',
+                            },
+                        },
+                        data: this.pieData,
+                    }
+                ]
+            };
+            box.setOption(option);
+        },
+
+        chartLine () {
+            let box = echarts.init(document.getElementById('chartLine'));
+
+            let option = {
+
+                title : {
+                    text: '大行业签约情况 - 金额',
+                    top: '10px',
+                    x:'left',
+                    textStyle: {
+                        fontSize: 14,
+                    }
+                },
+                tooltip : {
+                    trigger: 'axis',
+                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+                        type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                    }
+                },
+                grid: {
+                    left: '5%',
+                    right: '5%',
+                    bottom: '1%',
+                    containLabel: true
+                },
+                xAxis : [
+                    {
+                        data : this.lineDataX,
+                        type : 'category',
+                        axisLabel: {
+                            formatter: (params) => {
+                                let newParamsName = "";// 最终拼接成的字符串
+                                let paramsNameNumber = params.length;// 实际标签的个数
+                                let provideNumber = 4;// 每行能显示的字的个数
+                                let rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                                /**
+                                 * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                                 */
+                                // 条件等同于rowNumber>1
+                                if (paramsNameNumber > provideNumber) {
+                                    /** 循环每一行,p表示行 */
+                                    for (let p = 0; p < rowNumber; p++) {
+                                        let tempStr = "";// 表示每一次截取的字符串
+                                        let start = p * provideNumber;// 开始截取的位置
+                                        let end = start + provideNumber;// 结束截取的位置
+                                        // 此处特殊处理最后一行的索引值
+                                        if (p == rowNumber - 1) {
+                                            // 最后一次不换行
+                                            tempStr = params.substring(start, paramsNameNumber);
+                                        } else {
+                                            // 每一次拼接字符串并换行
+                                            tempStr = params.substring(start, end) + "\n";
+                                        }
+                                        newParamsName += tempStr;// 最终拼成的字符串
+                                    }
+
+                                } else {
+                                    // 将旧标签的值赋给新标签
+                                    newParamsName = params;
+                                }
+                                //将最终的字符串返回
+                                return newParamsName
+                            }
+                        }
+                    }
+                ],
+                yAxis : [
+                    {
+                        name: '(万元)',
+                        type : 'value',
+                    }
+                ],
+                series : [
+                    {
+                        data: this.lineData,
+                        name: '签约金额',
+                        type: 'line',
+                        symbolSize: 8,
+                        color: 'rgba(255,138,65,1)',
+                        encode: {
+                            x: 0,
+                            y: 3
+                        },
+                        areaStyle: {// 区域样式，曲线
+                            normal: {
+                                color: {
+                                    type: 'linear',
+                                    x: 0,
+                                    y: 0,
+                                    x2: 0,
+                                    y2: 1,
+                                    colorStops: [{
+                                        offset: 0,
+                                        color: 'rgba(255,138,65,1)'
+                                    }, {
+                                        offset: 0.5,
+                                        color: 'rgba(255,138,65,0.7)'
+                                    }, {
+                                        offset: 1,
+                                        color: 'rgba(255,138,65,0)'
+                                    }]
+                                }
+                            }
+                        },
+                    },
+                ]
+            };
+
+            box.setOption(option);
+        },
+
+        chartBar () {
+
         },
 
         // 绑定日期插件事件
