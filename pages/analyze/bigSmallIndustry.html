@@ -43,25 +43,31 @@
                     <th>小行业细分</th>
                     <th>合同金额(元)</th>
                     <th>占比(%)</th>
+                    <th class="i-text-col">汇总金额(元)</th>
+                    <th class="i-text-col">汇总占比(%)</th>
                 </tr>
             </thead>
             <tbody>
                 <tr v-for="item in tableData">
-                    <div class="single clearfix">
-                        <!--<ul>-->
-                            <!--<li v-for=" _item in item.children">-->
-                                <!--<span v-for="_item.text"></span>-->
-                                <!--<span v-for="_item.sum"></span>-->
-                                <!--<span v-for="_item.rate"></span>-->
-                            <!--</li>-->
-                        <!--</ul>-->
-                    </div>
-                    <div class="summary clearfix">
-                        <!--<div>汇总</div>-->
-                        <!--<div></div>-->
-                        <!--<div v-for="item.sum"></div>-->
-                        <!--<div v-for="item.rate"></div>-->
-                    </div>
+                    <td style="border-right: 1px solid #DDDEE1">
+                        <div v-text="item.text"></div>
+                    </td>
+                    <td>
+                        <div v-for=" _item in item.children" v-text="_item.text"></div>
+                    </td>
+                    <td>
+                        <div v-for=" _item in item.children" v-text="_item.sum"></div>
+                    </td>
+                    <td style="border-right: 1px solid #DDDEE1">
+                        <div v-for=" _item in item.children" v-text="_item.rate"></div>
+                    </td>
+                    <td>
+                        <div v-text="item.sum" class="i-text-col" style="font-weight: 500;"></div>
+                    </td>
+                    <td>
+                        <div v-text="item.rate" class="i-text-col" style="font-weight: 500;"></div>
+                    </td>
+
                 </tr>
             </tbody>
         </table>

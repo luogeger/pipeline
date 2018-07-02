@@ -23,17 +23,11 @@
       margin-bottom: 5px; }
       .main .card .chartBar span:not(:last-child) {
         margin-right: 5px; }
-  .main .card table > tbody > tr .single div {
-    width: 25%;
-    float: left; }
-  .main .card table > tbody > tr .single ul {
-    width: 75%;
-    float: right; }
-    .main .card table > tbody > tr .single ul li span {
-      padding: 5px;
-      width: 33%; }
-  .main .card table > tbody > tr .summary div {
-    width: 25%;
-    float: left; }
+  .main .card table > tbody > tr > td {
+    padding: 0 !important; }
+    .main .card table > tbody > tr > td div {
+      padding: 5px 0; }
+      .main .card table > tbody > tr > td div:not(:last-child) {
+        border-bottom: 1px solid #DDDEE1; }
 
 /*# sourceMappingURL=bigSmallIndustry.css.map */
