@@ -44,7 +44,6 @@ var vm = new Vue({
                 signedEndDate: this.signedEndDate,
             };
             params = Object.assign(params, obj);
-            // console.log(params)
             axios
                 .get(PATH + '/currency/midYear', { params: params })
                 .then(function (datas) {
@@ -264,7 +263,6 @@ var vm = new Vue({
             var option = {
                 title: {
                     text: '小行业签约情况 - 金额 - 占比',
-                    top: '10px',
                     x: 'left',
                     textStyle: {
                         fontSize: 14,
@@ -273,30 +271,35 @@ var vm = new Vue({
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: {
-                        type: 'line' // 默认为直线，可选为：'line' | 'shadow'
+                        crossStyle: {
+                            color: '#999'
+                        }
                     }
                 },
                 grid: {
-                    left: '5%',
-                    right: '5%',
+                    left: '1%',
+                    right: '3%',
                     bottom: '1%',
                     containLabel: true
                 },
                 xAxis: [
                     {
-                        data: this.barX,
                         type: 'category',
+                        data: this.barX,
+                        axisPointer: {
+                            type: 'shadow'
+                        },
                         axisLabel: {
-                            rotate: 45,
+                            rotate: 30,
                         }
                     }
                 ],
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(元)',
+                        name: '金额(万元)',
                         axisLabel: {
-                            formatter: '{value} 元'
+                            formatter: '{value} 万元'
                         }
                     },
                     {
@@ -306,6 +309,9 @@ var vm = new Vue({
                         axisLabel: {
                             formatter: '{value} %'
                         },
+                        splitLine: {
+                            show: false,
+                        }
                     }
                 ],
                 series: [
@@ -313,21 +319,30 @@ var vm = new Vue({
                         data: this.barSum,
                         name: '金额',
                         type: 'bar',
-                        color: 'rgba(255,138,65,1)',
+                        color: chartColor[3],
+                        barWidth: '40%',
                         itemStyle: {
                             barBorderRadius: [5, 5, 0, 0],
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                            }
                         },
                     },
                     {
                         data: this.barRate,
+                        name: '大行业占比',
                         type: 'line',
-                        name: '大行业占比'
+                        yAxisIndex: 1,
                     },
                     {
                         data: this.barBsRate,
-                        type: 'line',
                         name: '整体占比',
-                    }
+                        type: 'line',
+                        yAxisIndex: 1,
+                    },
                 ]
             };
             box.setOption(option);

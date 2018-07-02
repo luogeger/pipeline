@@ -48,7 +48,6 @@ var vm = new Vue({
                 signedEndDate:   this.signedEndDate,
             };
             params = Object.assign(params, obj);
-            // console.log(params)
             axios
                 .get(PATH +'/currency/midYear', {params: params})
                 .then(datas => {
@@ -279,42 +278,47 @@ var vm = new Vue({
             let box = echarts.init(document.getElementById('chartBar'));
 
             let option = {
-
                 title : {
                     text: '小行业签约情况 - 金额 - 占比',
-                    top: '10px',
                     x:'left',
                     textStyle: {
                         fontSize: 14,
                     }
                 },
-                tooltip : {
+                tooltip: {
                     trigger: 'axis',
-                    axisPointer : {            // 坐标轴指示器，坐标轴触发有效
-                        type : 'line'        // 默认为直线，可选为：'line' | 'shadow'
+                    axisPointer: {
+                        crossStyle: {
+                            color: '#999'
+                        }
                     }
                 },
+
                 grid: {
-                    left: '5%',
-                    right: '5%',
+                    left: '1%',
+                    right: '3%',
                     bottom: '1%',
                     containLabel: true
                 },
-                xAxis : [
+
+                xAxis: [
                     {
-                        data : this.barX,
-                        type : 'category',
+                        type: 'category',
+                        data: this.barX,
+                        axisPointer: {
+                            type: 'shadow'
+                        },
                         axisLabel: {
-                            rotate: 45,
+                            rotate: 30,
                         }
                     }
                 ],
-                yAxis : [
+                yAxis: [
                     {
                         type: 'value',
-                        name: '金额(元)',
+                        name: '金额(万元)',
                         axisLabel: {
-                            formatter: '{value} 元'
+                            formatter: '{value} 万元'
                         }
                     },
                     {
@@ -324,28 +328,40 @@ var vm = new Vue({
                         axisLabel: {
                             formatter: '{value} %'
                         },
+                        splitLine:{
+                            show: false,
+                        }
                     }
                 ],
-                series : [
+                series: [
                     {
                         data: this.barSum,
-                        name: '金额',
-                        type: 'bar',
-                        color: 'rgba(255,138,65,1)',
+                        name:'金额',
+                        type:'bar',
+                        color: chartColor[3],
+                        barWidth: '40%',
                         itemStyle:{
                             barBorderRadius: [5, 5, 0, 0], //（顺时针左上，右上，右下，左下）
+                        },
+                        label: {
+                            normal: {
+                                show: true,
+                                position: 'top',
+                            }
                         },
                     },
                     {
                         data: this.barRate,
-                        type: 'line',
-                        name: '大行业占比'
+                        name:'大行业占比',
+                        type:'line',
+                        yAxisIndex: 1,
                     },
                     {
                         data: this.barBsRate,
-                        type: 'line',
-                        name: '整体占比',
-                    }
+                        name:'整体占比',
+                        type:'line',
+                        yAxisIndex: 1,
+                    },
                 ]
             };
 
