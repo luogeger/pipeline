@@ -35,7 +35,37 @@
         </div>
         <div id="chartBar" style="height: 400px;width: 100%;"></div>
     </div>
-    <div class="card"></div>
+    <div class="card">
+        <table class="i-table">
+            <thead>
+                <tr>
+                    <th>大行业</th>
+                    <th>小行业细分</th>
+                    <th>合同金额(元)</th>
+                    <th>占比(%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in tableData">
+                    <div class="single clearfix">
+                        <!--<ul>-->
+                            <!--<li v-for=" _item in item.children">-->
+                                <!--<span v-for="_item.text"></span>-->
+                                <!--<span v-for="_item.sum"></span>-->
+                                <!--<span v-for="_item.rate"></span>-->
+                            <!--</li>-->
+                        <!--</ul>-->
+                    </div>
+                    <div class="summary clearfix">
+                        <!--<div>汇总</div>-->
+                        <!--<div></div>-->
+                        <!--<div v-for="item.sum"></div>-->
+                        <!--<div v-for="item.rate"></div>-->
+                    </div>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 </div><!-- /.main -->
 
 <script src="../static/scripts/analyze/bigSmallIndustry.js"></script>

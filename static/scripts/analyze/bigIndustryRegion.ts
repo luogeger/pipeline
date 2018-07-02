@@ -20,7 +20,11 @@ var vm = new Vue({
             chartTwoActive: '全行业',
 
             tHead:          [],
-            tBody:          []
+            tBody:          [],
+
+            // 时间
+            signedStartDate:'',
+            signedEndDate:  '',
         }
     },
 
@@ -33,12 +37,20 @@ var vm = new Vue({
             this.chartOne()
             this.chartTwo()
         })
+
+        this.renderDate()
     },
 
     methods: {
         getData (callback) {
+            let params = {
+                type: 'rb',
+                signedStartDate: this.signedStartDate,
+                signedEndDate:   this.signedEndDate,
+            };
+
             axios
-                .get(PATH +'/currency/midYear?type=rb')
+                .get(PATH +'/currency/midYear', {params: params})
                 .then(datas => {
                     this.data = datas.data;
                     this.tHead = this.data.msg.rbTitle;
@@ -113,9 +125,42 @@ var vm = new Vue({
                         axisPointer: {
                             type: 'shadow'
                         },
-                        axisLine: {
-                            show: false,
-                        },
+                        axisLabel: {
+                            // rotate: 20,
+                            formatter: (params) => {
+                                let newParamsName = "";// 最终拼接成的字符串
+                                let paramsNameNumber = params.length;// 实际标签的个数
+                                let provideNumber = 4;// 每行能显示的字的个数
+                                let rowNumber = Math.ceil(paramsNameNumber / provideNumber);// 换行的话，需要显示几行，向上取整
+                                /**
+                                 * 判断标签的个数是否大于规定的个数， 如果大于，则进行换行处理 如果不大于，即等于或小于，就返回原标签
+                                 */
+                                // 条件等同于rowNumber>1
+                                if (paramsNameNumber > provideNumber) {
+                                    /** 循环每一行,p表示行 */
+                                    for (let p = 0; p < rowNumber; p++) {
+                                        let tempStr = "";// 表示每一次截取的字符串
+                                        let start = p * provideNumber;// 开始截取的位置
+                                        let end = start + provideNumber;// 结束截取的位置
+                                        // 此处特殊处理最后一行的索引值
+                                        if (p == rowNumber - 1) {
+                                            // 最后一次不换行
+                                            tempStr = params.substring(start, paramsNameNumber);
+                                        } else {
+                                            // 每一次拼接字符串并换行
+                                            tempStr = params.substring(start, end) + "\n";
+                                        }
+                                        newParamsName += tempStr;// 最终拼成的字符串
+                                    }
+
+                                } else {
+                                    // 将旧标签的值赋给新标签
+                                    newParamsName = params;
+                                }
+                                //将最终的字符串返回
+                                return newParamsName
+                            }
+                        }
                     }
                 ],
                 yAxis: [
@@ -133,6 +178,9 @@ var vm = new Vue({
                         axisLabel: {
                             formatter: '{value} %'
                         },
+                        splitLine:{
+                            show: false,
+                        }
                     }
                 ],
                 series: [
@@ -153,13 +201,16 @@ var vm = new Vue({
                         data: this.chartOneSum,
                     },
                     {
+                        data: this.chartOneRate,
                         name:'占比',
                         type:'line',
+                        symbol: 'circle',
+                        symbolSize: 10,
                         yAxisIndex: 1,
                         lineStyle: {
                             type: 'dashed',
+                            opacity: 0,
                         },
-                        data: this.chartOneRate,
                     },
                     {
                         type: 'pie',
@@ -264,6 +315,9 @@ var vm = new Vue({
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
+                        },
+                        splitLine:{
+                            show: false,
                         }
                     }
                 ],
@@ -285,13 +339,16 @@ var vm = new Vue({
                         data: this.chartTwoSum,
                     },
                     {
+                        data: this.chartTwoRate,
                         name:'占比',
                         type:'line',
+                        symbol: 'circle',
+                        symbolSize: 10,
                         yAxisIndex: 1,
                         lineStyle: {
                             type: 'dashed',
+                            opacity: 0,
                         },
-                        data: this.chartTwoRate,
                     },
                 ]
             };
@@ -309,6 +366,26 @@ var vm = new Vue({
                 this.chartTwo(value)
             }
         },// chartActive
-    },
+
+
+        query () {
+            console.log(111)
+            this.getData()
+        },
+
+        // 绑定日期插件事件
+        renderDate () {
+            laydate.render({
+                elem: '#dateOne', //指定元素
+                type: 'month',
+                range: true,
+                value: this.dateOneClose,
+                done: val => {
+                    this.signedStartDate = val.substring(0,7);
+                    this.signedEndDate   = val.substring(val.length -7, val.length);
+                }
+            });
+        },
+    },// methods
 
 });

@@ -2,6 +2,18 @@
 
 <div class="main" id="app">
     <div class="card">
+        <div class="search input-group">
+            <span class="input-group-label ">签约年月：</span>
+            <input class="input-group-form i-date-form-range"
+                   id="dateOne"
+                   type="text">
+        </div>
+        <div class="btn btn-theme"
+             @click="query"
+             style="vertical-align: middle">查询</div>
+    </div>
+
+    <div class="card">
         <div class="region">
             <span v-for="item in allRegion"
                   v-text="item"

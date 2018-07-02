@@ -31,5 +31,28 @@
 				}
 			}
 		}
+
+		table>tbody>tr{
+			.single{
+				div{
+					width: 25%;
+					float: left;
+				}
+				ul{
+					width: 75%;
+					float: right;
+					li span{
+						padding: 5px;
+						width: 33%;
+					}
+				}
+			}
+			.summary{
+				div{
+					width: 25%;
+					float: left;
+				}
+			}
+		}
 	}// card
 }

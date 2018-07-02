@@ -3,6 +3,7 @@ var vm = new Vue({
     data: function () {
         return {
             data: {},
+            tableData: [],
             allGroup: saleGroupList,
             // 查询条件
             department: { code: '', text: '全部' },
@@ -23,14 +24,14 @@ var vm = new Vue({
         };
     },
     created: function () {
-    },
-    mounted: function () {
         var _this = this;
         this.getData(function () {
             _this.chartPie();
             _this.chartLine();
             _this.chartBar();
         });
+    },
+    mounted: function () {
         this.renderDate();
     },
     methods: {
@@ -43,13 +44,15 @@ var vm = new Vue({
                 signedEndDate: this.signedEndDate,
             };
             params = Object.assign(params, obj);
-            console.log(params);
+            // console.log(params)
             axios
                 .get(PATH + '/currency/midYear', { params: params })
                 .then(function (datas) {
                 _this.data = datas.data;
+                _this.tableData = _this.data.msg.bsList; // 表格数据
                 _this.chartPieLineData();
                 console.log(_this.data.msg);
+                console.log(_this.tableData);
                 if (callback)
                     callback();
             });

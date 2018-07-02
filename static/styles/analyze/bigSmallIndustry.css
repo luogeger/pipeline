@@ -23,5 +23,17 @@
       margin-bottom: 5px; }
       .main .card .chartBar span:not(:last-child) {
         margin-right: 5px; }
+  .main .card table > tbody > tr .single div {
+    width: 25%;
+    float: left; }
+  .main .card table > tbody > tr .single ul {
+    width: 75%;
+    float: right; }
+    .main .card table > tbody > tr .single ul li span {
+      padding: 5px;
+      width: 33%; }
+  .main .card table > tbody > tr .summary div {
+    width: 25%;
+    float: left; }
 
 /*# sourceMappingURL=bigSmallIndustry.css.map */
