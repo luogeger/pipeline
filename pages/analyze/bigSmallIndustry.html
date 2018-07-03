@@ -25,9 +25,9 @@
     </div>
     <div class="card">
         <div class="chartBar">
-            <span @click="chartActiveBtn(1, '全部')"
-                  :class="{'i-active': '全部' === chartActiveBar}"
-                  >全部</span>
+            <span @click="chartActiveBtn(1, '全行业')"
+                  :class="{'i-active': '全行业' === chartActiveBar}"
+                  >全行业</span>
             <span v-for="item in barLegend"
                   v-text="item"
                   :class="{'i-active': item === chartActiveBar}"

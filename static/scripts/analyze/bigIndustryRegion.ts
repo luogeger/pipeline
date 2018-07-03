@@ -96,11 +96,16 @@ var vm = new Vue({
 
             let option = {
                 title : {
-                    text: '区域内 - 各大行业的金额、占比',
+                    text: '区域内 - 各大行业的金额(万元) - 占比(%)',
                     x:'left',
                     textStyle: {
                         fontSize: 14,
                     }
+                },
+
+                legend: {
+                    selectedMode:false,//取消图例上的点击事件
+                    bottom: 0,
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -114,7 +119,7 @@ var vm = new Vue({
                 grid: {
                     left: '1%',
                     right: '3%',
-                    bottom: '1%',
+                    bottom: '5%',
                     containLabel: true
                 },
 
@@ -166,19 +171,25 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(万元)',
+                        // name: '金额(万元)',
                         axisLabel: {
                             formatter: '{value} 万元'
                         }
                     },
                     {
                         type: 'value',
-                        name: '占比(%)',
+                        // name: '占比(%)',
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
                         },
-                        splitLine:{
+                        axisLine: {     // y轴
+                            show: false,
+                        },
+                        axisTick:{      // y轴刻度线
+                            show:false
+                        },
+                        splitLine:{     // 网格线
                             show: false,
                         }
                     }
@@ -215,7 +226,7 @@ var vm = new Vue({
                     {
                         type: 'pie',
                         radius: '50%',
-                        center: ['80%', '55%'],
+                        center: ['75%', '50%'],
                         silent: true,
                         itemStyle: {
                             opacity: 0.7,
@@ -267,11 +278,15 @@ var vm = new Vue({
 
             let option = {
                 title : {
-                    text: '大行业内 - 各区域的金额、占比',
+                    text: '大行业内 - 各区域的金额(万元) - 占比(%)',
                     x:'left',
                     textStyle: {
                         fontSize: 14,
                     }
+                },
+                legend: {
+                    selectedMode:false,//取消图例上的点击事件
+                    bottom: 0,
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -285,7 +300,7 @@ var vm = new Vue({
                 grid: {
                     left: '1%',
                     right: '3%',
-                    bottom: '1%',
+                    bottom: '12%',
                     containLabel: true
                 },
 
@@ -304,19 +319,25 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(万元)',
+                        // name: '金额(万元)',
                         axisLabel: {
                             formatter: '{value} 万元'
                         }
                     },
                     {
                         type: 'value',
-                        name: '占比(%)',
+                        // name: '占比(%)',
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
                         },
-                        splitLine:{
+                        axisLine: {     // y轴
+                            show: false,
+                        },
+                        axisTick:{      // y轴刻度线
+                            show:false
+                        },
+                        splitLine:{     // 网格线
                             show: false,
                         }
                     }

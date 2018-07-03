@@ -6,7 +6,7 @@ var vm = new Vue({
             tableData: [],
             allGroup: saleGroupList,
             // 查询条件
-            department: { code: '', text: '全部' },
+            department: { code: '', text: '全行业' },
             signedStartDate: '',
             signedEndDate: '',
             // 数据
@@ -15,12 +15,13 @@ var vm = new Vue({
             pieLegend: [],
             lineData: [],
             lineDataX: [],
-            chartActiveBar: '全部',
+            chartActiveBar: '全行业',
             barLegend: [],
             barX: [],
             barSum: [],
             barRate: [],
             barBsRate: [],
+            industryRate: [],
         };
     },
     created: function () {
@@ -83,13 +84,14 @@ var vm = new Vue({
         },
         chartBarData: function (industry) {
             var _this = this;
-            industry = industry || '全部';
+            industry = industry || '全行业';
             this.barLegend = [];
             this.barX = [];
             this.barSum = [];
-            this.barRate = [];
-            this.barBsRate = [];
-            if (industry === '全部') {
+            this.barRate = []; // 大行业占比
+            this.barBsRate = []; // 全行业占比
+            this.industryRate = []; // 根据全行业和大行业数据进行切换
+            if (industry === '全行业') {
                 this.data.msg.bsList.forEach(function (item) {
                     _this.barLegend.push(item.text);
                     item.children.forEach(function (_item) {
@@ -97,6 +99,7 @@ var vm = new Vue({
                         _this.barSum.push(_item.sum);
                         _this.barRate.push(_item.rate);
                         _this.barBsRate.push(_item.bsRate);
+                        _this.industryRate = _this.barBsRate;
                     });
                 });
             }
@@ -109,6 +112,7 @@ var vm = new Vue({
                             _this.barSum.push(_item.sum);
                             _this.barRate.push(_item.rate);
                             _this.barBsRate.push(_item.bsRate);
+                            _this.industryRate = _this.barRate;
                         });
                     }
                 });
@@ -119,7 +123,7 @@ var vm = new Vue({
             var option = {
                 silent: true,
                 title: {
-                    text: '大行业签约情况 - 占比',
+                    text: '大行业签约情况 - 占比(%)',
                     top: '10px',
                     x: 'left',
                     textStyle: {
@@ -150,13 +154,17 @@ var vm = new Vue({
             var box = echarts.init(document.getElementById('chartLine'));
             var option = {
                 title: {
-                    text: '大行业签约情况 - 金额',
+                    text: '大行业签约情况 - 金额(万元)',
                     top: '10px',
                     x: 'left',
                     textStyle: {
                         fontSize: 14,
                     }
                 },
+                // legend: {
+                //     // data:['签约金额'],
+                //     // selectedMode:false,//取消图例上的点击事件
+                // },
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: {
@@ -213,7 +221,7 @@ var vm = new Vue({
                 ],
                 yAxis: [
                     {
-                        name: '金额(元)',
+                        // name: '金额(元)',
                         type: 'value',
                         axisLabel: {
                             formatter: '{value} 元'
@@ -262,11 +270,15 @@ var vm = new Vue({
             var box = echarts.init(document.getElementById('chartBar'));
             var option = {
                 title: {
-                    text: '小行业签约情况 - 金额 - 占比',
+                    text: '小行业签约情况 - 金额(万元) - 占比(%)',
                     x: 'left',
                     textStyle: {
                         fontSize: 14,
                     }
+                },
+                legend: {
+                    selectedMode: false,
+                    bottom: 0,
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -279,7 +291,7 @@ var vm = new Vue({
                 grid: {
                     left: '1%',
                     right: '3%',
-                    bottom: '1%',
+                    bottom: '5%',
                     containLabel: true
                 },
                 xAxis: [
@@ -297,17 +309,23 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(万元)',
+                        // name: '金额(万元)',
                         axisLabel: {
                             formatter: '{value} 万元'
                         }
                     },
                     {
                         type: 'value',
-                        name: '占比(%)',
+                        // name: '占比(%)',
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        axisTick: {
+                            show: false
                         },
                         splitLine: {
                             show: false,
@@ -332,16 +350,15 @@ var vm = new Vue({
                         },
                     },
                     {
-                        data: this.barRate,
-                        name: '大行业占比',
+                        data: this.industryRate,
+                        name: '占比',
                         type: 'line',
+                        symbol: 'circle',
+                        symbolSize: 8,
                         yAxisIndex: 1,
-                    },
-                    {
-                        data: this.barBsRate,
-                        name: '整体占比',
-                        type: 'line',
-                        yAxisIndex: 1,
+                        lineStyle: {
+                            opacity: 0,
+                        },
                     },
                 ]
             };

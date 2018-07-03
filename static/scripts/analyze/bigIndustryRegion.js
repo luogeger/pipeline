@@ -84,11 +84,15 @@ var vm = new Vue({
             var box = echarts.init(document.getElementById('chartOne'));
             var option = {
                 title: {
-                    text: '区域内 - 各大行业的金额、占比',
+                    text: '区域内 - 各大行业的金额(万元) - 占比(%)',
                     x: 'left',
                     textStyle: {
                         fontSize: 14,
                     }
+                },
+                legend: {
+                    selectedMode: false,
+                    bottom: 0,
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -101,7 +105,7 @@ var vm = new Vue({
                 grid: {
                     left: '1%',
                     right: '3%',
-                    bottom: '1%',
+                    bottom: '5%',
                     containLabel: true
                 },
                 xAxis: [
@@ -153,17 +157,23 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(万元)',
+                        // name: '金额(万元)',
                         axisLabel: {
                             formatter: '{value} 万元'
                         }
                     },
                     {
                         type: 'value',
-                        name: '占比(%)',
+                        // name: '占比(%)',
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        axisTick: {
+                            show: false
                         },
                         splitLine: {
                             show: false,
@@ -202,7 +212,7 @@ var vm = new Vue({
                     {
                         type: 'pie',
                         radius: '50%',
-                        center: ['80%', '55%'],
+                        center: ['75%', '50%'],
                         silent: true,
                         itemStyle: {
                             opacity: 0.7,
@@ -246,11 +256,15 @@ var vm = new Vue({
             var box = echarts.init(document.getElementById('chartTwo'));
             var option = {
                 title: {
-                    text: '大行业内 - 各区域的金额、占比',
+                    text: '大行业内 - 各区域的金额(万元) - 占比(%)',
                     x: 'left',
                     textStyle: {
                         fontSize: 14,
                     }
+                },
+                legend: {
+                    selectedMode: false,
+                    bottom: 0,
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -263,7 +277,7 @@ var vm = new Vue({
                 grid: {
                     left: '1%',
                     right: '3%',
-                    bottom: '1%',
+                    bottom: '12%',
                     containLabel: true
                 },
                 xAxis: [
@@ -281,17 +295,23 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(万元)',
+                        // name: '金额(万元)',
                         axisLabel: {
                             formatter: '{value} 万元'
                         }
                     },
                     {
                         type: 'value',
-                        name: '占比(%)',
+                        // name: '占比(%)',
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
+                        },
+                        axisLine: {
+                            show: false,
+                        },
+                        axisTick: {
+                            show: false
                         },
                         splitLine: {
                             show: false,

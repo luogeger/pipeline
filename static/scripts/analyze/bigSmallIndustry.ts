@@ -8,7 +8,7 @@ var vm = new Vue({
             allGroup:       saleGroupList,
 
             // 查询条件
-            department:     {code: '', text: '全部'},
+            department:     {code: '', text: '全行业'},
             signedStartDate:'',
             signedEndDate:  '',
 
@@ -18,12 +18,13 @@ var vm = new Vue({
             pieLegend:      [],
             lineData:       [],
             lineDataX:      [],
-            chartActiveBar: '全部',
+            chartActiveBar: '全行业',
             barLegend:      [],
             barX:           [],
             barSum:         [],
-            barRate:        [],
-            barBsRate:      [],
+            barRate:        [],// 大行业占比
+            barBsRate:      [],// 全行业占比
+            industryRate:   [],// 根据全行业和大行业数据进行切换
         }
     },
 
@@ -91,13 +92,14 @@ var vm = new Vue({
         },
 
         chartBarData (industry) {
-            industry = industry || '全部';
+            industry = industry || '全行业';
             this.barLegend  = [];
             this.barX       = [];
             this.barSum     = [];
-            this.barRate    = [];
-            this.barBsRate  = [];
-            if (industry === '全部') {
+            this.barRate    = [];// 大行业占比
+            this.barBsRate  = [];// 全行业占比
+            this.industryRate  = [];// 根据全行业和大行业数据进行切换
+            if (industry === '全行业') {
                 this.data.msg.bsList.forEach(item => {
                     this.barLegend.push(item.text)
                     item.children.forEach(_item => {
@@ -105,6 +107,7 @@ var vm = new Vue({
                         this.barSum.push(_item.sum)
                         this.barRate.push(_item.rate)
                         this.barBsRate.push(_item.bsRate)
+                        this.industryRate = this.barBsRate;
                     })
                 })
             } else {
@@ -116,6 +119,7 @@ var vm = new Vue({
                             this.barSum.push(_item.sum)
                             this.barRate.push(_item.rate)
                             this.barBsRate.push(_item.bsRate)
+                            this.industryRate = this.barRate;
                         })
 
                     }
@@ -131,7 +135,7 @@ var vm = new Vue({
             let option = {
                 silent: true,
                 title : {
-                    text: '大行业签约情况 - 占比',
+                    text: '大行业签约情况 - 占比(%)',
                     top: '10px',
                     x:'left',
                     textStyle: {
@@ -163,15 +167,18 @@ var vm = new Vue({
             let box = echarts.init(document.getElementById('chartLine'));
 
             let option = {
-
                 title : {
-                    text: '大行业签约情况 - 金额',
+                    text: '大行业签约情况 - 金额(万元)',
                     top: '10px',
                     x:'left',
                     textStyle: {
                         fontSize: 14,
                     }
                 },
+                // legend: {
+                //     // data:['签约金额'],
+                //     // selectedMode:false,//取消图例上的点击事件
+                // },
                 tooltip : {
                     trigger: 'axis',
                     axisPointer : {            // 坐标轴指示器，坐标轴触发有效
@@ -227,7 +234,7 @@ var vm = new Vue({
                 ],
                 yAxis : [
                     {
-                        name: '金额(元)',
+                        // name: '金额(元)',
                         type : 'value',
                         axisLabel: {
                             formatter: '{value} 元'
@@ -279,11 +286,15 @@ var vm = new Vue({
 
             let option = {
                 title : {
-                    text: '小行业签约情况 - 金额 - 占比',
+                    text: '小行业签约情况 - 金额(万元) - 占比(%)',
                     x:'left',
                     textStyle: {
                         fontSize: 14,
                     }
+                },
+                legend: {
+                    selectedMode:false,//取消图例上的点击事件
+                    bottom: 0,
                 },
                 tooltip: {
                     trigger: 'axis',
@@ -297,7 +308,7 @@ var vm = new Vue({
                 grid: {
                     left: '1%',
                     right: '3%',
-                    bottom: '1%',
+                    bottom: '5%',
                     containLabel: true
                 },
 
@@ -316,19 +327,25 @@ var vm = new Vue({
                 yAxis: [
                     {
                         type: 'value',
-                        name: '金额(万元)',
+                        // name: '金额(万元)',
                         axisLabel: {
                             formatter: '{value} 万元'
                         }
                     },
                     {
                         type: 'value',
-                        name: '占比(%)',
+                        // name: '占比(%)',
                         max: 100,
                         axisLabel: {
                             formatter: '{value} %'
                         },
-                        splitLine:{
+                        axisLine: {     // y轴
+                            show: false,
+                        },
+                        axisTick:{      // y轴刻度线
+                            show:false
+                        },
+                        splitLine:{     // 网格线
                             show: false,
                         }
                     }
@@ -351,17 +368,22 @@ var vm = new Vue({
                         },
                     },
                     {
-                        data: this.barRate,
-                        name:'大行业占比',
+                        data: this.industryRate,
+                        name:'占比',
                         type:'line',
+                        symbol: 'circle',
+                        symbolSize: 8,
                         yAxisIndex: 1,
+                        lineStyle: {
+                            opacity: 0,
+                        },
                     },
-                    {
-                        data: this.barBsRate,
-                        name:'整体占比',
-                        type:'line',
-                        yAxisIndex: 1,
-                    },
+                    // {
+                    //     data: this.barRate,
+                    //     name:'大行业占比',
+                    //     type:'line',
+                    //     yAxisIndex: 1,
+                    // },
                 ]
             };
 
@@ -393,3 +415,4 @@ var vm = new Vue({
     },// methods
 
 });// end
+
