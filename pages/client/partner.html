@@ -347,15 +347,15 @@
                 <div class="inline-block" style="width: 23%;">
                     <span class="key">近3年合同额(万元)：</span>
                 </div>
-                <div class="inline-block" style="width: 25%;">
-                    <div v-text="pLastContractAmount[0].year"
+                <div class="inline-block pull-right" style="width: 25%;">
+                    <div v-text="pLastContractAmount[0].year  +'年'"
                          class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
                         <input v-model="pLastContractAmount[0].contractAmount" type="text" class="input-group-form">
                     </div>
                 </div>
-                <div class="inline-block" style="width: 25%;">
-                    <div v-text="pLastContractAmount[1].year"
+                <div class="inline-block pull-right" style="width: 25%;">
+                    <div v-text="pLastContractAmount[1].year +'年'"
                          class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
                         <input v-model="pLastContractAmount[1].contractAmount" type="text" class="input-group-form">
@@ -363,12 +363,11 @@
 
                 </div>
                 <div class="inline-block pull-right" style="width: 25%;">
-                    <div v-text="pLastContractAmount[2].year"
+                    <div v-text="pLastContractAmount[2].year +'年'"
                          class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
                         <input v-model="pLastContractAmount[2].contractAmount" type="text" class="input-group-form">
                     </div>
-
                 </div>
 
             </div><!-- 近3年 -->

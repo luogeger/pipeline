@@ -53,20 +53,7 @@ var vm = new Vue({
         pSolution: [],
         pRegisteredCapital: '',
         pType: '',
-        pLastContractAmount: [
-            {
-                year: 0,
-                contractAmount: '',
-            },
-            {
-                year: 0,
-                contractAmount: '',
-            },
-            {
-                year: 0,
-                contractAmount: '',
-            },
-        ],
+        pLastContractAmount: [],
         pCompanyCase: '',
         pSynopsisOfPartners: '',
         pRemark: '',
@@ -153,6 +140,7 @@ var vm = new Vue({
                 value: '2'
             },
         ],
+        tempArr: [{ id: 1, age: 15 }, { id: 2, age: 16 }, { id: 3, age: 17 }]
     },
     created: function () {
         this.tabBtn(4, 'partner-other'); // 显示第一个tab
@@ -369,10 +357,20 @@ var vm = new Vue({
         },
         // 提交事件
         submitBtn: function (type) {
+            var _this = this;
             if (type === 'addPartner')
                 this.addPartner();
             if (type === 'addPartnerMsg')
-                this.addPartnerMsg();
+                this.addPartnerMsg(function () {
+                    _this.getPartnerMsgData();
+                    if (_this.tempID == '') {
+                        toastr.success('机要信息添加成功');
+                    }
+                    else {
+                        toastr.success('机要信息编辑成功');
+                    }
+                    _this.popUp('addPartnerMsgPop');
+                });
         },
         // 编辑事件
         editBtn: function (type, id, obj) {
@@ -397,38 +395,39 @@ var vm = new Vue({
             var paramsPartner = {
                 id: this.tempID,
                 name: this.pName,
-                businessProvince: this.pBusinessProvince,
-                businessIndustry: this.pBusinessIndustry,
-                solution: this.pSolution,
+                businessProvince: JSON.stringify(this.pBusinessProvince),
+                businessIndustry: JSON.stringify(this.pBusinessIndustry),
+                solution: JSON.stringify(this.pSolution),
                 registeredCapital: this.pRegisteredCapital,
                 type: this.pType,
-                lastContractAmount: this.pLastContractAmount,
+                lastContractAmount: JSON.stringify(this.pLastContractAmount),
                 companyCase: this.pCompanyCase,
                 synopsisOfPartners: this.pSynopsisOfPartners,
                 remark: this.pRemark,
                 isSignedCp: this.pIsSignedCp,
             };
-            console.log(paramsPartner);
             axios
                 .get(PATH + '/cp/crm/addOrUpdateCustomer', { params: paramsPartner })
-                .then(function (datas) {
-                var data = datas.data;
+                .then(function (res) {
+                var data = res.data;
+                console.log(data);
                 if (data.code === 201) {
                     toastr.warning(data.msg);
                     return;
                 }
-                _this.popUp('addPartnerPop');
-                _this.getPartnerData();
-                // if (this.tempID) {
-                //     toastr.success('机要信息添加成功')
-                // }else{
-                //     toastr.success('机要信息编辑成功')
-                // }
+                if (data.code === 200) {
+                    _this.pID = data.msg.cpCustomerId;
+                    _this.addPartnerMsg(function () {
+                        _this.getPartnerData({ inPass: 'n' });
+                        _this.getPartnerMsgData();
+                        _this.popUp('addPartnerPop');
+                        toastr.success('合作伙伴添加成功！');
+                    });
+                }
             });
         },
         // 确认提交机要信息 有id 就相当于是编辑
-        addPartnerMsg: function () {
-            var _this = this;
+        addPartnerMsg: function (callback) {
             var params = {
                 id: this.tempID,
                 customerId: this.pID,
@@ -453,13 +452,8 @@ var vm = new Vue({
                     toastr.warning(data.msg);
                     return;
                 }
-                _this.popUp('addPartnerMsgPop');
-                _this.getPartnerMsgData();
-                if (_this.tempID) {
-                    toastr.success('机要信息添加成功');
-                }
-                else {
-                    toastr.success('机要信息编辑成功');
+                if (callback) {
+                    callback();
                 }
             });
         },
@@ -581,12 +575,33 @@ var vm = new Vue({
         isSignedCp: function (flag) {
             this.pIsSignedCp = flag;
         },
+        // 对象数组转字符串
+        transString: function (arr) {
+            var str = '';
+            arr.forEach(function (item) {
+                str += item;
+            });
+            console.log(str);
+            return str;
+        },
         // 最近三年的年份设置
         setRecentYears: function () {
             var year = Number(this.currentDate.substring(0, 4));
-            this.pLastContractAmount[0].year = year + '年';
-            this.pLastContractAmount[1].year = year - 1 + '年';
-            this.pLastContractAmount[2].year = year - 2 + '年';
+            var arr = [
+                {
+                    year: year,
+                    contractAmount: '',
+                },
+                {
+                    year: year - 1,
+                    contractAmount: '',
+                },
+                {
+                    year: year - 2,
+                    contractAmount: '',
+                },
+            ];
+            this.pLastContractAmount = arr;
         },
         select: function (event) {
             console.log(event);

@@ -47,7 +47,7 @@ let vm = new Vue({
         partnerTypeList:    [],// 合伙人类型 下拉框
         partnerTypeCheckedList: [],//默认选中，编辑的时候用到
         industryList:       [],// 业务行业
-        checkedIndustryList:       [],// 编辑的选中
+        checkedIndustryList:[],// 编辑的选中
         solutionList:       [],// 合作产品
         checkedSolutionList:[],// 编辑的选中
         radioIsShow:        false,// 是否直签
@@ -62,18 +62,18 @@ let vm = new Vue({
         pRegisteredCapital:  '',	//注册资本
         pType:               '',	//合作伙伴类型
         pLastContractAmount: [
-            {
-                year: 0,
-                contractAmount: '',
-            },
-            {
-                year: 0,
-                contractAmount: '',
-            },
-            {
-                year: 0,
-                contractAmount: '',
-            },
+            // {
+            //     year: 0,
+            //     contractAmount: '',
+            // },
+            // {
+            //     year: 0,
+            //     contractAmount: '',
+            // },
+            // {
+            //     year: 0,
+            //     contractAmount: '',
+            // },
 
         ],	//近期销售合同额
         pCompanyCase:        '',    //公司案例
@@ -173,6 +173,8 @@ let vm = new Vue({
             },
 
         ],
+
+        tempArr: [{id: 1, age: 15},{id:2, age: 16}, {id:3, age: 17}]
 
     },// data
 
@@ -424,7 +426,16 @@ let vm = new Vue({
         // 提交事件
         submitBtn (type) {
             if (type === 'addPartner') this.addPartner();
-            if (type === 'addPartnerMsg') this.addPartnerMsg();
+            if (type === 'addPartnerMsg')
+                this.addPartnerMsg(() => {
+                    this.getPartnerMsgData()
+                    if (this.tempID == '') {
+                        toastr.success('机要信息添加成功')
+                    }else{
+                        toastr.success('机要信息编辑成功')
+                    }
+                    this.popUp('addPartnerMsgPop')
+                });
         },
 
         // 编辑事件
@@ -453,42 +464,46 @@ let vm = new Vue({
             let paramsPartner = {
                 id:                 this.tempID,
                 name:               this.pName,//合作伙伴名称
-                businessProvince:   this.pBusinessProvince,//业务区域、省份
-                businessIndustry:   this.pBusinessIndustry,//主要业务行业
-                solution:           this.pSolution,//主要合作产品
+                businessProvince:   JSON.stringify(this.pBusinessProvince),//业务区域、省份
+                businessIndustry:   JSON.stringify(this.pBusinessIndustry),//主要业务行业
+                solution:           JSON.stringify(this.pSolution),//主要合作产品
                 registeredCapital:  this.pRegisteredCapital,//注册资本
                 type:               this.pType,//合作伙伴类型
-                lastContractAmount: this.pLastContractAmount,//近期销售合同额
+                lastContractAmount: JSON.stringify(this.pLastContractAmount),//近期销售合同额
                 companyCase:        this.pCompanyCase,    //公司案例
                 synopsisOfPartners: this.pSynopsisOfPartners,    //合作伙伴简介
                 remark:             this.pRemark,//备注
                 isSignedCp:         this.pIsSignedCp,//是否是直签合作伙伴客户
+
             };
 
-            console.log(paramsPartner)
+
             axios
-                .get(PATH +'/cp/crm/addOrUpdateCustomer',  {params: paramsPartner} )
-                .then((datas)=>{
-                    let data = datas.data;
+                .get(PATH +'/cp/crm/addOrUpdateCustomer', {params: paramsPartner})
+                .then( res => {
+                    let data = res.data;
+                    console.log(data)
                     if (data.code === 201) {
                         toastr.warning(data.msg)
                         return;
                     }
 
-                    this.popUp('addPartnerPop')
-                    this.getPartnerData()
-                    // if (this.tempID) {
-                    //     toastr.success('机要信息添加成功')
-                    // }else{
-                    //     toastr.success('机要信息编辑成功')
-                    // }
+                    if (data.code === 200) {
+                        this.pID = data.msg.cpCustomerId;
+                        this.addPartnerMsg(() => {
+                            this.getPartnerData({inPass: 'n'})
+                            this.getPartnerMsgData()
+                            this.popUp('addPartnerPop')
+                            toastr.success('合作伙伴添加成功！')
+                        })
+                    }
 
-                });
+                })
 
         },
 
         // 确认提交机要信息 有id 就相当于是编辑
-        addPartnerMsg () {
+        addPartnerMsg (callback) {
             let params = {
                 id:             this.tempID,
                 customerId:     this.pID,
@@ -514,13 +529,11 @@ let vm = new Vue({
                         return;
                     }
 
-                    this.popUp('addPartnerMsgPop')
-                    this.getPartnerMsgData()
-                    if (this.tempID) {
-                        toastr.success('机要信息添加成功')
-                    }else{
-                        toastr.success('机要信息编辑成功')
+                    if (callback) {
+                        callback()
                     }
+
+
 
                 });
 
@@ -658,6 +671,16 @@ let vm = new Vue({
             this.pIsSignedCp = flag;
         },
 
+        // 对象数组转字符串
+        transString (arr) {
+            let str = '';
+            arr.forEach(item => {
+                str += item;
+            })
+            console.log(str)
+            return str;
+        },
+
 
 
 
@@ -675,9 +698,21 @@ let vm = new Vue({
         // 最近三年的年份设置
         setRecentYears () {
             let year = Number(this.currentDate.substring(0,4));
-            this.pLastContractAmount[0].year = year +'年';
-            this.pLastContractAmount[1].year = year-1 +'年';
-            this.pLastContractAmount[2].year = year-2 +'年';
+            let arr = [
+                {
+                    year: year,
+                    contractAmount: '',
+                },
+                {
+                    year: year-1,
+                    contractAmount: '',
+                },
+                {
+                    year: year-2,
+                    contractAmount: '',
+                },
+            ];
+            this.pLastContractAmount = arr;
 
         },
 
