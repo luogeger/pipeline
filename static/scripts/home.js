@@ -1,4 +1,5 @@
 var PATH = 'http://172.16.8.130:8080';
+// var PATH = 'http://iboss.demo.xiaoi.net';
 // var PATH = '';// 测试环境，不需要 /
 var timeYear,// 2018-04-18
     currentYear,
@@ -14,7 +15,8 @@ var timeYear,// 2018-04-18
     userAvatar,
     userGroup,// 用户所在事业部
     navData,// 导航数据
-    userLevel,// 用户级别  xs  xsld  dqcyh
+    userLevel,// 用户级别  xs  xsld  dqxyh
+    userPermission,// 针对某个人，或某些人的权限
     saleGroupList,// 所有部门
     chartColor = ['#ED6D00', '#FFC732', '#C23531'];
 
@@ -31,6 +33,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     userCode        = msg.userCode;
     userAvatar      = msg.avatar;
     userLevel       = msg.level;
+    userPermission  = msg.userPermission;
     userGroup       = msg.departmentName;
     saleGroupList   = msg.mngSalesGroups;
     saleGroupList.push({code: '', text: '全部'});

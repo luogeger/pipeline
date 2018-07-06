@@ -9,10 +9,12 @@
 
     <div class="table-tab-list clearfix">
         <div :class="{'active': tabActive == 0}" @click="tabBtn(0, 'partner-pass')" class="table-tab-item">客户管理</div>
-        <div :class="{'active': tabActive == 4}" @click="tabBtn(4, 'partner-other')" class="table-tab-item">客户信息建立（审批）
-        </div>
-        <div :class="{'active': tabActive == 1}" @click="tabBtn(1, 'partner-msg')" class="table-tab-item">客户信息查询</div>
-        <div :class="{'active': tabActive == 2}" @click="tabBtn(2, 'engineer')" class="table-tab-item">《工程师资质认证》信息</div>
+        <div :class="{'active': tabActive == 4}" @click="tabBtn(4, 'partner-other')"
+             v-if="userLevel !== 'dqxyh' ||
+                  (userLevel === 'dqxyh' && userPermission.indexOf('cpCustomerAudit') >= 0)"
+             class="table-tab-item">客户信息建立（审批）</div>
+        <!--<div :class="{'active': tabActive == 1}" @click="tabBtn(1, 'partner-msg')" class="table-tab-item">客户信息查询</div>-->
+        <!--<div :class="{'active': tabActive == 2}" @click="tabBtn(2, 'engineer')" class="table-tab-item">《工程师资质认证》信息</div>-->
     </div>
 
     <div class="screening-condition border-normal clearfix">
@@ -64,7 +66,7 @@
                     <th>合作伙伴类型</th>
                     <th>业务区域</th>
                     <th>主要合作产品</th>
-                    <th class="text-left" style="min-width: 200px;">审批状态</th>
+                    <th class="text-left">审批状态</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -102,7 +104,7 @@
                                  class="btn btn-xs btn-border">审批
                             </div>
 
-                            <div v-if="item.status !== 'pending'"
+                            <div v-if="item.status !== 'pending' && userLevel == 'xs'"
                                  @click="operateBtn(index, item.id, 'edit', item)"
                                  class="btn btn-xs btn-border">编辑
                             </div>
@@ -492,13 +494,56 @@
         <div class="pop-main">
             <div class="row-item">
                 <div class="row-item-form">
-                    <div v-if="submitBtnIsShow" @click="submitBtn('addPartner')" class="btn btn-theme">首次提交</div>
+                    <div v-if="submitBtnIsShow" @click="submitBtn('addPartner')" class="btn btn-theme">提交</div>
                     <div v-if="!submitBtnIsShow" @click="submitBtn('addPartnerMsg')" class="btn btn-theme">提交</div>
                 </div>
             </div>
         </div><!-- /.提交按钮 -->
     </pop-up>
 
+    <!-- 撤回 -->
+    <div v-if="revokeShow" class="dialog-wrap">
+        <div @click="hidePop('revokeShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small">
+            <div class="title">提示
+                <i @click="hidePop('revokeShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定撤回吗 ？</div>
+            <div class="foot">
+                <div @click="cancelConfirmBtn('revoke', 'confirm')" class="btn btn-theme">确定</div>
+                <div @click="cancelConfirmBtn('revokeShow', 'cancel')" class="btn btn-border">取消</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- 忽略 -->
+    <div v-if="ignoreShow" class="dialog-wrap">
+        <div @click="hidePop('ignoreShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small">
+            <div class="title">提示
+                <i @click="hidePop('ignoreShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定忽略吗 ？</div>
+            <div class="foot">
+                <div @click="cancelConfirmBtn('ignore', 'confirm')" class="btn btn-theme">确定</div>
+                <div @click="cancelConfirmBtn('ignoreShow', 'cancel')" class="btn btn-border">取消</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 审批 -->
+    <div v-if="auditShow" class="dialog-wrap">
+        <div @click="hidePop('auditShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small">
+            <div class="title">审批
+                <i @click="hidePop('auditShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">
+                <p class="text-left">备注：</p>
+                <textarea v-model="auditRemark" style="width: 100%;"></textarea>
+            </div>
+            <div class="foot">
+                <div @click="cancelConfirmBtn('pass')" class="btn btn-theme">确定</div>
+                <div @click="cancelConfirmBtn('reject')" class="btn btn-border">驳回</div>
+            </div>
+        </div>
+    </div>
 </div><!-- /.end -->
 <script src="../static/scripts/client/partner.js"></script>

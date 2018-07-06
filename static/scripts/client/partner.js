@@ -30,6 +30,7 @@ var vm = new Vue({
         currentDepartment: userGroup,
         currentUser: userName,
         userLevel: userLevel,
+        userPermission: userPermission,
         regionList: [],
         provinceList: [],
         allProvinceList: [],
@@ -74,76 +75,13 @@ var vm = new Vue({
         mProvinceCode: '',
         mRegionText: '',
         mProvinceText: '',
-        // 区域、省份
-        // 筛选数据
-        selectList: [
-            {
-                label: '区域',
-                value: '0'
-            },
-            {
-                label: 'yanjiuyuan',
-                value: '1'
-            },
-            {
-                label: 'zhinengzhizhen',
-                value: '2'
-            },
-        ],
-        selectList2: [
-            {
-                label: '省份',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-            {
-                label: 'zhonghuaren',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-            {
-                label: 'zhonghuaren',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-            {
-                label: 'zhonghuaren',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-        ],
-        tempArr: [{ id: 1, age: 15 }, { id: 2, age: 16 }, { id: 3, age: 17 }]
+        auditRemark: '',
+        auditShow: false,
+        revokeShow: false,
+        ignoreShow: false,
     },
     created: function () {
-        this.tabBtn(4, 'partner-other'); // 显示第一个tab
+        this.tabBtn(0, 'partner-pass'); // 显示第一个tab
         this.getIndustry();
     },
     mounted: function () {
@@ -262,6 +200,11 @@ var vm = new Vue({
             this.mProvinceText = '';
             this.mAddress = '';
             // 合伙人
+            this.pName = '';
+            this.pRegisteredCapital = '';
+            this.pCompanyCase = '';
+            this.pSynopsisOfPartners = '';
+            this.pRemark = '';
             this.partnerTypeCheckedList = []; // 合作伙伴类型
             this.checkedIndustryList = []; // 业务行业清空
             this.checkedSolutionList = []; // 合作产品清空
@@ -278,6 +221,8 @@ var vm = new Vue({
             //type == partner-pass, partner-other, partner-msg, engineer
             this.tabActive = num; // tab的样式
             this.tabContentShow = type; // tab里的内容
+            this.partnerList = []; // 清空表格
+            this.partnerMsgList = []; // 清空表格
             if (type === 'partner-pass')
                 this.tabBtnPass();
             if (type === 'partner-other')
@@ -360,7 +305,7 @@ var vm = new Vue({
             var _this = this;
             if (type === 'addPartner')
                 this.addPartner();
-            if (type === 'addPartnerMsg')
+            if (type === 'addPartnerMsg') {
                 this.addPartnerMsg(function () {
                     _this.getPartnerMsgData();
                     if (_this.tempID == '') {
@@ -371,6 +316,7 @@ var vm = new Vue({
                     }
                     _this.popUp('addPartnerMsgPop');
                 });
+            }
         },
         // 编辑事件
         editBtn: function (type, id, obj) {
@@ -416,13 +362,24 @@ var vm = new Vue({
                     return;
                 }
                 if (data.code === 200) {
-                    _this.pID = data.msg.cpCustomerId;
-                    _this.addPartnerMsg(function () {
-                        _this.getPartnerData({ inPass: 'n' });
+                    if (_this.tempID == '') {
+                        _this.pID = data.msg.cpCustomerId;
+                        _this.addPartnerMsg(function () {
+                            _this.getPartnerData({ inPass: 'n' });
+                            _this.getPartnerMsgData();
+                            toastr.success('合作伙伴添加成功！');
+                        });
+                    }
+                    else {
+                        _this.tempID = '';
+                        if (_this.tabActive === 0)
+                            _this.getPartnerData(); // 需要判断是通过还是非通过的合作伙伴基础信息
+                        if (_this.tabActive === 4)
+                            _this.getPartnerData({ inPass: 'n' }); // 需要判断是通过还是非通过的合作伙伴基础信息
                         _this.getPartnerMsgData();
-                        _this.popUp('addPartnerPop');
-                        toastr.success('合作伙伴添加成功！');
-                    });
+                        toastr.success('合作伙伴编辑成功！');
+                    }
+                    _this.popUp('addPartnerPop');
                 }
             });
         },
@@ -481,9 +438,21 @@ var vm = new Vue({
             console.log(index, id, type, item);
             if (type === 'edit')
                 this.operateBtnEdit(id, item); // 编辑合伙人
+            if (type === 'recall')
+                this.operateBtnRecall(id);
+            if (type === 'audit')
+                this.operateBtnAudit(id);
+            if (type === 'ignore')
+                this.operateBtnIgnore(id);
+        },
+        // 领导审批按钮
+        operateBtnAudit: function (id) {
+            this.auditShow = true;
+            this.tempID = id;
         },
         // 编辑合伙人
         operateBtnEdit: function (id, item) {
+            this.tempID = id; // 区分是添加还是编辑
             this.addAndEdit = true; // 添加和编辑 合伙人，机要信息的弹窗
             this.addPartnerPop = true;
             this.submitBtnIsShow = true; // 添加和编辑 合伙人，机要信息的按钮
@@ -504,6 +473,80 @@ var vm = new Vue({
             this.checkedIndustryList = item.businessIndustry; // 行业线
             this.checkedSolutionList = item.solution; // 合作产品
             this.defaultRender(item.area); // 区域省份
+            this.pRegisteredCapital = item.registeredCapital; // 注册资本
+            this.pLastContractAmount = item.lastContractAmount; // 最近三年合同额
+            this.pName = item.name; // 客户名称
+            this.pIsSignedCp = item.isSignedCp; // 是否直签
+            this.pCompanyCase = item.companyCase; // 案例
+            this.pSynopsisOfPartners = item.synopsisOfPartners; // 简介
+            this.pRemark = item.remark; // 备注
+        },
+        // 撤回
+        operateBtnRecall: function (id) {
+            this.revokeShow = true;
+            this.tempID = id;
+        },
+        // 忽略
+        operateBtnIgnore: function (id) {
+            this.ignoreShow = true;
+            this.tempID = id;
+        },
+        // 撤回，忽略，审批的小弹窗
+        cancelConfirmBtn: function (attr, type) {
+            var _this = this;
+            console.log(attr, ',', type);
+            if (type === 'cancel') {
+                this[attr] = false;
+                this.tempID = '';
+            }
+            if (attr === 'revoke' && type === 'confirm') {
+                this.operateBtnUrl(this.tempID, attr, function () {
+                    _this.tempID = '';
+                    _this.pID = '';
+                    _this.trActive = 0;
+                    _this.revokeShow = false;
+                    _this.getPartnerData({ inPass: 'n' });
+                });
+            }
+            if (attr === 'ignore' && type === 'confirm') {
+                this.operateBtnUrl(this.tempID, attr, function () {
+                    _this.tempID = '';
+                    _this.pID = '';
+                    _this.trActive = 0;
+                    _this.ignoreShow = false;
+                    _this.getPartnerData({ inPass: 'n' });
+                });
+            }
+            if (attr === 'pass' || attr === 'reject') {
+                console.log(this.tempID);
+                this.operateBtnUrl(this.tempID, attr, function () {
+                    _this.tempID = '';
+                    _this.pID = '';
+                    _this.trActive = 0;
+                    _this.auditShow = false;
+                    _this.getPartnerData({ inPass: 'n', page: 1 });
+                });
+            }
+        },
+        // 撤回，忽略，通过，驳回的请求
+        operateBtnUrl: function (id, type, callback) {
+            var params = {
+                id: id,
+                auditType: type,
+                remark: this.auditRemark,
+            };
+            console.log(params);
+            axios
+                .get(PATH + '/cp/crm/audit', { params: params })
+                .then(function (datas) {
+                var data = datas.data;
+                if (data.code === 201) {
+                    toastr.warning(data.msg);
+                    return;
+                }
+                if (callback)
+                    callback();
+            });
         },
         // 机要信息 的区域和省份
         clickRegionProvinceBtn: function (code, text, type) {
@@ -584,6 +627,10 @@ var vm = new Vue({
             console.log(str);
             return str;
         },
+        // 撤回，忽略，审批
+        hidePop: function (attr) {
+            this[attr] = false;
+        },
         // 最近三年的年份设置
         setRecentYears: function () {
             var year = Number(this.currentDate.substring(0, 4));
@@ -603,11 +650,5 @@ var vm = new Vue({
             ];
             this.pLastContractAmount = arr;
         },
-        select: function (event) {
-            console.log(event);
-        },
-        select2: function (event) {
-            console.log(event);
-        }
     },
 });

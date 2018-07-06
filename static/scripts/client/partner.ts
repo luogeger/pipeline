@@ -36,6 +36,7 @@ let vm = new Vue({
         currentDepartment:  userGroup,// 所属部门
         currentUser:        userName,// 负责销售
         userLevel:          userLevel,// xs, xsld, dqxyh
+        userPermission:     userPermission,
         regionList:         [],// 区域
         provinceList:       [],// 省份
         allProvinceList:    [],// 所有省份
@@ -61,21 +62,7 @@ let vm = new Vue({
         pSolution:           [],	//主要合作产品
         pRegisteredCapital:  '',	//注册资本
         pType:               '',	//合作伙伴类型
-        pLastContractAmount: [
-            // {
-            //     year: 0,
-            //     contractAmount: '',
-            // },
-            // {
-            //     year: 0,
-            //     contractAmount: '',
-            // },
-            // {
-            //     year: 0,
-            //     contractAmount: '',
-            // },
-
-        ],	//近期销售合同额
+        pLastContractAmount: [],	//近期销售合同额
         pCompanyCase:        '',    //公司案例
         pSynopsisOfPartners: '',    //合作伙伴简介
         pRemark:             '',	//备注
@@ -99,93 +86,29 @@ let vm = new Vue({
         mRegionText:        '',// 机要区域文本
         mProvinceText:      '',//机要城市文本
 
-        // 区域、省份
+
+        auditRemark:        '',// 审批备注
+        auditShow:          false,// 领导审批的弹窗
+        revokeShow:         false,// 撤回的确认弹窗
+        ignoreShow:         false,// 忽略的确认弹窗
 
 
 
 
 
 
-        // 筛选数据
-        selectList:[
-            {
-                label: '区域',
-                value: '0'
-            },
-            {
-                label: 'yanjiuyuan',
-                value: '1'
-            },
-            {
-                label: 'zhinengzhizhen',
-                value: '2'
-            },
-
-        ],
-        selectList2:[
-            {
-                label: '省份',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-            {
-                label: 'zhonghuaren',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-            {
-                label: 'zhonghuaren',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-            {
-                label: 'zhonghuaren',
-                value: '0'
-            },
-            {
-                label: 'luoxiaoqing',
-                value: '1'
-            },
-            {
-                label: 'xiaoijiqiren',
-                value: '2'
-            },
-
-        ],
-
-        tempArr: [{id: 1, age: 15},{id:2, age: 16}, {id:3, age: 17}]
 
     },// data
 
     created () {
-        this.tabBtn(4, 'partner-other');// 显示第一个tab
+        this.tabBtn(0, 'partner-pass');// 显示第一个tab
         this.getIndustry()
     },
 
     mounted () {
 
     },
+
 
     computed: {
         // pBusinessProvince () {
@@ -311,6 +234,11 @@ let vm = new Vue({
             this.mAddress = '';
 
             // 合伙人
+            this.pName                  = '';
+            this.pRegisteredCapital     = '';
+            this.pCompanyCase           = '';
+            this.pSynopsisOfPartners    = '';
+            this.pRemark                = '';
             this.partnerTypeCheckedList = [];// 合作伙伴类型
             this.checkedIndustryList    = [];// 业务行业清空
             this.checkedSolutionList    = [];// 合作产品清空
@@ -327,8 +255,10 @@ let vm = new Vue({
         // tab切换
         tabBtn (num, type) {
             //type == partner-pass, partner-other, partner-msg, engineer
-            this.tabActive = num;// tab的样式
-            this.tabContentShow = type;// tab里的内容
+            this.tabActive          = num;// tab的样式
+            this.tabContentShow     = type;// tab里的内容
+            this.partnerList        = [];// 清空表格
+            this.partnerMsgList     = [];// 清空表格
 
             if (type === 'partner-pass') this.tabBtnPass();
             if (type === 'partner-other') this.tabBtnOther();
@@ -426,7 +356,7 @@ let vm = new Vue({
         // 提交事件
         submitBtn (type) {
             if (type === 'addPartner') this.addPartner();
-            if (type === 'addPartnerMsg')
+            if (type === 'addPartnerMsg'){
                 this.addPartnerMsg(() => {
                     this.getPartnerMsgData()
                     if (this.tempID == '') {
@@ -436,6 +366,7 @@ let vm = new Vue({
                     }
                     this.popUp('addPartnerMsgPop')
                 });
+            }
         },
 
         // 编辑事件
@@ -462,7 +393,7 @@ let vm = new Vue({
         // 确认提交合作伙伴 有id 就相当于是编辑
         addPartner () {
             let paramsPartner = {
-                id:                 this.tempID,
+                id:                 this.tempID,// 区分是添加还是编辑
                 name:               this.pName,//合作伙伴名称
                 businessProvince:   JSON.stringify(this.pBusinessProvince),//业务区域、省份
                 businessIndustry:   JSON.stringify(this.pBusinessIndustry),//主要业务行业
@@ -489,13 +420,24 @@ let vm = new Vue({
                     }
 
                     if (data.code === 200) {
-                        this.pID = data.msg.cpCustomerId;
-                        this.addPartnerMsg(() => {
-                            this.getPartnerData({inPass: 'n'})
+                        if (this.tempID == '') {
+                            this.pID = data.msg.cpCustomerId;
+                            this.addPartnerMsg(() => {
+                                this.getPartnerData({inPass: 'n'})
+                                this.getPartnerMsgData()
+                                toastr.success('合作伙伴添加成功！')
+                            })
+                        } else {
+                            this.tempID = '';
+                            if (this.tabActive === 0) this.getPartnerData();// 需要判断是通过还是非通过的合作伙伴基础信息
+                            if (this.tabActive === 4) this.getPartnerData({inPass: 'n'});// 需要判断是通过还是非通过的合作伙伴基础信息
+
+
                             this.getPartnerMsgData()
-                            this.popUp('addPartnerPop')
-                            toastr.success('合作伙伴添加成功！')
-                        })
+                            toastr.success('合作伙伴编辑成功！')
+                        }
+
+                        this.popUp('addPartnerPop')
                     }
 
                 })
@@ -564,11 +506,21 @@ let vm = new Vue({
         operateBtn (index, id, type, item) {
             console.log(index, id, type, item)
             if (type === 'edit') this.operateBtnEdit(id, item);// 编辑合伙人
+            if (type === 'recall') this.operateBtnRecall(id)
+            if (type === 'audit') this.operateBtnAudit(id)
+            if (type === 'ignore') this.operateBtnIgnore(id)
 
+        },
+
+        // 领导审批按钮
+        operateBtnAudit (id) {
+            this.auditShow = true;
+            this.tempID = id;
         },
 
         // 编辑合伙人
         operateBtnEdit (id, item) {
+            this.tempID = id;// 区分是添加还是编辑
             this.addAndEdit       = true;// 添加和编辑 合伙人，机要信息的弹窗
             this.addPartnerPop    = true;
             this.submitBtnIsShow  = true;// 添加和编辑 合伙人，机要信息的按钮
@@ -590,7 +542,91 @@ let vm = new Vue({
             this.checkedIndustryList = item.businessIndustry;// 行业线
             this.checkedSolutionList = item.solution;// 合作产品
             this.defaultRender(item.area)// 区域省份
+            this.pRegisteredCapital  = item.registeredCapital;// 注册资本
+            this.pLastContractAmount = item.lastContractAmount;// 最近三年合同额
+            this.pName               = item.name;// 客户名称
+            this.pIsSignedCp         = item.isSignedCp;// 是否直签
+            this.pCompanyCase        = item.companyCase;// 案例
+            this.pSynopsisOfPartners = item.synopsisOfPartners;// 简介
+            this.pRemark             = item.remark;// 备注
 
+        },
+
+        // 撤回
+        operateBtnRecall (id) {
+            this.revokeShow = true;
+            this.tempID = id;
+        },
+
+        // 忽略
+        operateBtnIgnore (id) {
+            this.ignoreShow = true;
+            this.tempID = id;
+        },
+
+        // 撤回，忽略，审批的小弹窗
+        cancelConfirmBtn (attr, type) {
+            console.log(attr, ',', type)
+            if(type === 'cancel') {
+                this[attr] = false;
+                this.tempID = '';
+            }
+
+            if(attr === 'revoke' && type === 'confirm'){
+                this.operateBtnUrl(this.tempID, attr, () => {
+                    this.tempID   = '';
+                    this.pID      = '';
+                    this.trActive = 0;
+                    this.revokeShow = false;
+                    this.getPartnerData({inPass: 'n'})
+                })
+            }
+
+            if(attr === 'ignore' && type === 'confirm'){
+                this.operateBtnUrl(this.tempID, attr, () => {
+                    this.tempID   = '';
+                    this.pID      = '';
+                    this.trActive = 0;
+                    this.ignoreShow = false;
+                    this.getPartnerData({inPass: 'n'})
+                })
+            }
+
+
+            if (attr === 'pass' || attr === 'reject') {
+                console.log(this.tempID)
+                this.operateBtnUrl(this.tempID, attr, () => {
+                    this.tempID   = '';
+                    this.pID      = '';
+                    this.trActive = 0;
+                    this.auditShow = false;
+                    this.getPartnerData({inPass: 'n', page: 1})
+                })
+            }
+        },
+
+        // 撤回，忽略，通过，驳回的请求
+        operateBtnUrl (id, type, callback) {
+            let params = {
+                id:     id,
+                auditType: type,
+                remark: this.auditRemark,
+            };
+            console.log(params)
+            axios
+                .get(PATH +'/cp/crm/audit',  {params: params} )
+                .then((datas)=>{
+                    let data = datas.data;
+                    if (data.code === 201) {
+                        toastr.warning(data.msg)
+                        return;
+                    }
+
+                    if(callback) callback();
+
+
+
+                });
         },
 
         // 机要信息 的区域和省份
@@ -681,9 +717,10 @@ let vm = new Vue({
             return str;
         },
 
-
-
-
+        // 撤回，忽略，审批
+        hidePop (attr) {
+            this[attr] = false;
+        },
 
 
 
@@ -716,15 +753,6 @@ let vm = new Vue({
 
         },
 
-
-
-        select (event) {
-            console.log(event)
-        },
-
-        select2 (event) {
-            console.log(event)
-        }
     },
 
 });
