@@ -9,5 +9,41 @@
   .main .partner .opera-box,
   .main .partner-msg .opera-box {
     padding-bottom: 10px; }
+.main .regionProvince {
+  position: absolute;
+  top: 32px;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  padding: 5px;
+  box-shadow: rgba(255, 138, 65, 0.3) 0 0 0 2px;
+  border-radius: 4px;
+  background: #ffffff; }
+  .main .regionProvince li {
+    line-height: 30px; }
+.main .i-table tbody tr td:last-child .types-show span {
+  line-height: 30px; }
+.main .i-table tbody tr td:last-child .types-show .type-pending {
+  color: #14a6ef; }
+.main .i-table tbody tr td:last-child .types-show .type-pass {
+  color: #5eb95e; }
+.main .i-table tbody tr td:last-child .types-show .type-reject {
+  color: #dd514c; }
+.main .i-table tbody tr td:last-child .types-show .type-revoke {
+  color: #222; }
+.main .i-table tbody tr td:last-child .operas-btn {
+  line-height: 30px; }
+  .main .i-table tbody tr td:last-child .operas-btn div:not(:last-child) {
+    transition: .2s; }
+    .main .i-table tbody tr td:last-child .operas-btn div:not(:last-child):hover {
+      background-color: #FF8319;
+      color: #FFFFFF; }
+  .main .i-table tbody tr td:last-child .operas-btn div:last-child {
+    padding-left: 10px;
+    cursor: pointer; }
+    .main .i-table tbody tr td:last-child .operas-btn div:last-child .fa {
+      font-size: 16px !important; }
+    .main .i-table tbody tr td:last-child .operas-btn div:last-child .has-reject {
+      color: #ff0000 !important; }
 
 /*# sourceMappingURL=partner.css.map */

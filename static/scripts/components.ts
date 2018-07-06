@@ -1,26 +1,24 @@
 Vue.component('select-list', {
     props: {
-        selections: {
+        dataList: {
             type: Array,
             default: [{
                 text: '',
-                code: ''
             }]
         },
-        value: {},
+        checkedList: {
+            type: Array
+        },
+        value: ''
     },// props
 
     data () {
         return {
-            _value: {},
             nowIndex: 0,
             isShow: false,
+            defaultText: '请选择 --'
         }
     },// data
-
-    created () {
-        this._value = this.value;
-    },
 
     mounted () {
         document.addEventListener('click', (e) => {
@@ -28,16 +26,39 @@ Vue.component('select-list', {
         })
     },
 
+    created () {
+        // 在watch
+    },
+
+    watch: {
+        dataList () {
+            //this.$emit('input', this.dataList[this.nowIndex].code);
+            if (this.checkedList && this.checkedList.length) {
+                this.dataList.forEach((item, index) => {
+                    if (item.text === this.checkedList[0].text ) {
+                        this.nowIndex = index;
+                        this.defaultText = this.dataList[this.nowIndex].text;
+                        this.$emit('input', this.dataList[this.nowIndex].code);
+                        return;
+                    }
+                })
+            }
+        },
+    },
+
+
     methods:{
         toggleShow () {
             this.isShow = !this.isShow;
             this.iconRotate = true;// 输入法
         },
-        chooseShow (item) {
+        chooseShow (index) {
             this.isShow = false;
-            this._value = item;
-            this.$emit('input', this._value);
-        }
+            this.nowIndex = index;
+            this.defaultText = this.dataList[this.nowIndex].text;
+            this.$emit('input', this.dataList[this.nowIndex].code);
+        },
+
     },// methods
 
     template:
@@ -45,17 +66,18 @@ Vue.component('select-list', {
             <div class="selection-show" 
                  :class="{'i-border-col i-border-shadow i-icon-col': isShow}"
                  @click="toggleShow">
-                <span class="default-text" v-text="_value.text"></span>
+                <span v-text="defaultText"
+                      class="default-text"></span>
                 <i class="fa fa-angle-down"
                    :class="{'rotate-180': isShow}"></i>
             </div>
             <transition name="fade">
                 <div class="selection-list" v-if="isShow">
                     <ul>
-                        <li v-for="(item, index) in selections" 
+                        <li v-for="(item, index) in dataList" 
+                            v-text="item.text"
                             :class="{'i-active': index == nowIndex}"
-                            @click="chooseShow(item)"
-                            v-text="item.text"></li>
+                            @click="chooseShow(index)"></li>
                     </ul>
                 </div>
             </transition>    
@@ -228,5 +250,191 @@ Vue.component('i-page', {
             <span style="margin-right: 5px;">{{pageEnd}}</span>
             <span>条，</span>
             <span>共&nbsp; {{pageTotal}} &nbsp;条</span>
+        </div>`,
+});
+
+Vue.component('i-checkbox', {
+    props: {
+        dataList: {
+            type: Array,
+        },
+        defaultList: {
+            type: Array,
+        }
+
+    },
+    data () {
+        return {
+            isShow: false,
+            checkedList: [],
+        }
+    },// data
+
+    created () {
+        //if (this.defaultList) this.checkedList = this.defaultList;
+        console.log(this.defaultList)
+
+    },
+    methods:{
+        checkBtn (index) {
+            if(this.checkedList.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
+                this.checkedList.push(index);
+            } else{ // 如果在就把这index从临时数组删除
+                index = this.checkedList.indexOf(index);
+                this.checkedList.splice(index, 1);
+            }
+
+            let emitList = [];
+            for(let i = 0; i < this.checkedList.length; i++){
+                emitList.push(this.dataList[this.checkedList[i]]);
+            }
+            this.$emit('on-check', emitList); // 要传到父组件的是index对应的value,
+        },
+
+        isShowJudge (index) {
+            return this.checkedList.indexOf(index) !== -1;
+        }
+    },
+
+    template:
+        `<div class="i-checkbox-group">
+            <div v-for="(item, index) in dataList"
+                 @click="checkBtn(index)"
+                 :key="item.code"
+                 class="i-checkbox-wrap">
+                <span class="i-checkbox-box">
+                    <i class="fa fa-square-o"></i> 
+                    <transition name="fade">
+                        <i v-if="isShowJudge(index)" class="is-show fa fa-check"></i>
+                    </transition>
+                </span>
+                <span v-text="item.text"></span>        
+            </div>
+        </div>`,
+
+});
+
+Vue.component('multiple-list', {
+    props: {
+        dataList: {
+            type: Array,
+            default: [{
+                text: '',
+                value: 0
+            }]
+        },
+        defaultList: {
+            type: Array,
+        },
+        value: '',
+    },// props
+
+    data () {
+        return {
+            // nowIndex: 0,
+            isShow: false,
+            activeIsShow: false,
+            checkedIndex: [],
+            checkedText:  '',
+            checkedList: [],
+        }
+    },// data
+
+    mounted () {
+        document.addEventListener('click', e => {
+            if (!this.$el.contains(e.target)) this.isShow = false;
+        })
+    },
+
+    created () {
+    },
+
+    watch: {
+        dataList () {
+            // console.log('data,', this.dataList)
+            // console.log('default', this.defaultList)
+            if (this.defaultList && this.defaultList.length) {
+                this.defaultList.forEach(item => {
+                    this.dataList.forEach((_item, index) => {
+                        if (item.code === _item.code) {
+                            this.checkedIndex.push(index);
+                            this.checkedList.push(this.dataList[index]);
+                            this.styleShow(index)
+                        }
+                    })
+                });
+                this.textShow()
+                this.$emit('input', this.checkedList);
+                // console.log('checkedIndex,', this.checkedIndex)
+                // console.log('checkedList,', this.checkedList)
+            }
+
+        }
+    },
+
+
+    methods:{
+        toggleShow () {
+            this.isShow = !this.isShow;
+        },
+        chooseShow (index) {
+            // console.log('index,', index)
+            // console.log('checkedIndex,', this.checkedIndex)
+            // console.log('checkedList,', this.checkedList)
+            this.isShow = false;
+
+            if(this.checkedIndex.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
+                this.checkedIndex.push(index);
+                this.checkedList.push(this.dataList[index])//
+            } else{ // 如果在就把这index从临时数组删除
+                this.checkedIndex.splice(this.checkedIndex.indexOf(index), 1);//
+                let _index = this.checkedList.indexOf(this.dataList[index]);
+                this.checkedList.splice(_index, 1)
+            }
+            console.log('checkedList,', this.checkedList)
+            this.$emit('input', this.checkedList);
+            this.textShow()
+
+            console.log('checkedList,', this.checkedList)
+        },
+
+        textShow () {
+            let text = [];
+            this.checkedList.forEach(item => {
+                text.push(item.text);
+            });
+            this.checkedText = text.join('，');
+        },
+
+        styleShow (index) {
+            return this.checkedIndex.indexOf(index) !== -1
+        },
+    },// methods
+
+    template:
+        `<div class="selection-component">
+            <div class="selection-show" 
+                 :class="{'i-border-col i-border-shadow i-icon-col': isShow}"
+                 @click="toggleShow">
+                <span v-text="checkedText"
+                      class="default-text"></span>
+                <i class="fa fa-angle-down"
+                   :class="{'rotate-180': isShow}"></i>
+            </div>
+            <transition name="fade">
+                <div class="selection-list" v-if="isShow">
+                    <ul>
+                        <li v-for="(item, index) in dataList" 
+                            :class="{'i-text-col': styleShow(index)}"
+                            :key="item.code"
+                            @click="chooseShow(index)">
+                            <span v-text="item.text"></span>
+                            <transition name="fade">
+                                <i v-if="styleShow(index)" class="fa fa-check"></i>
+                            </transition>   
+                        </li>
+                    </ul>
+                </div>
+            </transition>    
         </div>`,
 });

@@ -20,4 +20,67 @@
 
   .confidential-msg{
   }
+
+  .regionProvince{
+    position: absolute;
+    top: 32px;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    padding: 5px;
+    box-shadow: rgba(255,138,65, .3) 0 0 0 2px;
+    border-radius: 4px;
+    background: #ffffff;
+	  li{
+       line-height: 30px;
+	  }
+  }
+
+  .i-table{
+    tbody{
+      tr{
+        td:last-child{
+          .types-show{
+            span{
+              line-height: 30px;
+            }
+            .type-pending{
+              color: #14a6ef;
+            }
+            .type-pass{
+              color: #5eb95e;
+            }
+
+            .type-reject{
+              color: #dd514c;
+            }
+            .type-revoke{
+              color: #222;
+            }
+          }// .type-show
+          .operas-btn{
+            line-height: 30px;
+            div:not(:last-child){
+              transition: .2s;
+              &:hover{
+                background-color: #FF8319;
+                color: #FFFFFF;
+              }
+            }
+
+            div:last-child{
+              padding-left: 10px;
+              cursor: pointer;
+              .fa{
+                font-size: 16px !important;
+              }
+              .has-reject{
+                color: #ff0000 !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
 }// end
