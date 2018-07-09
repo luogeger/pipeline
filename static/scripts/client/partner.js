@@ -79,6 +79,8 @@ var vm = new Vue({
         auditShow: false,
         revokeShow: false,
         ignoreShow: false,
+        auditHistoryShow: false,
+        auditHistoryData: [],
     },
     created: function () {
         this.tabBtn(0, 'partner-pass'); // 显示第一个tab
@@ -444,6 +446,8 @@ var vm = new Vue({
                 this.operateBtnAudit(id);
             if (type === 'ignore')
                 this.operateBtnIgnore(id);
+            if (type === 'auditHistory')
+                this.operateBtnHistory(item, id);
         },
         // 领导审批按钮
         operateBtnAudit: function (id) {
@@ -491,6 +495,11 @@ var vm = new Vue({
             this.ignoreShow = true;
             this.tempID = id;
         },
+        // 审核历史
+        operateBtnHistory: function (item, id) {
+            this.auditHistoryShow = true;
+            this.auditHistoryList = item;
+        },
         // 撤回，忽略，审批的小弹窗
         cancelConfirmBtn: function (attr, type) {
             var _this = this;
@@ -535,7 +544,6 @@ var vm = new Vue({
                 auditType: type,
                 remark: this.auditRemark,
             };
-            console.log(params);
             axios
                 .get(PATH + '/cp/crm/audit', { params: params })
                 .then(function (datas) {
@@ -627,7 +635,7 @@ var vm = new Vue({
             console.log(str);
             return str;
         },
-        // 撤回，忽略，审批
+        // 撤回，忽略，审批，记录历史
         hidePop: function (attr) {
             this[attr] = false;
         },

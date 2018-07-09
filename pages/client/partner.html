@@ -119,7 +119,8 @@
                                  class="btn btn-xs btn-border">忽略
                             </div>
                             <!-- 历史记录 -->
-                            <div class="btn btn-xs">
+                            <div class="btn btn-xs"
+                                 @click="operateBtn('', item.id, 'auditHistory', item)">
                                 <i class="fa fa-clock-o"></i>
                             </div>
                         </div>
@@ -545,5 +546,37 @@
             </div>
         </div>
     </div>
+
+    <!--  审核历史 -->
+    <div v-if="auditHistoryShow" class="dialog-wrap">
+        <div @click="hidePop('auditHistoryShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small" style="width: 50%;">
+            <div class="title">审核记录 : <span v-text="auditHistoryList.name"></span>
+                <i @click="hidePop('auditHistoryShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">
+                <table class="i-table">
+                    <thead>
+                    <tr>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in auditHistoryList.auditLogs">
+                        <td v-text="item.opTime" style="min-width: 100px;"></td>
+                        <td v-text="item.operName" style="min-width: 100px;"></td>
+                        <td v-text="item.auditStatus" style="min-width: 100px;"></td>
+                        <td v-text="item.remark"></td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div v-if="auditHistoryList.auditLogs.length === 0">没有记录 ！</div>
+            </div>
+        </div>
+    </div>
+
 </div><!-- /.end -->
 <script src="../static/scripts/client/partner.js"></script>

@@ -645,7 +645,8 @@ input.disabled {
 .selection-component {
   position: relative;
   display: inline-block;
-  width: 100%; }
+  width: 100%;
+  z-index: 1; }
   .selection-component .selection-show {
     width: 100%;
     display: inline-block;
@@ -2896,6 +2897,7 @@ button.toast-close-button {
     background: #fff;
     top: 10%;
     left: 50%;
+    bottom: 10%;
     transform: translate(-50%);
     z-index: 10;
     border-radius: 4px;

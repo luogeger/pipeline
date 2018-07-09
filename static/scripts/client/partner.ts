@@ -91,8 +91,8 @@ let vm = new Vue({
         auditShow:          false,// 领导审批的弹窗
         revokeShow:         false,// 撤回的确认弹窗
         ignoreShow:         false,// 忽略的确认弹窗
-
-
+        auditHistoryShow:   false,// 审核记录弹窗
+        auditHistoryData:   [],
 
 
 
@@ -509,6 +509,7 @@ let vm = new Vue({
             if (type === 'recall') this.operateBtnRecall(id)
             if (type === 'audit') this.operateBtnAudit(id)
             if (type === 'ignore') this.operateBtnIgnore(id)
+            if (type === 'auditHistory') this.operateBtnHistory(item,id)
 
         },
 
@@ -564,6 +565,13 @@ let vm = new Vue({
             this.tempID = id;
         },
 
+        // 审核历史
+        operateBtnHistory (item,id) {
+            this.auditHistoryShow = true;
+            this.auditHistoryList = item;
+
+        },
+
         // 撤回，忽略，审批的小弹窗
         cancelConfirmBtn (attr, type) {
             console.log(attr, ',', type)
@@ -612,7 +620,6 @@ let vm = new Vue({
                 auditType: type,
                 remark: this.auditRemark,
             };
-            console.log(params)
             axios
                 .get(PATH +'/cp/crm/audit',  {params: params} )
                 .then((datas)=>{
@@ -623,9 +630,6 @@ let vm = new Vue({
                     }
 
                     if(callback) callback();
-
-
-
                 });
         },
 
@@ -717,7 +721,7 @@ let vm = new Vue({
             return str;
         },
 
-        // 撤回，忽略，审批
+        // 撤回，忽略，审批，记录历史
         hidePop (attr) {
             this[attr] = false;
         },
