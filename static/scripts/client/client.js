@@ -1,4 +1,4 @@
-
+console.log(vm)
 var vm = new Vue({
     el: '#app',
 
@@ -219,7 +219,6 @@ var vm = new Vue({
 
         // 获取客户信息
         getClient: function (page, limit) {
-            vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
             var params = {
                 page:         page || 1,
                 limit:        limit || this.clientPageMost,
@@ -240,10 +239,10 @@ var vm = new Vue({
                     toastr.warning('没有相关信息 !');
                     return;
                 };
+                vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
                 vm.noData = false;// 客户table的 '没有数据!'
                 vm.clientNameQuery = false;// 请输入客户名称进行查询！ == 是否显示
                 vm.client = datas.data;// 数据list
-                console.log(vm.client.root)
                 vm.msgBtnIsShow = true;// 不能显示添加机要信息按钮
                 // 分页
                 vm.clientPageTotal = datas.data.totalProperty;
@@ -541,7 +540,6 @@ var vm = new Vue({
             params = params || addMsgObj;
             if (this.msgCheckSpace(params) === 0) return;
 
-            console.log('request')
             axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: params}).then(function (datas){
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
@@ -580,7 +578,6 @@ var vm = new Vue({
                             vm.getProvince(msg.regionCode);
                             resolve(msg);
                         }).then(msg =>{// 处理成功resolve的数据
-
                             vm.mRegionCode =         msg.regionCode;
                             console.log(vm.mRegionCode)
                             vm.mProvinceCode =       msg.provinceCode;
@@ -689,7 +686,6 @@ var vm = new Vue({
         },
 
         editClientConfirm: function () {
-            console.log(123);
             console.log(this.repeatClick);
             if (this.repeatClick === false) return;
             this.repeatClick = false;
@@ -757,7 +753,6 @@ var vm = new Vue({
             };
             axios.get(PATH +'/crm/ignore', {params: params}).then(function (datas){
                 var data = datas.data;
-                console.log(data);
                 if (data.code === 200) {
                     vm.hidePop();
                     vm.getClient()
@@ -850,7 +845,6 @@ var vm = new Vue({
 
         // 查询客户的审核记录
         queryClientHistory: function (id) {
-            console.log(id)
             var params = {
                 id: id,
             };

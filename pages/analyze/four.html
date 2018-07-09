@@ -33,7 +33,7 @@
                      class="selection-show fa"></div>
                 <div v-if="selectionIsShow_2" style="left: 45px;" class="selection-list">
                     <ul>
-                        <li @click="clickItem(item.text, 2, item.code)"
+                        <li @click="clickItem(item, 2)"
                             v-for="item in saleGroupList"
                             v-text="item.text"></li>
                     </ul>

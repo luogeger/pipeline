@@ -5,6 +5,7 @@ var vm = new Vue({
         // 当前人的级别
         userLevel: userLevel,
         currentAccYear: currentAccYear,// 精确到上半年还是下半年
+        currentGroup:  '',
 
         // 合计
         yearSum: [ 1, 2, 3, 4],
@@ -35,6 +36,10 @@ var vm = new Vue({
             2018,
             2019,
             2020,
+            2021,
+            2022,
+            2023,
+            2024,
         ],
         selectionDefaultText_1: 2018,
         selectionIsShow_1: false,
@@ -75,14 +80,15 @@ var vm = new Vue({
             year = year || currentYear;
             var params = {
                 aYear: year,
+                sgc: this.currentGroup,
                 property: '',
                 direction: '',
-                sgc: '',
             };
             params = Object.assign(params, obj);
             console.log(params)
             axios.get(PATH +'/a/contractAmount', {params: params}).then(function (datas){
                 var data = datas.data;
+                console.log(data)
                 vm.yearTitle    = data.msg.aYearTitle;
                 vm.yearList     = data.msg.aYear;
                 vm.h1.title     = data.msg.h1Title;
@@ -95,6 +101,7 @@ var vm = new Vue({
 
                 vm.totalCalc(data.msg.aYear, 'year');
                 vm.totalCalc(data.msg.h1, 'half');
+                console.log(vm.yearList)
             });
         },
 
@@ -179,41 +186,35 @@ var vm = new Vue({
                 this.getData(item)
             }
             if (type === 2) {
-                this.selectionDefaultText_2 = item;
+                this.selectionDefaultText_2 = item.text;
                 this.selectionIsShow_2 = false;
+                this.currentGroup = item.code;
+                this.getData()
+
+
             }
 
         },
-
         // 完成额排序
         completeAmount: function () {
             this.amountCounter ++;
             this.rateCounter = 0;
+            console.log(this.amountCounter)
+            var direction = '';
+            this.amountCounter %2 === 0 ? direction = 'desc' : direction = 'asc';
+            this.getData(null, {property: 'complete',direction: direction})
         },
 
         // 完成额占比排序
         completeRate: function () {
             this.rateCounter++;
             this.amountCounter = 0;
+            var direction = '';
+            this.rateCounter %2 === 0 ? direction = 'desc' : direction = 'asc';
+            this.getData(null, {property: 'rate',direction: direction})
+
         },
 
-        PUT: function () {
-            axios({
-                method: 'put',
-                url: 'http://172.16.22.31:8080/iboss-prism/cp/so/addOrUpdatePipline',
-            }).then(function (datas) {
-                console.log(datas)
-            });
-
-            $.ajax({
-                url: 'http://172.16.22.31:8080/iboss-prism/cp/so/addOrUpdatePipline',
-                type: 'put',
-                success: function (datas) {
-                    console.log(123, datas)
-
-                }
-            });
-        },
     },// methods
 
 
