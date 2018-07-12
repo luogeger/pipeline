@@ -106,7 +106,9 @@ let vm = new Vue({
     },
 
     mounted () {
-
+        document.addEventListener('click', e => {
+            if (!this.$el.contains(e.target)) this.regionProvinceIsShow = false;// 添加合伙人时候，区域省份下拉菜单隐藏
+        })
     },
 
 
@@ -652,7 +654,6 @@ let vm = new Vue({
         // 合作伙伴 的区域和省份
         partnerRegionProvinceBtn () {
             this.regionProvinceIsShow = !this.regionProvinceIsShow;
-
         },
 
         // 区域、省份的多选框
@@ -667,7 +668,7 @@ let vm = new Vue({
             this.defaultCheckedText = '';
             this.textShow()
             this.styleShow(item.code)
-            this.regionProvinceIsShow = false;
+            //this.regionProvinceIsShow = false;
         },
 
         // 点击的省份是否已经被选中

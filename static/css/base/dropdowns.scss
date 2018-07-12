@@ -111,14 +111,14 @@ $max-width: 200px;
 
 
 .selection-component {
-  position: relative;
+  //position: relative;
+	//z-index: 1;
   display: inline-block;
   width: 100%;
-  z-index: 1;
   .selection-show {
+	  //position: relative;
     width: 100%;
     display: inline-block;
-    position: relative;
     height: $height-sm;
     line-height: $height-sm;
     color: $text-col;
@@ -148,11 +148,14 @@ $max-width: 200px;
   }
 
   .selection-list {
-    position: absolute;
-    top: $height-sm + 3;
-    left: 0;
-    z-index: 1;
+	  position: absolute;
+	  top: $height-sm + 3;
+	  left: 0;
+	  z-index: 1;
 	  width: 100%;
+	  cursor: pointer;
+	  background-color: #FFFFFF;
+	  //z-index: 1;
 
     ul{
       overflow: auto;
@@ -160,10 +163,7 @@ $max-width: 200px;
       padding: 5px 0;
       min-width: 162px;
       max-width: 100%;
-      border-radius: $border-radius-base;
-      background-color: $white;
-      z-index: 1;
-      cursor: pointer;
+	    border-radius: $border-radius-base;
       @include ul-shadow();
       li {
 	      padding: 0 30px 0 10px;

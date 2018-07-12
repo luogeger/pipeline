@@ -6,9 +6,10 @@ var vm = new Vue({
             data:           {},
             tableData:      [],// 表格数据
             allGroup:       saleGroupList,
+            // allGroup:       [{code: 'asdf', text:'机器人'},{code: 'lkjkl', text:'只能'}],
 
             // 查询条件
-            department:     {code: '', text: '全行业'},
+            department:     {code: '', text: '全部'},
             signedStartDate:'',
             signedEndDate:  '',
 
@@ -29,15 +30,17 @@ var vm = new Vue({
     },
 
     created () {
-        this.getData(() => {
-            this.chartPie()
-            this.chartLine()
-            this.chartBar()
-        })
+        this.query()
     },
 
     mounted () {
         this.renderDate()
+    },
+
+    watch: {
+        department () {
+            this.query()
+        },
     },
 
     methods: {
@@ -56,8 +59,7 @@ var vm = new Vue({
                     this.tableData = this.data.msg.bsList;// 表格数据
                     this.chartPieLineData()
 
-                    console.log(this.data.msg)
-                    console.log(this.tableData)
+
                     if (callback) callback();
                 });
         },
@@ -153,7 +155,8 @@ var vm = new Vue({
                         center: ['50%', '60%'],
                         label: {
                             normal: {
-                                formatter: '{b}\n {c}%',
+                                // formatter: '{b}\n {c}%',
+                                formatter: '{b} : {c} ({d}%)',
                             },
                         },
                         data: this.pieData,
@@ -409,6 +412,7 @@ var vm = new Vue({
                 done: val => {
                     this.signedStartDate = val.substring(0,7);
                     this.signedEndDate   = val.substring(val.length -7, val.length);
+                    this.query()
                 }
             });
         },

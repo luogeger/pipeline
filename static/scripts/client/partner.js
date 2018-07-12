@@ -87,6 +87,11 @@ var vm = new Vue({
         this.getIndustry();
     },
     mounted: function () {
+        var _this = this;
+        document.addEventListener('click', function (e) {
+            if (!_this.$el.contains(e.target))
+                _this.regionProvinceIsShow = false; // 添加合伙人时候，区域省份下拉菜单隐藏
+        });
     },
     computed: {},
     methods: {
@@ -587,7 +592,7 @@ var vm = new Vue({
             this.defaultCheckedText = '';
             this.textShow();
             this.styleShow(item.code);
-            this.regionProvinceIsShow = false;
+            //this.regionProvinceIsShow = false;
         },
         // 点击的省份是否已经被选中
         ifInclude: function (code) {

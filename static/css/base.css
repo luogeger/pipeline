@@ -643,14 +643,11 @@ input.disabled {
       color: #ED6C1C; }
 
 .selection-component {
-  position: relative;
   display: inline-block;
-  width: 100%;
-  z-index: 1; }
+  width: 100%; }
   .selection-component .selection-show {
     width: 100%;
     display: inline-block;
-    position: relative;
     height: 30px;
     line-height: 30px;
     color: #595959;
@@ -679,7 +676,9 @@ input.disabled {
     top: 33px;
     left: 0;
     z-index: 1;
-    width: 100%; }
+    width: 100%;
+    cursor: pointer;
+    background-color: #FFFFFF; }
     .selection-component .selection-list ul {
       overflow: auto;
       max-height: 300px;
@@ -687,9 +686,6 @@ input.disabled {
       min-width: 162px;
       max-width: 100%;
       border-radius: 4px;
-      background-color: #ffffff;
-      z-index: 1;
-      cursor: pointer;
       box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.1); }
       .selection-component .selection-list ul li {
         padding: 0 30px 0 10px;

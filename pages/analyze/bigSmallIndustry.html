@@ -2,10 +2,10 @@
 
 <div class="main" id="app">
     <div class="card">
+        <span class="ver-mid">事业部：</span>
         <div class="search">
-            <span>事业部：</span>
             <select-list
-                :selections="allGroup"
+                :data-list="allGroup"
                 v-model="department"
             ></select-list>
         </div>
@@ -15,9 +15,9 @@
                    id="dateOne"
                    type="text">
         </div>
-        <div class="btn btn-theme"
-             @click="query"
-             style="vertical-align: middle">查询</div>
+        <!--<div class="btn btn-theme"-->
+             <!--@click="query"-->
+             <!--style="vertical-align: middle">查询</div>-->
     </div>
     <div class="card clearfix">
         <div id="chartPie" style="height: 400px;width: 40%;" class="pull-left"></div>
