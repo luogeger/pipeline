@@ -129,6 +129,8 @@ var vm = new Vue({
         hProgressText: '',          // 项目阶段
         hRegionName: '',            // 区域
         hProvinceName: '',          // 省份
+        hasFinalCustomer: true,   // 是否填写最终客户名称
+        finalCustomerProvinceLists: [],// 最终客户名称所在省份
 
         hSoDepartmentCode: '',      // 分配时的事业部code
         hSoDepartmentName: '',      // 分配时的事业部name
@@ -278,6 +280,15 @@ var vm = new Vue({
             axios.get(PATH +'/basic/queryDictDataByCategory', {params:params}).then(function(datas) {
                 var data = datas.data;
                 vm.provinceLists = data.msg[province];
+            })
+        },
+        // 新增/修改需要--最终客户名称所在省份
+        getFinalCustomerProvince: function(province) {
+            province = province || 'regionHd';
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function(datas){
+                var data = datas.data;
+                if (data.code === 201 || data.msg.length === 0) return;
+                vm.finalCustomerProvinceLists = data.msg[province];
             })
         },
         // 初始值--获取合作伙伴类型
@@ -668,6 +679,7 @@ var vm = new Vue({
             vm.hWeightedSum = 0;            // 加权金额总计
             vm.hCustomerSourceText = '';    // 客户来源名称
             vm.hProgressText = '';          // 项目阶段名称
+            vm.hasFinalCustomer = true;        // 隐藏最终客户名称下的区域省份
 
             vm.handleTemplate = {};
         },
@@ -678,6 +690,7 @@ var vm = new Vue({
 
             this.dialogShow = false;           // 显示弹窗
             this.handleDataShow = false;       // 显示新增修改pipeline弹窗
+            this.auditHistoryShow = true;      // 隐藏审核记录
         },
         // 获取单条数据
         getOneData: function(id, index) {
@@ -707,6 +720,13 @@ var vm = new Vue({
                     vm.hCustomerSourceText = vm.handleTemplate.customerSourceName;  // 客户来源
                     vm.hProgressText = vm.handleTemplate.progressName;              // 项目阶段
 
+                    if(vm.handleTemplate.customerName === null) {
+                        vm.hasFinalCustomer = true;
+                    }else {
+                        vm.hasFinalCustomer = false;
+                    }
+                    vm.getFinalCustomerProvince(vm.handleTemplate.finalCustomerRegion); // 获取最终客户名称所在省份信息
+
                     // ===查看pipeline数据
                     vm.hRegionName = vm.handleTemplate.regionName;                  // 区域
                     vm.hProvinceName = vm.handleTemplate.provinceName;              // 省份
@@ -729,6 +749,7 @@ var vm = new Vue({
         // 点击新增按钮
         addData: function() {
             this.commonData();                // 调用（新增/修改共同代码）
+            this.getFinalCustomerProvince();    // 调用（获取最终客户名称所在省份信息）
         },
         // 点击编辑按钮
         editData: function(id, index) {
@@ -736,7 +757,7 @@ var vm = new Vue({
             console.log(id,'id');
             this.commonData();               // 调用（新增/修改共同代码）
             this.isCheck = false;
-            },
+        },
         // 选中合作伙伴类型
         selectCpCustomerTypeCode: function(code, text) {
             this.handleTemplate.cpCustomerType = code;
@@ -784,6 +805,28 @@ var vm = new Vue({
         selectSoDepartment: function(code, text) {
             vm.hSoDepartmentCode = code;
             vm.hSoDepartmentName = text;
+        },
+        // 选中最终客户名称所在区域
+        selectFinalCustomerRegion: function(code) {
+            vm.handleTemplate.finalCustomerRegion = code;
+            this.isActiveProvince = -1;
+            this.getFinalCustomerProvince(code);
+        },
+        // 选中最终客户名称所在省份
+        selectFinalCustomerProvince: function(code){
+            vm.handleTemplate.finalCustomerProvince = code;
+
+            vm.nothing = code;
+        },
+        // 新增/修改 填写最终客户名称
+        finalCustomerKeyup: function() {
+            if(vm.handleTemplate.customerName == '') {
+                this.hasFinalCustomer = true;
+                vm.handleTemplate.finalCustomerRegion = '';
+                vm.handleTemplate.finalCustomerProvince = '';
+            }else {
+                this.hasFinalCustomer = false;
+            }
         },
         // 新增/修改 填写预计签约金额
         sumKeyup: function() {
