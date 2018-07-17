@@ -11,7 +11,7 @@
         </div>
         <div class="table-tab-item" @click="showPipelineJoin" :class="{'active' : pipelineDataShow}">
             pipeline交接
-            <!--<span class="badge" v-text="needOperateNumber"></span>-->
+            <span class="badge" v-text="needOperateNumber"></span>
         </div>
     </div>
     <div :class="{'hide': pipelineDataShow}">
@@ -256,7 +256,7 @@
                                 <th>销售</th>
                                 <th>售前</th>
                                 <th>区域</th>
-                                <th>客服所在省份</th>
+                                <th>客户所在省份</th>
                                 <th>客户属性</th>
                                 <th>客户编号</th>
                                 <th>客户名称
@@ -273,6 +273,7 @@
                                 </th>
                                 <th>解决方案名称</th>
                                 <th>行业线</th>
+                                <th v-if="userPermission === 'pipelineProjectType'">项目类型</th>
                                 <th>项目性质</th>
                                 <th>合作伙伴名称</th>
                                 <th>预计签约金额<br/>（万元）</th>
@@ -333,6 +334,7 @@
                                     </div>
                                 </td>
                                 <td>{{ item.industryLine }}</td>
+                                <td v-if="userPermission === 'pipelineProjectType'">{{ item.projectType }}</td>
                                 <td>{{ item.projectNature }}</td>
                                 <td>
                                     <div class="onetext">{{ item.cooperativePartner }}</div>
@@ -415,7 +417,8 @@
                     <thead>
                     <tr>
                         <th>序号</th>
-                        <th><div class="highlight">操作</div></th>
+                        <th :class="{'hide': userLevel === 'dqxyh'}">
+                            <div class="highlight">操作</div></th>
                          <th><div class="highlight">
                              状态
                          </div></th>
@@ -445,7 +448,7 @@
                     <tbody>
                     <tr v-for="(pipelineList, index) in pipelineData.root">
                         <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
-                        <td>
+                        <td :class="{'hide': userLevel === 'dqxyh'}">
                             <!-- 针对销售 ,当状态为已分配直销销售时，显示确认按钮 -->
                             <div v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesStaff'"
                                  @click="confirmData(pipelineList.id, index)"
@@ -590,7 +593,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <div class="block-wrapper">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户属性:</span>
@@ -601,14 +604,29 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
+                                <div v-if="userPermission === 'pipelineProjectType'" class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">项目类型：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hProjectType }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectProjectType(projectTypeList.code, projectTypeList.text)"
+                                                    v-for="projectTypeList in projectTypeLists"
+                                                    :value="projectTypeList.code">{{ projectTypeList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户名称:</span>
                                         <div style="position: relative;display: inline-block;">
                                             <input v-model="hCustomerName"
                                                    @keyup="getFuzzyList(2)"
-                                                   type="text" class="input-group-form">
+                                                   type="text" class="input-group-form input-lg">
                                             <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
                                                 <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
                                                     v-for="item in fuzzyQueryList_2"
@@ -622,10 +640,38 @@
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px;display: none;">+</a>-->
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
+                                <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <span class="input-group-label">项目名称:</span>
-                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">最终客户名称:</span>
+                                        <input @keyup="finalCustomerKeyup" v-model="handleTemplate.finalCustomer" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户名称所在区域:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerRegion(searchList.code, index)"
+                                                v-for="(searchList,index) in searchLists.regions"
+                                                :class="{'active': handleTemplate.finalCustomerRegion == searchList.code}">{{ searchList.text }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户名称所在省份:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerProvince(finalCustomerProvinceList.code)"
+                                                v-for="(finalCustomerProvinceList,index) in finalCustomerProvinceLists"
+                                                :class="{'active': finalCustomerProvinceList.code == handleTemplate.finalCustomerProvince}">{{ finalCustomerProvinceList.text }}</li>
+                                        </ul>
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -658,7 +704,7 @@
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
                                         <span class="dropdown-label">行业线：</span>
-                                        <div class="dropdown noNull">
+                                        <div class="dropdown">
                                             <span class="dropdown-default">{{ hIndustryLineText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
@@ -667,6 +713,31 @@
                                                     :value="searchList.code">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">合作伙伴:</span>
+                                        <input v-model="handleTemplate.cooperativePartner"
+                                               class="input-group-form"
+                                               type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap pull-left">
+                                        <span class="dropdown-label">金融银行分类:</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hClassificationText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectClassificationCode(classificationList.code, classificationList.text)"
+                                                    v-for="classificationList in classificationLists"
+                                                    :value="classificationList.code">{{ classificationList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div :class="{'hide': selectClassificationQita}" class="input-group pull-left" style="margin-left: 20px">
+                                        <input v-model="hClassificationInput" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -680,14 +751,7 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
-                                    <div class="input-group">
-                                        <span class="input-group-label">合作伙伴:</span>
-                                        <input v-model="handleTemplate.cooperativePartner"
-                                               class="input-group-form"
-                                               type="text">
-                                    </div>
-                                </div>
+
                                 <div class="block-wrapper">
                                     <div class="input-group">
                                         <i class="star">*</i>
@@ -761,12 +825,6 @@
                                                     v-for="searchList in searchLists.customerSours">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="block-wsrapper">
-                                    <div class="input-group">
-                                        <span class="input-group-label">金融银行分类:</span>
-                                        <input v-model="handleTemplate.classificationOfFinancialIndustry" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -1228,7 +1286,7 @@
             </div>
         </div>
         <!-- 撤回弹窗 -->
-        <div :class="{'hide': joinRevokeShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': joinRevokeShow}" class="dialog-content-small dispose-pop"  style="height: 180px">
             <div class="title clearfix">
                 <p class="pull-left">提示</p>
                 <p @click="hideSecondPop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
