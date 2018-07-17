@@ -5,8 +5,9 @@ var vm = new Vue({
             data: {},
             tableData: [],
             allGroup: saleGroupList,
+            // allGroup:       [{code: 'asdf', text:'机器人'},{code: 'lkjkl', text:'只能'}],
             // 查询条件
-            department: { code: '', text: '全行业' },
+            department: { code: '', text: '全部' },
             signedStartDate: '',
             signedEndDate: '',
             // 数据
@@ -25,15 +26,15 @@ var vm = new Vue({
         };
     },
     created: function () {
-        var _this = this;
-        this.getData(function () {
-            _this.chartPie();
-            _this.chartLine();
-            _this.chartBar();
-        });
+        this.query();
     },
     mounted: function () {
         this.renderDate();
+    },
+    watch: {
+        department: function () {
+            this.query();
+        },
     },
     methods: {
         getData: function (callback, obj) {
@@ -51,8 +52,6 @@ var vm = new Vue({
                 _this.data = datas.data;
                 _this.tableData = _this.data.msg.bsList; // 表格数据
                 _this.chartPieLineData();
-                console.log(_this.data.msg);
-                console.log(_this.tableData);
                 if (callback)
                     callback();
             });
@@ -141,7 +140,8 @@ var vm = new Vue({
                         center: ['50%', '60%'],
                         label: {
                             normal: {
-                                formatter: '{b}\n {c}%',
+                                // formatter: '{b}\n {c}%',
+                                formatter: '{b} : {c} ({d}%)',
                             },
                         },
                         data: this.pieData,
@@ -382,6 +382,7 @@ var vm = new Vue({
                 done: function (val) {
                     _this.signedStartDate = val.substring(0, 7);
                     _this.signedEndDate = val.substring(val.length - 7, val.length);
+                    _this.query();
                 }
             });
         },

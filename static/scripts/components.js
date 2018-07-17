@@ -4,18 +4,19 @@ Vue.component('select-list', {
             type: Array,
             default: [{
                     text: '',
+                    code: ''
                 }]
         },
-        checkedList: {
-            type: Array
-        },
-        value: ''
+        // checkedList: {
+        //     type: Array
+        // },
+        value: '',
     },
     data: function () {
         return {
             nowIndex: 0,
             isShow: false,
-            defaultText: '请选择 --'
+            defaultText: '请选择 --',
         };
     },
     mounted: function () {
@@ -27,21 +28,20 @@ Vue.component('select-list', {
     },
     created: function () {
         // 在watch
+        this.defaultText = this.value.text;
     },
     watch: {
         dataList: function () {
-            var _this = this;
-            //this.$emit('input', this.dataList[this.nowIndex].code);
-            if (this.checkedList && this.checkedList.length) {
-                this.dataList.forEach(function (item, index) {
-                    if (item.text === _this.checkedList[0].text) {
-                        _this.nowIndex = index;
-                        _this.defaultText = _this.dataList[_this.nowIndex].text;
-                        _this.$emit('input', _this.dataList[_this.nowIndex].code);
-                        return;
-                    }
-                });
-            }
+            // if (this.checkedList && this.checkedList.length) {// 如果dataList没有数据，默认的文字是 defaultText
+            //     this.dataList.forEach((item, index) => {
+            //         if (item.text === this.checkedList[0].text ) {
+            //             this.nowIndex = index;
+            //             this.defaultText = this.dataList[this.nowIndex].text;
+            //             this.$emit('input', this.dataList[this.nowIndex]);
+            //             return;
+            //         }
+            //     })
+            // }
         },
     },
     methods: {
@@ -53,7 +53,7 @@ Vue.component('select-list', {
             this.isShow = false;
             this.nowIndex = index;
             this.defaultText = this.dataList[this.nowIndex].text;
-            this.$emit('input', this.dataList[this.nowIndex].code);
+            this.$emit('input', this.dataList[this.nowIndex]);
         },
     },
     template: "<div class=\"selection-component\">\n            <div class=\"selection-show\" \n                 :class=\"{'i-border-col i-border-shadow i-icon-col': isShow}\"\n                 @click=\"toggleShow\">\n                <span v-text=\"defaultText\"\n                      class=\"default-text\"></span>\n                <i class=\"fa fa-angle-down\"\n                   :class=\"{'rotate-180': isShow}\"></i>\n            </div>\n            <transition name=\"fade\">\n                <div class=\"selection-list\" v-if=\"isShow\">\n                    <ul>\n                        <li v-for=\"(item, index) in dataList\" \n                            v-text=\"item.text\"\n                            :class=\"{'i-active': index == nowIndex}\"\n                            @click=\"chooseShow(index)\"></li>\n                    </ul>\n                </div>\n            </transition>    \n        </div>",
@@ -241,8 +241,6 @@ Vue.component('multiple-list', {
     watch: {
         dataList: function () {
             var _this = this;
-            // console.log('data,', this.dataList)
-            // console.log('default', this.defaultList)
             if (this.defaultList && this.defaultList.length) {
                 this.defaultList.forEach(function (item) {
                     _this.dataList.forEach(function (_item, index) {
@@ -255,8 +253,6 @@ Vue.component('multiple-list', {
                 });
                 this.textShow();
                 this.$emit('input', this.checkedList);
-                // console.log('checkedIndex,', this.checkedIndex)
-                // console.log('checkedList,', this.checkedList)
             }
         }
     },
@@ -265,10 +261,7 @@ Vue.component('multiple-list', {
             this.isShow = !this.isShow;
         },
         chooseShow: function (index) {
-            // console.log('index,', index)
-            // console.log('checkedIndex,', this.checkedIndex)
-            // console.log('checkedList,', this.checkedList)
-            this.isShow = false;
+            // this.isShow = false;
             if (this.checkedIndex.indexOf(index) === -1) {
                 this.checkedIndex.push(index);
                 this.checkedList.push(this.dataList[index]); //
@@ -278,10 +271,8 @@ Vue.component('multiple-list', {
                 var _index = this.checkedList.indexOf(this.dataList[index]);
                 this.checkedList.splice(_index, 1);
             }
-            console.log('checkedList,', this.checkedList);
             this.$emit('input', this.checkedList);
             this.textShow();
-            console.log('checkedList,', this.checkedList);
         },
         textShow: function () {
             var text = [];

@@ -4,19 +4,20 @@ Vue.component('select-list', {
             type: Array,
             default: [{
                 text: '',
+                code: ''
             }]
         },
-        checkedList: {
-            type: Array
-        },
-        value: ''
+        // checkedList: {
+        //     type: Array
+        // },
+        value: '',
     },// props
 
     data () {
         return {
             nowIndex: 0,
             isShow: false,
-            defaultText: '请选择 --'
+            defaultText: '请选择 --',
         }
     },// data
 
@@ -28,21 +29,21 @@ Vue.component('select-list', {
 
     created () {
         // 在watch
+        this.defaultText = this.value.text;
     },
 
     watch: {
         dataList () {
-            //this.$emit('input', this.dataList[this.nowIndex].code);
-            if (this.checkedList && this.checkedList.length) {
-                this.dataList.forEach((item, index) => {
-                    if (item.text === this.checkedList[0].text ) {
-                        this.nowIndex = index;
-                        this.defaultText = this.dataList[this.nowIndex].text;
-                        this.$emit('input', this.dataList[this.nowIndex].code);
-                        return;
-                    }
-                })
-            }
+            // if (this.checkedList && this.checkedList.length) {// 如果dataList没有数据，默认的文字是 defaultText
+            //     this.dataList.forEach((item, index) => {
+            //         if (item.text === this.checkedList[0].text ) {
+            //             this.nowIndex = index;
+            //             this.defaultText = this.dataList[this.nowIndex].text;
+            //             this.$emit('input', this.dataList[this.nowIndex]);
+            //             return;
+            //         }
+            //     })
+            // }
         },
     },
 
@@ -56,7 +57,7 @@ Vue.component('select-list', {
             this.isShow = false;
             this.nowIndex = index;
             this.defaultText = this.dataList[this.nowIndex].text;
-            this.$emit('input', this.dataList[this.nowIndex].code);
+            this.$emit('input', this.dataList[this.nowIndex]);
         },
 
     },// methods
@@ -332,7 +333,7 @@ Vue.component('multiple-list', {
     data () {
         return {
             // nowIndex: 0,
-            isShow: false,
+            isShow: false,// 下拉框
             activeIsShow: false,
             checkedIndex: [],
             checkedText:  '',
@@ -351,8 +352,6 @@ Vue.component('multiple-list', {
 
     watch: {
         dataList () {
-            // console.log('data,', this.dataList)
-            // console.log('default', this.defaultList)
             if (this.defaultList && this.defaultList.length) {
                 this.defaultList.forEach(item => {
                     this.dataList.forEach((_item, index) => {
@@ -365,8 +364,6 @@ Vue.component('multiple-list', {
                 });
                 this.textShow()
                 this.$emit('input', this.checkedList);
-                // console.log('checkedIndex,', this.checkedIndex)
-                // console.log('checkedList,', this.checkedList)
             }
 
         }
@@ -378,10 +375,7 @@ Vue.component('multiple-list', {
             this.isShow = !this.isShow;
         },
         chooseShow (index) {
-            // console.log('index,', index)
-            // console.log('checkedIndex,', this.checkedIndex)
-            // console.log('checkedList,', this.checkedList)
-            this.isShow = false;
+            // this.isShow = false;
 
             if(this.checkedIndex.indexOf(index) === -1){ // 如果不在就把index添加到临时数组
                 this.checkedIndex.push(index);
@@ -391,11 +385,8 @@ Vue.component('multiple-list', {
                 let _index = this.checkedList.indexOf(this.dataList[index]);
                 this.checkedList.splice(_index, 1)
             }
-            console.log('checkedList,', this.checkedList)
             this.$emit('input', this.checkedList);
             this.textShow()
-
-            console.log('checkedList,', this.checkedList)
         },
 
         textShow () {
