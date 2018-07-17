@@ -74,7 +74,7 @@
                     :class="{'tr-active': trActive == index}"
                     @click="clickPartner(item.id, index)">
                     <td v-text="index +1"></td>
-                    <td v-text="item.reportDate"></td>
+                    <td v-text="item.reportDate.substring(0,10)"></td>
                     <td v-text="item.departmentName"></td>
                     <td v-text="item.salesStaffName"></td>
                     <td v-text="item.name"></td>
@@ -533,7 +533,7 @@
     <!-- 审批 -->
     <div v-if="auditShow" class="dialog-wrap">
         <div @click="hidePop('auditShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small">
+        <div class="dialog-content-small" style="bottom: 60%;">
             <div class="title">审批
                 <i @click="hidePop('auditShow')"  class="fa fa-close pull-right"></i></div>
             <div class="content">

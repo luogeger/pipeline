@@ -7,6 +7,9 @@ Vue.component('select-list', {
                 code: ''
             }]
         },
+        // checkedList: {
+        //     type: Array
+        // },
         value: '',
     },// props
 
@@ -15,9 +18,6 @@ Vue.component('select-list', {
             nowIndex: 0,
             isShow: false,
             defaultText: '请选择 --',
-            // checkedList: {
-            //     type: Array
-            // },
         }
     },// data
 
@@ -33,18 +33,18 @@ Vue.component('select-list', {
     },
 
     watch: {
-        // dataList () {// 如果dataList没有数据，默认的文字是 defaultText
-        //     if (this.checkedList && this.checkedList.length) {
-        //         this.dataList.forEach((item, index) => {
-        //             if (item.text === this.checkedList[0].text ) {
-        //                 this.nowIndex = index;
-        //                 this.defaultText = this.dataList[this.nowIndex].text;
-        //                 this.$emit('input', this.dataList[this.nowIndex]);
-        //                 return;
-        //             }
-        //         })
-        //     }
-        // },
+        dataList () {
+            // if (this.checkedList && this.checkedList.length) {// 如果dataList没有数据，默认的文字是 defaultText
+            //     this.dataList.forEach((item, index) => {
+            //         if (item.text === this.checkedList[0].text ) {
+            //             this.nowIndex = index;
+            //             this.defaultText = this.dataList[this.nowIndex].text;
+            //             this.$emit('input', this.dataList[this.nowIndex]);
+            //             return;
+            //         }
+            //     })
+            // }
+        },
     },
 
 

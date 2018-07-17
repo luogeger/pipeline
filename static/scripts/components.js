@@ -7,6 +7,9 @@ Vue.component('select-list', {
                     code: ''
                 }]
         },
+        // checkedList: {
+        //     type: Array
+        // },
         value: '',
     },
     data: function () {
@@ -27,7 +30,20 @@ Vue.component('select-list', {
         // 在watch
         this.defaultText = this.value.text;
     },
-    watch: {},
+    watch: {
+        dataList: function () {
+            // if (this.checkedList && this.checkedList.length) {// 如果dataList没有数据，默认的文字是 defaultText
+            //     this.dataList.forEach((item, index) => {
+            //         if (item.text === this.checkedList[0].text ) {
+            //             this.nowIndex = index;
+            //             this.defaultText = this.dataList[this.nowIndex].text;
+            //             this.$emit('input', this.dataList[this.nowIndex]);
+            //             return;
+            //         }
+            //     })
+            // }
+        },
+    },
     methods: {
         toggleShow: function () {
             this.isShow = !this.isShow;

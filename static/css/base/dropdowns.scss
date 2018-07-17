@@ -111,12 +111,10 @@ $max-width: 200px;
 
 
 .selection-component {
-  //position: relative;
-	//z-index: 1;
+  position: relative;
   display: inline-block;
   width: 100%;
   .selection-show {
-	  //position: relative;
     width: 100%;
     display: inline-block;
     height: $height-sm;
@@ -155,7 +153,7 @@ $max-width: 200px;
 	  width: 100%;
 	  cursor: pointer;
 	  background-color: #FFFFFF;
-	  //z-index: 1;
+    border-radius: $border-radius-base;
 
     ul{
       overflow: auto;
@@ -163,7 +161,7 @@ $max-width: 200px;
       padding: 5px 0;
       min-width: 162px;
       max-width: 100%;
-	    border-radius: $border-radius-base;
+      border-radius: $border-radius-base;
       @include ul-shadow();
       li {
 	      padding: 0 30px 0 10px;

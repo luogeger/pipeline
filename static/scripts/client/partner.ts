@@ -273,13 +273,13 @@ let vm = new Vue({
         tabBtnPass () {
             this.trActive = 0;// 当前行的样式
             this.pID = '';// 当前行的ID,
-            this.getPartnerData()
+            this.getPartnerData({page: 1})
         },
 
         tabBtnOther () {
             this.trActive = 0;// 当前行的样式
             this.pID = '';// 当前行的ID,
-            this.getPartnerData({inPass: 'n'})
+            this.getPartnerData({inPass: 'n',page: 1})
         },
 
         tabBtnMsg () {
@@ -401,7 +401,7 @@ let vm = new Vue({
                 businessIndustry:   JSON.stringify(this.pBusinessIndustry),//主要业务行业
                 solution:           JSON.stringify(this.pSolution),//主要合作产品
                 registeredCapital:  this.pRegisteredCapital,//注册资本
-                type:               this.pType,//合作伙伴类型
+                type:               this.pType.code,//合作伙伴类型
                 lastContractAmount: JSON.stringify(this.pLastContractAmount),//近期销售合同额
                 companyCase:        this.pCompanyCase,    //公司案例
                 synopsisOfPartners: this.pSynopsisOfPartners,    //合作伙伴简介
@@ -541,7 +541,7 @@ let vm = new Vue({
                 code: item.typeCode,
                 text: item.type,
             };
-            this.partnerTypeCheckedList.push(typeItem);
+            //this.partnerTypeCheckedList.push(typeItem);
             this.checkedIndustryList = item.businessIndustry;// 行业线
             this.checkedSolutionList = item.solution;// 合作产品
             this.defaultRender(item.area)// 区域省份
@@ -552,7 +552,7 @@ let vm = new Vue({
             this.pCompanyCase        = item.companyCase;// 案例
             this.pSynopsisOfPartners = item.synopsisOfPartners;// 简介
             this.pRemark             = item.remark;// 备注
-
+            this.pType               = typeItem;// 合作伙伴类型
         },
 
         // 撤回

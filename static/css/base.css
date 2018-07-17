@@ -643,6 +643,7 @@ input.disabled {
       color: #ED6C1C; }
 
 .selection-component {
+  position: relative;
   display: inline-block;
   width: 100%; }
   .selection-component .selection-show {
@@ -678,7 +679,8 @@ input.disabled {
     z-index: 1;
     width: 100%;
     cursor: pointer;
-    background-color: #FFFFFF; }
+    background-color: #FFFFFF;
+    border-radius: 4px; }
     .selection-component .selection-list ul {
       overflow: auto;
       max-height: 300px;

@@ -242,12 +242,12 @@ var vm = new Vue({
         tabBtnPass: function () {
             this.trActive = 0; // 当前行的样式
             this.pID = ''; // 当前行的ID,
-            this.getPartnerData();
+            this.getPartnerData({ page: 1 });
         },
         tabBtnOther: function () {
             this.trActive = 0; // 当前行的样式
             this.pID = ''; // 当前行的ID,
-            this.getPartnerData({ inPass: 'n' });
+            this.getPartnerData({ inPass: 'n', page: 1 });
         },
         tabBtnMsg: function () {
         },
@@ -352,7 +352,7 @@ var vm = new Vue({
                 businessIndustry: JSON.stringify(this.pBusinessIndustry),
                 solution: JSON.stringify(this.pSolution),
                 registeredCapital: this.pRegisteredCapital,
-                type: this.pType,
+                type: this.pType.code,
                 lastContractAmount: JSON.stringify(this.pLastContractAmount),
                 companyCase: this.pCompanyCase,
                 synopsisOfPartners: this.pSynopsisOfPartners,
@@ -478,7 +478,7 @@ var vm = new Vue({
                 code: item.typeCode,
                 text: item.type,
             };
-            this.partnerTypeCheckedList.push(typeItem);
+            //this.partnerTypeCheckedList.push(typeItem);
             this.checkedIndustryList = item.businessIndustry; // 行业线
             this.checkedSolutionList = item.solution; // 合作产品
             this.defaultRender(item.area); // 区域省份
@@ -489,6 +489,7 @@ var vm = new Vue({
             this.pCompanyCase = item.companyCase; // 案例
             this.pSynopsisOfPartners = item.synopsisOfPartners; // 简介
             this.pRemark = item.remark; // 备注
+            this.pType = typeItem; // 合作伙伴类型
         },
         // 撤回
         operateBtnRecall: function (id) {
