@@ -334,7 +334,6 @@
                     <div class="row-item-label text-center" style="width: 35%;">合作伙伴类型：</div>
                     <div class="row-item-form input-group" style="width: 65%;">
                         <select-list :data-list="partnerTypeList"
-                                     :checked-list="partnerTypeCheckedList"
                                      v-model="pType"></select-list>
                     </div>
                 </div>
@@ -505,7 +504,7 @@
     <!-- 撤回 -->
     <div v-if="revokeShow" class="dialog-wrap">
         <div @click="hidePop('revokeShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small">
+        <div class="dialog-content-small" style="bottom: 70%;">
             <div class="title">提示
                 <i @click="hidePop('revokeShow')"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定撤回吗 ？</div>
@@ -519,7 +518,7 @@
     <!-- 忽略 -->
     <div v-if="ignoreShow" class="dialog-wrap">
         <div @click="hidePop('ignoreShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small">
+        <div class="dialog-content-small" style="bottom: 70%;">
             <div class="title">提示
                 <i @click="hidePop('ignoreShow')"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定忽略吗 ？</div>

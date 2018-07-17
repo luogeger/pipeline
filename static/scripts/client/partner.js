@@ -212,7 +212,8 @@ var vm = new Vue({
             this.pCompanyCase = '';
             this.pSynopsisOfPartners = '';
             this.pRemark = '';
-            this.partnerTypeCheckedList = []; // 合作伙伴类型
+            //this.partnerTypeCheckedList = {};// 合作伙伴类型
+            this.pType = {}; // 合作伙伴类型
             this.checkedIndustryList = []; // 业务行业清空
             this.checkedSolutionList = []; // 合作产品清空
             this.pBusinessProvince = []; // 区域，省份清空
@@ -458,6 +459,7 @@ var vm = new Vue({
         operateBtnAudit: function (id) {
             this.auditShow = true;
             this.tempID = id;
+            this.auditRemark = ''; // 审批记录清空
         },
         // 编辑合伙人
         operateBtnEdit: function (id, item) {
@@ -506,7 +508,7 @@ var vm = new Vue({
             this.auditHistoryShow = true;
             this.auditHistoryList = item;
         },
-        // 撤回，忽略，审批的小弹窗
+        // 取消，撤回，忽略，(同意， 驳回)的小弹窗
         cancelConfirmBtn: function (attr, type) {
             var _this = this;
             console.log(attr, ',', type);
