@@ -247,7 +247,7 @@
                             <th>负责销售</th>
                             <th>负责售前</th>
                             <th>区域</th>
-                            <th>客服所在省份</th>
+                            <th>客户所在省份</th>
                             <th>客户编码</th>
                             <th>合作伙伴名称</th>
                             <th>合作伙伴类型</th>
@@ -425,7 +425,7 @@
                                         <span style="line-height: 30px;">{{ hSalesStaffName }}</span>
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
+                                <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <span class="input-group-label">负责售前:</span>
                                         <div style="display: table-cell">
@@ -508,7 +508,7 @@
                                 <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <span class="input-group-label">项目名称:</span>
-                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text" style="width: 300px">
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form input-lg" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -518,7 +518,7 @@
                                         <div style="position: relative;display: inline-block;">
                                             <input v-model="hCpCustomerName"
                                                    @keyup="getFuzzyList(2)"
-                                                   type="text" class="input-group-form" style="width: 300px">
+                                                   type="text" class="input-group-form input-lg">
                                             <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
                                                 <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
                                                     v-for="item in fuzzyQueryList_2"
@@ -531,7 +531,29 @@
                                 <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <span class="input-group-label">最终客户名称:</span>
-                                        <input v-model="handleTemplate.cpCustomerName" class="input-group-form" type="text" style="width: 300px">
+                                        <input @keyup="finalCustomerKeyup" v-model="handleTemplate.customerName" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户名称所在区域:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerRegion(initialValList.code, index)"
+                                                v-for="(initialValList,index) in initialValLists.regions"
+                                                :class="{'active': handleTemplate.finalCustomerRegion == initialValList.code}">{{ initialValList.text }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户名称所在省份:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerProvince(finalCustomerProvinceList.code)"
+                                                v-for="(finalCustomerProvinceList,index) in finalCustomerProvinceLists"
+                                                :class="{'active': finalCustomerProvinceList.code == handleTemplate.finalCustomerProvince}">{{ finalCustomerProvinceList.text }}</li>
+                                        </ul>
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -917,7 +939,7 @@
     <div class="dialog-wrap" :class="{'hide': secondDialogShow}">
         <div @click="hideSecondPop" class="dialog-cover"></div>
         <!-- 撤回弹窗 -->
-        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop" style="height: 180px">
             <div class="title clearfix">
                 <p class="pull-left">提示</p>
                 <p @click="hideSecondPop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>

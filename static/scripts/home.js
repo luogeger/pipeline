@@ -13,6 +13,7 @@ var timeYear,// 2018-04-18
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
+    userPermission,//
     navData,// 导航数据
     userLevel,// 用户级别  xs  xsld  dqcyh
     saleGroupList,// 所有部门
@@ -32,6 +33,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     userAvatar      = msg.avatar;
     userLevel       = msg.level;
     userGroup       = msg.departmentName;
+    userPermission  = msg.userPermission[0];
     saleGroupList   = msg.mngSalesGroups;
     saleGroupList.push({code: '', text: '全部'});
     currentAccYear  = function () {
