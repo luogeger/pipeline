@@ -181,6 +181,9 @@ var vm = new Vue({
             province = province || 'regionHd';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
                 vm.provinceList = datas.data.msg[province];
+
+                // 判断是编辑，还是添加，来决定西藏和新疆是否出现
+                // 如果是编辑，还要判断当前的省份是不是西藏或新疆
             });
         },// 省份
 
@@ -472,7 +475,7 @@ var vm = new Vue({
                 this.repeatClick = false;
                 axios.get(PATH +'/crm/addOrUpdateCustomer', {params: objC}).then(function (datas){
                     if (datas.data.code === 201) {
-                        toastr.warming(datas.data.msg)
+                        toastr.warning(datas.data.msg)
                         return;
                     }
                     objM.customerCode = datas.data.msg.lastAddCustomerCode;// 拿到客户编号再添加
