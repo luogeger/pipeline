@@ -11,6 +11,7 @@ var vm = new Vue({
             2020,
         ],
         selectionDefaultText: currentYear,// 当前年份
+        currentAccYear: currentAccYear,// 精确到上半年还是下班年
         selectionIsShow: false,
 
 
@@ -145,7 +146,7 @@ var vm = new Vue({
 
         // 半年切换
         changeHalfYear: function (type) {
-            type = type || 1;
+            type = type || currentAccYear;
             var half = 'h' + type;
             this.strictHalfYear = half;
             this.halfYearActive = type;

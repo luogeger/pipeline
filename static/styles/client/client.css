@@ -20,7 +20,6 @@
   float: left; }
 .main .opera > div:not(:last-child) {
   margin-right: 20px; }
-.main .opera .client-num .input-group-form,
 .main .opera .client-name .input-group-form {
   width: 300px; }
 .main .opera .client-name {

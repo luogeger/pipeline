@@ -117,6 +117,7 @@ var vm = new Vue({
                 },
 
                 grid: {
+                    top: '30%',
                     left: '1%',
                     right: '3%',
                     bottom: '5%',
@@ -226,7 +227,7 @@ var vm = new Vue({
                     {
                         type: 'pie',
                         radius: '50%',
-                        center: ['75%', '50%'],
+                        center: ['75%', '40%'],
                         silent: true,
                         itemStyle: {
                             opacity: 0.7,

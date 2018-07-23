@@ -8,10 +8,12 @@ var vm = new Vue({
         levelActive: '',// 控制客户信息tabs是否选中
 
         // 查询
-        hDropText: '',// 行业下拉框文字
-        hDropCode: '',// 行业 code
-        hClientCode: '',// 客户编号
-        hClientName: '',// 客户名称
+        hDropText:    '',// 行业下拉框文字
+        hDropCode:    '',// 行业 code
+        hClientCode:  '',// 客户编号
+        hClientName:  '',// 客户名称
+        allGroup:     saleGroupList,// 部门查询
+        department:   {code: '', text: '全部'},// 部门数据
 
         clientSubmit: false,// 控制添加和编辑客户的 btn,title
         msgSubmit: false,// 控制添加和编辑机要信息的 btn,title
@@ -241,16 +243,15 @@ var vm = new Vue({
         // 获取客户信息
         getClient: function (page, limit) {
             var params = {
-                page:         page || 1,
-                limit:        limit || this.clientPageMost,
-                customerCode: this.hClientCode,
-                customerName: this.hClientName,
-                industryLine: this.hDropCode,
-                queryType:    this.levelActive,
+                page:           page || 1,
+                limit:          limit || this.clientPageMost,
+                customerCode:   this.hClientCode,
+                customerName:   this.hClientName,
+                industryLine:   this.hDropCode,
+                queryType:      this.levelActive,
+                salesGroupCode: this.department.code,
             };
-            //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
-
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -453,6 +454,7 @@ var vm = new Vue({
             this.showPop();// 显示弹框
             this.addClientIsShow = false;// 显示弹窗
             this.clearClient('c');// 清空弹窗信息
+            this.clearClientMsg();// 清空弹窗信息
         },
 
         // 确认客户添加
@@ -750,15 +752,16 @@ var vm = new Vue({
 
         // 查询
         queryBtn: function () {
-            vm.getClient()
-            vm.clientMsg.root = '';
+            this.getClient()
+            this.clientMsg.root = '';
         },
 
         resetBtn: function () {
-            vm.hClientCode = '';
-            vm.hClientName = '';
-            vm.hDropText = '';
-            vm.hDropCode = '';
+            this.hClientCode = '';
+            this.hClientName = '';
+            this.hDropText   = '';
+            this.hDropCode   = '';
+            //this.department  = {code: '', text: '全部'};// 部门数据
             this.queryBtn();
         },
 

@@ -24,6 +24,15 @@
     </div>
 
     <div class="opera clearfix">
+        <div v-if="userLevel === 'dqxyh'">
+            <div style="line-height: 30px; float: left;">所属部门：</div>
+            <div style="width: 70%; float: left;">
+                <select-list
+                        :data-list="allGroup"
+                        v-model="department"
+                ></select-list>
+            </div>
+        </div>
         <div v-if="clientMsgQueryBtn" class="industry">
             <div class="dropdown-wrap">
                 <span class="dropdown-label">行业:</span>

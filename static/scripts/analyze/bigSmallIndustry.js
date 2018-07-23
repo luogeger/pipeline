@@ -129,19 +129,15 @@ var vm = new Vue({
                         fontSize: 14,
                     }
                 },
-                // legend: {
-                //     bottom: 0,
-                //     data: this.pieLegend,
-                // },
                 series: [
                     {
                         type: 'pie',
-                        radius: '60%',
-                        center: ['50%', '60%'],
+                        radius: '50%',
+                        center: ['50%', '50%'],
                         label: {
                             normal: {
-                                // formatter: '{b}\n {c}%',
-                                formatter: '{b} : {c} ({d}%)',
+                                // formatter: '{b} : \n {c}万元 ({d}%)',
+                                formatter: '{b}: {d}%',
                             },
                         },
                         data: this.pieData,
@@ -161,10 +157,6 @@ var vm = new Vue({
                         fontSize: 14,
                     }
                 },
-                // legend: {
-                //     // data:['签约金额'],
-                //     // selectedMode:false,//取消图例上的点击事件
-                // },
                 tooltip: {
                     trigger: 'axis',
                     axisPointer: {
