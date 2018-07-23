@@ -592,6 +592,10 @@ var vm = new Vue({
                 var data = datas.data;
                 if(data.code == 200) {
                     vm.progressLists = data.msg.progress;
+                    if(vm.progressLists.length === 1) {
+                        vm.handleTemplate.progressCode = vm.progressLists[0].code;
+                        vm.hProgressText = vm.progressLists[0].text;
+                    }
                 }
             })
         },
