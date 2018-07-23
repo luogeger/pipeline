@@ -96,6 +96,7 @@ var vm = new Vue({
                 industryLines: ''         // 行业线
             }],
             progressLists: [],           // 项目阶段
+            provinceShow: true,          // 省份，默认隐藏
             successReasonShow: true,     // 成功率为0%显示原因，默认隐藏
             successReasonDropShow: true, // 成功率为0%显示原因下拉，默认隐藏
             regionLists: [],              // 最终客户所在区域
@@ -548,7 +549,7 @@ var vm = new Vue({
         },
         // 新增/修改需要--获取省份
         getProvince: function(province) {
-            province = province || 'regionDb';
+            // province = province || 'regionDb';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function(datas){
                 var data = datas.data;
                 if (data.code === 201 || data.msg.length === 0) return;
@@ -698,6 +699,7 @@ var vm = new Vue({
             vm.handleTemplate.regionCode = code;
             this.isActiveProvince = -1;
             this.getProvince(code);
+            this.provinceShow = false;
         },
         // 选中省份
         selectProvince: function(code){
@@ -1036,6 +1038,7 @@ var vm = new Vue({
 
             this.searchData('selectType=limitLevel');  // 调用（--）只是获取区域的默认第一个那条语句
             this.notLinked = false;
+            this.provinceShow = true;
             this.getProvince();                 // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.getFinalCustomerProvince();    // 调用（获取最终客户名称所在省份信息）
@@ -1050,6 +1053,7 @@ var vm = new Vue({
         // 修改
         handleData: function(item){
             this.commonData();
+            this.provinceShow = false;
             // this.getProvince();          // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.showChange();           // 调用（历史变更信息）
