@@ -79,6 +79,7 @@ var vm = new Vue({
         mEmail:             '',
         mAddress:           '',
         mRemark:            '',
+        isModification:     false,// notModified == true 机要信息区域省份不能修改
 
 
 
@@ -164,15 +165,30 @@ var vm = new Vue({
         },
 
         // 区域
-        getRegion: function (region, active) {
-            active = active || 'regionHd';
-            region = region || 'region';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
-                var data = datas.data;
-                vm.regionList = data.msg.region;
-                vm.mRegionCode = active;// 默认区域选中第一个
+        getRegion: function (region, province, type, obj) {
+            var params = {
+                categoryCodes: 'region',
+            };
+            if (type === 'add') obj = {selectType: 'limitLevel'};
+            params = Object.assign(params, obj);
+            axios
+                .get(PATH +'/basic/queryDictDataByCategory', {params: params})
+                .then(function (datas){
+                    var data = datas.data;
+                    vm.regionList = data.msg.region;
 
-            });
+                    if (type === 'add') {
+                        vm.mRegionCode   = vm.regionList[0].code;
+                        vm.mProvinceCode = '';
+                        vm.getProvince(vm.regionList[0].code)
+                    }
+                    if (type === 'edit') {
+                        vm.mRegionCode   = region;
+                        vm.mProvinceCode = province;
+                        vm.getProvince(region)
+                    }
+
+                });
         },// 区域
 
         // 省份
@@ -180,9 +196,6 @@ var vm = new Vue({
             province = province || 'regionHd';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
                 vm.provinceList = datas.data.msg[province];
-
-                // 判断是编辑，还是添加，来决定西藏和新疆是否出现
-                // 如果是编辑，还要判断当前的省份是不是西藏或新疆
             });
         },// 省份
 
@@ -376,14 +389,15 @@ var vm = new Vue({
         },
 
         hidePop: function () {
-            this.dialogShow =     true;
-            this.addClientShow =  true;
-            this.addMsgShow =     true;
-            this.uploadShow =     true;
-            this.revokeShow =     true;// 撤回pop
-            this.disposeShow =    true;// 审批pop
-            this.ignoreShow =     true;// 忽略pop
-            this.auditHistoryShow = false;// 审核记录
+            this.dialogShow         = true;
+            this.addClientShow      = true;
+            this.addMsgShow         = true;
+            this.uploadShow         = true;
+            this.revokeShow         = true;// 撤回pop
+            this.disposeShow        = true;// 审批pop
+            this.ignoreShow         = true;// 忽略pop
+            this.auditHistoryShow   = false;// 审核记录
+            this.isModification     = false;// notModified == true 机要信息区域省份不能修改
         },
 
         // 点击添加客户，清空弹窗信息
@@ -425,8 +439,8 @@ var vm = new Vue({
 
         // 添加客户 按钮事件
         addClient: function () {
-            this.getRegion();// 获取区域信息
-            this.getProvince();// 获取省份信息
+            this.getRegion(null, null, 'add');// 获取区域信息
+            //this.getProvince();// 获取省份信息
             this.getGroup();// 所属事业部
             this.showPop();// 显示弹框
             this.addClientIsShow = false;// 显示弹窗
@@ -513,8 +527,8 @@ var vm = new Vue({
             vm.msgSubmit = false;
             vm.dialogShow = false;
             vm.addMsgShow = false;
-            this.getRegion();// 获取区域信息
-            this.getProvince();// 获取省份信息
+            this.getRegion(null, null, 'add');// 获取区域信息
+            //this.getProvince();// 获取省份信息
 
         },
 
@@ -577,13 +591,19 @@ var vm = new Vue({
 
                     if (code === 200) {
                         new Promise((resolve,reject) =>{//先执行这里的代码，只有这里代码执行完，才会执行下面的代码
-                            vm.clearClientMsg(msg.regionCode);
-                            vm.getProvince(msg.regionCode);
-                            vm.getRegion(null, msg.regionCode)
+                            vm.clearClientMsg(msg.regionCode);// 清空机要信息输入框内容
+                            var obj = {};
+                            if (msg.notModified) {// 不能修改
+                                vm.isModification = true;
+                            } else {// 要带参数
+                                obj = {selectType: 'limitLevel'};
+                            }
+                            vm.getRegion(msg.regionCode, msg.provinceCode, 'edit', obj)
+
+
                             resolve(msg);
                         }).then(msg =>{// 处理成功resolve的数据
                             vm.mRegionCode =         msg.regionCode;
-                            console.log(vm.mRegionCode)
                             vm.mProvinceCode =       msg.provinceCode;
                             vm.mContactName =        msg.contactName;
                             vm.mDepartmentName =     msg.departmentName;
@@ -638,12 +658,14 @@ var vm = new Vue({
         },
 
         selectRegion: function (code) {
+            if (this.isModification) return;
             vm.mRegionCode = code;
             vm.provinceCode = -1;
             vm.getProvince(code)
         },
 
         selectProvince: function (code, item) {
+            if (this.isModification) return;
             vm.provinceCode = code;
             vm.mProvinceCode = code;
         },

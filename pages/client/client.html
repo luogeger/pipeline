@@ -523,7 +523,8 @@
                             <li v-for="(item, index) in regionList"
                                 v-text="item.text"
                                 @click="selectRegion(item.code, index)"
-                                :class="{'area-active': item.code == mRegionCode}"
+                                :class="{'area-active': item.code == mRegionCode,
+                                         'no-drop': isModification}"
                             ></li>
                         </ul>
                     </div>
@@ -536,7 +537,8 @@
                             <li v-for="(item, index) in provinceList"
                                 v-text="item.text"
                                 @click="selectProvince(item.code, item)"
-                                :class="{'area-active': item.code == mProvinceCode}"
+                                :class="{'area-active': item.code == mProvinceCode,
+                                         'no-drop': isModification}"
                             ></li>
                         </ul>
                     </div>
