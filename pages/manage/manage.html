@@ -235,7 +235,7 @@
                                         <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>；
                                     </li>
                                 </ul>
-                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目（长期）</p>
+                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目</p>
                             </div>
                             </span>&nbsp;
                             条</span>
@@ -580,7 +580,7 @@
                                         <ul class="item-list clearfix">
                                             <li @click="selectRegion(searchList.code, index)"
                                                 v-for="(searchList,index) in searchLists.regions"
-                                                :class="{'active': handleTemplate.regionCode == searchList.code}">{{ searchList.text }}</li>
+                                                :class="{'active': handleTemplate.regionCode == searchList.code, 'disabled': notLinked}">{{ searchList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -591,7 +591,7 @@
                                         <ul class="item-list clearfix">
                                             <li @click="selectProvince(provinceList.code)"
                                                 v-for="(provinceList,index) in provinceLists"
-                                                :class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>
+                                                :class="{'active': provinceList.code == handleTemplate.provinceCode, 'disabled': notLinked}">{{ provinceList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -659,9 +659,9 @@
                                         <i class="star">*</i>
                                         <span class="input-group-label">最终客户名称所在区域:</span>
                                         <ul class="item-list clearfix">
-                                            <li @click="selectFinalCustomerRegion(searchList.code, index)"
-                                                v-for="(searchList,index) in searchLists.regions"
-                                                :class="{'active': handleTemplate.finalCustomerRegion == searchList.code}">{{ searchList.text }}</li>
+                                            <li @click="selectFinalCustomerRegion(regionList.code, index)"
+                                                v-for="(regionList,index) in regionLists"
+                                                :class="{'active': handleTemplate.finalCustomerRegion == regionList.code}">{{ regionList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
