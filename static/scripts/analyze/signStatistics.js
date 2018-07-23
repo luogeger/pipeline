@@ -10,7 +10,7 @@ var vm = new Vue({
             2019,
             2020,
         ],
-        selectionDefaultText: currentYear,
+        selectionDefaultText: currentYear,// 当前年份
         selectionIsShow: false,
 
 
@@ -22,6 +22,7 @@ var vm = new Vue({
         chartComplete: [],
 
         // 年份
+        strictHalfYear: '',
         halfYearActive: -1,
         year: {
             head: {},
@@ -39,6 +40,7 @@ var vm = new Vue({
         },
 
         // 季度
+        currentQuarterValue: '',// 当前季度，用于传参
         currentQuarterIndex: -1,// 当前季度
         quarterTabActive: -1,// 当前季度的样式排除
         quarter: {
@@ -47,6 +49,10 @@ var vm = new Vue({
             body: [],
             foot: {},
         },
+
+        // 弹窗
+        halfCompleteIsShow:    false,
+        popHalfCompleteData:   {oth: {totalSum: 0}},// 弹窗数据
     },// data
 
     created: function () {
@@ -73,7 +79,7 @@ var vm = new Vue({
                 vm.year.h1.body        = msg.h1.half;
                 vm.year.h2.head        = msg.h2Title;
                 vm.year.h2.body        = msg.h2.half;
-                vm.quarter.quarterTotal          = Object.assign(msg.h1.quarter, msg.h2.quarter);// 所有季度信息
+                vm.quarter.quarterTotal= Object.assign(msg.h1.quarter, msg.h2.quarter);// 所有季度信息
                 if (callback) callback();
             });
         },
@@ -141,6 +147,7 @@ var vm = new Vue({
         changeHalfYear: function (type) {
             type = type || 1;
             var half = 'h' + type;
+            this.strictHalfYear = half;
             this.halfYearActive = type;
             this.year.head = this.year[half].head;
             this.year.body = this.year[half].body;
@@ -151,9 +158,10 @@ var vm = new Vue({
 
             // 合计
             function total (arr) {
-                var target = [], complete = [], difference = [], scale = [], group =[];
+                var target = [], yearTarget = [], complete = [], difference = [], scale = [], group =[];
                 arr.forEach(function (item) {
                     target.push(item.target)
+                    yearTarget.push(item.yearTarget)
                     complete.push(item.complete)
                     difference.push(item.difference)
                     scale.push(item.scale)
@@ -191,6 +199,7 @@ var vm = new Vue({
                 vm.year.foot = {
                     saleGroup:  '合计',
                     target:     sum(target),
+                    yearTarget: sum(yearTarget),
                     complete:   sum(complete),
                     difference: sum(difference),
                     scale:      scaleCalc(sum(complete), sum(target)),
@@ -223,6 +232,7 @@ var vm = new Vue({
             // 更换表格数据
             var body = 'q' + (index +1);
             var head = body +'Title';
+            this.currentQuarterValue = 'q' + (index +1);
             this.quarter.head = this.quarter.quarterTotal[head];
             this.quarter.body = this.quarter.quarterTotal[body];
             console.log(this.quarter.head)
@@ -261,6 +271,34 @@ var vm = new Vue({
             };
 
         },
+
+        // 半年度完成额弹窗
+        popUp: function (type, item) {
+            console.log(type, item)
+            if (type === 'half') this.halfComplete(item);
+        },
+
+        popUpClose: function (type) {
+            this.halfCompleteIsShow = false;
+        },
+
+        halfComplete: function (item) {
+            this.halfCompleteIsShow = true;
+            var params = {
+                aYear: String(this.selectionDefaultText),
+                hq   : this.strictHalfYear,
+                sgc  : item.saleGroupCode,
+            };
+            console.log(params)
+            axios
+                .get(PATH +'/a/contractAmountDetails', {params: params})
+                .then(function (datas){
+                    var data = datas.data;
+                    vm.popHalfCompleteData = data.msg;
+                    console.log(data.msg)
+                });
+        },
+
 
 
         // 日期选择

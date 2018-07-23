@@ -80,5 +80,8 @@
       text-align: right; }
 .main .audit-history .table-box {
   padding: 20px; }
+.main .no-drop {
+  cursor: no-drop !important;
+  background-color: #eeeeee; }
 
 /*# sourceMappingURL=client.css.map */

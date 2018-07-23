@@ -112,7 +112,7 @@
                 <tr>
                     <th>序号</th>
                     <th>报备名称</th>
-                    <th>所属事业部</th>
+                    <th>所属销售部门</th>
                     <th v-if="clientMsgQueryBtn">负责销售</th>
                     <th>客户编号</th>
                     <th class="text-left">客户名称</th>
@@ -523,7 +523,8 @@
                             <li v-for="(item, index) in regionList"
                                 v-text="item.text"
                                 @click="selectRegion(item.code, index)"
-                                :class="{'area-active': item.code == mRegionCode}"
+                                :class="{'area-active': item.code == mRegionCode,
+                                         'no-drop': isModification}"
                             ></li>
                         </ul>
                     </div>
@@ -536,7 +537,8 @@
                             <li v-for="(item, index) in provinceList"
                                 v-text="item.text"
                                 @click="selectProvince(item.code, item)"
-                                :class="{'area-active': item.code == mProvinceCode}"
+                                :class="{'area-active': item.code == mProvinceCode,
+                                         'no-drop': isModification}"
                             ></li>
                         </ul>
                     </div>
@@ -652,7 +654,7 @@
         </div>
 
         <!-- 撤回 -->
-        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop" style="bottom: 72%;">
             <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定撤回吗 ？</div>
             <div class="foot">
@@ -662,7 +664,7 @@
         </div>
 
         <!-- 忽略 -->
-        <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop" style="bottom: 72%;">
             <div class="title">提示<i @click="hidePop" class="fa fa-close pull-right"></i></div>
             <div class="content">确定忽略吗 ？</div>
             <div class="foot">

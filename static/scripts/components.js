@@ -63,6 +63,9 @@ Vue.component('pop-up', {
         isShow: {
             type: Boolean,
             default: false,
+        },
+        width: {
+            type: String
         }
     },
     data: function () {
@@ -75,7 +78,7 @@ Vue.component('pop-up', {
             this.$emit('on-close');
         }
     },
-    template: "<div v-if=\"isShow\" class=\"dialog-wrap\"><!--  -->\n            <div v-if=\"isShow\"  @click=\"closeSelf\" class=\"dialog-cover\"></div>\n            <transition name=\"drop\">\n                <div v-if=\"isShow\" class=\"dialog-content input-width-100\">\n                    <p @click=\"closeSelf\" class=\"close-dialog\" ><i class=\"fa fa-close\"></i></p>\n                    <slot>empty</slot>\n                </div>\n            </transition>\n        </div>",
+    template: "<div v-if=\"isShow\" class=\"dialog-wrap\"><!--  -->\n            <div v-if=\"isShow\"  @click=\"closeSelf\" class=\"dialog-cover\"></div>\n            <transition name=\"drop\">\n                <div v-if=\"isShow\" class=\"dialog-content input-width-100\" :style=\"{ width: width }\">\n                    <p @click=\"closeSelf\" class=\"close-dialog\" ><i class=\"fa fa-close\"></i></p>\n                    <slot>empty</slot>\n                </div>\n            </transition>\n        </div>",
 });
 Vue.component('i-input', {
     props: {

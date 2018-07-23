@@ -2742,7 +2742,7 @@ button.toast-close-button {
 
 .breadcrumb {
   color: #939393;
-  padding: 0 20px;
+  padding: 0 10px;
   margin-bottom: 10px; }
   .breadcrumb a:hover, .breadcrumb a:active {
     color: #333; }
@@ -2880,7 +2880,8 @@ button.toast-close-button {
             border-radius: 3px;
             padding: 0 7px;
             color: #838383;
-            cursor: pointer; }
+            cursor: pointer;
+            margin-right: 2px; }
           .dialog-wrap .dialog-content .pop-main .row-item .row-item-form .area .area-active, .dialog-wrap .dialog-content .pop-main .row-item .msg-item-right .area .area-active, .dialog-wrap .dialog-content .pop-main .msg-item .row-item-form .area .area-active, .dialog-wrap .dialog-content .pop-main .msg-item .msg-item-right .area .area-active,
           .dialog-wrap .dialog-content .main .row-item .row-item-form .area .area-active,
           .dialog-wrap .dialog-content .main .row-item .msg-item-right .area .area-active,

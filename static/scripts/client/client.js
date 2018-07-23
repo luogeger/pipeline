@@ -1,4 +1,3 @@
-console.log(vm)
 var vm = new Vue({
     el: '#app',
 
@@ -80,6 +79,7 @@ var vm = new Vue({
         mEmail:             '',
         mAddress:           '',
         mRemark:            '',
+        isModification:     false,// notModified == true 机要信息区域省份不能修改
 
 
 
@@ -165,15 +165,30 @@ var vm = new Vue({
         },
 
         // 区域
-        getRegion: function (region, active) {
-            active = active || 'regionHd';
-            region = region || 'region';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
-                var data = datas.data;
-                vm.regionList = data.msg.region;
-                vm.mRegionCode = active;// 默认区域选中第一个
+        getRegion: function (region, province, type, obj) {
+            var params = {
+                categoryCodes: 'region',
+            };
+            if (type === 'add') obj = {selectType: 'limitLevel'};
+            params = Object.assign(params, obj);
+            axios
+                .get(PATH +'/basic/queryDictDataByCategory', {params: params})
+                .then(function (datas){
+                    var data = datas.data;
+                    vm.regionList = data.msg.region;
 
-            });
+                    if (type === 'add') {
+                        vm.mRegionCode   = vm.regionList[0].code;
+                        vm.mProvinceCode = '';
+                        vm.getProvince(vm.regionList[0].code)
+                    }
+                    if (type === 'edit') {
+                        vm.mRegionCode   = region;
+                        vm.mProvinceCode = province;
+                        vm.getProvince(region)
+                    }
+
+                });
         },// 区域
 
         // 省份
@@ -229,6 +244,7 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
+
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -236,7 +252,7 @@ var vm = new Vue({
                     vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
                     vm.client = [];// 数据list
 
-                    toastr.warning('没有相关信息 !');
+                    //toastr.warning('没有相关信息 !');
                     return;
                 };
                 vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
@@ -374,14 +390,15 @@ var vm = new Vue({
         },
 
         hidePop: function () {
-            this.dialogShow =     true;
-            this.addClientShow =  true;
-            this.addMsgShow =     true;
-            this.uploadShow =     true;
-            this.revokeShow =     true;// 撤回pop
-            this.disposeShow =    true;// 审批pop
-            this.ignoreShow =     true;// 忽略pop
-            this.auditHistoryShow = false;// 审核记录
+            this.dialogShow         = true;
+            this.addClientShow      = true;
+            this.addMsgShow         = true;
+            this.uploadShow         = true;
+            this.revokeShow         = true;// 撤回pop
+            this.disposeShow        = true;// 审批pop
+            this.ignoreShow         = true;// 忽略pop
+            this.auditHistoryShow   = false;// 审核记录
+            this.isModification     = false;// notModified == true 机要信息区域省份不能修改
         },
 
         // 点击添加客户，清空弹窗信息
@@ -423,8 +440,8 @@ var vm = new Vue({
 
         // 添加客户 按钮事件
         addClient: function () {
-            this.getRegion();// 获取区域信息
-            this.getProvince();// 获取省份信息
+            this.getRegion(null, null, 'add');// 获取区域信息
+            //this.getProvince();// 获取省份信息
             this.getGroup();// 所属事业部
             this.showPop();// 显示弹框
             this.addClientIsShow = false;// 显示弹窗
@@ -472,7 +489,7 @@ var vm = new Vue({
                 this.repeatClick = false;
                 axios.get(PATH +'/crm/addOrUpdateCustomer', {params: objC}).then(function (datas){
                     if (datas.data.code === 201) {
-                        toastr.warming(datas.data.msg)
+                        toastr.warning(datas.data.msg)
                         return;
                     }
                     objM.customerCode = datas.data.msg.lastAddCustomerCode;// 拿到客户编号再添加
@@ -511,8 +528,8 @@ var vm = new Vue({
             vm.msgSubmit = false;
             vm.dialogShow = false;
             vm.addMsgShow = false;
-            this.getRegion();// 获取区域信息
-            this.getProvince();// 获取省份信息
+            this.getRegion(null, null, 'add');// 获取区域信息
+            //this.getProvince();// 获取省份信息
 
         },
 
@@ -563,7 +580,8 @@ var vm = new Vue({
             vm.clientMsgID = id;
             // vm.clearClientMsg();
             // vm.getRegion();
-            axios.get(PATH +'/crm/queryCustomerContactOne?id=' +id)
+            axios
+                .get(PATH +'/crm/queryCustomerContactOne?id=' +id)
                 .then(function (datas){
                     var msg = datas.data.msg;
                     var code = datas.data.code;
@@ -574,12 +592,19 @@ var vm = new Vue({
 
                     if (code === 200) {
                         new Promise((resolve,reject) =>{//先执行这里的代码，只有这里代码执行完，才会执行下面的代码
-                            vm.clearClientMsg(msg.regionCode);
-                            vm.getProvince(msg.regionCode);
+                            vm.clearClientMsg(msg.regionCode);// 清空机要信息输入框内容
+                            var obj = {};
+                            if (msg.notModified) {// 不能修改
+                                vm.isModification = true;
+                            } else {// 要带参数
+                                obj = {selectType: 'limitLevel'};
+                            }
+                            vm.getRegion(msg.regionCode, msg.provinceCode, 'edit', obj)
+
+
                             resolve(msg);
                         }).then(msg =>{// 处理成功resolve的数据
                             vm.mRegionCode =         msg.regionCode;
-                            console.log(vm.mRegionCode)
                             vm.mProvinceCode =       msg.provinceCode;
                             vm.mContactName =        msg.contactName;
                             vm.mDepartmentName =     msg.departmentName;
@@ -634,12 +659,14 @@ var vm = new Vue({
         },
 
         selectRegion: function (code) {
+            if (this.isModification) return;
             vm.mRegionCode = code;
             vm.provinceCode = -1;
             vm.getProvince(code)
         },
 
         selectProvince: function (code, item) {
+            if (this.isModification) return;
             vm.provinceCode = code;
             vm.mProvinceCode = code;
         },
@@ -667,7 +694,7 @@ var vm = new Vue({
             this.clearClient();
             axios.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
                 var msg =  datas.data.msg;
-
+                console.log(msg)
                 vm.cGroupText           = msg.salesGroupName;
                 vm.cSalesGroupCode      = msg.salesGroupCode;
                 vm.cCustomerCode        = msg.customerCode;

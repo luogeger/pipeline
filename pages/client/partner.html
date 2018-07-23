@@ -60,7 +60,7 @@
                 <tr>
                     <th>序号</th>
                     <th>报备日期</th>
-                    <th>销售小组</th>
+                    <th>销售部门</th>
                     <th>负责销售</th>
                     <th>合作伙伴名称</th>
                     <th>合作伙伴类型</th>
@@ -334,7 +334,6 @@
                     <div class="row-item-label text-center" style="width: 35%;">合作伙伴类型：</div>
                     <div class="row-item-form input-group" style="width: 65%;">
                         <select-list :data-list="partnerTypeList"
-                                     :checked-list="partnerTypeCheckedList"
                                      v-model="pType"></select-list>
                     </div>
                 </div>
@@ -505,7 +504,7 @@
     <!-- 撤回 -->
     <div v-if="revokeShow" class="dialog-wrap">
         <div @click="hidePop('revokeShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small">
+        <div class="dialog-content-small" style="bottom: 70%;">
             <div class="title">提示
                 <i @click="hidePop('revokeShow')"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定撤回吗 ？</div>
@@ -519,7 +518,7 @@
     <!-- 忽略 -->
     <div v-if="ignoreShow" class="dialog-wrap">
         <div @click="hidePop('ignoreShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small">
+        <div class="dialog-content-small" style="bottom: 70%;">
             <div class="title">提示
                 <i @click="hidePop('ignoreShow')"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定忽略吗 ？</div>
@@ -533,7 +532,7 @@
     <!-- 审批 -->
     <div v-if="auditShow" class="dialog-wrap">
         <div @click="hidePop('auditShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small" style="bottom: 60%;">
+        <div class="dialog-content-small" style="bottom: 67%;">
             <div class="title">审批
                 <i @click="hidePop('auditShow')"  class="fa fa-close pull-right"></i></div>
             <div class="content">
