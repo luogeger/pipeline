@@ -374,4 +374,18 @@
 .i-date-picker-container .date-input-box > input {
   width: 163px; }
 
+.dialog-content-small {
+  height: 180px; }
+
+.dropBlock {
+  position: absolute;
+  top: 32px;
+  left: 120px;
+  right: 0;
+  z-index: 1;
+  padding: 5px;
+  box-shadow: rgba(255, 138, 65, 0.3) 0 0 0 2px;
+  border-radius: 4px;
+  background: #fff; }
+
 /*# sourceMappingURL=manage.css.map */
