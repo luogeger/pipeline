@@ -386,6 +386,8 @@ var vm = new Vue({
                     if (result.code === 201 || result.msg.length === 0) return;
                     vm[list] = result.msg;
                     vm.customerNames = result.msg;
+
+                    console.log( vm.customerNames ,' vm.customerNames ----------------')
                 },
                 error: function(result) {
                     console.log('请求失败');
@@ -548,9 +550,9 @@ var vm = new Vue({
             vm.cLatelyChangeText = text;
         },
         // 新增/修改需要--获取省份
-        getProvince: function(province) {
+        getProvince: function(province,params) {
             // province = province || 'regionDb';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function(datas){
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province + '&' + params).then(function(datas){
                 var data = datas.data;
                 if (data.code === 201 || data.msg.length === 0) return;
                 vm.provinceLists = data.msg[province];
@@ -698,7 +700,7 @@ var vm = new Vue({
         selectRegion: function(code) {
             vm.handleTemplate.regionCode = code;
             this.isActiveProvince = -1;
-            this.getProvince(code);
+            this.getProvince(code,'selectType=limitLevel');
             this.provinceShow = false;
         },
         // 选中省份
@@ -1039,7 +1041,7 @@ var vm = new Vue({
             this.searchData('selectType=limitLevel');  // 调用（--）只是获取区域的默认第一个那条语句
             this.notLinked = false;
             this.provinceShow = true;
-            this.getProvince();                 // 调用（获取省份信息）
+            this.getProvince('', 'selectType=limitLevel');                 // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.getFinalCustomerProvince();    // 调用（获取最终客户名称所在省份信息）
 
@@ -1085,8 +1087,6 @@ var vm = new Vue({
                     console.log('-----点击修改的本条数据------');
                     console.log(vm.handleTemplate);
 
-                    console.log(vm.handleTemplate.regionCode,'handleTemplate.regionCode,,,,,,,,,,,,,,,,,,,,,,,')
-
                     // 如果notModified为true,则区域省份变灰，不能修改；否则限制区域，参数为selectType=limitLevel
                     if(vm.handleTemplate.notModified === true) {
                         vm.searchData();
@@ -1096,7 +1096,7 @@ var vm = new Vue({
                         vm.notLinked = false;
                     }
 
-                    vm.getProvince(vm.handleTemplate.regionCode);               // 获取省份信息
+                    vm.getProvince(vm.handleTemplate.regionCode,'selectType=limitLevel');               // 获取省份信息
 
                     // 如果最终客户名称为空，则最终客户名称所在区域，省份隐藏；否则显示
                     if(vm.handleTemplate.finalCustomer === null) {
