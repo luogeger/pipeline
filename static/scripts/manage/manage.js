@@ -611,9 +611,15 @@ var vm = new Vue({
             this.handleTemplate.successRateCode = code;
             vm.hSuccessRateText = text;
 
+            // 绑定预计签约金额（万元）
             if(vm.solutionSub.expectSignSum != '') {
                 vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code);
                 vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
+            }
+
+            // 绑定项目阶段
+            if(code === '0') {
+
             }
         },
         // 选中项目阶段
@@ -816,6 +822,7 @@ var vm = new Vue({
                         if(basic !== null){
                             this.searchLists = basic;
 
+
                             var solutionLists = this.searchLists.soSolution4Tree;
                             if(solutionLists !== null) {
                                 for(var i = 0;i < solutionLists.length;i++) {
@@ -877,6 +884,7 @@ var vm = new Vue({
                     if(result !== null){
                         if(basic !== null){
                             vm.searchLists = basic;
+                            console.log(vm.searchLists.progresss,'vm.searchLists----------------')
 
                             vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
                             vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
