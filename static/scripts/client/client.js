@@ -80,6 +80,8 @@ var vm = new Vue({
         mAddress:           '',
         mRemark:            '',
         isModification:     false,// notModified == true 机要信息区域省份不能修改
+        addOrEditStatus:    true,// 添加或编辑 客户和信息的时候，区域和省份的不同，以及区域省份能否选择
+        addOrEdit:          'add',// 添加还是修改，获取区域
 
 
 
@@ -165,11 +167,11 @@ var vm = new Vue({
         },
 
         // 区域
-        getRegion: function (region, province, type, obj) {
+        getRegion: function (region, province, obj) {
             var params = {
                 categoryCodes: 'region',
             };
-            if (type === 'add') obj = {selectType: 'limitLevel'};
+            if (this.addOrEditStatus) obj = {selectType: 'limitLevel'};
             params = Object.assign(params, obj);
             axios
                 .get(PATH +'/basic/queryDictDataByCategory', {params: params})
@@ -177,12 +179,12 @@ var vm = new Vue({
                     var data = datas.data;
                     vm.regionList = data.msg.region;
 
-                    if (type === 'add') {
+                    if (vm.addOrEdit === 'add') {
                         vm.mRegionCode   = vm.regionList[0].code;
                         vm.mProvinceCode = '';
                         vm.getProvince(vm.regionList[0].code)
                     }
-                    if (type === 'edit') {
+                    if (vm.addOrEdit === 'edit') {
                         vm.mRegionCode   = region;
                         vm.mProvinceCode = province;
                         vm.getProvince(region)
@@ -192,9 +194,13 @@ var vm = new Vue({
         },// 区域
 
         // 省份
-        getProvince: function (province) {
-            province = province || 'regionHd';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
+        getProvince: function (province, obj) {
+            if (this.addOrEditStatus) obj = {selectType: 'limitLevel'};
+            var params = {
+                categoryCodes: province,
+            },
+            params = Object.assign(params, obj);
+            axios.get(PATH +'/basic/queryDictDataByCategory', {params: params}).then(function (datas){
                 vm.provinceList = datas.data.msg[province];
             });
         },// 省份
@@ -399,6 +405,7 @@ var vm = new Vue({
             this.ignoreShow         = true;// 忽略pop
             this.auditHistoryShow   = false;// 审核记录
             this.isModification     = false;// notModified == true 机要信息区域省份不能修改
+            this.addOrEditStatus    = true;// 添加或编辑 客户和信息的时候，区域和省份的不同
         },
 
         // 点击添加客户，清空弹窗信息
@@ -440,8 +447,8 @@ var vm = new Vue({
 
         // 添加客户 按钮事件
         addClient: function () {
-            this.getRegion(null, null, 'add');// 获取区域信息
-            //this.getProvince();// 获取省份信息
+            this.addOrEdit = 'add';
+            this.getRegion();// 获取区域信息
             this.getGroup();// 所属事业部
             this.showPop();// 显示弹框
             this.addClientIsShow = false;// 显示弹窗
@@ -525,10 +532,11 @@ var vm = new Vue({
         // 添加 机要信息 按钮事件
         addMsg: function () {
             this.clearClientMsg();
-            vm.msgSubmit = false;
+            vm.msgSubmit  = false;
             vm.dialogShow = false;
             vm.addMsgShow = false;
-            this.getRegion(null, null, 'add');// 获取区域信息
+            vm.addOrEdit  = 'add';
+            this.getRegion();// 获取区域信息
             //this.getProvince();// 获取省份信息
 
         },
@@ -577,9 +585,8 @@ var vm = new Vue({
         // 编辑 机要信息 按钮事件
         // ====================================
         editMsg: function (id) {
+            vm.addOrEdit = 'edit';
             vm.clientMsgID = id;
-            // vm.clearClientMsg();
-            // vm.getRegion();
             axios
                 .get(PATH +'/crm/queryCustomerContactOne?id=' +id)
                 .then(function (datas){
@@ -593,13 +600,11 @@ var vm = new Vue({
                     if (code === 200) {
                         new Promise((resolve,reject) =>{//先执行这里的代码，只有这里代码执行完，才会执行下面的代码
                             vm.clearClientMsg(msg.regionCode);// 清空机要信息输入框内容
-                            var obj = {};
                             if (msg.notModified) {// 不能修改
-                                vm.isModification = true;
-                            } else {// 要带参数
-                                obj = {selectType: 'limitLevel'};
+                                vm.isModification = true;// notModified == true 机要信息区域省份不能修改
+                                vm.addOrEditStatus= false;// 添加或编辑 客户和信息的时候，区域和省份的不同
                             }
-                            vm.getRegion(msg.regionCode, msg.provinceCode, 'edit', obj)
+                            vm.getRegion(msg.regionCode, msg.provinceCode)
 
 
                             resolve(msg);
@@ -688,9 +693,10 @@ var vm = new Vue({
 
         // 编辑客户
         editClient: function (index, id) {
-            vm.clientSubmit = true;
-            vm.dialogShow = false;
+            vm.clientSubmit  = true;
+            vm.dialogShow    = false;
             vm.addClientShow = false;
+            vm.addOrEdit     = 'edit';
             this.clearClient();
             axios.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
                 var msg =  datas.data.msg;
