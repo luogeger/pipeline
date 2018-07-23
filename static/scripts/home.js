@@ -192,7 +192,7 @@ function arrSum (arr) {// 数组求和
     if (typeof arr[0] === 'string') {
         return s + '%';
     }
-    return s;
+    return s.toFixed(2);
 };// 数组求和
 
 function scaleCalc(A, B) {// 增长率的计算

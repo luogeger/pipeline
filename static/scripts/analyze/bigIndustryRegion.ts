@@ -226,8 +226,8 @@ var vm = new Vue({
                     },
                     {
                         type: 'pie',
-                        radius: '50%',
-                        center: ['75%', '40%'],
+                        radius: '40%',
+                        center: ['75%', '36%'],
                         silent: true,
                         itemStyle: {
                             opacity: 0.7,
