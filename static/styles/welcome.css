@@ -92,4 +92,23 @@
       .welcome-wrapper .welcome-con .border .border-thin:after {
         bottom: -10%; }
 
+.dialog-wrap .content {
+  padding: 20px;
+  line-height: 1.5; }
+  .dialog-wrap .content li, .dialog-wrap .content p {
+    margin-bottom: 5px; }
+  .dialog-wrap .content h3 {
+    font-size: 18px;
+    margin-bottom: 15px; }
+  .dialog-wrap .content ol {
+    margin-bottom: 30px; }
+    .dialog-wrap .content ol li {
+      margin-bottom: 15px; }
+  .dialog-wrap .content ul {
+    padding-left: 20px; }
+    .dialog-wrap .content ul li p {
+      padding-left: 15px; }
+  .dialog-wrap .content .tr {
+    text-align: right; }
+
 /*# sourceMappingURL=welcome.css.map */

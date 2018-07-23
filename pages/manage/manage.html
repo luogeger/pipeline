@@ -657,7 +657,7 @@
                                 <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
-                                        <span class="input-group-label">最终客户名称所在区域:</span>
+                                        <span class="input-group-label">最终客户所在区域:</span>
                                         <ul class="item-list clearfix">
                                             <li @click="selectFinalCustomerRegion(regionList.code, index)"
                                                 v-for="(regionList,index) in regionLists"
@@ -668,7 +668,7 @@
                                 <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
-                                        <span class="input-group-label">最终客户名称所在省份:</span>
+                                        <span class="input-group-label">最终客户所在省份:</span>
                                         <ul class="item-list clearfix">
                                             <li @click="selectFinalCustomerProvince(finalCustomerProvinceList.code)"
                                                 v-for="(finalCustomerProvinceList,index) in finalCustomerProvinceLists"
@@ -871,7 +871,7 @@
                                 <!--</div>-->
                                 <div class="block-wrapper col-1">
                                     <div class="input-group">
-                                        <i class="star">*</i>
+                                        <!--<i class="star">*</i>-->
                                         <span class="input-group-label">竞争对手:</span>
                                         <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
                                     </div>
@@ -1312,8 +1312,9 @@
             <div class="title">提示<i @click="hideSecondPop"  class="fa fa-close pull-right"></i></div>
             <div class="content">机要信息不全，请完善机要信息</div>
             <div class="foot">
-                <div @click="yesBtn()" class="btn btn-theme">是</div>
-                <div @click="hideSecondPop" class="btn btn-border">否</div>
+                <div style="display: none" @click="yesBtn()" class="btn btn-theme">是</div>
+                <div @click="hideSecondPop" class="btn btn-border">确定</div>
+                <!--<div @click="hideSecondPop" class="btn btn-border">否</div>-->
             </div>
         </div>
         <!-- 确认分配弹窗 -->
@@ -1343,4 +1344,4 @@
     </div>
 </div>
 <script src="../static/scripts/manage/manageShare.js"></script>
-<script src="../static/scripts/manage/manage.js"></script>
+<script src="../static/scripts/manage/manage.js?v=20180723"></script>

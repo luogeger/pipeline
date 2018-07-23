@@ -28,6 +28,62 @@
             </div>
         </div>
     </div>
+    <!-- 弹窗 -->
+    <div class="dialog-wrap" :class="{'hide': dialogShow}">
+        <div @click="hideDialog" class="dialog-cover"></div>
+        <div class="dialog-content dispose-pop">
+            <div class="title clearfix">
+                <p class="pull-left"><strong>更新公告</strong></p>
+                <p @click="hideDialog" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="content">
+                <h3>【新增/优化】</h3>
+                <ol>
+                    <li>
+                        <p><strong>1.  Pipeline管理 模块：</strong></p>
+                        <ul>
+                            <li>1)	最终客户名称：新增-“最终客户“的填报；；</li>
+                            <li>2)  客户来源：增加-“合作伙伴大会”、“培训”选项；</li>
+                            <li>3)  项目更新情况：增加-“项目阶段”调整的足迹呈现；增加“成功率”为0%的原因呈现；</li>
+                            <li>4)  成功率、项目阶段：优化-根据最新的定义，两者进行了关联绑定；</li>
+                            <li>5)  金融银行分类：优化-增加下拉框选项；</li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><strong>2.  Pipeline数据分析：</strong>（EMT及销售部门领导权限）</p>
+                        <ul>
+                            <li>1)  已签约合同分析：新增-大行业、小行业、区域分析； </li>
+                        </ul>
+                    </li>
+                </ol>
+                <h3>【调整】</h3>
+                <ol>
+                    <li>
+                        <p><strong>1.  操作权限调整：</strong>（除智慧金融事业部、港澳台事业部、贵阳小i公司）</p>
+                        <ul>
+                            <li>1)	（原）通用客户事业部、（原）行业客户事业部、（原）公共客户事业部重组后以华东区、华南区、华北区划分成销售部门，并对应调整了操作人权限。</li>
+                            <li>2)	Pipeline管理/客户管理 模块：
+                            <p>【原设定】：（原）三大事业部，pipeline建立只能使用（原）事业部内部报批的客户；</p>
+                            <p>【现调整】：三大区的销售可使用已建立的（三大区所覆盖的区域）所有客户（除金融行业客户）；</p>
+                                <p>☆调整后的注意点☆：</p>
+                                <ul>
+                                    <li>①	使用非自有客户时，要求必须填报“客户机要信息”，方可建立pipeline；</li>
+                                    <li>②	2018年7月23日（含）前，系统内已建立的跨区域客户pipeline，“修改”信息时，客户区域省份不可调整；</li>
+                                    <li>③	2018年7月24日起，系统根据销售所在销售部门，提供所覆盖的销售区域省份进行选择。</li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                    <li>
+                        <p><strong>2.  更名：</strong></p>
+                        <p>（原）金融客户事业部，更名为智慧金融事业部。</p>
+                    </li>
+                </ol>
+                <p class="tr">商务中心</p>
+                <p class="tr">2018年7月23日</p>
+            </div>
+        </div>
+    </div>
 </div>
-
-<script src="../static/scripts/welcome.js"></script>
+<!--<script>document.write("<script src='../static/scripts/welcome.js?v=" + Date.now() + "'><\/script>");</script>-->
+<script src="../static/scripts/welcome.js?v=20180723"></script>

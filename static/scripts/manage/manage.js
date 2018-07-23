@@ -443,7 +443,7 @@ var vm = new Vue({
             }
         },// 选中文字，隐藏模糊列表
         yesBtn:function() {
-            loadMainPage('.content-item', 'client/client.html');
+            // loadMainPage('.content-item', 'client/client.html');
             localStorage.cpComCode =  this.cpComCode;
         },
         //// ==========销售========
@@ -939,9 +939,8 @@ var vm = new Vue({
                     if(result !== null){
                         if(basic !== null){
                             vm.searchLists = basic;
-
                             // vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
-                            vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
+                            // vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
                         }
                         if(oauth !== null){
                             vm.oauthLists = oauth;
