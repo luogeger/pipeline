@@ -3,9 +3,11 @@
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
-        <span>pipeline信息管理</span>
+        <span>Pipeline管理</span>
+        <span class="line">/</span>
+        <span>pipeline信息</span>
     </div>
-    <div class="table-tab-list clearfix">
+    <div class="table-tab-list clearfix" style="display: none">
         <div class="table-tab-item" @click="showPipelineData" :class="{'active' : pipelineJoinShow}">
             事业部pipeline信息
         </div>
@@ -88,7 +90,7 @@
                 </div>
                 </div>
                 <div class="dropdown-wrap">
-                    <span class="dropdown-label">事业部：</span>
+                    <span class="dropdown-label">销售部门：</span>
                     <div class="dropdown">
                         <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
                         <i class="fa fa-angle-down"></i>
@@ -233,7 +235,7 @@
                                         <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>；
                                     </li>
                                 </ul>
-                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目（长期）</p>
+                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目</p>
                             </div>
                             </span>&nbsp;
                             条</span>
@@ -252,7 +254,7 @@
                                 <th>序号</th>
                                 <th v-if="userLevel == 'xs'">操作</th>
                                 <th>报备日期</th>
-                                <th>销售事业部</th>
+                                <th>销售部门</th>
                                 <th>销售</th>
                                 <th>售前</th>
                                 <th>区域</th>
@@ -423,7 +425,7 @@
                              状态
                          </div></th>
                         <th>报备日期</th>
-                        <th>销售事业部</th>
+                        <th>销售部门</th>
                         <th>负责销售</th>
                         <th>负责售前</th>
                         <th>区域</th>
@@ -555,7 +557,7 @@
                                 <div class="block-wrapper">
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
-                                        <span class="dropdown-label">所属事业部：</span>
+                                        <span class="dropdown-label">所属销售部门：</span>
                                         <span style="line-height: 30px;">{{ hSalesGroupText }}</span>
                                     </div>
                                 </div>
@@ -578,18 +580,18 @@
                                         <ul class="item-list clearfix">
                                             <li @click="selectRegion(searchList.code, index)"
                                                 v-for="(searchList,index) in searchLists.regions"
-                                                :class="{'active': handleTemplate.regionCode == searchList.code}">{{ searchList.text }}</li>
+                                                :class="{'active': handleTemplate.regionCode == searchList.code, 'disabled': notLinked}">{{ searchList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <div :class="{'hide': provinceShow}" class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户所在省份:</span>
                                         <ul class="item-list clearfix">
                                             <li @click="selectProvince(provinceList.code)"
                                                 v-for="(provinceList,index) in provinceLists"
-                                                :class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>
+                                                :class="{'active': provinceList.code == handleTemplate.provinceCode, 'disabled': notLinked}">{{ provinceList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
@@ -655,18 +657,18 @@
                                 <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
-                                        <span class="input-group-label">最终客户名称所在区域:</span>
+                                        <span class="input-group-label">最终客户所在区域:</span>
                                         <ul class="item-list clearfix">
-                                            <li @click="selectFinalCustomerRegion(searchList.code, index)"
-                                                v-for="(searchList,index) in searchLists.regions"
-                                                :class="{'active': handleTemplate.finalCustomerRegion == searchList.code}">{{ searchList.text }}</li>
+                                            <li @click="selectFinalCustomerRegion(regionList.code, index)"
+                                                v-for="(regionList,index) in regionLists"
+                                                :class="{'active': handleTemplate.finalCustomerRegion == regionList.code}">{{ regionList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
                                 <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
-                                        <span class="input-group-label">最终客户名称所在省份:</span>
+                                        <span class="input-group-label">最终客户所在省份:</span>
                                         <ul class="item-list clearfix">
                                             <li @click="selectFinalCustomerProvince(finalCustomerProvinceList.code)"
                                                 v-for="(finalCustomerProvinceList,index) in finalCustomerProvinceLists"
@@ -751,7 +753,36 @@
                                         </ul>
                                     </div>
                                 </div>
-
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">客户来源：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectCustomerSourceCode(searchList.code, searchList.text)"
+                                                    v-for="searchList in searchLists.customerSours">{{ searchList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">预计签约时间：</span>
+                                        <div class="i-date-picker-container">
+                                            <div class="date-input-box  icon iconfont icon-cale-a">
+                                                <input v-model="handleTemplate.expectSignDate"
+                                                       readonly="readonly"
+                                                       type="text"
+                                                       id="signDate"
+                                                       class="i-date-picker"
+                                                       data-calendar="true" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <div class="block-wrapper">
                                     <div class="input-group">
                                         <i class="star">*</i>
@@ -784,47 +815,65 @@
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
-                                    <div class="input-group">
-                                        <i class="star">*</i>
-                                        <span class="input-group-label">预计签约时间：</span>
-                                        <div class="i-date-picker-container">
-                                            <div class="date-input-box  icon iconfont icon-cale-a">
-                                                <input v-model="handleTemplate.expectSignDate"
-                                                       readonly="readonly"
-                                                       type="text"
-                                                       id="signDate"
-                                                       class="i-date-picker"
-                                                       data-calendar="true" >
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
                                         <span class="dropdown-label">项目阶段：</span>
-                                        <div class="dropdown noNull">
+                                        <div class="dropdown">
                                             <span class="dropdown-default">{{ hProgressText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
-                                                <li @click="selectProgressCode(searchList.code, searchList.text)"
-                                                    v-for="searchList in searchLists.progresss">{{ searchList.text }}</li>
+                                                <li @click="selectProgressCode(progressList.code, progressList.text)"
+                                                    v-for="progressList in progressLists">{{ progressList.text }}</li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
-                                    <div class="dropdown-wrap">
-                                        <i class="star">*</i>
-                                        <span class="dropdown-label">客户来源：</span>
-                                        <div class="dropdown">
-                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
-                                            <i class="fa fa-angle-down"></i>
-                                            <ul>
-                                                <li @click="selectCustomerSourceCode(searchList.code, searchList.text)"
-                                                    v-for="searchList in searchLists.customerSours">{{ searchList.text }}</li>
-                                            </ul>
-                                        </div>
+                                <!--<div :class="{'hide': successReasonShow}" class="block-wrapper col-1">-->
+                                    <!--<div class="input-group">-->
+                                        <!--<i class="star">*</i>-->
+                                        <!--<span class="input-group-label">成功率0%原因:</span>-->
+                                        <!--<input v-model="hSuccessReasonText" @keyup="successReasonKeyup" type="text" class="input-group-form" readonly="true" style="width: 520px">-->
+                                        <!--&lt;!&ndash;v-model="defaultCheckedText"-->
+                                               <!--@click.stop="partnerRegionProvinceBtn"-->
+                                               <!--&ndash;&gt;-->
+                                        <!--<div :class="{'hide': successReasonDropShow}" class="dropBlock clearfix">-->
+                                            <!--<ul>-->
+                                                <!--<li @click="selectSuccessReason(successReasonList.code, successReasonList.text)"-->
+                                                    <!--v-for="successReasonList in successReasonLists">-->
+                                                    <!--<div class="i-checkbox-group">-->
+                                                        <!--<div class="i-checkbox-wrap">-->
+                                                            <!--&lt;!&ndash; v-for="(_item, index) in item.province"-->
+                                                             <!--@click="checkboxBtn(_item)"-->
+                                                             <!--:key="_item.code"-->
+                                                             <!--&ndash;&gt;-->
+                                                            <!--<span class="i-checkbox-box">-->
+                                                                <!--<i class="fa fa-square-o"></i>-->
+                                                                <!--<transition name="fade">-->
+                                                                    <!--<i class="is-show fa fa-check"></i>-->
+                                                                    <!--&lt;!&ndash; v-if="styleShow(_item.code)"&ndash;&gt;-->
+                                                                <!--</transition>-->
+                                                            <!--</span>-->
+                                                            <!--<span>{{ successReasonList.text }}</span>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                <!--</li>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
+                                        <!--&lt;!&ndash;<div class="dropdown">-->
+                                            <!--<span class="dropdown-default">{{ hProgressReasonText }}</span>-->
+                                            <!--<i class="fa fa-angle-down"></i>-->
+                                            <!--<ul>-->
+                                                <!--<li @click="selectProgressReason(progressReasonList.code, progressReasonList.text)"-->
+                                                    <!--v-for="progressReasonList in progressReasonLists">{{ progressReasonList.text }}</li>-->
+                                            <!--</ul>-->
+                                        <!--</div>&ndash;&gt;-->
+                                     <!--</div>-->
+                                <!--</div>-->
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <!--<i class="star">*</i>-->
+                                        <span class="input-group-label">竞争对手:</span>
+                                        <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -843,12 +892,6 @@
                                         <textarea v-model="handleTemplate.othDescription" class="input-group-form" style="display: block"
                                                   placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper col-1">
-                                    <div class="input-group">
-                                        <span class="input-group-label">竞争对手:</span>
-                                        <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -1269,8 +1312,9 @@
             <div class="title">提示<i @click="hideSecondPop"  class="fa fa-close pull-right"></i></div>
             <div class="content">机要信息不全，请完善机要信息</div>
             <div class="foot">
-                <div @click="yesBtn()" class="btn btn-theme">是</div>
-                <div @click="hideSecondPop" class="btn btn-border">否</div>
+                <div style="display: none" @click="yesBtn()" class="btn btn-theme">是</div>
+                <div @click="hideSecondPop" class="btn btn-border">确定</div>
+                <!--<div @click="hideSecondPop" class="btn btn-border">否</div>-->
             </div>
         </div>
         <!-- 确认分配弹窗 -->
@@ -1300,4 +1344,4 @@
     </div>
 </div>
 <script src="../static/scripts/manage/manageShare.js"></script>
-<script src="../static/scripts/manage/manage.js"></script>
+<script src="../static/scripts/manage/manage.js?v=20180723"></script>

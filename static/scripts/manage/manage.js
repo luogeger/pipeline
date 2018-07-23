@@ -95,6 +95,11 @@ var vm = new Vue({
                 latelyChanges: '',        // 近期变更过
                 industryLines: ''         // 行业线
             }],
+            progressLists: [],           // 项目阶段
+            provinceShow: true,          // 省份，默认隐藏
+            successReasonShow: true,     // 成功率为0%显示原因，默认隐藏
+            successReasonDropShow: true, // 成功率为0%显示原因下拉，默认隐藏
+            regionLists: [],              // 最终客户所在区域
             oauthLists: [],               // 初始值权限信息
             mngSalesGroups: [],
             weightedSumTotal: '',         // 加权金额总计
@@ -157,10 +162,13 @@ var vm = new Vue({
             selectClassificationQita: true,    // 金融银行分类是否选了其他
             hSuccessRateText: '',       // 成功率名称
             hProgressText: '',          // 项目阶段名称
+            hSuccessReasonText: '',    // 成功率0%原因
+            successReasonLists: [],    // 成功率0%原因list
             hCustomerSourceText: '',    // 客户来源名称
             hWeightedSum: 0,            // 加权金额总计（万元）
             hExpectSignDate: '',        // 预计签约时间
-            hasFinalCustomer: true,   // 是否填写最终客户名称
+            hasFinalCustomer: true,    // 是否填写最终客户名称
+            notLinked: false,           //  区域省份是否不可点击
 
             preSaleStaffs: [],          // 点击修改时获取表格的值
             solutionSub: [],            // 点击修改时获取表格的值
@@ -436,7 +444,7 @@ var vm = new Vue({
             }
         },// 选中文字，隐藏模糊列表
         yesBtn:function() {
-            loadMainPage('.content-item', 'client/client.html');
+            // loadMainPage('.content-item', 'client/client.html');
             localStorage.cpComCode =  this.cpComCode;
         },
         //// ==========销售========
@@ -541,7 +549,7 @@ var vm = new Vue({
         },
         // 新增/修改需要--获取省份
         getProvince: function(province) {
-            province = province || 'regionHd';
+            // province = province || 'regionDb';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function(datas){
                 var data = datas.data;
                 if (data.code === 201 || data.msg.length === 0) return;
@@ -574,6 +582,32 @@ var vm = new Vue({
                 var data = datas.data;
                 if (data.code === 201 || data.msg.length === 0) return;
                 vm.finalCustomerProvinceLists = data.msg[province];
+            })
+        },
+        // 新增/修改需要--获取项目阶段
+        getProgresss: function(code){
+            var params = {
+                successRate: code
+            }
+            axios.get(PATH +'/basic/selectProgressBySuccessRate',{params: params}).then(function(datas) {
+                var data = datas.data;
+                if(data.code == 200) {
+                    vm.progressLists = data.msg.progress;
+                    if(vm.progressLists.length === 1) {
+                        vm.handleTemplate.progressCode = vm.progressLists[0].code;
+                        vm.hProgressText = vm.progressLists[0].text;
+                    }
+                }
+            })
+        },
+        // 新增/修改需要--成功率0%原因
+        getSuccessReason: function(params){
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ params).then(function(datas) {
+                var data = datas.data;
+                console.log(data,'ssssssssssssssssssssssss')
+                if(data.code == 200) {
+                    vm.successReasonLists = data.msg.progressXCause || data.msg.progressNCause;
+                }
             })
         },
         //// ==========添加获取code========
@@ -611,7 +645,15 @@ var vm = new Vue({
             this.handleTemplate.successRateCode = code;
             vm.hSuccessRateText = text;
 
-            if(vm.solutionSub.expectSignSum != '') {
+            // 关联项目阶段
+            vm.hProgressText = '';
+            this.getProgresss(code);
+            if(code === '0') {
+                this.successReasonShow = false;
+            }
+
+            // 绑定预计签约金额（万元）
+            if(vm.solutionSub.expectSignSum !== '') {
                 vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code);
                 vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
             }
@@ -620,6 +662,20 @@ var vm = new Vue({
         selectProgressCode: function(code, text) {
             this.handleTemplate.progressCode = code;
             vm.hProgressText = text;
+
+            if(code === 'n') {
+                this.getSuccessReason('progressNCause');
+            }else if(code === 'x') {
+                this.getSuccessReason('progressXCause');
+            }
+        },
+        successReasonKeyup: function() {
+            this.successReasonDropShow = false;
+        },
+        // 选中成功率0%原因
+        selectSuccessReason: function(code, text) {
+            // this.handleTemplate.progressCause = code;
+            vm.hSuccessReasonText = text;
         },
         // 选中客户来源
         selectCustomerSourceCode: function(code, text) {
@@ -643,6 +699,7 @@ var vm = new Vue({
             vm.handleTemplate.regionCode = code;
             this.isActiveProvince = -1;
             this.getProvince(code);
+            this.provinceShow = false;
         },
         // 选中省份
         selectProvince: function(code){
@@ -816,6 +873,7 @@ var vm = new Vue({
                         if(basic !== null){
                             this.searchLists = basic;
 
+
                             var solutionLists = this.searchLists.soSolution4Tree;
                             if(solutionLists !== null) {
                                 for(var i = 0;i < solutionLists.length;i++) {
@@ -849,7 +907,6 @@ var vm = new Vue({
         getSuccessRate: function(){
             axios.get(PATH +'/so/queryPipelineInitVal').then(function(datas) {
                 var data = datas.data;
-                console.log(data,'data')
                 if(data.code == 200) {
                     vm.projectSuccessRates = data.msg.basic.projectSuccessRates;
                 }
@@ -859,16 +916,27 @@ var vm = new Vue({
         getClassification: function(){
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=classificationOfFinancialBanks').then(function(datas){
                 vm.classificationLists = datas.data.msg.classificationOfFinancialBanks;
-
-                console.log(vm.classificationLists,'获取金融银行分类');
+            })
+        },
+        // 获取金融银行分类
+        getFinalCustomerRegion: function(){
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=classificationOfFinancialBanks').then(function(datas){
+                vm.classificationLists = datas.data.msg.classificationOfFinancialBanks;
+            })
+        },
+        // 获取最终客户名称所在区域
+        getFinalCustomerRegion: function(region) {
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=region').then(function(datas) {
+                var data = datas.data;
+                vm.regionLists = data.msg.region;
             })
         },
         // 搜索框赋值
-        searchData: function(){
+        searchData: function(params){
             var basic,
                 oauth;
             $.ajax({
-                url:  PATH + '/so/queryPipelineInitVal',
+                url:  PATH + '/so/queryPipelineInitVal?' + params,
                 type: 'get',
                 dataType: 'json',
                 success: function(result){
@@ -877,9 +945,8 @@ var vm = new Vue({
                     if(result !== null){
                         if(basic !== null){
                             vm.searchLists = basic;
-
-                            vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
-                            vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
+                            // vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
+                            // vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
                         }
                         if(oauth !== null){
                             vm.oauthLists = oauth;
@@ -962,13 +1029,16 @@ var vm = new Vue({
             this.clearHandle();                 // 调用（清空新增/修改表单）
             this.customerData();                // 调用（获取客户属性）
             this.getProjectType();              // 调用（获取项目类型）
+            this.getFinalCustomerRegion();      // 调用（获取最终客户名称所在区域）
             this.getSoSolution4Tree();          // 调用（获取解决方案下拉树）
         },
         // 新增
         addData: function() {
             this.commonData();
 
-            this.searchData();                  // 调用（--）只是获取区域的默认第一个那条语句
+            this.searchData('selectType=limitLevel');  // 调用（--）只是获取区域的默认第一个那条语句
+            this.notLinked = false;
+            this.provinceShow = true;
             this.getProvince();                 // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.getFinalCustomerProvince();    // 调用（获取最终客户名称所在省份信息）
@@ -983,7 +1053,7 @@ var vm = new Vue({
         // 修改
         handleData: function(item){
             this.commonData();
-
+            this.provinceShow = false;
             // this.getProvince();          // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.showChange();           // 调用（历史变更信息）
@@ -1001,6 +1071,7 @@ var vm = new Vue({
                 url:  PATH + '/so/queryPipelineOne',
                 type: 'get',
                 dataType: 'json',
+                async: false,
                 data: {
                     'soCoreCode': item.soCoreCode
                 },
@@ -1014,8 +1085,20 @@ var vm = new Vue({
                     console.log('-----点击修改的本条数据------');
                     console.log(vm.handleTemplate);
 
+                    console.log(vm.handleTemplate.regionCode,'handleTemplate.regionCode,,,,,,,,,,,,,,,,,,,,,,,')
+
+                    // 如果notModified为true,则区域省份变灰，不能修改；否则限制区域，参数为selectType=limitLevel
+                    if(vm.handleTemplate.notModified === true) {
+                        vm.searchData();
+                        vm.notLinked = true;
+                    }else {
+                        vm.searchData('selectType=limitLevel');
+                        vm.notLinked = false;
+                    }
+
                     vm.getProvince(vm.handleTemplate.regionCode);               // 获取省份信息
 
+                    // 如果最终客户名称为空，则最终客户名称所在区域，省份隐藏；否则显示
                     if(vm.handleTemplate.finalCustomer === null) {
                         vm.hasFinalCustomer = true;
                     }else {

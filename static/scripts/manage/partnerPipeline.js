@@ -711,7 +711,7 @@ var vm = new Vue({
                     vm.hSalesStaffName = vm.handleTemplate.cpSalesStaffName;        // 销售
                     vm.hSalesGroupText = vm.handleTemplate.cpDepartmentName;        // 销售小组
                     vm.hPreSaleStaffsName = vm.handleTemplate.preSalesStaff;        // 售前
-                    vm.hCpCustomerName = vm.handleTemplate.cpCustomerName;          // 合作伙伴名称
+                    vm.hCpCustomerName = vm.handleTemplate.cpCustomerCode;          // 合作伙伴名称
                     vm.hCpCustomerTypeText = vm.handleTemplate.cpCustomerTypeName;  // 合作伙伴类型
                     vm.hSoSolutionSecondText = vm.handleTemplate.solutionName;      // 解决方案
                     vm.hIndustryLineText = vm.handleTemplate.industryLineName;      // 行业线
@@ -720,7 +720,7 @@ var vm = new Vue({
                     vm.hCustomerSourceText = vm.handleTemplate.customerSourceName;  // 客户来源
                     vm.hProgressText = vm.handleTemplate.progressName;              // 项目阶段
 
-                    if(vm.handleTemplate.customerName === null) {
+                    if(vm.handleTemplate.cpCustomerName === null) {
                         vm.hasFinalCustomer = true;
                     }else {
                         vm.hasFinalCustomer = false;
