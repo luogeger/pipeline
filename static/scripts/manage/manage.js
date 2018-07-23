@@ -95,6 +95,9 @@ var vm = new Vue({
                 latelyChanges: '',        // 近期变更过
                 industryLines: ''         // 行业线
             }],
+            progressLists: [],           // 项目阶段
+            successReasonShow: true,     // 成功率为0%显示原因，默认隐藏
+            successReasonDropShow: true, // 成功率为0%显示原因下拉，默认隐藏
             regionLists: [],              // 最终客户所在区域
             oauthLists: [],               // 初始值权限信息
             mngSalesGroups: [],
@@ -158,6 +161,8 @@ var vm = new Vue({
             selectClassificationQita: true,    // 金融银行分类是否选了其他
             hSuccessRateText: '',       // 成功率名称
             hProgressText: '',          // 项目阶段名称
+            hSuccessReasonText: '',    // 成功率0%原因
+            successReasonLists: [],    // 成功率0%原因list
             hCustomerSourceText: '',    // 客户来源名称
             hWeightedSum: 0,            // 加权金额总计（万元）
             hExpectSignDate: '',        // 预计签约时间
@@ -578,6 +583,28 @@ var vm = new Vue({
                 vm.finalCustomerProvinceLists = data.msg[province];
             })
         },
+        // 新增/修改需要--获取项目阶段
+        getProgresss: function(code){
+            var params = {
+                successRate: code
+            }
+            axios.get(PATH +'/basic/selectProgressBySuccessRate',{params: params}).then(function(datas) {
+                var data = datas.data;
+                if(data.code == 200) {
+                    vm.progressLists = data.msg.progress;
+                }
+            })
+        },
+        // 新增/修改需要--成功率0%原因
+        getSuccessReason: function(params){
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ params).then(function(datas) {
+                var data = datas.data;
+                console.log(data,'ssssssssssssssssssssssss')
+                if(data.code == 200) {
+                    vm.successReasonLists = data.msg.progressXCause || data.msg.progressNCause;
+                }
+            })
+        },
         //// ==========添加获取code========
         // 选中事业部
         selectSalesGroupCode: function(code, text) {
@@ -613,21 +640,37 @@ var vm = new Vue({
             this.handleTemplate.successRateCode = code;
             vm.hSuccessRateText = text;
 
-            // 绑定预计签约金额（万元）
-            if(vm.solutionSub.expectSignSum != '') {
-                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code);
-                vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
+            // 关联项目阶段
+            vm.hProgressText = '';
+            this.getProgresss(code);
+            if(code === '0') {
+                this.successReasonShow = false;
             }
 
-            // 绑定项目阶段
-            if(code === '0') {
-
+            // 绑定预计签约金额（万元）
+            if(vm.solutionSub.expectSignSum !== '') {
+                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code);
+                vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
             }
         },
         // 选中项目阶段
         selectProgressCode: function(code, text) {
             this.handleTemplate.progressCode = code;
             vm.hProgressText = text;
+
+            if(code === 'n') {
+                this.getSuccessReason('progressNCause');
+            }else if(code === 'x') {
+                this.getSuccessReason('progressXCause');
+            }
+        },
+        successReasonKeyup: function() {
+            this.successReasonDropShow = false;
+        },
+        // 选中成功率0%原因
+        selectSuccessReason: function(code, text) {
+            // this.handleTemplate.progressCause = code;
+            vm.hSuccessReasonText = text;
         },
         // 选中客户来源
         selectCustomerSourceCode: function(code, text) {
@@ -858,7 +901,6 @@ var vm = new Vue({
         getSuccessRate: function(){
             axios.get(PATH +'/so/queryPipelineInitVal').then(function(datas) {
                 var data = datas.data;
-                console.log(data,'data')
                 if(data.code == 200) {
                     vm.projectSuccessRates = data.msg.basic.projectSuccessRates;
                 }
