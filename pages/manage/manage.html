@@ -3,7 +3,9 @@
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
-        <span>pipeline信息管理</span>
+        <span>Pipeline管理</span>
+        <span class="line">/</span>
+        <span>pipeline信息</span>
     </div>
     <div class="table-tab-list clearfix">
         <div class="table-tab-item" @click="showPipelineData" :class="{'active' : pipelineJoinShow}">
@@ -88,7 +90,7 @@
                 </div>
                 </div>
                 <div class="dropdown-wrap">
-                    <span class="dropdown-label">事业部：</span>
+                    <span class="dropdown-label">销售部门：</span>
                     <div class="dropdown">
                         <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
                         <i class="fa fa-angle-down"></i>
@@ -252,7 +254,7 @@
                                 <th>序号</th>
                                 <th v-if="userLevel == 'xs'">操作</th>
                                 <th>报备日期</th>
-                                <th>销售事业部</th>
+                                <th>销售部门</th>
                                 <th>销售</th>
                                 <th>售前</th>
                                 <th>区域</th>
@@ -423,7 +425,7 @@
                              状态
                          </div></th>
                         <th>报备日期</th>
-                        <th>销售事业部</th>
+                        <th>销售部门</th>
                         <th>负责销售</th>
                         <th>负责售前</th>
                         <th>区域</th>
@@ -555,7 +557,7 @@
                                 <div class="block-wrapper">
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
-                                        <span class="dropdown-label">所属事业部：</span>
+                                        <span class="dropdown-label">所属销售部门：</span>
                                         <span style="line-height: 30px;">{{ hSalesGroupText }}</span>
                                     </div>
                                 </div>

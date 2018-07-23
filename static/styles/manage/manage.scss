@@ -534,3 +534,10 @@
 .input-lg {
   width: 300px;
 }
+.i-date-picker-container {
+  .date-input-box {
+    > input {
+      width: 163px;
+    }
+  }
+}
