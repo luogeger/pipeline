@@ -14,8 +14,6 @@ var timeYear,// 2018-04-18
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
-    userPermission,//
-    navData,// 导航数据
     userLevel,// 用户级别  xs  xsld  dqxyh
     userPermission,// 针对某个人，或某些人的权限
     saleGroupList,// 所有部门
@@ -79,7 +77,6 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
         loadMainPage('.content-item', 'welcome.html');
-        // loadMainPage('.content-item', 'analyze/bigIndustryRegion.html');
     })
 })
 

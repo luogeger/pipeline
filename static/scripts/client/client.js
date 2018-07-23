@@ -1,4 +1,3 @@
-console.log(vm)
 var vm = new Vue({
     el: '#app',
 
@@ -566,7 +565,8 @@ var vm = new Vue({
             vm.clientMsgID = id;
             // vm.clearClientMsg();
             // vm.getRegion();
-            axios.get(PATH +'/crm/queryCustomerContactOne?id=' +id)
+            axios
+                .get(PATH +'/crm/queryCustomerContactOne?id=' +id)
                 .then(function (datas){
                     var msg = datas.data.msg;
                     var code = datas.data.code;
@@ -579,6 +579,7 @@ var vm = new Vue({
                         new Promise((resolve,reject) =>{//先执行这里的代码，只有这里代码执行完，才会执行下面的代码
                             vm.clearClientMsg(msg.regionCode);
                             vm.getProvince(msg.regionCode);
+                            vm.getRegion(null, msg.regionCode)
                             resolve(msg);
                         }).then(msg =>{// 处理成功resolve的数据
                             vm.mRegionCode =         msg.regionCode;
@@ -670,7 +671,7 @@ var vm = new Vue({
             this.clearClient();
             axios.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
                 var msg =  datas.data.msg;
-
+                console.log(msg)
                 vm.cGroupText           = msg.salesGroupName;
                 vm.cSalesGroupCode      = msg.salesGroupCode;
                 vm.cCustomerCode        = msg.customerCode;
