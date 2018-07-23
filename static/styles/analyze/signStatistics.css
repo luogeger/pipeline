@@ -7,6 +7,11 @@
     border-bottom: 1px solid #E9EAEC; }
   .main .year .year-table {
     padding: 10px; }
+    .main .year .year-table .click-half-complete {
+      cursor: pointer;
+      text-decoration: underline; }
+      .main .year .year-table .click-half-complete :hover {
+        color: #F78937; }
 .main .quarter {
   padding: 10px; }
   .main .quarter table tbody tr td:nth-child(6),

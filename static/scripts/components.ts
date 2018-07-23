@@ -90,6 +90,9 @@ Vue.component('pop-up', {
         isShow: {
             type: Boolean,
             default: false,
+        },
+        width: {
+            type: String
         }
     },
 
@@ -112,7 +115,7 @@ Vue.component('pop-up', {
         `<div v-if="isShow" class="dialog-wrap"><!--  -->
             <div v-if="isShow"  @click="closeSelf" class="dialog-cover"></div>
             <transition name="drop">
-                <div v-if="isShow" class="dialog-content input-width-100">
+                <div v-if="isShow" class="dialog-content input-width-100" :style="{ width: width }">
                     <p @click="closeSelf" class="close-dialog" ><i class="fa fa-close"></i></p>
                     <slot>empty</slot>
                 </div>
