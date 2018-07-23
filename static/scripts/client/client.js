@@ -244,6 +244,7 @@ var vm = new Vue({
             };
             //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
+
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
                     vm.noData = true;// 客户table的 '没有数据!'
@@ -251,7 +252,7 @@ var vm = new Vue({
                     vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
                     vm.client = [];// 数据list
 
-                    toastr.warning('没有相关信息 !');
+                    //toastr.warning('没有相关信息 !');
                     return;
                 };
                 vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
