@@ -95,6 +95,7 @@ var vm = new Vue({
                 latelyChanges: '',        // 近期变更过
                 industryLines: ''         // 行业线
             }],
+            regionLists: [],              // 最终客户所在区域
             oauthLists: [],               // 初始值权限信息
             mngSalesGroups: [],
             weightedSumTotal: '',         // 加权金额总计
@@ -160,7 +161,8 @@ var vm = new Vue({
             hCustomerSourceText: '',    // 客户来源名称
             hWeightedSum: 0,            // 加权金额总计（万元）
             hExpectSignDate: '',        // 预计签约时间
-            hasFinalCustomer: true,   // 是否填写最终客户名称
+            hasFinalCustomer: true,    // 是否填写最终客户名称
+            notLinked: false,           //  区域省份是否不可点击
 
             preSaleStaffs: [],          // 点击修改时获取表格的值
             solutionSub: [],            // 点击修改时获取表格的值
@@ -541,7 +543,7 @@ var vm = new Vue({
         },
         // 新增/修改需要--获取省份
         getProvince: function(province) {
-            province = province || 'regionHd';
+            province = province || 'regionDb';
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function(datas){
                 var data = datas.data;
                 if (data.code === 201 || data.msg.length === 0) return;
@@ -866,16 +868,27 @@ var vm = new Vue({
         getClassification: function(){
             axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=classificationOfFinancialBanks').then(function(datas){
                 vm.classificationLists = datas.data.msg.classificationOfFinancialBanks;
-
-                console.log(vm.classificationLists,'获取金融银行分类');
+            })
+        },
+        // 获取金融银行分类
+        getFinalCustomerRegion: function(){
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=classificationOfFinancialBanks').then(function(datas){
+                vm.classificationLists = datas.data.msg.classificationOfFinancialBanks;
+            })
+        },
+        // 获取最终客户名称所在区域
+        getFinalCustomerRegion: function(region) {
+            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes=region').then(function(datas) {
+                var data = datas.data;
+                vm.regionLists = data.msg.region;
             })
         },
         // 搜索框赋值
-        searchData: function(){
+        searchData: function(params){
             var basic,
                 oauth;
             $.ajax({
-                url:  PATH + '/so/queryPipelineInitVal',
+                url:  PATH + '/so/queryPipelineInitVal?' + params,
                 type: 'get',
                 dataType: 'json',
                 success: function(result){
@@ -884,9 +897,8 @@ var vm = new Vue({
                     if(result !== null){
                         if(basic !== null){
                             vm.searchLists = basic;
-                            console.log(vm.searchLists.progresss,'vm.searchLists----------------')
 
-                            vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
+                            // vm.handleTemplate.regionCode = vm.searchLists.regions[0].code;// 默认区域选中第一个
                             vm.handleTemplate.projectNatureCode = vm.searchLists.projectNatures[0].code;// 默认项目性质选中第一个
                         }
                         if(oauth !== null){
@@ -970,13 +982,15 @@ var vm = new Vue({
             this.clearHandle();                 // 调用（清空新增/修改表单）
             this.customerData();                // 调用（获取客户属性）
             this.getProjectType();              // 调用（获取项目类型）
+            this.getFinalCustomerRegion();      // 调用（获取最终客户名称所在区域）
             this.getSoSolution4Tree();          // 调用（获取解决方案下拉树）
         },
         // 新增
         addData: function() {
             this.commonData();
 
-            this.searchData();                  // 调用（--）只是获取区域的默认第一个那条语句
+            this.searchData('selectType=limitLevel');  // 调用（--）只是获取区域的默认第一个那条语句
+            this.notLinked = false;
             this.getProvince();                 // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.getFinalCustomerProvince();    // 调用（获取最终客户名称所在省份信息）
@@ -991,7 +1005,6 @@ var vm = new Vue({
         // 修改
         handleData: function(item){
             this.commonData();
-
             // this.getProvince();          // 调用（获取省份信息）
             this.getClassification();           // 调用（金融银行分类）
             this.showChange();           // 调用（历史变更信息）
@@ -1009,6 +1022,7 @@ var vm = new Vue({
                 url:  PATH + '/so/queryPipelineOne',
                 type: 'get',
                 dataType: 'json',
+                async: false,
                 data: {
                     'soCoreCode': item.soCoreCode
                 },
@@ -1022,8 +1036,20 @@ var vm = new Vue({
                     console.log('-----点击修改的本条数据------');
                     console.log(vm.handleTemplate);
 
+                    console.log(vm.handleTemplate.regionCode,'handleTemplate.regionCode,,,,,,,,,,,,,,,,,,,,,,,')
+
+                    // 如果notModified为true,则区域省份变灰，不能修改；否则限制区域，参数为selectType=limitLevel
+                    if(vm.handleTemplate.notModified === true) {
+                        vm.searchData();
+                        vm.notLinked = true;
+                    }else {
+                        vm.searchData('selectType=limitLevel');
+                        vm.notLinked = false;
+                    }
+
                     vm.getProvince(vm.handleTemplate.regionCode);               // 获取省份信息
 
+                    // 如果最终客户名称为空，则最终客户名称所在区域，省份隐藏；否则显示
                     if(vm.handleTemplate.finalCustomer === null) {
                         vm.hasFinalCustomer = true;
                     }else {
