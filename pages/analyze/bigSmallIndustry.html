@@ -1,0 +1,85 @@
+<link rel="stylesheet" href="../static/styles/analyze/bigSmallIndustry.css">
+
+<div class="main" id="app">
+    <div class="breadcrumb">
+        <a href="">pipeline数据分析</a>
+        <span class="line">/</span>
+        <span>已签约合同分析</span>
+        <span class="line">/</span>
+        <span>大、小行业签约分析</span>
+    </div><!-- /.breadcrumb-->
+
+    <div class="card">
+        <span class="ver-mid">所属部门：</span>
+        <div class="search">
+            <select-list
+                :data-list="allGroup"
+                v-model="department"
+            ></select-list>
+        </div>
+        <div class="search input-group">
+            <span class="input-group-label ">签约年月：</span>
+            <input class="input-group-form i-date-form-range"
+                   id="dateOne"
+                   type="text">
+        </div>
+        <!--<div class="btn btn-theme"-->
+             <!--@click="query"-->
+             <!--style="vertical-align: middle">查询</div>-->
+    </div>
+    <div class="card clearfix">
+        <div id="chartPie" style="height: 400px;width: 40%;" class="pull-left"></div>
+        <div id="chartLine" style="height: 400px;width: 60%;" class="pull-left"></div>
+    </div>
+    <div class="card">
+        <div class="chartBar">
+            <span @click="chartActiveBtn(1, '全行业')"
+                  :class="{'i-active': '全行业' === chartActiveBar}"
+                  >全行业</span>
+            <span v-for="item in barLegend"
+                  v-text="item"
+                  :class="{'i-active': item === chartActiveBar}"
+                  @click="chartActiveBtn(1, item)"></span>
+        </div>
+        <div id="chartBar" style="height: 400px;width: 100%;"></div>
+    </div>
+    <div class="card">
+        <table class="i-table">
+            <thead>
+                <tr>
+                    <th>大行业</th>
+                    <th>小行业细分</th>
+                    <th>合同金额(元)</th>
+                    <th>占比(%)</th>
+                    <th class="i-text-col">汇总金额(元)</th>
+                    <th class="i-text-col">汇总占比(%)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="item in tableData">
+                    <td style="border-right: 1px solid #DDDEE1">
+                        <div v-text="item.text"></div>
+                    </td>
+                    <td>
+                        <div v-for=" _item in item.children" v-text="_item.text"></div>
+                    </td>
+                    <td>
+                        <div v-for=" _item in item.children" v-text="_item.sum"></div>
+                    </td>
+                    <td style="border-right: 1px solid #DDDEE1">
+                        <div v-for=" _item in item.children" v-text="_item.rate"></div>
+                    </td>
+                    <td>
+                        <div v-text="item.sum" class="i-text-col" style="font-weight: 500;"></div>
+                    </td>
+                    <td>
+                        <div v-text="item.rate" class="i-text-col" style="font-weight: 500;"></div>
+                    </td>
+
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><!-- /.main -->
+
+<script src="../static/scripts/analyze/bigSmallIndustry.js"></script>

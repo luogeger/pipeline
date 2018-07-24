@@ -1,5 +1,6 @@
 @charset "UTF-8";
 
+/*
 .i-checkbox-group{
   display: inline-block;
 
@@ -55,4 +56,34 @@
 
   }// item被选中
 
-}// .i-checkbox-group
+}// .i-checkbox-group  这是之前jquery用的组件
+*/
+
+.i-checkbox-group{
+	@include clearfix();
+	.i-checkbox-wrap{
+		float: left;
+		margin-right: 15px;
+		cursor: pointer;
+		position: relative;
+		>span{
+			color: #878787;
+		}
+		.i-checkbox-box{
+			position: relative;
+			top: 2px;
+			i{
+				font-size: 18px;
+				color: #878787;
+			}
+			.is-show{
+				font-size: 10px;
+				position: absolute;
+				top: 4px;
+				left: 2px;
+				color: $theme-normal;
+			}
+		}
+	}
+}
+// vue用的组件

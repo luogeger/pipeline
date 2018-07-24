@@ -1,0 +1,45 @@
+.main{
+	.card{
+		position: relative;
+		margin-top: 10px;
+		padding: 10px;
+		background-color: #ffffff;
+		&:first-child{
+			margin-top: 0;
+		}
+
+		.search{
+			display: inline-block;
+			vertical-align: middle;
+		}
+
+		.chartBar{
+			position: absolute;
+			right: 50px;
+			font-size: 12px;
+			z-index: 1;
+			max-width: 80%;
+			span{
+				cursor: pointer;
+				display: inline-block;
+				padding: 1px 5px;
+				border: 1px solid #222222;
+				border-radius: 3px;
+				margin-bottom: 5px;
+				&:not(:last-child){
+					margin-right: 5px;
+				}
+			}
+		}
+
+		table>tbody>tr>td{
+			padding: 0 !important;
+			div{
+				padding: 5px 0;
+				&:not(:last-child){
+					border-bottom: 1px solid #DDDEE1;
+				}
+			}
+		}
+	}// card
+}

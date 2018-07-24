@@ -16,6 +16,13 @@
 
     .year-table{
       padding: 10px;
+      .click-half-complete{
+        cursor: pointer;
+        text-decoration: underline;
+        :hover{
+          color: #F78937;
+        }
+      }
     }
   }// year
 

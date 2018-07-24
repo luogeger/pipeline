@@ -24,6 +24,15 @@
     </div>
 
     <div class="opera clearfix">
+        <div v-if="userLevel === 'dqxyh'">
+            <div style="line-height: 30px; float: left;">所属部门：</div>
+            <div style="width: 70%; float: left;">
+                <select-list
+                        :data-list="allGroup"
+                        v-model="department"
+                ></select-list>
+            </div>
+        </div>
         <div v-if="clientMsgQueryBtn" class="industry">
             <div class="dropdown-wrap">
                 <span class="dropdown-label">行业:</span>
@@ -112,7 +121,7 @@
                 <tr>
                     <th>序号</th>
                     <th>报备名称</th>
-                    <th>所属事业部</th>
+                    <th>所属销售部门</th>
                     <th v-if="clientMsgQueryBtn">负责销售</th>
                     <th>客户编号</th>
                     <th class="text-left">客户名称</th>
@@ -144,8 +153,7 @@
                             <span v-if="item.status == 'revoke' " class="type-revoke">已撤回</span>
                         </div>
                         <div class="pull-right operas-btn">
-                            <div
-                                    v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') && item.power == 'pro' "
+                            <div v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') && item.power == 'pro' "
                                  @click="disposeBtn(item.id)"
                                  class="btn btn-xs btn-border">审批</div>
 
@@ -524,7 +532,8 @@
                             <li v-for="(item, index) in regionList"
                                 v-text="item.text"
                                 @click="selectRegion(item.code, index)"
-                                :class="{'area-active': item.code == mRegionCode}"
+                                :class="{'area-active': item.code == mRegionCode,
+                                         'no-drop': isModification}"
                             ></li>
                         </ul>
                     </div>
@@ -537,7 +546,8 @@
                             <li v-for="(item, index) in provinceList"
                                 v-text="item.text"
                                 @click="selectProvince(item.code, item)"
-                                :class="{'area-active': item.code == mProvinceCode}"
+                                :class="{'area-active': item.code == mProvinceCode,
+                                         'no-drop': isModification}"
                             ></li>
                         </ul>
                     </div>
@@ -653,7 +663,7 @@
         </div>
 
         <!-- 撤回 -->
-        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop" style="bottom: 72%;">
             <div class="title">提示<i @click="hidePop"  class="fa fa-close pull-right"></i></div>
             <div class="content">确定撤回吗 ？</div>
             <div class="foot">
@@ -663,7 +673,7 @@
         </div>
 
         <!-- 忽略 -->
-        <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': ignoreShow}" class="dialog-content-small dispose-pop" style="bottom: 72%;">
             <div class="title">提示<i @click="hidePop" class="fa fa-close pull-right"></i></div>
             <div class="content">确定忽略吗 ？</div>
             <div class="foot">

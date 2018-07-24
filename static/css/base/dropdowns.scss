@@ -113,9 +113,10 @@ $max-width: 200px;
 .selection-component {
   position: relative;
   display: inline-block;
+  width: 100%;
   .selection-show {
+    width: 100%;
     display: inline-block;
-    position: relative;
     height: $height-sm;
     line-height: $height-sm;
     color: $text-col;
@@ -127,7 +128,8 @@ $max-width: 200px;
     .default-text{
       display: inline-block;
       min-width: $min-width;
-      max-width: $max-width;
+      max-width: 100%;
+	    text-overflow: ellipsis;/* 文字超出用...*/
     }
     i,.fa {
       position: absolute;
@@ -144,22 +146,26 @@ $max-width: 200px;
   }
 
   .selection-list {
-    position: absolute;
-    top: $height-sm + 3;
-    left: 0;
+	  position: absolute;
+	  top: $height-sm + 3;
+	  left: 0;
+	  z-index: 1;
+	  width: 100%;
+	  cursor: pointer;
+	  background-color: #FFFFFF;
+    border-radius: $border-radius-base;
+
     ul{
       overflow: auto;
       max-height: 300px;
       padding: 5px 0;
       min-width: 162px;
-      max-width: $max-width;
+      max-width: 100%;
       border-radius: $border-radius-base;
-      background-color: $white;
-      z-index: 1;
-      cursor: pointer;
       @include ul-shadow();
       li {
-        padding: 0 10px;
+	      padding: 0 30px 0 10px;
+	      position: relative;
         line-height: $height-sm;
         text-align: left;
         overflow: hidden;
@@ -169,6 +175,13 @@ $max-width: 200px;
         &:hover {
           background: $hover-bg;
         }
+	      i, .fa{
+		      position: absolute;
+		      right: 10px;
+		      top: 8px;
+		      color: $theme-normal;
+	      }
+
       }
     }
 

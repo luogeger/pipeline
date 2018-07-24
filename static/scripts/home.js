@@ -1,5 +1,6 @@
 var PATH = 'http://172.16.8.130:8080';
-// var PATH = '';// 测试环境，不需要 /
+// var PATH = '';// 测试环境，不需要
+// var PATH = 'http://iboss.demo.xiaoi.net';
 var timeYear,// 2018-04-18
     currentYear,
     currentMonth,
@@ -13,10 +14,19 @@ var timeYear,// 2018-04-18
     userCode,
     userAvatar,
     userGroup,// 用户所在事业部
-    navData,// 导航数据
-    userLevel,// 用户级别  xs  xsld  dqcyh
+    userLevel,// 用户级别  xs  xsld  dqxyh
+    userPermission,// 针对某个人，或某些人的权限
     saleGroupList,// 所有部门
-    chartColor = ['#ED6D00', '#FFC732', '#C23531'];
+    chartColor = ['#ED6D00', '#FFC732', '#C23531', '#F78937'],// F78937主题色
+    chartColorValue = ['#ED6D00',
+                       '#FFC732',
+                       '#8786FE',
+                       '#F29EC2',
+                       '#0094FF',
+                       '#26C5C8',
+                       '#FF0000',
+                       '#0094ff',
+                       '#EA69A2'];
 
 
 axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
@@ -31,7 +41,9 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
     userCode        = msg.userCode;
     userAvatar      = msg.avatar;
     userLevel       = msg.level;
+    userPermission  = msg.userPermission;
     userGroup       = msg.departmentName;
+    userPermission  = msg.userPermission[0];
     saleGroupList   = msg.mngSalesGroups;
     saleGroupList.push({code: '', text: '全部'});
     currentAccYear  = function () {
@@ -64,8 +76,7 @@ axios.get(PATH +'/oauth/queryUserInfo').then(function (datas) {
 
     axios.get(PATH +'/oauth/queryMenu4Nav').then(function (datas) {
         $('.nav-top-panels').iTopNav(datas.data.msg);
-        loadMainPage('.content-item', 'manage/manage.html');
-        // loadMainPage('.content-item', 'manage/partnerPipeline.html');
+        loadMainPage('.content-item', 'welcome.html');
     })
 })
 
@@ -95,6 +106,8 @@ $(document).click(function () {
     $('.user-info').children('ul').addClass('hide');
     vm.selectionIsShow_1 = false;// 点击顶部下拉框隐藏
     vm.selectionIsShow_2 = false;// 点击顶部下拉框隐藏
+    vm.regionProvinceIsShow = false;// 合作伙伴的区域和省份
+
 });
 
 // 退出登录
@@ -179,7 +192,7 @@ function arrSum (arr) {// 数组求和
     if (typeof arr[0] === 'string') {
         return s + '%';
     }
-    return s;
+    return s.toFixed(2);
 };// 数组求和
 
 function scaleCalc(A, B) {// 增长率的计算

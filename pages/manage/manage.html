@@ -3,22 +3,25 @@
     <div class="breadcrumb">
         <a href="">首页</a>
         <span class="line">/</span>
-        <span>pipeline信息管理</span>
+        <span>Pipeline管理</span>
+        <span class="line">/</span>
+        <span>pipeline信息</span>
     </div>
-   <!-- <div class="table-tab-list clearfix">
-        <div class="table-tab-item" @click="showPipelineData">
+    <div class="table-tab-list clearfix" style="display: none">
+        <div class="table-tab-item" @click="showPipelineData" :class="{'active' : pipelineJoinShow}">
             事业部pipeline信息
         </div>
-        <div class="table-tab-item" @click="showPipelineJoin">
+        <div class="table-tab-item" @click="showPipelineJoin" :class="{'active' : pipelineDataShow}">
             pipeline交接
+            <span class="badge" v-text="needOperateNumber"></span>
         </div>
-    </div>-->
+    </div>
     <div :class="{'hide': pipelineDataShow}">
         <!-- 搜索框 -->
         <div class="search-wrapper clearfix">
             <input id="drow" class="hide" type="checkbox">
             <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
-            <div class="content" style="width: calc(100% - 100px)">
+            <div class="content" style="width: calc(100% - 160px)">
                 <div class="input-group">
                     <span class="input-group-label">客户：</span>
                     <div class="input-group1" style="position: relative;display: inline-block;">
@@ -53,9 +56,8 @@
                            id="startDate"
                            @click=""
                            v-model="cExpectSignDateRange">
-                    <!--
-                           -->
                 </div>
+                <div style="display: inline-block">
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">成功率：</span>
                     <div class="dropdown">
@@ -67,10 +69,9 @@
                             <li @click="searchSuccessMinCode(projectSuccessRate.code, projectSuccessRate.text)"
                                 v-for="projectSuccessRate in projectSuccessRates"
                                 :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
-                            <!-- v-if="cProjectSuccessMaxCode >= projectSuccessRate.code"
-                               -->
                         </ul>
                     </div>
+                </div>
                 </div>
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">-</span>
@@ -89,7 +90,7 @@
                     </div>
                 </div>
                 <div class="dropdown-wrap">
-                    <span class="dropdown-label">事业部：</span>
+                    <span class="dropdown-label">销售部门：</span>
                     <div class="dropdown">
                         <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
                         <i class="fa fa-angle-down"></i>
@@ -128,6 +129,7 @@
                         </ul>
                     </div>
                 </div>
+                <div style="display: inline-block">
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">解决方案：</span>
                     <div class="dropdown">
@@ -151,6 +153,7 @@
                                 v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
                         </ul>
                     </div>
+                </div>
                 </div>
                 <div class="dropdown-wrap">
                     <span class="dropdown-label">近期变更过：</span>
@@ -232,7 +235,7 @@
                                         <span v-text="pscsList.progressCount + '条'" style="color: #ed6d00"></span>；
                                     </li>
                                 </ul>
-                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目（长期）</p>
+                                <p class="explain">说明：<br/>无效数据：N-项目失败、X-搁置项目</p>
                             </div>
                             </span>&nbsp;
                             条</span>
@@ -251,11 +254,11 @@
                                 <th>序号</th>
                                 <th v-if="userLevel == 'xs'">操作</th>
                                 <th>报备日期</th>
-                                <th>销售事业部</th>
+                                <th>销售部门</th>
                                 <th>销售</th>
                                 <th>售前</th>
                                 <th>区域</th>
-                                <th>客服所在省份</th>
+                                <th>客户所在省份</th>
                                 <th>客户属性</th>
                                 <th>客户编号</th>
                                 <th>客户名称
@@ -272,6 +275,7 @@
                                 </th>
                                 <th>解决方案名称</th>
                                 <th>行业线</th>
+                                <th v-if="userPermission === 'pipelineProjectType'">项目类型</th>
                                 <th>项目性质</th>
                                 <th>合作伙伴名称</th>
                                 <th>预计签约金额<br/>（万元）</th>
@@ -290,10 +294,9 @@
                             <tbody>
                             <!--(vm.dataPageNum -1) * 10 + (index)-->
                             <tr v-for="(item, index) in items"
-                                @dblclick="showOneChange(item.soCoreCode, index)"
+                                @dblclick="openUpdateCase()"
+                                @click="showOneChange(item.soCoreCode, index)"
                                 :class="{ active: isClicked == index } ">
-                                <!--@click="clickOne(index)"-->
-                                <!--:class="{'active': (vm.dataPageNum -1) * 10 + (index + 1) == 1}-->
                                 <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
                                 <td v-if="userLevel == 'xs'">
                                     <a @click="handleData(item)"
@@ -333,6 +336,7 @@
                                     </div>
                                 </td>
                                 <td>{{ item.industryLine }}</td>
+                                <td v-if="userPermission === 'pipelineProjectType'">{{ item.projectType }}</td>
                                 <td>{{ item.projectNature }}</td>
                                 <td>
                                     <div class="onetext">{{ item.cooperativePartner }}</div>
@@ -389,18 +393,39 @@
         </div>
     </div>
     <div :class="{'hide': pipelineJoinShow}" class="pipelineJoin clearfix">
-        <div class="table-wrapper" style="overflow: auto">
+        <div :class="{'hide': noJoinData}" class="pull-right" style="margin-bottom: 10px">
+            <div class="data-page page-css">
+                <div @click="calcJoinPage('join' , 'first')"
+                     class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
+                <div @click="calcJoinPage('join' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
+                        class="fa fa-angle-left"></i></div>
+                <span>第</span><input @keyup.enter="joinEnter" type="text" style="margin: 0 5px;" v-model="joinPageNum"><span>页</span>
+                <span>共 {{joinPageSum}} 页，</span>
+                <div @click="calcJoinPage('join' , 1)"
+                     class="page-css-next"><i class="fa fa-angle-right  "></i></div>
+                <div @click="calcJoinPage('join' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                        class="fa fa-angle-double-right"></i></div>
+                <span>显示</span>
+                <span style="margin-left: 5px;">{{joinPageStart}}</span>
+                <span>-</span>
+                <span style="margin-right: 5px;">{{joinPageEnd}}</span>
+                <span>条，</span>
+                <span>共&nbsp; {{joinPageTotal}} &nbsp;条</span>
+            </div>
+        </div>
+        <div class="table-wrapper" style="overflow: auto;width: 100%">
             <div style="width: 3500px">
                 <table class="i-table">
                     <thead>
                     <tr>
                         <th>序号</th>
-                        <th><div class="highlight">操作</div></th>
+                        <th :class="{'hide': userLevel === 'dqxyh'}">
+                            <div class="highlight">操作</div></th>
                          <th><div class="highlight">
                              状态
                          </div></th>
                         <th>报备日期</th>
-                        <th>销售事业部</th>
+                        <th>销售部门</th>
                         <th>负责销售</th>
                         <th>负责售前</th>
                         <th>区域</th>
@@ -425,61 +450,76 @@
                     <tbody>
                     <tr v-for="(pipelineList, index) in pipelineData.root">
                         <td>{{ (vm.dataPageNum -1) * 10 + (index + 1) }}</td>
-                        <td>
+                        <td :class="{'hide': userLevel === 'dqxyh'}">
+                            <!-- 针对销售 ,当状态为已分配直销销售时，显示确认按钮 -->
                             <div v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesStaff'"
                                  @click="confirmData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border">确认</div>
-                            <div v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
+                            <!-- 针对销售 ,当状态为已签收/直销销售驳回时，显示确认按钮,但不可点击 -->
+                            <div v-if="userLevel == 'xs' && (pipelineList.status == 'signIn' || pipelineList.status == 'rejectSalesStaff')"
                                  @click="confirmData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border disabled">确认</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesGroup'"
+
+                            <!-- 针对销售老大 ,当状态为已分配直销事业部/直销销售驳回 时，显示分配按钮-->
+                            <div v-if="userLevel == 'xsld' && (pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'rejectSalesStaff')"
                                  @click="allotData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border">分配</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesStaff'"
-                                 @click="allotData(pipelineList.id, index)"
-                                 class="btn btn-xs btn-border disabled">分配</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'"
-                                 @click="allotData(pipelineList.id, index)"
-                                 class="btn btn-xs btn-border disabled">分配</div>
-                            <div v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
+                            <!-- 针对销售老大 ,当状态为已分配直销销售/直销销售驳回至直销事业部/已签收时，显示分配按钮，但不可点击-->
+                            <div v-if="userLevel == 'xsld' && (pipelineList.status == 'assignSalesStaff' || pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'signIn')"
                                  @click="allotData(pipelineList.id, index)"
                                  class="btn btn-xs btn-border disabled">分配</div>
                         </td>
                         <td>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'assignSalesStaff'"
-                                  class="type-pass">待确认</span>
-                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
-                                  class="type-pass">已签收</span>
+                                  class="type-pending">待确认</span>
                             <span v-if="userLevel == 'xs' && pipelineList.status == 'signIn'"
                                   class="type-pass">已确认</span>
+                            <span v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesStaff'"
+                                  class="type-reject">已驳回</span>
+                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'signIn'"
+                                  class="type-pass">已签收</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesGroup'"
-                                  class="type-pass">待分配</span>
+                                  class="type-pending">待分配</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'assignSalesStaff'"
                                   class="type-pass">已分配</span>
                             <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'"
-                                  class="type-pass">已驳回</span>
-                            <!--<span v-text="pipelineList.status"></span>
+                                  class="type-reject">已驳回</span>
+                            <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesStaff'"
+                                  class="type-reject">被退回</span>
+                           <!-- <span v-text="pipelineList.status"></span>
                             <span v-text="pipelineList.statusName" class="type-unsubmitted"></span>-->
                         </td>
                         <td v-text="pipelineList.reportDate"></td>
-                        <td v-text="pipelineList.departmentName"></td>
-                        <td v-text="pipelineList.salesStaffName"></td>
+                        <td v-if="pipelineList.departmentName === null">-</td>
+                        <td v-if="pipelineList.departmentName !== null" v-text="pipelineList.departmentName"></td>
+                        <td v-if="pipelineList.salesStaffName === null">-</td>
+                        <td v-if="pipelineList.salesStaffName !== null" v-text="pipelineList.salesStaffName"></td>
                         <td v-text="pipelineList.preSalesStaff"></td>
                         <td v-text="pipelineList.regionName"></td>
                         <td v-text="pipelineList.provinceName"></td>
-                        <td v-text="pipelineList.cpCustomerCode">s</td>
-                        <td v-text="pipelineList.cpCustomerName"></td>
+                        <td v-text="pipelineList.cpCustomerCode"></td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.cpCustomerName"></div>
+                        </td>
                         <td v-text="pipelineList.cpCustomerTypeName"></td>
-                        <td v-text="pipelineList.customerName"></td>
-                        <td v-text="pipelineList.projectDescription"></td>
-                        <td v-text="pipelineList.solutionName"></td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.customerName"></div>
+                        </td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.projectDescription"></div>
+                        </td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.solutionName"></div>
+                        </td>
                         <td v-text="pipelineList.industryLineName"></td>
                         <td v-text="pipelineList.expectSignSum"></td>
                         <td v-text="pipelineList.expectSignDate"></td>
                         <td v-text="pipelineList.progressName"></td>
                         <td v-text="pipelineList.successRateName"></td>
                         <td v-text="pipelineList.weightedSum"></td>
-                        <td v-text="pipelineList.projectFollowUpRemark"></td>
+                        <td>
+                            <div class="onetext" v-text="pipelineList.projectFollowUpRemark"></div>
+                        </td>
                         <td v-text="pipelineList.competitor"></td>
                         <td v-text="pipelineList.customerSourceName"></td>
                     </tr>
@@ -488,26 +528,6 @@
             </div>
             <div v-if="noJoinData"
                  style="padding: 20px;text-align: center">暂无相关数据</div>
-        </div>
-        <div :class="{'hide': noJoinData}" class="pull-right" style="margin-right: 50px">
-            <div class="data-page page-css">
-                <div @click="calcJoinPage('join' , 'first')"
-                     class="page-css-first"><i class="fa fa-angle-double-left"></i></div>
-                <div @click="calcJoinPage('join' , -1)" class="page-css-prev" style="margin-right: 10px;"><i
-                        class="fa fa-angle-left"></i></div>
-                <span>第</span><input @keyup.enter="joinEnter" type="text" style="margin: 0 5px;" v-model="joinPageNum"><span>页</span>
-                <span>共 {{joinPageSum}} 页，</span>
-                <div @click="calcJoinPage('join' , 1)"
-                     class="page-css-next"><i class="fa fa-angle-right  "></i></div>
-                <div @click="calcJoinPage('join' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
-                        class="fa fa-angle-double-right"></i></div>
-                <span>显示</span>
-                <span style="margin-left: 5px;">{{joinPageStart}}</span>
-                <span>-</span>
-                <span style="margin-right: 5px;">{{joinPageEnd}}</span>
-                <span>条，</span>
-                <span>共&nbsp; {{joinPageTotal}} &nbsp;条</span>
-            </div>
         </div>
     </div>
 
@@ -537,7 +557,7 @@
                                 <div class="block-wrapper">
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
-                                        <span class="dropdown-label">所属事业部：</span>
+                                        <span class="dropdown-label">所属销售部门：</span>
                                         <span style="line-height: 30px;">{{ hSalesGroupText }}</span>
                                     </div>
                                 </div>
@@ -560,22 +580,22 @@
                                         <ul class="item-list clearfix">
                                             <li @click="selectRegion(searchList.code, index)"
                                                 v-for="(searchList,index) in searchLists.regions"
-                                                :class="{'active': handleTemplate.regionCode == searchList.code}">{{ searchList.text }}</li>
+                                                :class="{'active': handleTemplate.regionCode == searchList.code, 'disabled': notLinked}">{{ searchList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <div :class="{'hide': provinceShow}" class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户所在省份:</span>
                                         <ul class="item-list clearfix">
                                             <li @click="selectProvince(provinceList.code)"
                                                 v-for="(provinceList,index) in provinceLists"
-                                                :class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>
+                                                :class="{'active': provinceList.code == handleTemplate.provinceCode, 'disabled': notLinked}">{{ provinceList.text }}</li>
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <div class="block-wrapper">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户属性:</span>
@@ -586,14 +606,29 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
+                                <div v-if="userPermission === 'pipelineProjectType'" class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">项目类型：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hProjectType }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectProjectType(projectTypeList.code, projectTypeList.text)"
+                                                    v-for="projectTypeList in projectTypeLists"
+                                                    :value="projectTypeList.code">{{ projectTypeList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <i class="star">*</i>
                                         <span class="input-group-label">客户名称:</span>
                                         <div style="position: relative;display: inline-block;">
                                             <input v-model="hCustomerName"
                                                    @keyup="getFuzzyList(2)"
-                                                   type="text" class="input-group-form">
+                                                   type="text" class="input-group-form input-lg">
                                             <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
                                                 <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
                                                     v-for="item in fuzzyQueryList_2"
@@ -607,10 +642,38 @@
                                            style="margin-left: 10px;font-weight: bold;font-size: 18px;display: none;">+</a>-->
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
+                                <div class="block-wrapper col-1">
                                     <div class="input-group">
                                         <span class="input-group-label">项目名称:</span>
-                                        <input v-model="handleTemplate.projectDescription" class="input-group-form" type="text">
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">最终客户名称:</span>
+                                        <input @keyup="finalCustomerKeyup" v-model="handleTemplate.finalCustomer" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户所在区域:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerRegion(regionList.code, index)"
+                                                v-for="(regionList,index) in regionLists"
+                                                :class="{'active': handleTemplate.finalCustomerRegion == regionList.code}">{{ regionList.text }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户所在省份:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerProvince(finalCustomerProvinceList.code)"
+                                                v-for="(finalCustomerProvinceList,index) in finalCustomerProvinceLists"
+                                                :class="{'active': finalCustomerProvinceList.code == handleTemplate.finalCustomerProvince}">{{ finalCustomerProvinceList.text }}</li>
+                                        </ul>
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -643,7 +706,7 @@
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
                                         <span class="dropdown-label">行业线：</span>
-                                        <div class="dropdown noNull">
+                                        <div class="dropdown">
                                             <span class="dropdown-default">{{ hIndustryLineText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
@@ -652,6 +715,31 @@
                                                     :value="searchList.code">{{ searchList.text }}</li>
                                             </ul>
                                         </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">合作伙伴:</span>
+                                        <input v-model="handleTemplate.cooperativePartner"
+                                               class="input-group-form"
+                                               type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap pull-left">
+                                        <span class="dropdown-label">金融银行分类:</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hClassificationText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectClassificationCode(classificationList.code, classificationList.text)"
+                                                    v-for="classificationList in classificationLists"
+                                                    :value="classificationList.code">{{ classificationList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div :class="{'hide': selectClassificationQita}" class="input-group pull-left" style="margin-left: 20px">
+                                        <input v-model="hClassificationInput" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -665,12 +753,34 @@
                                         </ul>
                                     </div>
                                 </div>
-                                <div class="block-wrapper col-1">
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">客户来源：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectCustomerSourceCode(searchList.code, searchList.text)"
+                                                    v-for="searchList in searchLists.customerSours">{{ searchList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
                                     <div class="input-group">
-                                        <span class="input-group-label">合作伙伴:</span>
-                                        <input v-model="handleTemplate.cooperativePartner"
-                                               class="input-group-form"
-                                               type="text">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">预计签约时间：</span>
+                                        <div class="i-date-picker-container">
+                                            <div class="date-input-box  icon iconfont icon-cale-a">
+                                                <input v-model="handleTemplate.expectSignDate"
+                                                       readonly="readonly"
+                                                       type="text"
+                                                       id="signDate"
+                                                       class="i-date-picker"
+                                                       data-calendar="true" >
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -705,53 +815,65 @@
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
-                                    <div class="input-group">
-                                        <i class="star">*</i>
-                                        <span class="input-group-label">预计签约时间：</span>
-                                        <div class="i-date-picker-container">
-                                            <div class="date-input-box  icon iconfont icon-cale-a">
-                                                <input v-model="handleTemplate.expectSignDate"
-                                                       readonly="readonly"
-                                                       type="text"
-                                                       id="signDate"
-                                                       class="i-date-picker"
-                                                       data-calendar="true" >
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper">
                                     <div class="dropdown-wrap">
                                         <i class="star">*</i>
                                         <span class="dropdown-label">项目阶段：</span>
-                                        <div class="dropdown noNull">
+                                        <div class="dropdown">
                                             <span class="dropdown-default">{{ hProgressText }}</span>
                                             <i class="fa fa-angle-down"></i>
                                             <ul>
-                                                <li @click="selectProgressCode(searchList.code, searchList.text)"
-                                                    v-for="searchList in searchLists.progresss">{{ searchList.text }}</li>
+                                                <li @click="selectProgressCode(progressList.code, progressList.text)"
+                                                    v-for="progressList in progressLists">{{ progressList.text }}</li>
                                             </ul>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="block-wrapper">
-                                    <div class="dropdown-wrap">
-                                        <i class="star">*</i>
-                                        <span class="dropdown-label">客户来源：</span>
-                                        <div class="dropdown">
-                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
-                                            <i class="fa fa-angle-down"></i>
-                                            <ul>
-                                                <li @click="selectCustomerSourceCode(searchList.code, searchList.text)"
-                                                    v-for="searchList in searchLists.customerSours">{{ searchList.text }}</li>
-                                            </ul>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="block-wsrapper">
+                                <!--<div :class="{'hide': successReasonShow}" class="block-wrapper col-1">-->
+                                    <!--<div class="input-group">-->
+                                        <!--<i class="star">*</i>-->
+                                        <!--<span class="input-group-label">成功率0%原因:</span>-->
+                                        <!--<input v-model="hSuccessReasonText" @keyup="successReasonKeyup" type="text" class="input-group-form" readonly="true" style="width: 520px">-->
+                                        <!--&lt;!&ndash;v-model="defaultCheckedText"-->
+                                               <!--@click.stop="partnerRegionProvinceBtn"-->
+                                               <!--&ndash;&gt;-->
+                                        <!--<div :class="{'hide': successReasonDropShow}" class="dropBlock clearfix">-->
+                                            <!--<ul>-->
+                                                <!--<li @click="selectSuccessReason(successReasonList.code, successReasonList.text)"-->
+                                                    <!--v-for="successReasonList in successReasonLists">-->
+                                                    <!--<div class="i-checkbox-group">-->
+                                                        <!--<div class="i-checkbox-wrap">-->
+                                                            <!--&lt;!&ndash; v-for="(_item, index) in item.province"-->
+                                                             <!--@click="checkboxBtn(_item)"-->
+                                                             <!--:key="_item.code"-->
+                                                             <!--&ndash;&gt;-->
+                                                            <!--<span class="i-checkbox-box">-->
+                                                                <!--<i class="fa fa-square-o"></i>-->
+                                                                <!--<transition name="fade">-->
+                                                                    <!--<i class="is-show fa fa-check"></i>-->
+                                                                    <!--&lt;!&ndash; v-if="styleShow(_item.code)"&ndash;&gt;-->
+                                                                <!--</transition>-->
+                                                            <!--</span>-->
+                                                            <!--<span>{{ successReasonList.text }}</span>-->
+                                                        <!--</div>-->
+                                                    <!--</div>-->
+                                                <!--</li>-->
+                                            <!--</ul>-->
+                                        <!--</div>-->
+                                        <!--&lt;!&ndash;<div class="dropdown">-->
+                                            <!--<span class="dropdown-default">{{ hProgressReasonText }}</span>-->
+                                            <!--<i class="fa fa-angle-down"></i>-->
+                                            <!--<ul>-->
+                                                <!--<li @click="selectProgressReason(progressReasonList.code, progressReasonList.text)"-->
+                                                    <!--v-for="progressReasonList in progressReasonLists">{{ progressReasonList.text }}</li>-->
+                                            <!--</ul>-->
+                                        <!--</div>&ndash;&gt;-->
+                                     <!--</div>-->
+                                <!--</div>-->
+                                <div class="block-wrapper col-1">
                                     <div class="input-group">
-                                        <span class="input-group-label">金融银行分类:</span>
-                                        <input v-model="handleTemplate.classificationOfFinancialIndustry" class="input-group-form" type="text">
+                                        <!--<i class="star">*</i>-->
+                                        <span class="input-group-label">竞争对手:</span>
+                                        <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper col-1">
@@ -770,12 +892,6 @@
                                         <textarea v-model="handleTemplate.othDescription" class="input-group-form" style="display: block"
                                                   placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
                                         </div>
-                                    </div>
-                                </div>
-                                <div class="block-wrapper col-1">
-                                    <div class="input-group">
-                                        <span class="input-group-label">竞争对手:</span>
-                                        <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
                                     </div>
                                 </div>
                                 <div class="block-wrapper">
@@ -1110,19 +1226,19 @@
                                         <button @click="confirmThisData(handleTemplate.id, 'signIn')"
                                                 class="btn btn-sm btn-theme"
                                                 type="button" style="margin-right: 20px">确认</button>
-                                        <button @click="hidePop" class="btn btn-sm btn-theme" type="button">取消</button>
+                                        <button @click="xsRejectThisData" class="btn btn-sm btn-theme" type="button">驳回</button>
                                     </div>
                                 </div>
                                 <div v-if="userLevel == 'xsld'" class="block-wrapper col-1" style="margin-top: 40px;margin-bottom: 30px">
                                     <div class="input-group">
                                         <span class="input-group-label"></span>
-                                        <button @click="allotThisData()"
+                                        <button @click="allotThisData"
                                                 class="btn btn-sm btn-theme"
                                                 type="button" style="margin-right: 20px">分配</button>
-                                        <button @click="rejectThisData(handleTemplate.id, 'rejectSalesGroup')" class="btn btn-sm btn-theme" type="button">驳回</button>
+                                        <button @click="rejectThisData" class="btn btn-sm btn-theme" type="button">驳回</button>
                                     </div>
                                 </div>
-                                <div :class="{'hide': isHide}">
+                                <div :class="{'hide': isAllotHide}" class="border-wrapper">
                                     <div class="block-wrapper col-1">
                                         <div class="dropdown-wrap">
                                             <span class="dropdown-label">分配销售:</span>
@@ -1142,6 +1258,32 @@
                                             <button @click="allotToBU()"
                                                     class="btn btn-sm btn-theme"
                                                     type="button">分配</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': isRejectHide}" class="border-wrapper">
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label">驳回理由:</span>
+                                            <textarea v-model="hRemark" style="width: 300px;height: 50px"></textarea>
+                                        </div>
+                                    </div>
+                                    <!-- 针对销售 ,状态为直销销售驳回 -->
+                                    <div v-if="userLevel == 'xs'" class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="rejectToXSLeader(handleTemplate.id, 'rejectSalesStaff')"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
+                                        </div>
+                                    </div>
+                                    <!-- 针对销售老大 ,状态为直销事业部驳回 -->
+                                    <div v-if="userLevel == 'xsld'" class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="rejectToXS(handleTemplate.id, 'rejectSalesGroup')"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
                                         </div>
                                     </div>
                                 </div>
@@ -1170,8 +1312,9 @@
             <div class="title">提示<i @click="hideSecondPop"  class="fa fa-close pull-right"></i></div>
             <div class="content">机要信息不全，请完善机要信息</div>
             <div class="foot">
-                <div @click="yesBtn()" class="btn btn-theme">是</div>
-                <div @click="hideSecondPop" class="btn btn-border">否</div>
+                <div style="display: none" @click="yesBtn()" class="btn btn-theme">是</div>
+                <div @click="hideSecondPop" class="btn btn-border">确定</div>
+                <!--<div @click="hideSecondPop" class="btn btn-border">否</div>-->
             </div>
         </div>
         <!-- 确认分配弹窗 -->
@@ -1187,7 +1330,7 @@
             </div>
         </div>
         <!-- 撤回弹窗 -->
-        <div :class="{'hide': joinRevokeShow}" class="dialog-content-small dispose-pop">
+        <div :class="{'hide': joinRevokeShow}" class="dialog-content-small dispose-pop"  style="height: 180px">
             <div class="title clearfix">
                 <p class="pull-left">提示</p>
                 <p @click="hideSecondPop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
@@ -1201,4 +1344,4 @@
     </div>
 </div>
 <script src="../static/scripts/manage/manageShare.js"></script>
-<script src="../static/scripts/manage/manage.js"></script>
+<script src="../static/scripts/manage/manage.js?v=20180723"></script>

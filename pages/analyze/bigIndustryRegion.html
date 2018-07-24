@@ -1,0 +1,69 @@
+<link rel="stylesheet" href="../static/styles/analyze/bigIndustryRegion.css">
+
+<div class="main" id="app">
+    <div class="breadcrumb">
+        <a href="">pipeline数据分析</a>
+        <span class="line">/</span>
+        <span>已签约合同分析</span>
+        <span class="line">/</span>
+        <span>全国区域、大行业签约分析</span>
+    </div><!-- /.breadcrumb-->
+
+    <div class="card">
+        <div class="search input-group">
+            <span class="input-group-label ">签约年月：</span>
+            <input class="input-group-form i-date-form-range"
+                   id="dateOne"
+                   type="text">
+        </div>
+        <div class="btn btn-theme"
+             @click="query"
+             style="vertical-align: middle">查询</div>
+    </div>
+
+    <div class="card">
+        <div class="region">
+            <span v-for="item in allRegion"
+                  v-text="item"
+                  :class="{'i-active': item === chartOneActive}"
+                  @click="chartActive(1, item)"></span>
+        </div>
+        <div id="chartOne"
+             style="width: 100%; height: 600px;"></div>
+    </div>
+    <div class="card">
+        <div class="industry">
+            <span v-for="item in allIndustry"
+                  v-text="item"
+                  :class="{'i-active': item === chartTwoActive}"
+                  @click="chartActive(2, item)"></span>
+        </div>
+        <div id="chartTwo"
+             style="width: 100%; height: 400px;"></div>
+    </div>
+    <div class="card">
+        <table class="i-table">
+            <thead>
+                <tr>
+                    <th v-for="item in tHead" v-text="item"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="(item, index) in tBody" v-if="index !== 0">
+                    <td v-text="item.text"></td>
+                    <td v-for="_item in item.children" v-text="_item.sum"></td>
+                    <td v-text="item.sum"></td>
+                    <td v-text="item.rate +'%'"></td>
+                </tr>
+                <tr v-for="(item, index) in tBody" v-if="index == 0">
+                    <td v-text="item.text"></td>
+                    <td v-for="_item in item.children" v-text="_item.sum"></td>
+                    <td v-text="item.sum"></td>
+                    <td v-text="item.rate +'%'"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div><!-- /.main -->
+
+<script src="../static/scripts/analyze/bigIndustryRegion.js"></script>

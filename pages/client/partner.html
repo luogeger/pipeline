@@ -9,12 +9,15 @@
 
     <div class="table-tab-list clearfix">
         <div :class="{'active': tabActive == 0}" @click="tabBtn(0, 'partner-pass')" class="table-tab-item">客户管理</div>
-        <div :class="{'active': tabActive == 4}" @click="tabBtn(4, 'partner-other')" class="table-tab-item">客户信息建立（审批）</div>
-        <div :class="{'active': tabActive == 1}" @click="tabBtn(1, 'partner-msg')" class="table-tab-item">客户信息查询</div>
-        <div :class="{'active': tabActive == 2}" @click="tabBtn(2, 'engineer')" class="table-tab-item">《工程师资质认证》信息</div>
+        <div :class="{'active': tabActive == 4}" @click="tabBtn(4, 'partner-other')"
+             v-if="userLevel !== 'dqxyh' ||
+                  (userLevel === 'dqxyh' && userPermission.indexOf('cpCustomerAudit') >= 0)"
+             class="table-tab-item">客户信息建立（审批）</div>
+        <!--<div :class="{'active': tabActive == 1}" @click="tabBtn(1, 'partner-msg')" class="table-tab-item">客户信息查询</div>-->
+        <!--<div :class="{'active': tabActive == 2}" @click="tabBtn(2, 'engineer')" class="table-tab-item">《工程师资质认证》信息</div>-->
     </div>
 
-    <div class="screening-condition border-normal">
+    <div class="screening-condition border-normal clearfix">
         <!--合作伙伴名称   模糊查询
         客户编号         输入框
         区域           下拉框
@@ -23,35 +26,47 @@
         合作产品
         拥有工程师认证证书-->
 
-        <select-list :selections="selectList" @on-change="select($event)"></select-list>
-        <select-list :selections="selectList2" @on-change="select2($event)"></select-list>
-
+        <!--<select-list :selections="selectList" @on-change="select($event)"></select-list>-->
+        <!--<select-list :selections="selectList2" @on-change="select2($event)"></select-list>-->
 
     </div><!-- /.screening-condition -->
 
     <div class="partner border-normal">
         <div v-if="tabContentShow == 'partner-pass'
-                 ||tabContentShow == 'partner-other'
-                 ||tabContentShow == 'partner-msg'"
+                || tabContentShow == 'partner-other'"
              class="partner-box">
-            <div class="opera-box">
-                <div class="btn btn-theme"
-                     v-if="tabContentShow == 'partner-other'"
-                     @click="addPartnerBtn('addPartnerPop')">
-                    <i class="fa fa-plus"></i> 添加合作伙伴</div>
+            <div class="opera-box clearfix">
+                <div v-if="tabContentShow == 'partner-other'"
+                     @click="addPartnerBtn('addPartnerPop')"
+                     class="btn btn-theme">
+                    <i class="fa fa-plus"></i>添加合作伙伴
+                </div>
+                <div v-if="tabContentShow == 'partner-pass'" class="pull-right">
+                    <i-page :total="pPageTotal"
+                            :limit="pageLimit"
+                            @on-paging="paging('partner-pass', $event)"></i-page>
+                </div>
+
+                <div v-if="tabContentShow == 'partner-other'" class="pull-right">
+                    <i-page :total="pPageTotal"
+                            :limit="pageLimit"
+                            @on-paging="paging('partner-other', $event)"></i-page>
+                </div>
+
+
             </div>
             <table class="i-table">
                 <thead>
                 <tr>
                     <th>序号</th>
                     <th>报备日期</th>
-                    <th>销售小组</th>
+                    <th>销售部门</th>
                     <th>负责销售</th>
                     <th>合作伙伴名称</th>
                     <th>合作伙伴类型</th>
                     <th>业务区域</th>
                     <th>主要合作产品</th>
-                    <th>审批状态</th>
+                    <th class="text-left">审批状态</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -59,18 +74,65 @@
                     :class="{'tr-active': trActive == index}"
                     @click="clickPartner(item.id, index)">
                     <td v-text="index +1"></td>
-                    <td v-text="item.reportDate"></td>
+                    <td v-text="item.reportDate.substring(0,10)"></td>
                     <td v-text="item.departmentName"></td>
                     <td v-text="item.salesStaffName"></td>
                     <td v-text="item.name"></td>
                     <td v-text="item.type"></td>
-                    <td v-text="item.businessArea.text"></td>
-                    <td v-text="item.solution.text"></td>
-                    <td v-text="item.statusName"></td>
+                    <td>
+                        <div v-for="region in item.area.businessAreas"
+                             v-text="region.text"></div>
+                    </td>
+                    <td>
+                        <div v-for="product in item.solution"
+                             v-text="product.text"></div>
+                    </td>
+                    <td>
+                        <div class="pull-left types-show">
+                            <span v-text="item.statusName"
+                                  :class="{
+                                      'type-pass': item.status == 'pass',
+                                      'type-revoke': item.status == 'revoke',
+                                      'type-reject': item.status == 'reject',
+                                      'type-pending': item.status == 'pending'
+                                  }"
+                            ></span>
+                        </div>
+                        <div class="pull-right operas-btn">
+                            <div v-if="item.status == 'pending' && userLevel == 'xsld'"
+                                 @click="operateBtn(index, item.id, 'audit')"
+                                 class="btn btn-xs btn-border">审批
+                            </div>
+
+                            <div v-if="item.status !== 'pending' && userLevel == 'xs'"
+                                 @click="operateBtn(index, item.id, 'edit', item)"
+                                 class="btn btn-xs btn-border">编辑
+                            </div>
+
+                            <div v-if="item.status == 'pending' && userLevel == 'xs'"
+                                 @click="operateBtn(index, item.id, 'recall')"
+                                 class="btn btn-xs btn-border">撤回
+                            </div>
+
+                            <div v-if="item.status == 'reject' || item.status == 'revoke'"
+                                 @click="operateBtn(index, item.id, 'ignore')"
+                                 class="btn btn-xs btn-border">忽略
+                            </div>
+                            <!-- 历史记录 -->
+                            <div class="btn btn-xs"
+                                 @click="operateBtn('', item.id, 'auditHistory', item)">
+                                <i class="fa fa-clock-o"></i>
+                            </div>
+                        </div>
+                    </td>
                 </tr>
                 </tbody>
             </table>
         </div><!-- /. 合伙人信息 -->
+
+        <div v-if="tabContentShow == 'partner-msg'">
+            <h1>tab 3</h1>
+        </div><!-- 第三个tab -->
 
         <div v-if="tabContentShow == 'engineer'" class="engineer-box">
             <div class="opera-box">
@@ -109,15 +171,15 @@
                 </tbody>
             </table>
         </div><!-- /. 工程师 -->
-    </div><!-- /. 上部分表格 -->
+    </div><!-- .上部分表格 -->
 
     <div v-if="tabContentShow == 'partner-pass'
-             ||tabContentShow == 'partner-other'
-             ||tabContentShow == 'partner-msg'"
+            || tabContentShow == 'partner-other'"
          class="partner-msg border-normal">
         <div class="opera-box">
             <div class="btn btn-theme"
-                 @click="addPartnerBtn('addPartnerMsgPop')"><i class="fa fa-plus"></i> 添加合作伙伴机要信息</div>
+                 @click="addPartnerBtn('addPartnerMsgPop')"><i class="fa fa-plus"></i> 添加合作伙伴机要信息
+            </div>
         </div>
         <table class="i-table">
             <thead>
@@ -136,115 +198,178 @@
             <tbody>
             <tr v-for="(item, index) in partnerMsgList">
                 <td v-text="index +1"></td>
-                <td>填报人</td>
+                <td v-text="item.salesStaffName"></td>
                 <td v-text="item.province"></td>
                 <td v-text="item.contactName"></td>
                 <td v-text="item.department"></td>
                 <td v-text="item.title"></td>
                 <td v-text="item.phone"></td>
                 <td v-text="item.email"></td>
-                <td><i class="fa fa-edit i-text-col" style="font-size: 14px; cursor: pointer;"></i></td>
+                <td><i @click="editBtn('partnerMsg', item.id, item)"
+                       class="fa fa-edit i-text-col"
+                       style="font-size: 14px; cursor: pointer;"></i></td>
             </tr>
             </tbody>
         </table>
-    </div><!-- /.下部分表格 /.机要信息 -->
+    </div><!-- /.下部分表格 -->
 
 
-    <!-- 添加合作伙伴机要信息 -->
-    <pop-up :is-show="addPartnerPop" @on-close="popUp('addPartnerPop')">
-        <div class="title"><p>添加合作伙伴</p></div>
-        <div class="pop-main">
+    <!-- /.(添加、编辑) (合作伙伴、机要信息)  -->
+    <pop-up :is-show="addAndEdit" @on-close="popUp('addPartnerPop')">
+        <div v-if="titleAddPartner" class="title"><p>添加合作伙伴</p></div>
+        <div v-if="titleEditPartner" class="title"><p>编辑合作伙伴</p></div>
+        <div v-if="addPartnerPop" class="pop-main">
             <div class="row-item">
-                <div class="inline-block " style="width: 33%;">
+                <div class="inline-block " style="width: 25%;">
                     <span class="key">报备时间：</span>
                     <span class="value" v-text="currentDate"></span></div>
-                <div class="inline-block " style="width: 33%;">
+                <div class="inline-block " style="width: 25%;">
                     <span class="key">所在部门：</span>
                     <span class="value" v-text="currentDepartment"></span></div>
-                <div class="inline-block " style="width: 33%;">
+                <div class="inline-block " style="width: 24%;">
                     <span class="key">负责销售：</span>
                     <span class="value" v-text="currentUser"></span></div>
+                <div class="inline-block" style="width: 24%;">
+                    <span class="key">签约合作伙伴：</span>
+                    <span @click="isSignedCp('y')" class="value" style="margin-left: 10px; cursor: pointer;">
+                        是&nbsp;
+                        <i v-if="!(pIsSignedCp == 'y')" class="fa fa-circle-o"></i>
+                        <i v-if="pIsSignedCp == 'y'" class="fa fa-dot-circle-o i-text-col"></i>
+                    </span>
+                    <span @click="isSignedCp('n')" class="value" style="margin-left: 10px; cursor: pointer;">
+                        否&nbsp;
+                        <i v-if="!(pIsSignedCp == 'n')" class="fa fa-circle-o"></i>
+                        <i v-if="pIsSignedCp == 'n'" class="fa fa-dot-circle-o i-text-col"></i>
+                    </span>
+                </div>
             </div><!-- 基本信息 -->
 
             <div class="row-item">
                 <div class="row-item-label">合作伙伴客户名称：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <!--<input type="text" class="input-group-form">-->
+                    <i-input :verify-msg="'客户名称不能为空'"
+                             v-model="pName"></i-input>
                 </div>
             </div><!-- 客户名称 -->
 
             <div class="row-item">
-                <div class="row-item-label">区域：</div>
+                <div class="row-item-label">区域、省份：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <input v-model="defaultCheckedText"
+                           @click.stop="partnerRegionProvinceBtn"
+                           type="text" class="input-group-form" readonly="true">
+                    <div v-if="regionProvinceIsShow"
+                         @click.stop=""
+                         class="regionProvince clearfix">
+                        <table>
+                            <tbody>
+                            <tr v-for="item in allProvinceList">
+                                <td v-text="item.region.text"
+                                    class="text-left"
+                                    style="min-width: 100px;padding: 5px;"></td>
+                                <td>
+                                    <!--<i-checkbox :data-list="item.province"-->
+                                    <!--@on-check="checkboxBtn($event, item.region.code)"></i-checkbox>-->
+                                    <div class="i-checkbox-group">
+                                        <div v-for="(_item, index) in item.province"
+                                             @click="checkboxBtn(_item)"
+                                             :key="_item.code"
+                                             class="i-checkbox-wrap">
+                                            <span class="i-checkbox-box">
+                                                <i class="fa fa-square-o"></i>
+                                                <transition name="fade">
+                                                    <i v-if="styleShow(_item.code)" class="is-show fa fa-check"></i>
+                                                </transition>
+                                            </span>
+                                            <span v-text="_item.text"></span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--<i-checkbox :checkbox-list="regionList"
+                                @on-check="checkboxBtn($event, 'region')"></i-checkbox>-->
                 </div>
             </div><!-- 区域 -->
 
-            <div class="row-item">
+            <!--<div class="row-item">
                 <div class="row-item-label">城市：</div>
                 <div class="row-item-form input-group">
                     <input type="text" class="input-group-form">
                 </div>
-            </div><!-- 城市 -->
+            </div> 城市 -->
 
             <div class="row-item">
                 <div class="row-item-label">主要业务行业：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <multiple-list :data-list="industryList"
+                                   :default-list="checkedIndustryList"
+                                   v-model="pBusinessIndustry"
+                    ></multiple-list>
+
                 </div>
             </div><!-- 行业 -->
 
             <div class="row-item">
                 <div class="row-item-label">主要合作产品：</div>
                 <div class="row-item-form input-group">
-                    <input type="text" class="input-group-form">
+                    <multiple-list :data-list="solutionList"
+                                   :default-list="checkedSolutionList"
+                                   v-model="pSolution"
+                    ></multiple-list>
                 </div>
             </div><!-- 产品 -->
 
             <div class="row-item">
-                <div class="inline-block " style="width: 25%;">
-                    <div class="row-item-label" style="width: 52%;">注册资本(万元)：</div>
-                    <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                <div class="inline-block " style="width: 49%;">
+                    <div class="row-item-label" style="width: 30%;">注册资本(万元)：</div>
+                    <div class="row-item-form input-group" style="width: 59%;">
+                        <input v-model="pRegisteredCapital" type="text" class="input-group-form">
                     </div>
                 </div>
-                <div class="inline-block pull-right" style="width: 35%;">
-                    <div class="row-item-label" style="width: 35%;">合作伙伴类型：</div>
+                <div class="inline-block pull-right" style="width: 50%;">
+                    <div class="row-item-label text-center" style="width: 35%;">合作伙伴类型：</div>
                     <div class="row-item-form input-group" style="width: 65%;">
-                        <input type="text" class="input-group-form">
+                        <select-list :data-list="partnerTypeList"
+                                     v-model="pType"></select-list>
                     </div>
                 </div>
-                <div class="inline-block pull-right" style="width: 35%; margin-right: 20px;">
+                <!--<div class="inline-block pull-right" style="width: 35%; margin-right: 20px;">
                     <div class="row-item-label" style="width: 55%;">首次签订合作协议年月：</div>
                     <div class="row-item-form input-group" style="width: 45%;">
                         <input type="text" class="input-group-form">
                     </div>
-                </div>
+                </div>-->
             </div><!-- 资本，年月，类型 -->
 
             <div class="row-item">
                 <div class="inline-block" style="width: 23%;">
                     <span class="key">近3年合同额(万元)：</span>
                 </div>
-                <div class="inline-block" style="width: 25%;">
-                    <div class="row-item-label text-right" style="width: 52%;">2018年</div>
+                <div class="inline-block pull-right" style="width: 25%;">
+                    <div v-text="pLastContractAmount[0].year  +'年'"
+                         class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pLastContractAmount[0].contractAmount" type="text" class="input-group-form">
                     </div>
                 </div>
-                <div class="inline-block" style="width: 25%;">
-                    <div class="row-item-label text-right" style="width: 52%;">2017年</div>
+                <div class="inline-block pull-right" style="width: 25%;">
+                    <div v-text="pLastContractAmount[1].year +'年'"
+                         class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pLastContractAmount[1].contractAmount" type="text" class="input-group-form">
                     </div>
 
                 </div>
                 <div class="inline-block pull-right" style="width: 25%;">
-                    <div class="row-item-label text-right" style="width: 52%;">2016年</div>
+                    <div v-text="pLastContractAmount[2].year +'年'"
+                         class="row-item-label text-right" style="width: 52%;"></div>
                     <div class="row-item-form input-group" style="width: 45%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="pLastContractAmount[2].contractAmount" type="text" class="input-group-form">
                     </div>
-
                 </div>
 
             </div><!-- 近3年 -->
@@ -252,40 +377,41 @@
             <div class="row-item">
                 <div class="row-item-label">公司案例：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="pCompanyCase"></textarea>
                 </div>
             </div><!-- 案例 -->
 
             <div class="row-item">
                 <div class="row-item-label">合作伙伴简介：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="pSynopsisOfPartners"></textarea>
                 </div>
             </div><!-- 简介 -->
 
             <div class="row-item">
                 <div class="row-item-label">备注：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="pRemark"></textarea>
                 </div>
             </div><!-- 备注 -->
-
         </div><!-- /.pop-main -->
-        <div class="title"><p>添加合作伙伴机要信息</p></div>
-        <div class="pop-main">
+
+
+        <div v-if="titleAddMsg" class="title"><p>添加合作伙伴机要信息</p></div>
+        <div v-if="titleEditMsg" class="title"><p>编辑合作伙伴机要信息</p></div>
+        <div v-if="addPartnerMsgPop" class="pop-main">
             <div class="row-item">
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">联系人姓名：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <!--<input type="text" class="input-group-form">-->
-
-                        <i-input :verify-msg="'联系人不能为空'" @on-blur="inputBlur($event, 'mContact')"></i-input>
+                        <i-input :verify-msg="'联系人不能为空'"
+                                 v-model="mContact"></i-input>
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-right" style="width: 35%;">头衔：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mTitle" type="text" class="input-group-form">
                     </div>
                 </div>
             </div><!-- -->
@@ -293,13 +419,13 @@
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">所在部门：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mDepartment" type="text" class="input-group-form">
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-right" style="width: 35%;">邮件：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mEmail" type="text" class="input-group-form">
                     </div>
                 </div>
             </div><!-- -->
@@ -307,13 +433,19 @@
                 <div class="inline-block" style="width: 49%;">
                     <div class="row-item-label" style="width: 35%;">手机号码：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <i-input :verify-msg="'手机号码不能为空'"
+                                 v-model="mPhone"></i-input>
                     </div>
                 </div>
                 <div class="inline-block pull-right" style="width: 50%;">
                     <div class="row-item-label text-right" style="width: 35%;">座机号码：</div>
                     <div class="row-item-form input-group" style="width: 59%;">
-                        <input type="text" class="input-group-form">
+                        <input v-model="mTelphone1" type="text" class="input-group-form" style="width: 19% !important;">
+                        <span style="color: rgb(221, 222, 225); margin-right: 3px;">-</span>
+                        <input v-model="mTelphone2" type="text" class="input-group-form" style="width: 44% !important;">
+                        <span style="color: rgb(221, 222, 225); margin-right: 3px;">-</span>
+                        <input v-model="mTelphone3" type="text" class="input-group-form" style="width: 23% !important;">
+
                     </div>
                 </div>
             </div><!-- -->
@@ -325,7 +457,7 @@
                         <li v-for="item in regionList"
                             v-text="item.text"
                             @click="clickRegionProvinceBtn(item.code, item.text, 'region')"
-                            :class="{'area-active': item.code == currentRegion}"
+                            :class="{'area-active': item.code == mRegionCode}"
                         ></li>
                     </ul>
                 </div>
@@ -337,7 +469,7 @@
                         <li v-for="item in provinceList"
                             v-text="item.text"
                             @click="clickRegionProvinceBtn(item.code, item.text, 'province')"
-                            :class="{'area-active': item.code == currentProvince}"
+                            :class="{'area-active': item.code == mProvinceCode}"
                         ></li>
                     </ul>
                 </div>
@@ -346,7 +478,6 @@
                 <div class="row-item-label">详细地址：</div>
                 <div class="row-item-form input-group">
                     <input v-model="mAddress"
-                           @keyup="test"
                            type="text" class="input-group-form">
                 </div>
             </div><!-- 详细地址 -->
@@ -354,29 +485,97 @@
             <div class="row-item">
                 <div class="row-item-label">备注：</div>
                 <div class="row-item-form">
-                    <textarea></textarea>
+                    <textarea v-model="mMark"></textarea>
                 </div>
             </div><!-- 备注 -->
 
+        </div><!-- /.pop-main -->
+
+        <div class="pop-main">
             <div class="row-item">
                 <div class="row-item-form">
-                    <div class="btn btn-theme">提交</div>
+                    <div v-if="submitBtnIsShow" @click="submitBtn('addPartner')" class="btn btn-theme">提交</div>
+                    <div v-if="!submitBtnIsShow" @click="submitBtn('addPartnerMsg')" class="btn btn-theme">提交</div>
                 </div>
             </div>
-        </div><!-- /.pop-main -->
+        </div><!-- /.提交按钮 -->
     </pop-up>
 
-    <!-- 添加合作伙伴 -->
-    <pop-up :is-show="addPartnerMsgPop" @on-close="popUp('addPartnerMsgPop')">
-        <div class="title"><p>添加合作伙伴机要信息</p></div>
-        <div class="pop-main">
-            123
-        </div><!-- /.pop-main -->
-    </pop-up>
+    <!-- 撤回 -->
+    <div v-if="revokeShow" class="dialog-wrap">
+        <div @click="hidePop('revokeShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small" style="bottom: 70%;">
+            <div class="title">提示
+                <i @click="hidePop('revokeShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定撤回吗 ？</div>
+            <div class="foot">
+                <div @click="cancelConfirmBtn('revoke', 'confirm')" class="btn btn-theme">确定</div>
+                <div @click="cancelConfirmBtn('revokeShow', 'cancel')" class="btn btn-border">取消</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- 忽略 -->
+    <div v-if="ignoreShow" class="dialog-wrap">
+        <div @click="hidePop('ignoreShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small" style="bottom: 70%;">
+            <div class="title">提示
+                <i @click="hidePop('ignoreShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">确定忽略吗 ？</div>
+            <div class="foot">
+                <div @click="cancelConfirmBtn('ignore', 'confirm')" class="btn btn-theme">确定</div>
+                <div @click="cancelConfirmBtn('ignoreShow', 'cancel')" class="btn btn-border">取消</div>
+            </div>
+        </div>
+    </div>
 
+    <!-- 审批 -->
+    <div v-if="auditShow" class="dialog-wrap">
+        <div @click="hidePop('auditShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small" style="bottom: 67%;">
+            <div class="title">审批
+                <i @click="hidePop('auditShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">
+                <p class="text-left">备注：</p>
+                <textarea v-model="auditRemark" style="width: 100%;"></textarea>
+            </div>
+            <div class="foot">
+                <div @click="cancelConfirmBtn('pass')" class="btn btn-theme">确定</div>
+                <div @click="cancelConfirmBtn('reject')" class="btn btn-border">驳回</div>
+            </div>
+        </div>
+    </div>
 
+    <!--  审核历史 -->
+    <div v-if="auditHistoryShow" class="dialog-wrap">
+        <div @click="hidePop('auditHistoryShow')" class="dialog-cover"></div>
+        <div class="dialog-content-small" style="width: 50%;">
+            <div class="title">审核记录 : <span v-text="auditHistoryList.name"></span>
+                <i @click="hidePop('auditHistoryShow')"  class="fa fa-close pull-right"></i></div>
+            <div class="content">
+                <table class="i-table">
+                    <thead>
+                    <tr>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in auditHistoryList.auditLogs">
+                        <td v-text="item.opTime" style="min-width: 100px;"></td>
+                        <td v-text="item.operName" style="min-width: 100px;"></td>
+                        <td v-text="item.auditStatus" style="min-width: 100px;"></td>
+                        <td v-text="item.remark"></td>
+                    </tr>
+                    </tbody>
+                </table>
 
+                <div v-if="auditHistoryList.auditLogs.length === 0">没有记录 ！</div>
+            </div>
+        </div>
+    </div>
 
 </div><!-- /.end -->
 <script src="../static/scripts/client/partner.js"></script>

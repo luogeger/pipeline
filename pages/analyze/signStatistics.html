@@ -40,28 +40,33 @@
             <table class="i-table i-table-border">
                 <thead>
                     <tr>
-                        <th>{{year.head.saleGroup}}</th>
-                        <th>{{year.head.target}}</th>
-                        <th>{{year.head.complete}}</th>
-                        <th>{{year.head.difference}}</th>
-                        <th>{{year.head.scale}}</th>
+                        <th v-text="year.head.saleGroup"></th>
+                        <th v-text="year.head.yearTarget"></th>
+                        <th v-text="year.head.target"></th>
+                        <th v-text="year.head.complete"></th>
+                        <th v-text="year.head.difference"></th>
+                        <th v-text="year.head.scale"></th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr v-for="item in year.body">
-                        <td>{{item.saleGroup}}</td>
-                        <td>{{item.target}}</td>
-                        <td>{{item.complete}}</td>
-                        <td>{{item.difference}}</td>
-                        <td>{{item.scale}}</td>
+                        <td v-text="item.saleGroup"></td>
+                        <td v-text="item.yearTarget"></td>
+                        <td v-text="item.target"></td>
+                        <td><span v-text="item.complete"
+                                  @click="popUp('half', item)"
+                                  class="click-half-complete"></span></td>
+                        <td v-text="item.difference"></td>
+                        <td v-text="item.scale"></td>
                     </tr>
 
                     <tr class="sum-foot">
-                        <td>{{year.foot.saleGroup}}</td>
-                        <td>{{year.foot.target}}</td>
-                        <td>{{year.foot.complete}}</td>
-                        <td>{{year.foot.difference}}</td>
-                        <td>{{year.foot.scale}}</td>
+                        <td v-text="year.foot.saleGroup"></td>
+                        <td v-text="year.foot.yearTarget"></td>
+                        <td v-text="year.foot.target"></td>
+                        <td v-text="year.foot.complete"></td>
+                        <td v-text="year.foot.difference"></td>
+                        <td v-text="year.foot.scale"></td>
                     </tr>
                 </tbody>
             </table>
@@ -128,6 +133,44 @@
             </tobdy>
         </table>
     </div><!-- /.quarter -->
+
+    <pop-up :is-show="halfCompleteIsShow"  @on-close="popUpClose('halfComplete')" width="80%">
+        <div class="title"><p>签约合同情况</p></div>
+        <div class="pop-main">
+            <p style="padding: 10px 0;">签约合同(万元)：
+                <span v-text="popHalfCompleteData.oth.totalSum" style="color:#ED6D00"></span></p>
+            <table class="i-table">
+                <thead>
+                    <tr>
+                        <th>序号</th>
+                        <th>销售部门</th>
+                        <th>销售</th>
+                        <th>签约时间</th>
+                        <th>客户名称</th>
+                        <th>最终客户</th>
+                        <th>项目名称</th>
+                        <th>行业线</th>
+                        <th>客户来源</th>
+                        <th>签约金额</th>
+                    </tr>
+                </thead>
+                <tobdy>
+                    <tr v-for="(item, index) in popHalfCompleteData.root">
+                        <td v-text="index +1" style="min-width: 50px;"></td>
+                        <td v-text="item.salesGroup" style="min-width: 120px;"></td>
+                        <td v-text="item.salesStaff" style="min-width: 100px;"></td>
+                        <td v-text="item.signTime"></td>
+                        <td v-text="item.customerName"></td>
+                        <td v-text="item.finalCustomer"></td>
+                        <td v-text="item.projectName"></td>
+                        <td v-text="item.industryLine" style="min-width: 100px;"></td>
+                        <td v-text="item.customerSource" style="min-width: 100px;"></td>
+                        <td v-text="item.signSum" style="min-width: 100px;"></td>
+                    </tr>
+                </tobdy>
+            </table>
+        </div>
+    </pop-up>
 </div><!-- /.main -->
 
 <script src="../static/scripts/analyze/signStatistics.js"></script>

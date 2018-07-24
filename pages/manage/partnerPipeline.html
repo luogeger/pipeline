@@ -1,0 +1,969 @@
+<link rel="stylesheet" href="../static/styles/manage/partnerPipeline.css">
+<div class="main" id="app" @click="hideFuzzyQuery">
+    <div class="breadcrumb">
+        <a href="">首页</a>
+        <span class="line">/</span>
+        <span>Pipeline管理</span>
+        <span class="line">/</span>
+        <span>合作伙伴pipeline</span>
+    </div>
+    <!-- 搜索框 -->
+    <div class="search-wrapper clearfix">
+        <input id="drow" class="hide" type="checkbox">
+        <label for="drow" class="drowicon"><i class="fa fa-chevron-down"></i></label>
+        <div class="content" style="width: calc(100% - 160px)">
+            <div class="input-group">
+                <span class="input-group-label">合作伙伴名称：</span>
+                <div style="position: relative;display: inline-block;">
+                    <input v-model="cpCustomerName"
+                           @keyup="getFuzzyList(1)"
+                           type="text" class="input-group-form">
+                    <ul v-if="fuzzyQueryList_1.length !== 0" class="fuzzy-query" style="left: 0px">
+                        <li v-for="item in fuzzyQueryList_1"
+                            @click="selectFuzzyText(1, item.name, item.code)"
+                            v-text="item.name"
+                        ></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">合作伙伴类型：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cpCustomerTypeText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchCpCustomerTypeCode('', '')">请选择</li>
+                        <li @click="searchCpCustomerTypeCode(cpCustomerTypeList.code, cpCustomerTypeList.text)"
+                            v-for="cpCustomerTypeList in cpCustomerTypeLists"
+                            :value="cpCustomerTypeList.code">{{ cpCustomerTypeList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">行业线：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cIndustryLineText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchIndustryLineCode('', '')">请选择</li>
+                        <li @click="searchIndustryLineCode(initialValList.code, initialValList.text)"
+                            v-for="initialValList in initialValLists.industryLines">{{ initialValList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="input-group">
+                <span class="input-group-label">预计签约时间：</span>
+                <input class="input-group-form"
+                       readonly="readonly"
+                       id="startDate"
+                       @click=""
+                       v-model="cExpectSignDateRange">
+            </div>
+            <div style="display: inline-block">
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">成功率：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="min-width: 50px">{{ cProjectSuccessMinText }}</span>
+                    <!--<input type="hidden" v-text="cProjectSuccessMinCode" />-->
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchSuccessMinCode('', '')">请选择</li>
+                        <li @click="searchSuccessMinCode(projectSuccessRate.code, projectSuccessRate.text)"
+                            v-for="projectSuccessRate in projectSuccessRates"
+                            :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">-</span>
+                <div class="dropdown">
+                    <span class="dropdown-default" style="min-width: 50px">{{ cProjectSuccessMaxText }}</span>
+                    <!--<input type="hidden" v-text="cProjectSuccessMaxCode" />-->
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchSuccessMaxCode('', '')">请选择</li>
+                        <li @click="searchSuccessMaxCode(projectSuccessRate.code, projectSuccessRate.text)"
+                            v-for="projectSuccessRate in projectSuccessRates"
+                            :value="projectSuccessRate.code">{{ projectSuccessRate.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            </div>
+            <!--<div class="dropdown-wrap">
+                <span class="dropdown-label">事业部：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cMngSalesGroupText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        &lt;!&ndash;TODO 如果当前人是领导的话，就用userInfo.mngSalesGroups下面的code和text；否则就用userInfo.departmentCode和userInfo.departmentName&ndash;&gt;
+                        <li @click="searchSalesGroupCode('', '')">请选择</li>
+                        <li @click="searchSalesGroupCode(oauthList.code, oauthList.text)"
+                            v-for="oauthList in mngSalesGroups"
+                            :value="oauthList.code">{{ oauthList.text }}</li>
+                    </ul>
+                </div>
+            </div>-->
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">区域：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cRegionText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchRegionCode('', '')">请选择</li>
+                        <li @click="searchRegionCode(initialValList.code, initialValList.text)"
+                            v-for="initialValList in initialValLists.regions"
+                            :value="initialValList.code">{{ initialValList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="dropdown-wrap">
+                <span class="dropdown-label">客户来源：</span>
+                <div class="dropdown">
+                    <span class="dropdown-default">{{ cCustomerSourText }}</span>
+                    <i class="fa fa-angle-down"></i>
+                    <ul>
+                        <li @click="searchCustomerSourceCode('', '')">请选择</li>
+                        <li @click="searchCustomerSourceCode(initialValList.code, initialValList.text)"
+                            v-for="initialValList in initialValLists.customerSours"
+                            :value="initialValList.code">{{ initialValList.text }}</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="display: inline-block">
+                <div class="dropdown-wrap">
+                    <span class="dropdown-label">解决方案：</span>
+                    <div class="dropdown">
+                        <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionFirstText }}</span>
+                        <i class="fa fa-angle-down"></i>
+                        <ul style="max-width: 500px;">
+                            <li @click="searchSolutionFirst('', '', 1)">请选择</li>
+                            <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 1)"
+                                v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="dropdown-wrap">
+                    <span class="dropdown-label">-</span>
+                    <div class="dropdown">
+                        <span class="dropdown-default" style="max-width: 500px;">{{ cSoSolutionSecondText }}</span>
+                        <i class="fa fa-angle-down"></i>
+                        <ul style="max-width: 500px;">
+                            <li @click="searchSolutionSecond('', '', 1)">请选择</li>
+                            <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 1)"
+                                v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!--   <div class="dropdown-wrap">
+                   <span class="dropdown-label">近期变更过：</span>
+                   <div class="dropdown">
+                       <span class="dropdown-default">{{ cLatelyChangeText }}</span>
+                       <i class="fa fa-angle-down"></i>
+                       <ul>
+                           <li @click="searchLatelyChangeCode('', '')">请选择</li>
+                           <li @click="searchLatelyChangeCode(searchList.code, searchList.text)"
+                               v-for="searchList in searchLists.latelyChanges">{{ searchList.text }}</li>
+                       </ul>
+                   </div>
+               </div>
+               <div v-if="userLevel !== 'xs'"
+                    class="input-group">
+                   <span class="input-group-label">销售：</span>
+                   <div class="input-group1" style="position: relative;display: inline-block;">
+                       <input v-model="cSalesName"
+                              @keyup="getSales"
+                              onkeydown="vm.keybordEnterSales()"
+                              type="text" class="input-group-form">
+                       <ul class="fuzzy-query" style="left: 0px">
+                           <li v-for="item in salesList"
+                               @click="selectSales(item.text, item.code)"
+                               v-text="item.text"></li>
+                       </ul>
+                   </div>
+               </div>-->
+        </div>
+        <div style="position: absolute;right: 20px;top: 15px;">
+            <button @click="querySearchForm" class="btn btn-sm btn-theme" type="button" style="margin-right: 10px">查询</button>
+            <button @click="clearSearchForm" class="btn btn-sm btn-border" type="button">重置</button>
+        </div>
+    </div>
+    <div class="main-wrapper">
+        <div :class="{maxWidth: ismaxWidth}" class="data">
+            <div class="subInformation clearfix">
+                <button class="btn btn-sm btn-theme modelDomBtn"
+                        v-if="userLevel == 'xs'"
+                        @click="addData"
+                        style="margin-right: 10px">新增 Pipeline</button>
+                预计签约金额(万元):
+                <span class="theme-color"
+                      v-text="expectSignSumTotal"
+                      style="margin-right: 15px"></span>
+                加权金额总计(万元):
+                <span class="theme-color" v-text="weightedSumTotal"></span>
+                <div :class="{'hide': noData}" class="pull-right">
+                    <div class="data-page page-css">
+                        <div @click="calcDataPage('data' , 'first')"
+                             class="page-css-first">
+                            <i class="fa fa-angle-double-left"></i></div>
+                        <div @click="calcDataPage('data' , -1)"
+                             class="page-css-prev"
+                             style="margin-right: 10px;">
+                            <i class="fa fa-angle-left"></i></div>
+                        <span>第</span><input @keyup.enter="dataEnter" type="text" style="margin: 0 5px;" v-model="dataPageNum"><span>页，</span>
+                        <span>共 {{dataPageSum}} 页</span>
+                        <div @click="calcDataPage('data' , 1)"
+                             class="page-css-next"><i class="fa fa-angle-right"></i></div>
+                        <div @click="calcDataPage('data' , 'last')" class="page-css-last" style="margin-right: 10px;"><i
+                                class="fa fa-angle-double-right"></i></div>
+                        <span>显示</span>
+                        <span style="margin-left: 5px;">{{dataPageStart}}</span>
+                        <span>-</span>
+                        <span style="margin-right: 5px;">{{dataPageEnd}}</span>
+                        <span>条，</span>
+                        <span>共&nbsp; {{dataPageTotal}} &nbsp;条</span>
+                    </div>
+                </div>
+            </div>
+            <div class="table-wrapper" style="overflow: auto">
+                <div style="width: 3500px">
+                    <table class="i-table">
+                        <thead>
+                        <tr>
+                            <th>&nbsp;</th>
+                            <th :class="{'hide': userLevel === 'dqxyh'}">
+                                <div class="highlight">操作</div></th>
+                            <th><div class="highlight">
+                                状态
+                            </div></th>
+                            <th><div class="highlight">
+                                支持事业部
+                            </div></th>
+                            <th><div class="highlight">
+                                支持销售
+                            </div></th>
+                            <th>报备日期</th>
+                            <th>合作伙伴部</th>
+                            <th>负责销售</th>
+                            <th>负责售前</th>
+                            <th>区域</th>
+                            <th>客户所在省份</th>
+                            <th>客户编码</th>
+                            <th>合作伙伴名称</th>
+                            <th>合作伙伴类型</th>
+                            <th>最终客户名称</th>
+                            <th>项目名称</th>
+                            <th>解决方案名称</th>
+                            <th>行业线</th>
+                            <th>预计签约金额<br/>（万元）</th>
+                            <th>预计签约时间</th>
+                            <th>项目阶段</th>
+                            <th>成功率</th>
+                            <th>加权金额<br/>（万元）</th>
+                            <th>项目跟进情况</th>
+                            <th>竞争对手</th>
+                            <th>客户来源</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr v-for="(pipelineList, index) in pipelineData.root"
+                            @dblclick="openUpdateCase()"
+                            @click="showOneChange(pipelineList.soCoreCode, index)"
+                            :class="{ active: isClicked == index }">
+                            <td>
+                                <!-- 历史记录 -->
+                                <div @click="getHistoryLog(pipelineList.id)">
+                                    <i class="fa fa-clock-o"></i>
+                                    <!--:class="{'has-reject': item.hasReject !== 0}"
+                                       v-if="(userLevel == 'xs' && item.power == 'pri') || (userLevel == 'xsld' && item.power == 'pro') || item.power == 'pub'"-->
+                                </div>
+                            </td>
+                            <td :class="{'hide': userLevel === 'dqxyh'}">
+                                <!-- 针对销售 ,当状态为未提交(至事业部,只保存在合作伙伴部)时/驳回时/撤回时，显示编辑按钮-->
+                                <div v-if="userLevel == 'xs' && (pipelineList.status == 'unsubmitted' || pipelineList.status == 'reject' || pipelineList.status == 'revoke')"
+                                     @click="editData(pipelineList.id, index)"
+                                     class="btn btn-xs btn-border">编辑</div>
+                                <!-- 针对销售 ,当状态为已分配/直销事业部驳回/已签收/待签收时，显示编辑按钮，但不可点击-->
+                                <div v-if="userLevel == 'xs' && (pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'rejectSalesGroup' || pipelineList.status == 'signIn' || pipelineList.status == 'assignSalesStaff')"
+                                     @click="editData(pipelineList.id, index)"
+                                     class="btn btn-xs btn-border disabled">编辑</div>
+                                <!-- 针对销售 ,当状态为待分配时，显示撤回按钮-->
+                                <div v-if="userLevel == 'xs' && pipelineList.status == 'pending'"
+                                     @click="revokeData(pipelineList.id)"
+                                     class="btn btn-xs btn-border">撤回</div>
+
+                                <!-- 针对销售老大 ,当状态为待分配/直销事业部驳回时，显示分配按钮-->
+                                <div v-if="userLevel == 'xsld' && (pipelineList.status == 'pending' || pipelineList.status == 'rejectSalesGroup')"
+                                     @click="allotData(pipelineList.id, index)"
+                                     class="btn btn-xs btn-border">分配</div>
+                                <!-- 针对销售老大 ,当状态为已驳回/已分配/已签收/待签收时，显示分配按钮，但不可点击-->
+                                <div v-if="userLevel == 'xsld' && (pipelineList.status == 'reject' || pipelineList.status == 'assignSalesGroup' || pipelineList.status == 'signIn' || pipelineList.status == 'assignSalesStaff')"
+                                     @click="allotData(pipelineList.id, index)"
+                                     class="btn btn-xs btn-border disabled">分配</div>
+                            </td>
+                            <td>
+                                <span v-if="pipelineList.status == 'unsubmitted'" class="type-unsubmitted">未提交</span>
+                                <span v-if="pipelineList.status == 'pending'" class="type-pending">待分配</span>
+                                <span v-if="pipelineList.status == 'revoke'" class="type-revoke">已撤回</span>
+                                <span v-if="pipelineList.status == 'assignSalesGroup'" class="type-pass">已分配</span>
+                                <span v-if="pipelineList.status == 'signIn'" class="type-pass">已签收</span>
+                                <span v-if="pipelineList.status == 'assignSalesStaff'" class="type-pending">待签收</span>
+
+                                <span v-if="userLevel == 'xs' && pipelineList.status == 'reject'" class="type-reject">被驳回</span>
+                                <span v-if="userLevel == 'xs' && pipelineList.status == 'rejectSalesGroup'" class="type-pending">待分配</span>
+
+                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'reject'" class="type-reject">已驳回</span>
+                                <span v-if="userLevel == 'xsld' && pipelineList.status == 'rejectSalesGroup'" class="type-reject">被驳回</span>
+
+                                <!--<span v-text="pipelineList.status"></span>-->
+                            </td>
+                            <td v-if="pipelineList.departmentName === null">-</td>
+                            <td v-if="pipelineList.departmentName !== null" v-text="pipelineList.departmentName"></td>
+                            <td v-if="pipelineList.salesStaffName === null">-</td>
+                            <td v-if="pipelineList.salesStaffName !== null" v-text="pipelineList.salesStaffName"></td>
+                            <td v-text="pipelineList.reportDate"></td>
+                            <td v-text="pipelineList.cpDepartmentName"></td>
+                            <td v-text="pipelineList.cpSalesStaffName"></td>
+                            <td v-text="pipelineList.preSalesStaff"></td>
+                            <td v-text="pipelineList.regionName"></td>
+                            <td v-text="pipelineList.provinceName"></td>
+                            <td v-text="pipelineList.cpCustomerCode"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.cpCustomerName"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.cpCustomerTypeName"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.customerName"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.projectDescription"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.solutionName"></div>
+                            </td>
+                            <td v-text="pipelineList.industryLineName"></td>
+                            <td v-text="pipelineList.expectSignSum"></td>
+                            <td v-text="pipelineList.expectSignDate"></td>
+                            <td v-text="pipelineList.progressName"></td>
+                            <td v-text="pipelineList.successRateName"></td>
+                            <td v-text="pipelineList.weightedSum"></td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.projectFollowUpRemark"></div>
+                            </td>
+                            <td>
+                                <div class="onetext" v-text="pipelineList.competitor"></div>
+                            </td>
+                            <td v-text="pipelineList.customerSourceName"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div v-if="noData"
+                     style="padding: 20px;text-align: center">暂无相关数据</div>
+            </div>
+        </div>
+        <!--项目更新情况-->
+        <div class="updateCase" :class="{'hide': updateCaseShow}">
+            <div class="title clearfix">
+                <span>项目更新情况</span>
+                <a @click="closeUpdateCase" class="close pull-right" href="javascript:;">
+                    <i class="fa fa-close"></i>
+                </a>
+            </div>
+            <div class="content">
+                <div v-model="noUpdateCase"
+                     style="text-align: center">{{ updateCaseMsg }}</div>
+                <ul class="block">
+                    <li v-for="(changeOneList,index) in changeOneLists">
+                        <!--<h4>{{ changeOneList.opTime }}</h4>-->
+                        <h4 v-time="new Date(changeOneList.opTime).getTime()"></h4>
+                        <p>
+                            <span v-html="changeOneList.operName"></span>
+                            <span v-html="changeOneList.opDetail"></span>
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <!-- 弹窗 -->
+    <div class="dialog-wrap" :class="{'hide': dialogShow}">
+        <div @click="dialogHide" class="dialog-cover"></div>
+        <!-- 新增修改pipeline弹窗 -->
+        <div :class="{'hide': handleDataShow}" class="dialog-content" style="width: auto">
+            <div class="title clearfix">
+                <p v-if="handleTemplate.id != null" class="pull-left">修改 Pipeline</p>
+                <p v-if="handleTemplate.id == null" class="pull-left">新增 Pipeline</p>
+                <p @click="dialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main" style="padding: 20px;">
+                <div id="aboutPipeline" class="data-wrapper">
+                    <div class="wrapper">
+                        <div class="main">
+                            <form class="clearfix" id="dataSubmit" action="">
+                                <input type="hidden" v-model="handleTemplate.soCoreCode" name="soCoreCode">
+                                <input type="hidden" v-model="nothing">  <!--多选框需触发-->
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">报备日期:</span>
+                                        <span style="line-height: 30px;">{{ hReportDate }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">销售小组：</span>
+                                        <span style="line-height: 30px;">{{ hSalesGroupText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">负责销售:</span>
+                                        <span style="line-height: 30px;">{{ hSalesStaffName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">负责售前:</span>
+                                        <div style="display: table-cell">
+                                            <div style="position: relative;display: inline-block;margin-bottom: 5px">
+                                                <input v-model="hPreSaleStaffsName"
+                                                       @keyup="getPreSalesStaff"
+                                                       class="input-group-form" type="text" style="width: 120px">
+                                                <ul v-if="preSalesStaffList.length !== 0" class="fuzzy-query" style="left: 0px">
+                                                    <li v-for="item in preSalesStaffList"
+                                                        @click="selectPreSalesStaff(item.name, item.email)"
+                                                        v-text="item.name"></li>
+                                                </ul>
+                                            </div>
+                                            <!--<i @click="addLlist" class="fa fa-plus" style="color: #666;vertical-align: middle;margin:7px 5px 0"></i>
+                                            <div v-for="(i,index) in listss" style="margin-bottom: 5px;display: inline-block;margin-right: 5px;position: relative;">
+                                                <input v-model="hPreSaleStaffsName[index]"
+                                                       @keyup="getPreSalesStaff"
+                                                       class="input-group-form" type="text" style="width: 120px">
+                                                <i @click="deleteLlist(index)" class="fa fa-plus" style="color: #666;vertical-align: middle;margin:7px 5px 0;transform: rotate(45deg)"></i>
+                                                <ul v-if="preSalesStaffList.length !== 0" class="fuzzy-query" style="left: 0px">
+                                                    <li v-for="item in preSalesStaffList"
+                                                        @click="selectPreSalesStaff(item.name, item.email)"
+                                                        v-text="item.name"></li>
+                                                </ul>
+                                            </div>-->
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">区域:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectRegion(initialValList.code, index)"
+                                                v-for="(initialValList,index) in initialValLists.regions"
+                                                :class="{'active': handleTemplate.region == initialValList.code}">{{ initialValList.text }}</li>
+                                                <!--:class="{'active': handleTemplate.regionCode == initialValList.code}">{{ initialValList.text }}</li>-->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">客户所在省份:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectProvince(provinceList.code)"
+                                                v-for="(provinceList,index) in provinceLists"
+                                                :class="{'active': provinceList.code == handleTemplate.province}">{{ provinceList.text }}</li>
+                                                <!--:class="{'active': provinceList.code == handleTemplate.provinceCode}">{{ provinceList.text }}</li>-->
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label">解决方案：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default" style="max-width: 500px;">{{ hSoSolutionFirstText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul style="max-width: 500px;">
+                                                <li @click="searchSolutionFirst('', '', 2)">请选择</li>
+                                                <li @click="searchSolutionFirst(solutionFirstList.id, solutionFirstList.text, 2)"
+                                                    v-for="solutionFirstList in solutionFirstLists">{{ solutionFirstList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label" style="width: 26px">-</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default" style="max-width: 500px;">{{ hSoSolutionSecondText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul style="max-width: 500px;">
+                                                <li @click="searchSolutionSecond('', '', 2)">请选择</li>
+                                                <li @click="searchSolutionSecond(solutionSecondList.data.code, solutionSecondList.text, 2)"
+                                                    v-for="solutionSecondList in solutionSecondLists">{{ solutionSecondList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">项目名称:</span>
+                                        <input v-model="handleTemplate.projectDescription" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">合作伙伴名称:</span>
+                                        <div style="position: relative;display: inline-block;">
+                                            <input v-model="hCpCustomerName"
+                                                   @keyup="getFuzzyList(2)"
+                                                   type="text" class="input-group-form input-lg">
+                                            <ul v-if="fuzzyQueryList_2.length !== 0" class="fuzzy-query" style="left: 0">
+                                                <li @click="selectFuzzyText(2, item.name, item.code, item.departmentCode, item.hasConcat, item.whole)"
+                                                    v-for="item in fuzzyQueryList_2"
+                                                    v-text="item.name"
+                                                ></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">最终客户名称:</span>
+                                        <input @keyup="finalCustomerKeyup" v-model="handleTemplate.cpCustomerName" class="input-group-form input-lg" type="text">
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户名称所在区域:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerRegion(initialValList.code, index)"
+                                                v-for="(initialValList,index) in initialValLists.regions"
+                                                :class="{'active': handleTemplate.finalCustomerRegion == initialValList.code}">{{ initialValList.text }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': hasFinalCustomer}" class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">最终客户名称所在省份:</span>
+                                        <ul class="item-list clearfix">
+                                            <li @click="selectFinalCustomerProvince(finalCustomerProvinceList.code)"
+                                                v-for="(finalCustomerProvinceList,index) in finalCustomerProvinceLists"
+                                                :class="{'active': finalCustomerProvinceList.code == handleTemplate.finalCustomerProvince}">{{ finalCustomerProvinceList.text }}</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">合作伙伴类型：</span>
+                                         <div class="dropdown">
+                                             <span class="dropdown-default">{{ hCpCustomerTypeText }}</span>
+                                             <i class="fa fa-angle-down"></i>
+                                             <ul>
+                                                 <li @click="selectCpCustomerTypeCode(cpCustomerTypeList.code, cpCustomerTypeList.text)"
+                                                     v-for="cpCustomerTypeList in cpCustomerTypeLists"
+                                                     :value="cpCustomerTypeList.code">{{ cpCustomerTypeList.text }}</li>
+                                             </ul>
+                                         </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">预计签约时间：</span>
+                                        <div class="i-date-picker-container">
+                                            <div class="date-input-box  icon iconfont icon-cale-a">
+                                                <input v-model="handleTemplate.expectSignDate"
+                                                       readonly="readonly"
+                                                       type="text"
+                                                       id="signDate"
+                                                       class="i-date-picker" style="width: 163px"
+                                                       data-calendar="true" >
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">客户来源：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hCustomerSourceText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectCustomerSourceCode(initialValList.code, initialValList.text)"
+                                                    v-for="initialValList in initialValLists.customerSours">{{ initialValList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">项目阶段：</span>
+                                        <div class="dropdown noNull">
+                                            <span class="dropdown-default">{{ hProgressText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectProgressCode(initialValList.code, initialValList.text)"
+                                                    v-for="initialValList in initialValLists.progresss">{{ initialValList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <span class="dropdown-label">行业线：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hIndustryLineText }}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectIndustryLineCode(initialValList.code, initialValList.text)"
+                                                    v-for="initialValList in initialValLists.industryLines"
+                                                    :value="initialValList.code">{{ initialValList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label" style="width: auto">预计签约金额（万元）:</span>
+                                        <input v-model="handleTemplate.expectSignSum"
+                                               class="input-group-form"
+                                               type="number"
+                                               ref="expectSignSum"
+                                               @keyup="sumKeyup()"
+                                               style="text-align: right;padding-right: 10px">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <span class="dropdown-label">成功率：</span>
+                                        <div class="dropdown">
+                                            <span class="dropdown-default">{{ hSuccessRateText}}</span>
+                                            <i class="fa fa-angle-down"></i>
+                                            <ul>
+                                                <li @click="selectSuccessRateCode(initialValList.code, initialValList.text)"
+                                                    v-for="initialValList in initialValLists.projectSuccessRates">{{ initialValList.text }}</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label" style="width: auto">加权金额总计（万元）:</span>
+                                        <span style="line-height: 30px;">{{ hWeightedSum }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group" style="display: block;">
+                                        <span class="input-group-label">项目跟进情况:</span>
+                                        <div>
+                                       <textarea v-model="handleTemplate.projectFollowUpRemark" class="input-group-form" style="display: block"
+                                                 placeholder="请详细的描述您申请该项资源的使用场景，内容包括但不限于该资源用于什么类型的应用，以及对该资源的具体需求如执行单元数量、内存大小等。"></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">竞争对手:</span>
+                                        <input v-model="handleTemplate.competitor" class="input-group-form" type="text">
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1" style="margin-top: 40px">
+                                    <div class="input-group">
+                                        <span class="input-group-label"></span>
+                                        <button @click="submitToPD"
+                                                class="btn btn-sm btn-theme"
+                                                type="button" style="margin-right: 20px">保存</button>
+                                        <button @click="submitToBU" class="btn btn-sm btn-theme" type="button">提交至事业部</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="explain">
+                            <div class="title clearfix">
+                                <span>项目更新情况</span>
+                                <a onclick="loadMainPage('.content-item', 'client/data.html')"
+                                   class="theme-color pull-right" href="javascript:;">清空配置</a>
+                            </div>
+                            <div class="content" style="text-align: center;padding: 20px">
+                                暂无项目更新情况
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.main -->
+        </div>
+        <!-- 查看pipeline弹窗 -->
+        <div :class="{'hide': checkDataShow}" class="dialog-content" style="width: auto">
+            <div class="title clearfix">
+                <p class="pull-left">查看 Pipeline</p>
+                <p @click="dialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="main" style="padding: 20px;">
+                <div  class="data-wrapper">
+                    <div class="wrapper">
+                        <div class="main">
+                            <form class="clearfix" action="">
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">报备日期:</span>
+                                        <span class="checkText">{{ hReportDate }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">销售小组：</span>
+                                        <span class="checkText">{{ hSalesGroupText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">负责销售:</span>
+                                        <span class="checkText">{{ hSalesStaffName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label">负责售前:</span>
+                                        <span class="checkText">{{ hPreSaleStaffsName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">区域:</span>
+                                        <span class="checkText">{{ hRegionName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">客户所在省份:</span>
+                                        <span class="checkText">{{ hProvinceName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">合作伙伴名称:</span>
+                                        <span class="checkText">{{ hCpCustomerName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">合作伙伴类型：</span>
+                                        <span class="checkText">{{ hCpCustomerTypeText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">最终客户名称:</span>
+                                        <span class="checkText">{{ handleTemplate.cpCustomerName }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">项目名称:</span>
+                                        <span class="checkText">{{ handleTemplate.projectDescription }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label">解决方案：</span>
+                                       <span class="checkText" style="display: table-cell;">{{ hSoSolutionFirstText }}</span>
+                                    </div>
+                                    <div class="dropdown-wrap" style="display: inline-block">
+                                        <span class="dropdown-label" style="width: 26px">-</span>
+                                        <span class="checkText" style="display: table-cell;">{{ hSoSolutionSecondText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <span class="dropdown-label">行业线：</span>
+                                        <span class="checkText">{{ hIndustryLineText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label" style="width: auto">预计签约金额（万元）:</span>
+                                        <span class="checkText">{{ handleTemplate.expectSignSum }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <span class="dropdown-label">成功率：</span>
+                                        <span class="checkText">{{ hSuccessRateText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <span class="input-group-label" style="width: auto">加权金额总计（万元）:</span>
+                                        <span class="checkText">{{ hWeightedSum }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">客户来源：</span>
+                                        <span class="checkText">{{ hCustomerSourceText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="dropdown-wrap">
+                                        <i class="star">*</i>
+                                        <span class="dropdown-label">项目阶段：</span>
+                                        <span class="checkText">{{ hProgressText }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper">
+                                    <div class="input-group">
+                                        <i class="star">*</i>
+                                        <span class="input-group-label">预计签约时间：</span>
+                                        <span class="checkText">{{ handleTemplate.expectSignDate }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group" style="display: block;">
+                                        <span class="input-group-label">项目跟进情况:</span>
+                                        <p class="checkText">{{ handleTemplate.projectFollowUpRemark }}</p>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1">
+                                    <div class="input-group">
+                                        <span class="input-group-label">竞争对手:</span>
+                                        <span class="checkText">{{ handleTemplate.competitor }}</span>
+                                    </div>
+                                </div>
+                                <div class="block-wrapper col-1" style="margin-top: 40px;margin-bottom: 30px;">
+                                    <div class="input-group">
+                                        <span class="input-group-label"></span>
+                                        <button @click="allotThisData()"
+                                                class="btn btn-sm btn-theme"
+                                                type="button" style="margin-right: 20px">分配</button>
+                                        <button @click="rejectThisData()"
+                                                class="btn btn-sm btn-border" type="button">驳回</button>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': isAllotHide}" class="border-wrapper">
+                                    <div class="block-wrapper col-1">
+                                        <div class="dropdown-wrap">
+                                            <span class="dropdown-label">分配事业部:</span>
+                                            <div class="dropdown">
+                                                <span class="dropdown-default">{{ hSoDepartmentName }}</span>
+                                                <i class="fa fa-angle-down"></i>
+                                                <ul>
+                                                    <li @click="selectSoDepartment(soDepartmentList.code, soDepartmentList.text)"
+                                                        v-for="soDepartmentList in soDepartmentLists">{{ soDepartmentList.text }}</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="allotToBU()"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div :class="{'hide': isRejectHide}" class="border-wrapper">
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label">驳回理由:</span>
+                                            <textarea v-model="hRemark" style="width: 300px;height: 50px"></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="block-wrapper col-1">
+                                        <div class="input-group">
+                                            <span class="input-group-label"></span>
+                                            <button @click="rejectToXS(handleTemplate.id, 'reject')"
+                                                    class="btn btn-sm btn-theme"
+                                                    type="button">确认</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="explain">
+                            <div class="title clearfix">
+                                <span>项目更新情况</span>
+                                <a onclick="loadMainPage('.content-item', 'client/data.html')"
+                                   class="theme-color pull-right" href="javascript:;">清空配置</a>
+                            </div>
+                            <div class="content" style="text-align: center;padding: 20px">
+                                暂无项目更新情况
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div><!-- /.main -->
+        </div>
+        <!-- 查询审核历史记录 -->
+        <div :class="{'hide': auditHistoryShow}" class="dialog-content audit-history">
+            <div class="title clearfix">
+                <span>审核记录：</span><span v-text="auditHistoryTitle"></span>
+                <p @click="dialogHide" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="table-box" style="padding: 20px">
+                <table class="i-table">
+                    <thead>
+                    <tr>
+                        <th>创建时间</th>
+                        <th>创建人</th>
+                        <th>状态</th>
+                        <th>备注</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-for="item in auditHistoryList">
+                        <td v-text="item.opTime"></td>
+                        <td v-text="item.operName"></td>
+                        <td v-text="item.auditStatus"></td>
+                        <td v-text="item.remark"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- 弹窗 -->
+    <div class="dialog-wrap" :class="{'hide': secondDialogShow}">
+        <div @click="hideSecondPop" class="dialog-cover"></div>
+        <!-- 撤回弹窗 -->
+        <div :class="{'hide': revokeShow}" class="dialog-content-small dispose-pop" style="height: 180px">
+            <div class="title clearfix">
+                <p class="pull-left">提示</p>
+                <p @click="hideSecondPop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="content">确定撤回吗？</div>
+            <div class="foot">
+                <div @click="auditBtn('revoke')" class="btn btn-theme">确定</div>
+                <div @click="hideSecondPop" class="btn btn-border">取消</div>
+            </div>
+        </div>
+        <!-- 确认分配弹窗 -->
+        <div :class="{'hide': allotShow}" class="dialog-content-small dispose-pop">
+            <div class="title clearfix">
+                <p class="pull-left">提示</p>
+                <p @click="hideSecondPop" class="dialog-close pull-right" ><i class="fa fa-close"></i></p>
+            </div>
+            <div class="content">是否分配至：<span v-text="hSoDepartmentName"></span></div>
+            <div class="foot">
+                <div @click="allotBtn(handleTemplate.id, 'assignSalesGroup')" class="btn btn-theme">确定</div>
+                <div @click="hideSecondPop" class="btn btn-border">取消</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="../static/scripts/manage/manageShare.js"></script>
+<script src="../static/scripts/manage/partnerPipeline.js"></script>

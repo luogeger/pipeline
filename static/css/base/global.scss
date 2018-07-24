@@ -62,7 +62,7 @@
 // 面包屑导航
 .breadcrumb {
   color: #939393;
-  padding: 0 20px;
+  padding: 0 10px;
   margin-bottom: 10px;
   a {
     &:hover,
@@ -209,6 +209,7 @@
               padding: 0 7px;
               color: #838383;
               cursor: pointer;
+              margin-right: 2px;
             }
             .area-active{
               background-color: #FAD3B2;
@@ -228,6 +229,7 @@
     background: #fff;
     top: 10%;
     left: 50%;
+    bottom: 10%;
     transform: translate(-50%);
     z-index: 10;
     border-radius: 4px;

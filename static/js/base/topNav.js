@@ -20,12 +20,18 @@
             var html = '';
             opt.forEach(function (item, index) {// 遍历一级菜单
                 if (index === 0) {// 数组默认第一个选中
-                    html += '<div class="panel i-border-col">';
+                    html += '<div class="panel">';
                     if (!Boolean(item.children)) {// 没有子菜单可以点击
-                        html += '<div class="panel-title i-text-col" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
+                        html += '<div class="panel-title" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
                     } else{
-                        html += '<div class="panel-title i-text-col">';
+                        html += '<div class="panel-title">';
                     }
+                    // html += '<div class="panel i-border-col">';
+                    // if (!Boolean(item.children)) {// 没有子菜单可以点击
+                    //     html += '<div class="panel-title i-text-col" onclick=\"loadMainPage(\'.content-item\', \''+item.data.dataUrl +'\')\">';
+                    // } else{
+                    //     html += '<div class="panel-title i-text-col">';
+                    // }
                 }else {
                     html += '<div class="panel">';
                     if (!Boolean(item.children)) {// 没有子菜单可以点击

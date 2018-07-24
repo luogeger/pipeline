@@ -26,14 +26,14 @@
             </div>
 
             <div v-if="userLevel == 'dqxyh'" class="selection-wrap">
-                <div class="selection-label">部门:</div>
+                <div class="selection-label">销售部门:</div>
                 <div @click.stop="changeSelectionList(2)"
                      v-text="selectionDefaultText_2"
                      :class="{active: selectionIsShow_2}"
                      class="selection-show fa"></div>
                 <div v-if="selectionIsShow_2" style="left: 45px;" class="selection-list">
                     <ul>
-                        <li @click="clickItem(item.text, 2, item.code)"
+                        <li @click="clickItem(item, 2)"
                             v-for="item in saleGroupList"
                             v-text="item.text"></li>
                     </ul>

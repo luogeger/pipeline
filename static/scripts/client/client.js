@@ -1,4 +1,3 @@
-
 var vm = new Vue({
     el: '#app',
 
@@ -9,10 +8,12 @@ var vm = new Vue({
         levelActive: '',// 控制客户信息tabs是否选中
 
         // 查询
-        hDropText: '',// 行业下拉框文字
-        hDropCode: '',// 行业 code
-        hClientCode: '',// 客户编号
-        hClientName: '',// 客户名称
+        hDropText:    '',// 行业下拉框文字
+        hDropCode:    '',// 行业 code
+        hClientCode:  '',// 客户编号
+        hClientName:  '',// 客户名称
+        allGroup:     saleGroupList,// 部门查询
+        department:   {code: '', text: '全部'},// 部门数据
 
         clientSubmit: false,// 控制添加和编辑客户的 btn,title
         msgSubmit: false,// 控制添加和编辑机要信息的 btn,title
@@ -80,6 +81,9 @@ var vm = new Vue({
         mEmail:             '',
         mAddress:           '',
         mRemark:            '',
+        isModification:     false,// notModified == true 机要信息区域省份不能修改
+        addOrEditStatus:    true,// 添加或编辑 客户和信息的时候，区域和省份的不同，以及区域省份能否选择
+        addOrEdit:          'add',// 添加还是修改，获取区域
 
 
 
@@ -165,21 +169,40 @@ var vm = new Vue({
         },
 
         // 区域
-        getRegion: function (region, active) {
-            active = active || 'regionHd';
-            region = region || 'region';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ region).then(function (datas){
-                var data = datas.data;
-                vm.regionList = data.msg.region;
-                vm.mRegionCode = active;// 默认区域选中第一个
+        getRegion: function (region, province, obj) {
+            var params = {
+                categoryCodes: 'region',
+            };
+            if (this.addOrEditStatus) obj = {selectType: 'limitLevel'};
+            params = Object.assign(params, obj);
+            axios
+                .get(PATH +'/basic/queryDictDataByCategory', {params: params})
+                .then(function (datas){
+                    var data = datas.data;
+                    vm.regionList = data.msg.region;
 
-            });
+                    if (vm.addOrEdit === 'add') {
+                        vm.mRegionCode   = vm.regionList[0].code;
+                        vm.mProvinceCode = '';
+                        vm.getProvince(vm.regionList[0].code)
+                    }
+                    if (vm.addOrEdit === 'edit') {
+                        vm.mRegionCode   = region;
+                        vm.mProvinceCode = province;
+                        vm.getProvince(region)
+                    }
+
+                });
         },// 区域
 
         // 省份
-        getProvince: function (province) {
-            province = province || 'regionHd';
-            axios.get(PATH +'/basic/queryDictDataByCategory?categoryCodes='+ province).then(function (datas){
+        getProvince: function (province, obj) {
+            if (this.addOrEditStatus) obj = {selectType: 'limitLevel'};
+            var params = {
+                categoryCodes: province,
+            },
+            params = Object.assign(params, obj);
+            axios.get(PATH +'/basic/queryDictDataByCategory', {params: params}).then(function (datas){
                 vm.provinceList = datas.data.msg[province];
             });
         },// 省份
@@ -205,6 +228,7 @@ var vm = new Vue({
 
             console.log(vm.uploadFileName);
             console.log(fd);
+
             axios.post('/iboss-prism/crm/importCrm', fd).then(function (datas){
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
@@ -218,16 +242,15 @@ var vm = new Vue({
 
         // 获取客户信息
         getClient: function (page, limit) {
-            vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
             var params = {
-                page:         page || 1,
-                limit:        limit || this.clientPageMost,
-                customerCode: this.hClientCode,
-                customerName: this.hClientName,
-                industryLine: this.hDropCode,
-                queryType:    this.levelActive,
+                page:           page || 1,
+                limit:          limit || this.clientPageMost,
+                customerCode:   this.hClientCode,
+                customerName:   this.hClientName,
+                industryLine:   this.hDropCode,
+                queryType:      this.levelActive,
+                salesGroupCode: this.department.code,
             };
-            //params = Object.assign(params, obj);
             axios.get(PATH +'/crm/queryCustomerList', {params: params}).then(function (datas){
                 if (datas.data.root.length === 0) {// 客户信息为空
                     vm.msgBtnIsShow = false;// 机要信息按钮
@@ -236,13 +259,13 @@ var vm = new Vue({
                     vm.clientNameQuery = false;// 客户table的 '请输入客户名称进行查询!'
                     vm.client = [];// 数据list
 
-                    toastr.warning('没有相关信息 !');
+                    //toastr.warning('没有相关信息 !');
                     return;
                 };
+                vm.cCheckIndex = 0;// 每次点击查询按钮，都是默认选中第一行
                 vm.noData = false;// 客户table的 '没有数据!'
                 vm.clientNameQuery = false;// 请输入客户名称进行查询！ == 是否显示
                 vm.client = datas.data;// 数据list
-                console.log(vm.client.root)
                 vm.msgBtnIsShow = true;// 不能显示添加机要信息按钮
                 // 分页
                 vm.clientPageTotal = datas.data.totalProperty;
@@ -374,14 +397,16 @@ var vm = new Vue({
         },
 
         hidePop: function () {
-            this.dialogShow =     true;
-            this.addClientShow =  true;
-            this.addMsgShow =     true;
-            this.uploadShow =     true;
-            this.revokeShow =     true;// 撤回pop
-            this.disposeShow =    true;// 审批pop
-            this.ignoreShow =     true;// 忽略pop
-            this.auditHistoryShow = false;// 审核记录
+            this.dialogShow         = true;
+            this.addClientShow      = true;
+            this.addMsgShow         = true;
+            this.uploadShow         = true;
+            this.revokeShow         = true;// 撤回pop
+            this.disposeShow        = true;// 审批pop
+            this.ignoreShow         = true;// 忽略pop
+            this.auditHistoryShow   = false;// 审核记录
+            this.isModification     = false;// notModified == true 机要信息区域省份不能修改
+            this.addOrEditStatus    = true;// 添加或编辑 客户和信息的时候，区域和省份的不同
         },
 
         // 点击添加客户，清空弹窗信息
@@ -423,12 +448,13 @@ var vm = new Vue({
 
         // 添加客户 按钮事件
         addClient: function () {
+            this.addOrEdit = 'add';
             this.getRegion();// 获取区域信息
-            this.getProvince();// 获取省份信息
             this.getGroup();// 所属事业部
             this.showPop();// 显示弹框
             this.addClientIsShow = false;// 显示弹窗
             this.clearClient('c');// 清空弹窗信息
+            this.clearClientMsg();// 清空弹窗信息
         },
 
         // 确认客户添加
@@ -472,7 +498,7 @@ var vm = new Vue({
                 this.repeatClick = false;
                 axios.get(PATH +'/crm/addOrUpdateCustomer', {params: objC}).then(function (datas){
                     if (datas.data.code === 201) {
-                        toastr.warming(datas.data.msg)
+                        toastr.warning(datas.data.msg)
                         return;
                     }
                     objM.customerCode = datas.data.msg.lastAddCustomerCode;// 拿到客户编号再添加
@@ -508,11 +534,12 @@ var vm = new Vue({
         // 添加 机要信息 按钮事件
         addMsg: function () {
             this.clearClientMsg();
-            vm.msgSubmit = false;
+            vm.msgSubmit  = false;
             vm.dialogShow = false;
             vm.addMsgShow = false;
+            vm.addOrEdit  = 'add';
             this.getRegion();// 获取区域信息
-            this.getProvince();// 获取省份信息
+            //this.getProvince();// 获取省份信息
 
         },
 
@@ -540,7 +567,6 @@ var vm = new Vue({
             params = params || addMsgObj;
             if (this.msgCheckSpace(params) === 0) return;
 
-            console.log('request')
             axios.get(PATH +'/crm/addOrUpdateCustomerContact', {params: params}).then(function (datas){
                 if (datas.data.code === 201) {
                     toastr.error(datas.data.msg)
@@ -561,10 +587,10 @@ var vm = new Vue({
         // 编辑 机要信息 按钮事件
         // ====================================
         editMsg: function (id) {
+            vm.addOrEdit = 'edit';
             vm.clientMsgID = id;
-            // vm.clearClientMsg();
-            // vm.getRegion();
-            axios.get(PATH +'/crm/queryCustomerContactOne?id=' +id)
+            axios
+                .get(PATH +'/crm/queryCustomerContactOne?id=' +id)
                 .then(function (datas){
                     var msg = datas.data.msg;
                     var code = datas.data.code;
@@ -575,13 +601,17 @@ var vm = new Vue({
 
                     if (code === 200) {
                         new Promise((resolve,reject) =>{//先执行这里的代码，只有这里代码执行完，才会执行下面的代码
-                            vm.clearClientMsg(msg.regionCode);
-                            vm.getProvince(msg.regionCode);
+                            vm.clearClientMsg(msg.regionCode);// 清空机要信息输入框内容
+                            if (msg.notModified) {// 不能修改
+                                vm.isModification = true;// notModified == true 机要信息区域省份不能修改
+                                vm.addOrEditStatus= false;// 添加或编辑 客户和信息的时候，区域和省份的不同
+                            }
+                            vm.getRegion(msg.regionCode, msg.provinceCode)
+
+
                             resolve(msg);
                         }).then(msg =>{// 处理成功resolve的数据
-
                             vm.mRegionCode =         msg.regionCode;
-                            console.log(vm.mRegionCode)
                             vm.mProvinceCode =       msg.provinceCode;
                             vm.mContactName =        msg.contactName;
                             vm.mDepartmentName =     msg.departmentName;
@@ -636,12 +666,14 @@ var vm = new Vue({
         },
 
         selectRegion: function (code) {
+            if (this.isModification) return;
             vm.mRegionCode = code;
             vm.provinceCode = -1;
             vm.getProvince(code)
         },
 
         selectProvince: function (code, item) {
+            if (this.isModification) return;
             vm.provinceCode = code;
             vm.mProvinceCode = code;
         },
@@ -663,13 +695,14 @@ var vm = new Vue({
 
         // 编辑客户
         editClient: function (index, id) {
-            vm.clientSubmit = true;
-            vm.dialogShow = false;
+            vm.clientSubmit  = true;
+            vm.dialogShow    = false;
             vm.addClientShow = false;
+            vm.addOrEdit     = 'edit';
             this.clearClient();
             axios.get(PATH +'/crm/queryCustomerOne?id=' +id).then(function (datas){
                 var msg =  datas.data.msg;
-
+                console.log(msg)
                 vm.cGroupText           = msg.salesGroupName;
                 vm.cSalesGroupCode      = msg.salesGroupCode;
                 vm.cCustomerCode        = msg.customerCode;
@@ -688,7 +721,6 @@ var vm = new Vue({
         },
 
         editClientConfirm: function () {
-            console.log(123);
             console.log(this.repeatClick);
             if (this.repeatClick === false) return;
             this.repeatClick = false;
@@ -720,15 +752,16 @@ var vm = new Vue({
 
         // 查询
         queryBtn: function () {
-            vm.getClient()
-            vm.clientMsg.root = '';
+            this.getClient()
+            this.clientMsg.root = '';
         },
 
         resetBtn: function () {
-            vm.hClientCode = '';
-            vm.hClientName = '';
-            vm.hDropText = '';
-            vm.hDropCode = '';
+            this.hClientCode = '';
+            this.hClientName = '';
+            this.hDropText   = '';
+            this.hDropCode   = '';
+            //this.department  = {code: '', text: '全部'};// 部门数据
             this.queryBtn();
         },
 
@@ -756,7 +789,6 @@ var vm = new Vue({
             };
             axios.get(PATH +'/crm/ignore', {params: params}).then(function (datas){
                 var data = datas.data;
-                console.log(data);
                 if (data.code === 200) {
                     vm.hidePop();
                     vm.getClient()
@@ -849,7 +881,6 @@ var vm = new Vue({
 
         // 查询客户的审核记录
         queryClientHistory: function (id) {
-            console.log(id)
             var params = {
                 id: id,
             };
