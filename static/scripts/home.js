@@ -162,7 +162,8 @@ function accSub (arg1, arg2) {
     return ((arg1 * m - arg2 * m) / m).toFixed(n);
 };// 减法
 
-function accMul(arg1,arg2) {// 乘法
+function accMul(arg1,arg2) {// 除法
+    if (arg2 == 0) return '-';
     var m=0,s1=arg1.toString(),s2=arg2.toString();
     try{m+=s1.split(".")[1].length}catch(e){}
     try{m+=s2.split(".")[1].length}catch(e){}

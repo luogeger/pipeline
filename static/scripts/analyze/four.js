@@ -55,6 +55,7 @@ var vm = new Vue({
 
     created: function () {
         this.getData();
+        // this.halfToggle(vm.currentAccYear)
     },
 
     computed:{
@@ -87,8 +88,7 @@ var vm = new Vue({
             params = Object.assign(params, obj);
             console.log(params)
             axios.get(PATH +'/a/contractAmount', {params: params}).then(function (datas){
-                var data = datas.data;
-                console.log(data)
+                var data = datas.data, accYear = 'h' +vm.currentAccYear;
                 vm.yearTitle    = data.msg.aYearTitle;
                 vm.yearList     = data.msg.aYear;
                 vm.h1.title     = data.msg.h1Title;
@@ -97,11 +97,10 @@ var vm = new Vue({
                 vm.h2.list      = data.msg.h2;
                 vm.h1.sum       = vm.totalCalc(data.msg.h1, 'half');
                 vm.h2.sum       = vm.totalCalc(data.msg.h2, 'half');
-                vm.half         = vm.h1;
+                vm.half         = vm[accYear];
 
                 vm.totalCalc(data.msg.aYear, 'year');
                 vm.totalCalc(data.msg.h1, 'half');
-                console.log(vm.yearList)
             });
         },
 
