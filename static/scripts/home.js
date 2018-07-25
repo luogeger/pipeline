@@ -1,5 +1,5 @@
-// var PATH = 'http://172.16.8.130:8080';
-var PATH = '';// 测试环境，不需要
+var PATH = 'http://172.16.8.130:8080';
+// var PATH = '';// 测试环境，不需要
 // var PATH = 'http://iboss.demo.xiaoi.net';
 var timeYear,// 2018-04-18
     currentYear,
@@ -163,6 +163,7 @@ function accSub (arg1, arg2) {
 };// 减法
 
 function accMul(arg1,arg2) {// 除法
+    console.log(arg2)
     if (arg2 == 0) return '-';
     var m=0,s1=arg1.toString(),s2=arg2.toString();
     try{m+=s1.split(".")[1].length}catch(e){}
@@ -197,7 +198,7 @@ function arrSum (arr) {// 数组求和
 };// 数组求和
 
 function scaleCalc(A, B) {// 增长率的计算
-    if (B === 0) return '-';
+    if (B == 0) return '-';
     var div = Math.floor((A/B) *10000) / 10000;
     div = Number(div*100).toFixed(2);
     //if (div === '0.0') div = '0';

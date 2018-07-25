@@ -8,12 +8,10 @@ var vm = new Vue({
         currentGroup:  '',
 
         // 合计
-        yearSum: [ 1, 2, 3, 4],
-
-
-
         yearTitle: '',
         yearList: [],
+        yearSum: [ 1, 2, 3, 4],
+
         half: {},
         h1: {
             title: '',
@@ -23,7 +21,7 @@ var vm = new Vue({
         h2: {
             title: '',
             list: [],
-            sum: [6,5,4,3,2,1],
+            sum: [1, 2, 3, 4, 5, 6],
         },
 
         isActive: currentAccYear,// 上半年 == 1, 下半年 == 2,
@@ -86,7 +84,6 @@ var vm = new Vue({
                 direction: '',
             };
             params = Object.assign(params, obj);
-            console.log(params)
             axios.get(PATH +'/a/contractAmount', {params: params}).then(function (datas){
                 var data = datas.data, accYear = 'h' +vm.currentAccYear;
                 vm.yearTitle    = data.msg.aYearTitle;
@@ -97,13 +94,14 @@ var vm = new Vue({
                 vm.h2.list      = data.msg.h2;
                 vm.h1.sum       = vm.totalCalc(data.msg.h1, 'half');
                 vm.h2.sum       = vm.totalCalc(data.msg.h2, 'half');
-                vm.half         = vm[accYear];
 
+                vm.half         = vm[accYear];
                 vm.totalCalc(data.msg.aYear, 'year');
                 vm.totalCalc(data.msg.h1, 'half');
             });
         },
 
+        // 上下半年的切换
         halfToggle: function (flag) {
           if (flag === 1) {
               vm.half = vm.h1;
@@ -129,7 +127,7 @@ var vm = new Vue({
                 this.yearSum[0] = arrSum(target)
                 this.yearSum[1] = arrSum(complete)
                 this.yearSum[2] = arrSum(difference)
-                this.yearSum[3] = scaleCalc(arrSum(complete), arrSum(target))
+                this.yearSum[3] = accMul(arrSum(complete), arrSum(target))
             }
             if (type === 'half') {
                 var ht = [],
@@ -153,7 +151,7 @@ var vm = new Vue({
                     arrSum(ht),
                     arrSum(hc),
                     accSub(arrSum(ht), arrSum(hc)),
-                    scaleCalc(arrSum(hc), arrSum(ht)),
+                    accMul(arrSum(hc), arrSum(ht)),
                     arrSum(t1),
                     arrSum(c1),
                     arrSum(t2),
