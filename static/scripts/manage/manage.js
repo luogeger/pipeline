@@ -267,6 +267,12 @@ var vm = new Vue({
         this.getPipelineData();
     },
     methods: {
+        accMulSelf: function(arg1,arg2) {// 乘法
+            var m=0,s1=arg1.toString(),s2=arg2.toString();
+            try{m+=s1.split(".")[1].length}catch(e){}
+            try{m+=s2.split(".")[1].length}catch(e){}
+            return Number(s1.replace(".",""))*Number(s2.replace(".",""))/Math.pow(10,m)
+        },
         // 默认显示事业部pipeline信息
         showPipelineData: function() {
             this.pipelineDataShow = false;
@@ -657,7 +663,8 @@ var vm = new Vue({
 
             // 绑定预计签约金额（万元）
             if(vm.solutionSub.expectSignSum !== '') {
-                vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, code);
+                vm.hWeightedSum = this.accMulSelf(vm.solutionSub.expectSignSum, code);
+
                 vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
             }
         },
@@ -1024,7 +1031,7 @@ var vm = new Vue({
         sumKeyup: function() {
             vm.solutionSub.expectSignSum = (Math.round((parseFloat(vm.solutionSub.expectSignSum)) * 100) / 100).toString();   // 保留两位小数
             console.log(vm.solutionSub.expectSignSum,'vm.solutionSub.expectSignSum--key')
-            vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
+            vm.hWeightedSum = this.accMulSelf(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
             vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
         },
         // 新增/修改共同代码
@@ -1150,7 +1157,7 @@ var vm = new Vue({
                     }
 
                     // 获取加权金额
-                    vm.hWeightedSum = accMul(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
+                    vm.hWeightedSum = vm.accMulSelf(vm.solutionSub.expectSignSum, vm.handleTemplate.successRateCode);
                     vm.hWeightedSum = Math.round(vm.hWeightedSum * 1)/100; // 保留两位小数
 
                     // 遍历修改接口数组中的数据，并赋值给下拉框
