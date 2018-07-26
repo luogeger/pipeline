@@ -18,7 +18,7 @@
                      class="selection-show fa"></div>
                 <div v-if="selectionIsShow_1" style="left: 97px;" class="selection-list">
                     <ul>
-                        <li @click="clickItem(item, 1)"
+                        <li @click="clickItem(1, item)"
                             v-for="item in yearRange"
                             v-text="item"></li>
                     </ul>
@@ -33,7 +33,7 @@
                      class="selection-show fa"></div>
                 <div v-if="selectionIsShow_2" style="left: 69px;" class="selection-list">
                     <ul>
-                        <li @click="clickItem(item, 2)"
+                        <li @click="clickItem(2, item)"
                             v-for="item in saleGroupList"
                             v-text="item.text"></li>
                     </ul>

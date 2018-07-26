@@ -21,7 +21,7 @@ var vm = new Vue({
         h2: {
             title: '',
             list: [],
-            sum: [1, 2, 3, 4, 5, 6],
+            sum: [6, 5, 4, 3, 2, 1],
         },
 
         isActive: currentAccYear,// 上半年 == 1, 下半年 == 2,
@@ -85,35 +85,26 @@ var vm = new Vue({
             };
             params = Object.assign(params, obj);
             axios.get(PATH +'/a/contractAmount', {params: params}).then(function (datas){
-                var data = datas.data, accYear = 'h' +vm.currentAccYear;
+                var data = datas.data,
+                    accYear = 'h' +vm.currentAccYear;
+                console.log(data)
                 vm.yearTitle    = data.msg.aYearTitle;
                 vm.yearList     = data.msg.aYear;
                 vm.h1.title     = data.msg.h1Title;
                 vm.h1.list      = data.msg.h1;
                 vm.h2.title     = data.msg.h2Title;
                 vm.h2.list      = data.msg.h2;
-                vm.h1.sum       = vm.totalCalc(data.msg.h1, 'half');
-                vm.h2.sum       = vm.totalCalc(data.msg.h2, 'half');
 
+                vm.totalCalc(data.msg.aYear, 'year');// 合计
+                vm.totalCalc(data.msg.h1, 'half', 'h1');// 合计
+                vm.totalCalc(data.msg.h2, 'half', 'h2');// 合计
                 vm.half         = vm[accYear];
-                vm.totalCalc(data.msg.aYear, 'year');
-                vm.totalCalc(data.msg.h1, 'half');
             });
         },
 
-        // 上下半年的切换
-        halfToggle: function (flag) {
-          if (flag === 1) {
-              vm.half = vm.h1;
-              vm.isActive = 1;
-          } else{
-              vm.half = vm.h2;
-              vm.isActive = 2;
-          }
-        },
-        
+
         // 合计
-        totalCalc: function (arr, type) {
+        totalCalc: function (arr, type, accYear) {
             if (type === 'year') {
                 var complete =[],
                     difference =[],
@@ -124,14 +115,15 @@ var vm = new Vue({
                     target.push(item.target)
                 });
 
-                this.yearSum[0] = arrSum(target)
-                this.yearSum[1] = arrSum(complete)
-                this.yearSum[2] = arrSum(difference)
-                this.yearSum[3] = accMul(arrSum(complete), arrSum(target))
+                this.yearSum[0] = arrSum(target)// 目标，数组求和
+                this.yearSum[1] = arrSum(complete)// 完成，数组求和
+                this.yearSum[2] = accSub(this.yearSum[1], this.yearSum[0])// 差额，减法
+                this.yearSum[3] = accMul(this.yearSum[1], this.yearSum[0], '%');// 占比， 除法
             }
+
             if (type === 'half') {
-                var ht = [],
-                    hc = [],
+                var ht = [],// target
+                    hc = [],// complete
                     t1 = [],
                     t2 = [],
                     c1 = [],
@@ -150,8 +142,8 @@ var vm = new Vue({
                 var i, tempArr = [
                     arrSum(ht),
                     arrSum(hc),
-                    accSub(arrSum(ht), arrSum(hc)),
-                    accMul(arrSum(hc), arrSum(ht)),
+                    accSub(arrSum(hc), arrSum(ht)),
+                    accMul(arrSum(hc), arrSum(ht), '%'),
                     arrSum(t1),
                     arrSum(c1),
                     arrSum(t2),
@@ -160,12 +152,24 @@ var vm = new Vue({
                 for(i = 0; i < tempArr.length; i++){
                     halfArr[i] = tempArr[i];
                 }
-                return halfArr;
+                console.log(accYear, vm[accYear])
+                vm[accYear].sum = halfArr;
             }
 
         },
 
-        // 日期选择selectionIsShow
+        // 上下半年的切换
+        halfToggle: function (flag) {
+            if (flag === 1) {
+                vm.half = vm.h1;
+                vm.isActive = 1;
+            } else{
+                vm.half = vm.h2;
+                vm.isActive = 2;
+            }
+        },
+
+        // 年度筛选，部门筛选
         changeSelectionList: function (type) {
             if (type === 1){
                 this.selectionIsShow_1 = !this.selectionIsShow_1;
@@ -176,13 +180,13 @@ var vm = new Vue({
                 this.selectionIsShow_1 = false;
             }
         },
-        clickItem: function (item, type, code) {
-            if (type === 1) {
+        clickItem: function (type, item, code) {
+            if (type === 1) {// 年度
                 this.selectionDefaultText_1 = item;
                 this.selectionIsShow_1 = false;
                 this.getData(item)
             }
-            if (type === 2) {
+            if (type === 2) {// 部门
                 this.selectionDefaultText_2 = item.text;
                 this.selectionIsShow_2 = false;
                 this.currentGroup = item.code;
