@@ -173,7 +173,8 @@ var vm = new Vue({
             preSaleStaffs: [],          // 点击修改时获取表格的值
             solutionSub: [],            // 点击修改时获取表格的值
 
-            cpComCode: '',                 // 新增/修改时传给客户管理的客户名称code
+            cpComCode: '',              // 新增/修改时传给客户管理的客户名称code
+            noClick: false,             // 禁止提交
 
             // === 弹窗
             dialogShow: true,           // 外层弹窗
@@ -1209,6 +1210,7 @@ var vm = new Vue({
         },
         // 添加修改提交
         submitHandle: function(){
+            vm.noClick = true;
             if(!vm.hCustomerName) {
                 toastr.warning('客户名称不能为空!');
                 return
@@ -1227,14 +1229,11 @@ var vm = new Vue({
 
             vm.handleTemplate.salesStaffCode = userCode;         // 销售代码
             vm.handleTemplate.weightedSum = vm.hWeightedSum;     // 加权金额(万元)
-
             // 金融银行分类如果选中了其他，则显示输入框，并需手填
             if(vm.handleTemplate.classificationOfFinancialIndustryCode == 'qiTa') {
                 vm.handleTemplate.classificationOfFinancialIndustry = vm.hClassificationInput;
             }
-
             // vm.handleTemplate.customerCode = vm.hCustomerName; // 客户名称
-
             var preSaleStaffList = [],     // 点击修改时获取表格的值
                 solutionSubList = [];      // 点击修改时获取表格的值
 
@@ -1249,25 +1248,19 @@ var vm = new Vue({
             else {
                 vm.handleTemplate.preSaleStaffs = JSON.stringify(preSaleStaffList);
             }
-
             solutionSubList.push({
                 'solutionCode':  vm.solutionSub.solutionCode,
                 'expectSignSum': vm.solutionSub.expectSignSum
             })
-
             vm.handleTemplate.solutionSub = JSON.stringify(solutionSubList);
-
             var paramm = $.param(vm.handleTemplate)
-
-            console.log('-----新增/修改完成后准备提交的数据------');
-            console.log(vm.handleTemplate)
-
             $.ajax({
                 url: PATH + '/so/addOrUpdatePipeline',
                 type: 'get',
                 data: paramm,
                 dataType: 'json',
                 success: function(result){
+                    vm.noClick = false;
                     if (result.code === 201) {
                         toastr.error(result.msg)
                         console.log(result.msg,'error')
@@ -1284,6 +1277,7 @@ var vm = new Vue({
                     vm.showOneChange();
                 },
                 error: function(){
+                    vm.noClick = false;
                     console.log('提交 请求失败');
                 }
             })
