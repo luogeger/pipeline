@@ -897,7 +897,7 @@
                                 <div class="block-wrapper">
                                     <div class="input-group">
                                         <span class="input-group-label"></span>
-                                        <button @click="submitHandle" class="btn btn-sm btn-theme" type="button">提交</button>
+                                        <button :class="{'disabled': noClick}" @click="submitHandle" class="btn btn-sm btn-theme" type="button">提交</button>
                                     </div>
                                 </div>
                             </form>
@@ -1344,4 +1344,4 @@
     </div>
 </div>
 <script src="../static/scripts/manage/manageShare.js"></script>
-<script src="../static/scripts/manage/manage.js?v=20180723"></script>
+<script src="../static/scripts/manage/manage.js?v=201807261"></script>
