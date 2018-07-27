@@ -511,7 +511,7 @@ var vm = new Vue({
         // 取消，撤回，忽略，(同意， 驳回)的小弹窗
         cancelConfirmBtn: function (attr, type) {
             var _this = this;
-            console.log(attr, ',', type);
+            // console.log(attr, ',', type)
             if (type === 'cancel') {
                 this[attr] = false;
                 this.tempID = '';
@@ -535,13 +535,18 @@ var vm = new Vue({
                 });
             }
             if (attr === 'pass' || attr === 'reject') {
-                console.log(this.tempID);
+                if ((this.auditRemark.length === 0 || this.auditRemark.trim().length === 0) && attr === 'reject') {
+                    toastr.error('请填写驳回理由！');
+                    return;
+                }
+                ;
                 this.operateBtnUrl(this.tempID, attr, function () {
                     _this.tempID = '';
                     _this.pID = '';
                     _this.trActive = 0;
                     _this.auditShow = false;
                     _this.getPartnerData({ inPass: 'n', page: 1 });
+                    toastr.success('审批成功！');
                 });
             }
         },

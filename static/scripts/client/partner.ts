@@ -578,7 +578,7 @@ let vm = new Vue({
 
         // 取消，撤回，忽略，(同意， 驳回)的小弹窗
         cancelConfirmBtn (attr, type) {
-            console.log(attr, ',', type)
+            // console.log(attr, ',', type)
             if(type === 'cancel') {
                 this[attr] = false;
                 this.tempID = '';
@@ -606,13 +606,18 @@ let vm = new Vue({
 
 
             if (attr === 'pass' || attr === 'reject') {
-                console.log(this.tempID)
+                if ((this.auditRemark.length === 0 || this.auditRemark.trim().length === 0) && attr === 'reject') {
+                    toastr.error('请填写驳回理由！');
+                    return
+                };
+
                 this.operateBtnUrl(this.tempID, attr, () => {
                     this.tempID   = '';
                     this.pID      = '';
                     this.trActive = 0;
                     this.auditShow = false;
                     this.getPartnerData({inPass: 'n', page: 1})
+                    toastr.success('审批成功！');
                 })
             }
         },
