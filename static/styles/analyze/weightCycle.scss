@@ -36,6 +36,14 @@
       }
     }
 
+    .year-table{
+      tbody>tr>td:nth-child(5)>span{
+        text-decoration: underline;
+        padding: 10px;
+        cursor: pointer;
+      }
+    }
+
   }// year + quarter
 
   // 上部分

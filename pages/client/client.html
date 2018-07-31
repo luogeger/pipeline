@@ -127,7 +127,7 @@
                     <th class="text-left">客户名称</th>
                     <th v-if="clientMsgQueryBtn">行业线</th>
                     <th v-if="clientMsgQueryBtn" class="text-left">地址</th>
-                    <th v-if="clientMsgQueryBtn" class="text-left">审批状态</th>
+                    <th class="text-left">审批状态</th>
                 </tr>
             </thead>
             <tbody>
@@ -142,9 +142,19 @@
                     <td v-text="item.customerName"  class="text-left"></td>
                     <td v-text="item.industryLine" v-if="clientMsgQueryBtn"></td>
                     <td v-text="item.address" v-if="clientMsgQueryBtn" class="text-left" style="max-width: 300px;"></td>
-                    <td v-if="clientMsgQueryBtn" style="padding-right: 10px;">
-                        <div class="pull-left types-show">
-                            <span v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') "
+                    <td style="padding-right: 10px;">
+                        <!-- v-if="levelActive == 'all'" 是控制在另外一个tab只显示‘通过’ 和 ‘审批中’ -->
+                        <!-- 下面这个tab 只有通过和待审核的数据 -->
+                        <div class="pull-left types-show"
+                             v-if="levelActive == 'all'">
+                            <span v-if="item.status == 'pass'" class="type-pass">通过</span>
+                            <span v-if="item.status !== 'pass'" class="type-pending">审批中</span>
+                        </div>
+                        <!-- -->
+                        <div class="pull-left types-show"
+                             v-if="levelActive !== 'all'">
+                            <span v-if="item.status == 'pending'
+                                        && (userLevel == 'xsld' || userLevel == 'dqxyh')"
                                   class="type-pending">待审批</span>
                             <span v-if="item.status == 'pending' && userLevel == 'xs'  "
                                   class="type-pending">待审核</span>
@@ -152,12 +162,13 @@
                             <span v-if="item.status == 'reject' " class="type-reject">驳回</span>
                             <span v-if="item.status == 'revoke' " class="type-revoke">已撤回</span>
                         </div>
-                        <div class="pull-right operas-btn">
+                        <div class="pull-right operas-btn"
+                             v-if="levelActive !== 'all'">
                             <div v-if="item.status == 'pending' && (userLevel == 'xsld' || userLevel == 'dqxyh') && item.power == 'pro' "
                                  @click="disposeBtn(item.id)"
                                  class="btn btn-xs btn-border">审批</div>
 
-                            <div v-if="item.status == 'pending' && userLevel == 'xs'  "
+                            <div v-if="item.status == 'pending' && userLevel == 'xs'"
                                  @click="revokeBtn(item.id)"
                                  class="btn btn-xs btn-border">撤回</div>
 
@@ -713,9 +724,9 @@
                     </thead>
                     <tbody>
                     <tr v-for="item in auditHistoryList">
-                        <td v-text="item.opTime"></td>
-                        <td v-text="item.operName"></td>
-                        <td v-text="item.auditStatus"></td>
+                        <td v-text="item.opTime" style="min-width: 100px;"></td>
+                        <td v-text="item.operName" style="min-width: 80px;"></td>
+                        <td v-text="item.auditStatus" style="min-width: 80px;"></td>
                         <td v-text="item.remark"></td>
                     </tr>
                     </tbody>

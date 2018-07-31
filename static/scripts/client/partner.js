@@ -46,6 +46,7 @@ var vm = new Vue({
         solutionList: [],
         checkedSolutionList: [],
         radioIsShow: false,
+        auditTitle: '',
         // 合作伙伴的字段
         pID: '',
         pName: '',
@@ -447,18 +448,19 @@ var vm = new Vue({
             if (type === 'edit')
                 this.operateBtnEdit(id, item); // 编辑合伙人
             if (type === 'recall')
-                this.operateBtnRecall(id);
+                this.operateBtnRecall(id); // 撤回
             if (type === 'audit')
-                this.operateBtnAudit(id);
+                this.operateBtnAudit(id, item); // 审批
             if (type === 'ignore')
-                this.operateBtnIgnore(id);
+                this.operateBtnIgnore(id); // 忽略
             if (type === 'auditHistory')
-                this.operateBtnHistory(item, id);
+                this.operateBtnHistory(item, id); // 历史记录
         },
         // 领导审批按钮
-        operateBtnAudit: function (id) {
-            this.auditShow = true;
+        operateBtnAudit: function (id, item) {
             this.tempID = id;
+            this.auditTitle = item.name; // 审批时候的客户名称
+            this.auditShow = true;
             this.auditRemark = ''; // 审批记录清空
         },
         // 编辑合伙人

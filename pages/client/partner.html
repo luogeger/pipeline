@@ -100,7 +100,7 @@
                         </div>
                         <div class="pull-right operas-btn">
                             <div v-if="item.status == 'pending' && userLevel == 'xsld'"
-                                 @click="operateBtn(index, item.id, 'audit')"
+                                 @click="operateBtn(index, item.id, 'audit', item)"
                                  class="btn btn-xs btn-border">审批
                             </div>
 
@@ -530,21 +530,35 @@
     </div>
 
     <!-- 审批 -->
-    <div v-if="auditShow" class="dialog-wrap">
-        <div @click="hidePop('auditShow')" class="dialog-cover"></div>
-        <div class="dialog-content-small" style="bottom: 67%;">
-            <div class="title">审批
-                <i @click="hidePop('auditShow')"  class="fa fa-close pull-right"></i></div>
+    <!--<div v-if="auditShow" class="dialog-wrap">-->
+        <!--<div @click="hidePop('auditShow')" class="dialog-cover"></div>-->
+        <!--<div class="dialog-content-small" style="bottom: 67%;">-->
+            <!--<div class="title">审批-->
+                <!--<i @click="hidePop('auditShow')"  class="fa fa-close pull-right"></i></div>-->
+            <!--<div class="content">-->
+                <!--<p class="text-left">备注：</p>-->
+                <!--<textarea v-model="auditRemark" style="width: 100%;"></textarea>-->
+            <!--</div>-->
+            <!--<div class="foot">-->
+                <!--<div @click="cancelConfirmBtn('pass')" class="btn btn-theme">确定</div>-->
+                <!--<div @click="cancelConfirmBtn('reject')" class="btn btn-border">驳回</div>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--  审批详情 -->
+    <pop-up :is-show="auditShow"  @on-close="hidePop('auditShow')" width="30%" bottom="70%">
+        <div class="title"><p>审批：<span v-text="auditTitle"></span></p></div>
+        <div class="pop-main">
             <div class="content">
                 <p class="text-left">备注：</p>
                 <textarea v-model="auditRemark" style="width: 100%;"></textarea>
             </div>
-            <div class="foot">
-                <div @click="cancelConfirmBtn('pass')" class="btn btn-theme">确定</div>
+            <div class="foot" style="padding-top: 20px; text-align: right;">
+                <div @click="cancelConfirmBtn('pass')" class="btn btn-theme" style="margin-right: 20px;">同意</div>
                 <div @click="cancelConfirmBtn('reject')" class="btn btn-border">驳回</div>
             </div>
         </div>
-    </div>
+    </pop-up>
 
     <!--  审核历史 -->
     <div v-if="auditHistoryShow" class="dialog-wrap">

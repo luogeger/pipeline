@@ -72,50 +72,10 @@ var vm = new Vue({
 
 
         // 增长额详情
-        growthDetailShow: true,
-        growthDetailTitle: '加权大于50.0万变动的项目信息(单位：万元)',
-        growthDetailList: [
-            {
-                "changeField": [
-                    {
-                        "field": "成功率",
-                        "original": "30%",
-                        "target": "10%"
-                    }
-                ],
-                "customerName": "北京优生国际医院管理有限公司",
-                "industryLineName": "互联网金融",
-                "remark": "-",
-                "salesStaffName": "林冠欣",
-                "weightedSumIncrease": -66.6
-            },
-            {
-                "changeField": [
-                    {
-                        "field": "成功率",
-                        "original": "30%",
-                        "target": "10%"
-                    },
-                    {
-                        "field": "签约额",
-                        "original": "30%",
-                        "target": "10%"
-                    },
-                    {
-                        "field": "项目进度",
-                        "original": "30%",
-                        "target": "10%"
-                    },
-
-                ],
-                "customerName": "北京优生国际医院管理有限公司",
-                "industryLineName": "互联网金融",
-                "remark": "-",
-                "salesStaffName": "林冠欣",
-                "weightedSumIncrease": -66.6
-            },
-
-        ]
+        growthDetailShow:   false,
+        notDetailList:      false,
+        growthDetailTitle:  '',
+        growthDetailList:   [],
 
 
     },
@@ -528,37 +488,49 @@ var vm = new Vue({
 
         },// getDateRange
 
+        // 所有弹窗的按钮
+        popBtn: function (type, item) {
+            if (type === 'half') this.growthDetail(item);// 增长额详情
+        },
+
+        // 取消所有弹窗
+        hidePop: function (type) {
+            this[type]         = false;
+            this.notDetailList = false;
+        },
+
         // 增长额详情
-        growthDetail: function (code, type, callback) {
-            //@click="growthDetail(item.unitCode, item.unitType)"
-            this.growthDetailShow = false;
-            console.log(code, type)
+        growthDetail: function (item, callback) {
+            var _this = this;
+            console.log(item)
             var params = {
-                aYear: this.currentYear,
-                hq: this.currentQuarter,
-                closingDate1: this.dateOneClose,
-                closingDate2: this.dateTwoClose,
-                unitCode: code,
-                unitType: type,
+                aYear:          this.currentYear,
+                hq:             this.currentQuarter,
+                startDate1:     '2018-1-1',// 先写死，随便写的
+                startDate2:     '2018-1-1',// 先写死，随便写的
+                closingDate1:   this.dateOneClose,
+                closingDate2:   this.dateTwoClose,
+                unitCode:       item.unitCode,
+                unitType:       item.unitType,
             };
             console.log(params)
-            axios.get(PATH +'/a/weightedCycleComparisonDifferenceDetail', {params: params}).then(function (datas){
-                var data = datas.data, msg  = datas.data.msg;
-                console.log(data)
-                if (data.code === 201) {
-                    toastr.error('暂无相关数据!')
-                    return;
-                }
+            axios
+                .get(PATH +'/a/weightedCycleComparisonDifferenceDetail', {params: params})
+                .then(function (datas){
+                    var data = datas.data;
+                    console.log(data)
+                    if (data.code === 201) {
+                        toastr.error('暂无相关数据!')
+                        return;
+                    }
+                    _this.growthDetailTitle= data.msg.oth.subTitle;
+                    _this.growthDetailList = data.msg.root;
+                    _this.notDetailList    = !data.msg.root.length;
+                    _this.growthDetailShow = true;
 
-                if (callback) callback();
-            });
+                    if (callback) callback();
+                });
         },
-
-        // 取消增长额详情弹窗
-        hidePop: function () {
-            this.growthDetailShow = true;
-        },
-
 
 
 
