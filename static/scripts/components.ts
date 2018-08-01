@@ -87,12 +87,10 @@ Vue.component('select-list', {
 
 Vue.component('pop-up', {
     props: {
-        isShow: {
-            type: Boolean,
-            default: false,
-        },
+        isShow: {type: Boolean, default: false,},
         width:  {type: String},
-        bottom: {type: String}
+        bottom: {type: String},
+        small:  {type: String},
     },
 
     data () {
@@ -100,18 +98,25 @@ Vue.component('pop-up', {
             styleObj: {
                 width:      this.width,
                 minWidth:   this.width,
-                bottom:     this.bottom,
-            }
+                bottom:     '',
+            },
         }
     },
 
     created() {
-        console.log(this.bottom)
+        console.log(this.small)
+        if (this.small == 'true') {
+            this.styleObj.bottom = this.bottom;
+        } else{
+            this.styleObj.bottom = '10%';
+        }
+
     },
 
     mounted () {
 
     },
+
     methods: {
         closeSelf () {
             this.$emit('on-close');
@@ -122,7 +127,7 @@ Vue.component('pop-up', {
         `<div v-if="isShow" class="dialog-wrap"><!--  -->
             <div v-if="isShow"  @click="closeSelf" class="dialog-cover"></div>
             <transition name="drop">
-                <div v-if="isShow" class="dialog-content input-width-100" :style="{width: width, minWidth: width, bottom: bottom }">
+                <div v-if="isShow" class="dialog-content input-width-100" :style="styleObj">
                     <p @click="closeSelf" class="close-dialog" ><i class="fa fa-close"></i></p>
                     <slot>empty</slot>
                 </div>

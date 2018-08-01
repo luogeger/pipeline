@@ -1,32 +1,49 @@
+.main .operas-box,
 .main .year-contrast,
 .main .quarter-contrast {
   background-color: #FFFFFF;
   padding: 10px; }
+  .main .operas-box .operas,
   .main .year-contrast .operas,
   .main .quarter-contrast .operas {
     padding-bottom: 10px;
     border-bottom: 1px solid #E9EAEC; }
+  .main .operas-box table thead tr th:nth-child(5),
+  .main .operas-box table thead tr th:nth-child(6),
   .main .year-contrast table thead tr th:nth-child(5),
   .main .year-contrast table thead tr th:nth-child(6),
   .main .quarter-contrast table thead tr th:nth-child(5),
   .main .quarter-contrast table thead tr th:nth-child(6) {
     color: #ED6D00; }
+  .main .operas-box table thead tr th:nth-child(5),
   .main .year-contrast table thead tr th:nth-child(5),
   .main .quarter-contrast table thead tr th:nth-child(5) {
     border-left: 2px solid #F0F2F5; }
+  .main .operas-box table tbody tr td:nth-child(5),
+  .main .operas-box table tbody tr td:nth-child(6),
   .main .year-contrast table tbody tr td:nth-child(5),
   .main .year-contrast table tbody tr td:nth-child(6),
   .main .quarter-contrast table tbody tr td:nth-child(5),
   .main .quarter-contrast table tbody tr td:nth-child(6) {
     color: #ED6D00; }
+  .main .operas-box table tbody tr td:nth-child(5),
   .main .year-contrast table tbody tr td:nth-child(5),
   .main .quarter-contrast table tbody tr td:nth-child(5) {
     border-left: 2px solid #F0F2F5; }
-  .main .year-contrast .year-table tbody > tr > td:nth-child(5) > span,
-  .main .quarter-contrast .year-table tbody > tr > td:nth-child(5) > span {
-    text-decoration: underline;
-    padding: 10px;
-    cursor: pointer; }
+  .main .operas-box .year-table,
+  .main .year-contrast .year-table,
+  .main .quarter-contrast .year-table {
+    padding-top: 10px; }
+    .main .operas-box .year-table tbody > tr > td:nth-child(5) > span,
+    .main .year-contrast .year-table tbody > tr > td:nth-child(5) > span,
+    .main .quarter-contrast .year-table tbody > tr > td:nth-child(5) > span {
+      text-decoration: underline;
+      padding: 10px;
+      cursor: pointer; }
+  .main .operas-box .quarter-table,
+  .main .year-contrast .quarter-table,
+  .main .quarter-contrast .quarter-table {
+    padding-top: 10px; }
 .main .year-contrast {
   margin-bottom: 20px; }
 .main .quarter-contrast .operas > div {

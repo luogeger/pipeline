@@ -1,6 +1,7 @@
 @charset "utf-8";
 .main{
 
+  .operas-box,
   .year-contrast,
   .quarter-contrast{
     background-color: #FFFFFF;
@@ -36,7 +37,9 @@
       }
     }
 
+
     .year-table{
+      padding-top: 10px;
       tbody>tr>td:nth-child(5)>span{
         text-decoration: underline;
         padding: 10px;
@@ -44,6 +47,9 @@
       }
     }
 
+    .quarter-table{
+      padding-top: 10px;
+    }
   }// year + quarter
 
   // 上部分

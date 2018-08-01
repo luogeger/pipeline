@@ -26,9 +26,9 @@ var vm = new Vue({
         unitCode: '',
         unitType: '',
         dateOne: '',
-        dateOneClose: szDate,
+        dateOneClose: sszDate,
         dateTwo: '',
-        dateTwoClose: sszDate,
+        dateTwoClose: szDate,
 
         // 数据
         chartColor: chartColor,// 图表颜色
@@ -87,39 +87,42 @@ var vm = new Vue({
     },
 
     mounted: function () {
-        this.renderDate();//// 绑定日期插件事件
+        this.renderDate();// 绑定日期插件事件
     },
 
     methods: {
 
-        getYearData: function (index, parmas, callback) {
+        getYearData: function (index, params, callback) {
             this.yearTabActiveIndex = index = index || 0;// 默认选中第一个 tab
 
-            parmas = {
+            var obj = {
                 aYear: this.currentYear,
                 hq: this.currentAccYear,
-                closingDate1: '',
-                closingDate2: '',
+                closingDate1: this.dateOneClose,
+                closingDate2: this.dateTwoClose,
             };
-            axios.get(PATH +'/a/weightedCycleComparison', {params: parmas}).then(function (datas){
-                var data = datas.data,
-                    msg = datas.data.msg;
-                if (data.code === 201) {
-                    toastr.error('暂无相关数据!')
-                    return;
-                }
-                vm.yearTableTitle = msg.subTitles;
-                vm.yearTable.head = msg.data[index].rowTitle;
-                msg.data[index].rowData.forEach(function (item) {
-                    item.bz = Number(item.bz.toFixed(0));
-                    item.sz = Number(item.sz.toFixed(0));
-                });// 本周和上周取整
-                vm.yearTable.body = msg.data[index].rowData;
-                vm.yearTable.foot = vm.totalCalc(msg.data[index].rowData, 'year');// 图表的刷新也在这个方法内部
+            params = Object.assign(obj, params)
+            axios
+                .get(PATH +'/a/weightedCycleComparison', {params: params})
+                .then(function (datas){
+                    var data = datas.data,
+                        msg = datas.data.msg;
+                    if (data.code === 201) {
+                        toastr.error('暂无相关数据!')
+                        return;
+                    }
+                    vm.yearTableTitle = msg.subTitles;
+                    vm.yearTable.head = msg.data[index].rowTitle;
+                    msg.data[index].rowData.forEach(function (item) {
+                        item.bz = Number(item.bz.toFixed(0));
+                        item.sz = Number(item.sz.toFixed(0));
+                    });// 本周和上周取整
+                    vm.yearTable.body = msg.data[index].rowData;
+                    vm.yearTable.foot = vm.totalCalc(msg.data[index].rowData, 'year');// 图表的刷新也在这个方法内部
 
 
-                if (callback) callback();
-            });
+                    if (callback) callback();
+                });
         },
 
         // 半年tab 的切换
@@ -451,7 +454,6 @@ var vm = new Vue({
         renderDate: function () {
             laydate.render({
                 elem: '#dateOne', //指定元素
-                //range: true,
                 value: this.dateOneClose,
                 done: function (val) {
                     vm.getDateRange(val, 1)
@@ -459,7 +461,6 @@ var vm = new Vue({
             });
             laydate.render({
                 elem: '#dateTwo', //指定元素
-                //range: true,
                 value: this.dateTwoClose,
                 done: function (val) {
                     vm.getDateRange(val, 2)
@@ -471,21 +472,18 @@ var vm = new Vue({
         getDateRange: function (val, type) {
             var parmas;
             if (type === 1) {
-                vm.dateOneClose       = val.substring(0,10);
+                vm.dateOneClose = val.substring(0,10);
                 parmas = {
                     closingDate1: vm.dateOneClose,
                 };
-                this.getQuarterData(null, parmas)
             } else {
-                vm.dateTwoClose       = val.substring(0,10);
+                vm.dateTwoClose = val.substring(0,10);
                 parmas = {
                     closingDate2: vm.dateTwoClose,
                 };
-                this.getQuarterData(null, parmas)
             }
-
-
-
+            this.getYearData(null, parmas)
+            this.getQuarterData(null, parmas)
         },// getDateRange
 
         // 所有弹窗的按钮
@@ -505,7 +503,7 @@ var vm = new Vue({
             console.log(item)
             var params = {
                 aYear:          this.currentYear,
-                hq:             this.currentQuarter,
+                hq:             this.currentAccYear,
                 startDate1:     '2018-1-1',// 先写死，随便写的
                 startDate2:     '2018-1-1',// 先写死，随便写的
                 closingDate1:   this.dateOneClose,
@@ -513,7 +511,6 @@ var vm = new Vue({
                 unitCode:       item.unitCode,
                 unitType:       item.unitType,
             };
-            console.log(params)
             axios
                 .get(PATH +'/a/weightedCycleComparisonDifferenceDetail', {params: params})
                 .then(function (datas){

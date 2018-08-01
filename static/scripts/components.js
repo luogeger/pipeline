@@ -60,24 +60,28 @@ Vue.component('select-list', {
 }); // select-list
 Vue.component('pop-up', {
     props: {
-        isShow: {
-            type: Boolean,
-            default: false,
-        },
+        isShow: { type: Boolean, default: false, },
         width: { type: String },
-        bottom: { type: String }
+        bottom: { type: String },
+        small: { type: String },
     },
     data: function () {
         return {
             styleObj: {
                 width: this.width,
                 minWidth: this.width,
-                bottom: this.bottom,
-            }
+                bottom: '',
+            },
         };
     },
     created: function () {
-        console.log(this.bottom);
+        console.log(this.small);
+        if (this.small == 'true') {
+            this.styleObj.bottom = this.bottom;
+        }
+        else {
+            this.styleObj.bottom = '10%';
+        }
     },
     mounted: function () {
     },
@@ -86,7 +90,7 @@ Vue.component('pop-up', {
             this.$emit('on-close');
         }
     },
-    template: "<div v-if=\"isShow\" class=\"dialog-wrap\"><!--  -->\n            <div v-if=\"isShow\"  @click=\"closeSelf\" class=\"dialog-cover\"></div>\n            <transition name=\"drop\">\n                <div v-if=\"isShow\" class=\"dialog-content input-width-100\" :style=\"{width: width, minWidth: width, bottom: bottom }\">\n                    <p @click=\"closeSelf\" class=\"close-dialog\" ><i class=\"fa fa-close\"></i></p>\n                    <slot>empty</slot>\n                </div>\n            </transition>\n        </div>",
+    template: "<div v-if=\"isShow\" class=\"dialog-wrap\"><!--  -->\n            <div v-if=\"isShow\"  @click=\"closeSelf\" class=\"dialog-cover\"></div>\n            <transition name=\"drop\">\n                <div v-if=\"isShow\" class=\"dialog-content input-width-100\" :style=\"styleObj\">\n                    <p @click=\"closeSelf\" class=\"close-dialog\" ><i class=\"fa fa-close\"></i></p>\n                    <slot>empty</slot>\n                </div>\n            </transition>\n        </div>",
 });
 Vue.component('i-input', {
     props: {
