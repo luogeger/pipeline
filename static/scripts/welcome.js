@@ -6,7 +6,7 @@ var vm = new Vue ({
     el: '#app',
     data: function() {
         return {
-            dialogShow: false,
+            dialogShow: true,
         }
     },
     methods: {
