@@ -453,7 +453,7 @@ var vm = new Vue({
             }
         },// 选中文字，隐藏模糊列表
         yesBtn:function() {
-            // loadMainPage('.content-item', 'client/client.html');
+            loadMainPage('.content-item', 'client/client.html');
             localStorage.cpComCode =  this.cpComCode;
         },
         //// ==========销售========
